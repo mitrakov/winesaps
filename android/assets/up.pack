@@ -1,0 +1,110 @@
+
+up.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Waterfall
+  rotate: false
+  xy: 0, 37
+  size: 15, 85
+  orig: 15, 85
+  offset: 0, 0
+  index: -1
+RopeLine
+  rotate: false
+  xy: 17, 37
+  size: 10, 85
+  orig: 10, 85
+  offset: 0, 0
+  index: -1
+Water
+  rotate: false
+  xy: 29, 47
+  size: 15, 75
+  orig: 15, 75
+  offset: 0, 0
+  index: -1
+Block
+  rotate: false
+  xy: 46, 52
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+LadderBottom
+  rotate: false
+  xy: 63, 67
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+LadderTop
+  rotate: false
+  xy: 95, 67
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+OpenedUmbrella
+  rotate: false
+  xy: 127, 67
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+Actor1
+  rotate: false
+  xy: 159, 72
+  size: 30, 50
+  orig: 30, 50
+  offset: 0, 0
+  index: -1
+Actor2
+  rotate: false
+  xy: 191, 72
+  size: 30, 50
+  orig: 30, 50
+  offset: 0, 0
+  index: -1
+Mine
+  rotate: false
+  xy: 0, 9
+  size: 26, 26
+  orig: 26, 26
+  offset: 0, 0
+  index: -1
+Umbrella
+  rotate: false
+  xy: 223, 96
+  size: 26, 26
+  orig: 26, 26
+  offset: 0, 0
+  index: -1
+Apple
+  rotate: false
+  xy: 223, 66
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Wolf
+  rotate: false
+  xy: 63, 20
+  size: 30, 45
+  orig: 30, 45
+  offset: 0, 0
+  index: -1
+Pear
+  rotate: false
+  xy: 95, 37
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Stair
+  rotate: false
+  xy: 0, 0
+  size: 7, 7
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
