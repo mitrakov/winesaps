@@ -1,0 +1,2 @@
+# applerush
+Apple Rush client
