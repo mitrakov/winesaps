@@ -70,19 +70,19 @@ class Controller {
                     int touchY = Gui.convertYFromScreenToModel(touchPos.y);
 
                     // check
-                    if (touchY > myY) moveDown();
-                    else if (touchY < myY) moveUp();
+                    if (touchY < myY) moveUp();
+                    else if (touchY > myY) moveDown();
                     else if (touchX > myX) moveRight();
                     else if (touchX < myX) moveLeft();
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.D)) moveRight();
-            else if (Gdx.input.isKeyPressed(Input.Keys.A)) moveLeft();
-            else if (Gdx.input.isKeyPressed(Input.Keys.W)) moveUp();
+            } else if (Gdx.input.isKeyPressed(Input.Keys.W)) moveUp();
             else if (Gdx.input.isKeyPressed(Input.Keys.S)) moveDown();
-            else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) moveRight();
-            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) moveLeft();
+            else if (Gdx.input.isKeyPressed(Input.Keys.D)) moveRight();
+            else if (Gdx.input.isKeyPressed(Input.Keys.A)) moveLeft();
             else if (Gdx.input.isKeyPressed(Input.Keys.UP)) moveUp();
             else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) moveDown();
+            else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) moveRight();
+            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) moveLeft();
         }
     }
 

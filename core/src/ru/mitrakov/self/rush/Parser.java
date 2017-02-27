@@ -30,6 +30,9 @@ class Parser implements Network.IHandler {
                 case STATE_CHANGED:
                     stateChanged(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case SCORE_CHANGED:
+                    scoreChanged(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case THING_TAKEN:
                     thingTaken(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -64,6 +67,14 @@ class Parser implements Network.IHandler {
                 model.setXy(number, xy);
             }
         } else throw new IllegalArgumentException("Incorrect state changed format");
+    }
+
+    private void scoreChanged(int score[]) {
+        if (score.length == 2) {
+            int score1 = score[0];
+            int score2 = score[1];
+            model.setScore(score1, score2);
+        } else throw new IllegalArgumentException("Incorrect score format");
     }
 
     private void thingTaken(int data[]) {
