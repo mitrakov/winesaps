@@ -30,6 +30,25 @@ class Gui {
         this.model = model;
     }
 
+    private static float convertXFromModelToScreen(int x) {
+        return x * CELL_SIZ_W + OFFSET_X;
+    }
+
+    private static float convertYFromModelToScreen(int y) {
+        return (Field.HEIGHT - y) * CELL_SIZ_H + OFFSET_Y;
+    }
+
+    static int convertXFromScreenToModel(float x) {
+        int res = (int) ((x - OFFSET_X / 2) / CELL_SIZ_W);
+        if (res < 0) res = 0;
+        if (res >= Field.WIDTH) res = Field.WIDTH - 1;
+        return res;
+    }
+
+    static int convertYFromScreenToModel(float y) {
+        return (int) (Field.HEIGHT - ((y - OFFSET_Y - CELL_SIZ_H) / CELL_SIZ_H));
+    }
+
     void init() {
         Class downClasses[] = new Class[]{Block.class, Dias.class, Water.class};
         Class upClasses[] = new Class[]{Actor1.class, Actor2.class, Entry1.class, Entry2.class, Apple.class, Pear.class,
@@ -62,18 +81,18 @@ class Gui {
                     if (cell.bottom != null) {
                         if (texturesDown.containsKey(cell.bottom.getClass())) {
                             TextureRegion texture = texturesDown.get(cell.bottom.getClass());
-                            float x = i * CELL_SIZ_W - texture.getRegionWidth() / 2;
-                            float y = (Field.HEIGHT - j) * CELL_SIZ_H;
-                            batch.draw(texture, x + OFFSET_X, y + OFFSET_Y);
+                            float x = convertXFromModelToScreen(i) - texture.getRegionWidth() / 2;
+                            float y = convertYFromModelToScreen(j);
+                            batch.draw(texture, x, y);
                             bottomHeight = texture.getRegionHeight();
                         }
                     }
                     for (CellObject obj : cell.objects) {
                         if (texturesUp.containsKey(obj.getClass())) {
                             TextureRegion texture = texturesUp.get(obj.getClass());
-                            float x = i * CELL_SIZ_W - texture.getRegionWidth() / 2;
-                            float y = (Field.HEIGHT - j) * CELL_SIZ_H + bottomHeight;
-                            batch.draw(texture, x + OFFSET_X, y + OFFSET_Y);
+                            float x = convertXFromModelToScreen(i) - texture.getRegionWidth() / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
                         }
                     }
                 }

@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Apple extends CellObject {
     public Apple(int xy, int number) {
-        super(xy);
+        super(0x05, xy);
         this.number = number;
     }
 }

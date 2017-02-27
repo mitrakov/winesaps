@@ -70,4 +70,15 @@ public class Field {
             }
         }
     }
+
+    CellObject getObject(int id) {
+        // in Java 8 may be replaced with lambda
+        for (Cell cell : cells) {
+            for (CellObject object : cell.objects) {
+                if (object.getId() == id)
+                    return object;
+            }
+        }
+        return null;
+    }
 }

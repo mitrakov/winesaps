@@ -6,21 +6,15 @@ import ru.mitrakov.self.rush.model.Field;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
 
+import static ru.mitrakov.self.rush.model.Model.*;
+
 /**
  * Created by mitrakov on 23.02.2017
  */
 
 class Parser implements Network.IHandler {
 
-    static final byte SIGN_IN = 0x02;
-    static final byte ATTACK = 0x06;
-    static final byte INVITE = 0x07;
-    static final byte FULL_STATE = 0x10;
-    static final byte STATE_CHANGED = 0x11;
-    static final byte SCORE_CHANGED = 0x12;
-    static final byte FINISHED = 0x18;
-    static final byte THING_TAKEN = 0x1A;
-    static final byte FACILITY_LIST = 0x1C;
+
 
     private final Model model;
 

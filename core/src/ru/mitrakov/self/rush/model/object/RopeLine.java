@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class RopeLine extends CellObject {
     public RopeLine(int xy) {
-        super(xy);
+        super(0x0F, xy);
     }
 }

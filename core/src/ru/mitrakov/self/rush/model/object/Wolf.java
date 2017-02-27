@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Wolf extends CellObject {
     public Wolf(int xy, int number) {
-        super(xy);
+        super(0x11, xy);
         this.number = number;
     }
 }

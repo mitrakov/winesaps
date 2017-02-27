@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class OpenedUmbrella extends CellObject {
     public OpenedUmbrella(int xy, int number) {
-        super(xy);
+        super(0x17, xy);
         this.number = number;
     }
 }

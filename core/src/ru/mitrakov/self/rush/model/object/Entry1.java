@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Entry1 extends CellObject {
     public Entry1(int xy) {
-        super(xy);
+        super(0x03, xy);
     }
 }

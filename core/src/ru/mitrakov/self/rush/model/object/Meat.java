@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Meat extends CellObject {
     public Meat(int xy, int number) {
-        super(xy);
+        super(0x07, xy);
         this.number = number;
     }
 }

@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Mine extends CellObject {
     public Mine(int xy, int number) {
-        super(xy);
+        super(0x14, xy);
         this.number = number;
     }
 }

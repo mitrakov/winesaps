@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class BurriedMine extends CellObject {
     public BurriedMine(int xy, int number) {
-        super(xy);
+        super(0x15, xy);
         this.number = number;
     }
 }

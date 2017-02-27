@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Waterfall extends CellObject {
     public Waterfall(int xy) {
-        super(xy);
+        super(0x18, xy);
     }
 }

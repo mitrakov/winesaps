@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class LadderTop extends CellObject {
     public LadderTop(int xy) {
-        super(xy);
+        super(0x0C, xy);
     }
 }

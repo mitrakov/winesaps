@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Stair extends CellObject {
     public Stair(int xy) {
-        super(xy);
+        super(0x12, xy);
     }
 }

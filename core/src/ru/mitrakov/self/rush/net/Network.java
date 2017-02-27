@@ -16,7 +16,6 @@ public class Network extends Thread {
 
     private static final int BUF_SIZ = 1024;
     private static final int HEADER_SIZ = 3;
-    private static final int HEADER_CMD_SIZ = 4;
 
     private final DatagramSocket socket = new DatagramSocket();
     private final IHandler handler;
@@ -57,20 +56,13 @@ public class Network extends Thread {
         }
     }
 
-    public void send(byte cmd, byte[] data) throws IOException {
+    public void send(byte[] data) throws IOException {
         // concatenate a header and data
-        byte[] msg = new byte[data.length + HEADER_CMD_SIZ];
+        byte[] msg = new byte[data.length + HEADER_SIZ];
         msg[0] = (byte)(sid / 256);
         msg[1] = (byte)(sid % 256);
         msg[2] = 0; // flags
-        msg[3] = cmd;
-        System.arraycopy(data, 0, msg, HEADER_CMD_SIZ, data.length);
-
-        // convert to a bytearray
-//        byte[] bytes = new byte[msg.length];
-//        for (int i = 0; i < msg.length; i++) {
-//            bytes[i] = (byte) msg[i];
-//        }
+        System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
 
         // sending
         socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), 33996));

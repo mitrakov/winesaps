@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Mushroom extends CellObject {
     public Mushroom(int xy, int number) {
-        super(xy);
+        super(0x09, xy);
         this.number = number;
     }
 }

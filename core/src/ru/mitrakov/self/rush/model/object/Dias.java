@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Dias extends CellObject {
     public Dias(int xy) {
-        super(xy);
+        super(0x13, xy);
     }
 }

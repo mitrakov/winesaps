@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Pear extends CellObject {
     public Pear(int xy, int number) {
-        super(xy);
+        super(0x06, xy);
         this.number = number;
     }
 }

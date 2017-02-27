@@ -6,7 +6,7 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Actor2 extends CellObject {
     public Actor2(int xy, int number) {
-        super(xy);
+        super(0x02, xy);
         this.number = number;
     }
 }

@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class RopeBolt extends CellObject {
     public RopeBolt(int xy) {
-        super(xy);
+        super(0x0E, xy);
     }
 }

@@ -6,6 +6,6 @@ package ru.mitrakov.self.rush.model.object;
 
 public class Water extends CellObject {
     public Water(int xy) {
-        super(xy);
+        super(0x10, xy);
     }
 }

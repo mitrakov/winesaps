@@ -6,14 +6,20 @@ package ru.mitrakov.self.rush.model.object;
 
 public abstract class CellObject {
     protected int number = 0;
-    private int xy;
+    protected int xy;
+    protected int id;
 
-    public CellObject(int xy) {
+    public CellObject(int id, int xy) {
+        this.id = id;
         this.xy = xy;
     }
 
     public int getNumber() {
         return number;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getXy() {
