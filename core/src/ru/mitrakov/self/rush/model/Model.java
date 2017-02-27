@@ -14,11 +14,18 @@ public class Model {
     public static final byte FULL_STATE = 0x10;
     public static final byte STATE_CHANGED = 0x11;
     public static final byte SCORE_CHANGED = 0x12;
+    public static final byte MOVE_LEFT = 0x13;
+    public static final byte MOVE_RIGHT = 0x14;
+    public static final byte MOVE_UP = 0x15;
+    public static final byte MOVE_DOWN = 0x16;
+    public static final byte USE_THING = 0x17;
     public static final byte FINISHED = 0x18;
     public static final byte THING_TAKEN = 0x1A;
     public static final byte FACILITY_LIST = 0x1C;
 
     public interface ISender {
+        void send(int cmd);
+        void send(int cmd, byte arg);
         void send(int cmd, byte[] data);
     }
 
@@ -36,7 +43,6 @@ public class Model {
 
 
     public Model() {
-
     }
 
     public void setSender(ISender sender) {
@@ -46,6 +52,36 @@ public class Model {
     public void signIn() {
         if (sender != null) {
             sender.send(SIGN_IN, "\1Tommy\0Tommy".getBytes());
+        }
+    }
+
+    public void invite(String victim) {
+        if (sender != null) {
+            sender.send(ATTACK, "\0".concat(victim).getBytes());
+        }
+    }
+
+    public void moveLeft() {
+        if (sender != null) {
+            sender.send(MOVE_LEFT);
+        }
+    }
+
+    public void moveRight() {
+        if (sender != null) {
+            sender.send(MOVE_RIGHT);
+        }
+    }
+
+    public void moveUp() {
+        if (sender != null) {
+            sender.send(MOVE_UP);
+        }
+    }
+
+    public void moveDown() {
+        if (sender != null) {
+            sender.send(MOVE_DOWN);
         }
     }
 
@@ -67,12 +103,6 @@ public class Model {
     public void setScore(int score1, int score2) {
         this.score1 = score1;
         this.score2 = score2;
-    }
-
-    public void invite(String victim) {
-        if (sender != null) {
-            sender.send(ATTACK, "\0".concat(victim).getBytes());
-        }
     }
 
     public void finishedRound(boolean me) {

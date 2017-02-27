@@ -80,6 +80,7 @@ class Gui {
                     Cell cell = model.field.cells[j * Field.WIDTH + i];
                     assert cell != null;
                     // @mitrakov: "Map::getOrDefault" requires too high Level API (24), so we use usual "Map::get"
+                    // draw bottom (block/water/dias)
                     float bottomWidth = CELL_SIZ_W;
                     float bottomHeight = 0;
                     if (cell.bottom != null) {
@@ -92,6 +93,7 @@ class Gui {
                             bottomHeight = texture.getRegionHeight();
                         }
                     }
+                    // draw objects above the bottom
                     for (CellObject obj : cell.objects) {
                         if (texturesUp.containsKey(obj.getClass())) {
                             TextureRegion texture = texturesUp.get(obj.getClass());

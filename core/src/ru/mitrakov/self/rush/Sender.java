@@ -18,6 +18,26 @@ class Sender implements Model.ISender {
     }
 
     @Override
+    public void send(int cmd) {
+        try {
+            byte msg[] = new byte[] {(byte)cmd};
+            network.send(msg);
+        } catch (Exception e) {
+            errorHandler.uncaughtException(Thread.currentThread(), e);
+        }
+    }
+
+    @Override
+    public void send(int cmd, byte arg) {
+        try {
+            byte msg[] = new byte[] {(byte)cmd, arg};
+            network.send(msg);
+        } catch (Exception e) {
+            errorHandler.uncaughtException(Thread.currentThread(), e);
+        }
+    }
+
+    @Override
     public void send(int cmd, byte[] data) {
         try {
             byte msg[] = new byte[data.length + 1];
