@@ -37,6 +37,7 @@ public class Model {
     public int score2 = 0;
     public Field field;
     public CellObject curActor;
+    public CellObject curThing;
 
     private ISender sender;
     private boolean aggressor = true;
@@ -85,6 +86,12 @@ public class Model {
         }
     }
 
+    public void useThing() {
+        if (sender != null && curThing != null) {
+            sender.send(USE_THING, (byte)curThing.getId());
+        }
+    }
+
     public void setNewField(int[] fieldData) {
         field = new Field(fieldData);
     }
@@ -114,7 +121,12 @@ public class Model {
     }
 
     public void setThing(int thingId) {
-
+        curThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
+            @Override
+            public int next() {
+                return 0;
+            }
+        });
     }
 
     public void setFacilities(int[] facilities) {

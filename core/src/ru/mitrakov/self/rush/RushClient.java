@@ -45,7 +45,7 @@ public class RushClient extends ApplicationAdapter {
     @Override
     public void render() {
         // controller and batch must be created here
-        controller.checkInput();
+        controller.checkInput(gui);
         Gdx.gl.glClearColor(.35f, .87f, .91f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();

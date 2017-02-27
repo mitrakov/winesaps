@@ -1,0 +1,26 @@
+
+thing.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Mine
+  rotate: false
+  xy: 0, 0
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+NullType
+  rotate: false
+  xy: 52, 0
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+Umbrella
+  rotate: false
+  xy: 104, 0
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1

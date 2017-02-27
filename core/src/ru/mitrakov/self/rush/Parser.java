@@ -10,12 +10,9 @@ import static ru.mitrakov.self.rush.model.Model.*;
  */
 
 class Parser implements Network.IHandler {
-
-
-
     private final Model model;
 
-    public Parser(Model model) {
+    Parser(Model model) {
         assert model != null;
         this.model = model;
     }
@@ -32,6 +29,9 @@ class Parser implements Network.IHandler {
                     break;
                 case STATE_CHANGED:
                     stateChanged(Arrays.copyOfRange(data, 1, data.length));
+                    break;
+                case THING_TAKEN:
+                    thingTaken(Arrays.copyOfRange(data, 1, data.length));
                     break;
                 default:
             }
@@ -64,5 +64,12 @@ class Parser implements Network.IHandler {
                 model.setXy(number, xy);
             }
         } else throw new IllegalArgumentException("Incorrect state changed format");
+    }
+
+    private void thingTaken(int data[]) {
+        if (data.length == 1) {
+            int thingId = data[0];
+            model.setThing(thingId);
+        } else throw new IllegalArgumentException("Incorrect thing format");
     }
 }
