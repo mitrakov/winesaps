@@ -15,7 +15,7 @@ import ru.mitrakov.self.rush.model.object.*;
 class Gui {
     private static final int CELL_SIZ_W = 15;
     private static final int CELL_SIZ_H = 85;
-    private static final int OFFSET_X = 20;
+    private static final int OFFSET_X = 17; // (800 - 51*15)/2
     private static final int OFFSET_Y = -30;
 
     private final Model model;
@@ -39,14 +39,17 @@ class Gui {
     }
 
     static int convertXFromScreenToModel(float x) {
-        int res = (int) ((x - OFFSET_X / 2) / CELL_SIZ_W);
+        int res = (int) ((x - OFFSET_X) / CELL_SIZ_W);
         if (res < 0) res = 0;
         if (res >= Field.WIDTH) res = Field.WIDTH - 1;
         return res;
     }
 
     static int convertYFromScreenToModel(float y) {
-        return (int) (Field.HEIGHT - ((y - OFFSET_Y - CELL_SIZ_H) / CELL_SIZ_H));
+        int res = (int) (Field.HEIGHT - ((y - OFFSET_Y - CELL_SIZ_H) / CELL_SIZ_H));
+        if (res < 0) res = 0;
+        if (res >= Field.HEIGHT) res = Field.HEIGHT - 1;
+        return res;
     }
 
     void init() {
@@ -77,20 +80,22 @@ class Gui {
                     Cell cell = model.field.cells[j * Field.WIDTH + i];
                     assert cell != null;
                     // @mitrakov: "Map::getOrDefault" requires too high Level API (24), so we use usual "Map::get"
+                    float bottomWidth = CELL_SIZ_W;
                     float bottomHeight = 0;
                     if (cell.bottom != null) {
                         if (texturesDown.containsKey(cell.bottom.getClass())) {
                             TextureRegion texture = texturesDown.get(cell.bottom.getClass());
-                            float x = convertXFromModelToScreen(i) - texture.getRegionWidth() / 2;
+                            float x = convertXFromModelToScreen(i);
                             float y = convertYFromModelToScreen(j);
                             batch.draw(texture, x, y);
+                            bottomWidth = texture.getRegionWidth();
                             bottomHeight = texture.getRegionHeight();
                         }
                     }
                     for (CellObject obj : cell.objects) {
                         if (texturesUp.containsKey(obj.getClass())) {
                             TextureRegion texture = texturesUp.get(obj.getClass());
-                            float x = convertXFromModelToScreen(i) - texture.getRegionWidth() / 2;
+                            float x = convertXFromModelToScreen(i) - .5f*(texture.getRegionWidth() - bottomWidth);
                             float y = convertYFromModelToScreen(j) + bottomHeight;
                             batch.draw(texture, x, y);
                         }

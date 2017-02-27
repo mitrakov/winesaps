@@ -1,8 +1,6 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.*;
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**

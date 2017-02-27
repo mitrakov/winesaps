@@ -1,11 +1,8 @@
 package ru.mitrakov.self.rush;
 
 import java.util.Arrays;
-
-import ru.mitrakov.self.rush.model.Field;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
-
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**

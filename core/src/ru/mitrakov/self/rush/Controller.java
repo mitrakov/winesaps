@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-
-import ru.mitrakov.self.rush.model.Field;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**

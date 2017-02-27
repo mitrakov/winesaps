@@ -1,6 +1,5 @@
 package ru.mitrakov.self.rush.model;
 
-import ru.mitrakov.self.rush.Sender;
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**
@@ -19,6 +18,10 @@ public class Model {
     public static final byte THING_TAKEN = 0x1A;
     public static final byte FACILITY_LIST = 0x1C;
 
+    public interface ISender {
+        void send(int cmd, byte[] data);
+    }
+
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
 
@@ -28,7 +31,7 @@ public class Model {
     public Field field;
     public CellObject curActor;
 
-    private Sender sender;
+    private ISender sender;
     private boolean aggressor = true;
 
 
@@ -36,7 +39,7 @@ public class Model {
 
     }
 
-    public void setSender(Sender sender) {
+    public void setSender(ISender sender) {
         this.sender = sender;
     }
 
