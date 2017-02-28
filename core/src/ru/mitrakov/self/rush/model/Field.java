@@ -15,8 +15,9 @@ public class Field {
         int next();
     }
 
-    public final Cell cells[] = new Cell[WIDTH * HEIGHT]; // .... public
-    private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(32);
+    public final Cell cells[] = new Cell[WIDTH * HEIGHT + 1]; // .... public // + 1 fake cell
+
+    private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
     private int objectNumber = 0;
 
     Field(int[] fieldData) {
@@ -35,6 +36,8 @@ public class Field {
                 objects.put(object.getNumber(), object);
             }
         }
+        // create fake cell for "removed" objects
+        cells[0xFF] = Cell.newCell(0, 0xFF, nextNumber);
     }
 
     void appendObject(final int number, int id, int xy) {
@@ -58,14 +61,9 @@ public class Field {
         CellObject object = objects.get(number);
         if (object != null) {
             int oldXy = object.getXy();
-            if (newXy < 0xFF) {                      // replace object
-                object.setXy(newXy);
-                cells[oldXy].objects.remove(object);
-                cells[newXy].objects.add(object);
-            } else {                                 // remove object
-                cells[oldXy].objects.remove(object);
-                objects.remove(number);
-            }
+            object.setXy(newXy);
+            cells[oldXy].objects.remove(object);
+            cells[newXy].objects.add(object);
         }
     }
 
