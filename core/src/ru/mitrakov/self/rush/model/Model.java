@@ -56,6 +56,7 @@ public class Model {
 
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
+    private static final int SKILL_OFFSET = 0x20;
 
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
     public int score1 = 0;
@@ -121,7 +122,7 @@ public class Model {
     public void useAbilityById(int id) {
         if (sender != null) {
             for (Ability ability : abilities) {
-                if (ability.ordinal() == id)
+                if (ability.ordinal() == id && ability.ordinal() > SKILL_OFFSET)
                     sender.send(USE_FACILITY, (byte) id);
             }
         }
@@ -131,7 +132,7 @@ public class Model {
         if (sender != null) {
             int i = 0;
             for (Ability ability : abilities) {
-                if (i == idx)
+                if (i == idx && ability.ordinal() > SKILL_OFFSET)
                     sender.send(USE_FACILITY, (byte) ability.ordinal());
                 i++;
             }

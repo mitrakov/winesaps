@@ -68,7 +68,26 @@ class Controller {
                     model.useAbilityByIndex(i);
                 }
             }
-        }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1))
+            model.useAbilityByIndex(0);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2))
+            model.useAbilityByIndex(1);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3))
+            model.useAbilityByIndex(2);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4))
+            model.useAbilityByIndex(3);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5))
+            model.useAbilityByIndex(4);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6))
+            model.useAbilityByIndex(5);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7))
+            model.useAbilityByIndex(6);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8))
+            model.useAbilityByIndex(7);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9))
+            model.useAbilityByIndex(8);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0))
+            model.useAbilityByIndex(9);
     }
 
     private void checkMove(CellObject actor) {
