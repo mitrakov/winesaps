@@ -36,6 +36,9 @@ class Parser implements Network.IHandler {
                 case THING_TAKEN:
                     thingTaken(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case OBJECT_APPENDED:
+                    objectAppended(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 default:
             }
         } else throw new IllegalArgumentException("Empty data");
@@ -82,5 +85,14 @@ class Parser implements Network.IHandler {
             int thingId = data[0];
             model.setThing(thingId);
         } else throw new IllegalArgumentException("Incorrect thing format");
+    }
+
+    private void objectAppended(int data[]) {
+        if (data.length == 3) {
+            int id = data[0];
+            int objNum = data[1];
+            int xy = data[2];
+            model.appendObject(objNum, id, xy);
+        } else throw new IllegalArgumentException("Incorrect object format");
     }
 }

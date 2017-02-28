@@ -8,9 +8,21 @@ import ru.mitrakov.self.rush.model.object.CellObject;
 
 @SuppressWarnings("WeakerAccess")
 public class Model {
+    public static final byte SIGN_UP = 0x01;
     public static final byte SIGN_IN = 0x02;
+    public static final byte SIGN_OUT = 0x03;
+    public static final byte CHANGE_PASSWORD = 0x04;
+    public static final byte USER_INFO = 0x05;
     public static final byte ATTACK = 0x06;
     public static final byte INVITE = 0x07;
+    public static final byte ACCEPT = 0x08;
+    public static final byte REJECT = 0x09;
+    public static final byte GIVE_UP = 0x0A;
+    public static final byte READY = 0x0B;
+    public static final byte CHAT_TO_ENEMY = 0x0C;
+    public static final byte BUY_PRODUCT = 0x0D;
+    public static final byte RESERVED1 = 0x0E;
+    public static final byte RESERVED2 = 0x0F;
     public static final byte FULL_STATE = 0x10;
     public static final byte STATE_CHANGED = 0x11;
     public static final byte SCORE_CHANGED = 0x12;
@@ -20,12 +32,17 @@ public class Model {
     public static final byte MOVE_DOWN = 0x16;
     public static final byte USE_THING = 0x17;
     public static final byte FINISHED = 0x18;
+    public static final byte WOUND = 0x19;
     public static final byte THING_TAKEN = 0x1A;
+    public static final byte USE_FACILITY = 0x1B;
     public static final byte FACILITY_LIST = 0x1C;
+    public static final byte OBJECT_APPENDED = 0x1D;
 
     public interface ISender {
         void send(int cmd);
+
         void send(int cmd, byte arg);
+
         void send(int cmd, byte[] data);
     }
 
@@ -88,7 +105,7 @@ public class Model {
 
     public void useThing() {
         if (sender != null && curThing != null) {
-            sender.send(USE_THING, (byte)curThing.getId());
+            sender.send(USE_THING, (byte) curThing.getId());
         }
     }
 
@@ -99,7 +116,8 @@ public class Model {
     public void appendObject(int number, int id, int xy) {
         assert field != null;
         field.appendObject(number, id, xy);
-        curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
+        if (id == AGGRESSOR_ID || id == DEFENDER_ID)
+            curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
     }
 
     public void setXy(int number, int xy) {
