@@ -36,6 +36,9 @@ class Parser implements Network.IHandler {
                 case THING_TAKEN:
                     thingTaken(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case ABILITY_LIST:
+                    abilitiesList(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case OBJECT_APPENDED:
                     objectAppended(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -94,5 +97,15 @@ class Parser implements Network.IHandler {
             int xy = data[2];
             model.appendObject(objNum, id, xy);
         } else throw new IllegalArgumentException("Incorrect object format");
+    }
+
+    private void abilitiesList(int data[]) {
+        if (data.length > 0) {
+            int count = data[0];
+            int abilities[] = Arrays.copyOfRange(data, 1, data.length);
+            if (abilities.length == count)
+                model.setAbilities(abilities);
+            else throw new IllegalArgumentException("Incorrect abilities size");
+        } else throw new IllegalArgumentException("Incorrect abilities format");
     }
 }

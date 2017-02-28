@@ -7,6 +7,7 @@ import javax.lang.model.type.NullType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.object.*;
@@ -21,6 +22,7 @@ class Gui {
     private static final int OFFSET_X = 17;      // (Screen.width - Field.WIDTH*CELL_SIZ_W)/2 = (800 - 51*15)/2
     private static final int OFFSET_Y = -30;
     private static final int BUTTON_MARGIN = 2;
+    private static final int ABILITIES_OFFSET = 300;
     static final int TOOLBAR_WIDTH = 55;         // Screen.height - Field.HEIGHT*CELL_SIZ_H = 480 - 5*85
 
     private final Model model;
@@ -28,11 +30,14 @@ class Gui {
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
     private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
     private final Map<Class, TextureRegion> texturesThing = new HashMap<Class, TextureRegion>(8);
+    private final Map<String, TextureRegion> texturesAbility = new HashMap<String, TextureRegion>(12);
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("up.pack"));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("thing.pack"));
+    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("ability.pack"));
 
     final Rectangle buttonThing = new Rectangle();
+    final Array<Rectangle> buttonAbilities = new Array<Rectangle>();
 
     Gui(Model model) {
         assert model != null;
@@ -82,6 +87,11 @@ class Gui {
             if (texture != null)
                 texturesThing.put(clazz, texture);
         }
+        for (Model.Ability ability : Model.Ability.values()) {
+            TextureRegion texture = atlasAbility.findRegion(ability.name());
+            if (texture != null)
+                texturesAbility.put(ability.name(), texture);
+        }
         // don't dispose TextureAtlas here; TextureAtlas must be disposed only in "disposed" method
     }
 
@@ -101,30 +111,55 @@ class Gui {
                     if (cell.bottom != null) {
                         if (texturesDown.containsKey(cell.bottom.getClass())) {
                             TextureRegion texture = texturesDown.get(cell.bottom.getClass());
-                            float x = convertXFromModelToScreen(i);
-                            float y = convertYFromModelToScreen(j);
-                            batch.draw(texture, x, y);
-                            bottomWidth = texture.getRegionWidth();
-                            bottomHeight = texture.getRegionHeight();
+                            if (texture != null) {
+                                float x = convertXFromModelToScreen(i);
+                                float y = convertYFromModelToScreen(j);
+                                batch.draw(texture, x, y);
+                                bottomWidth = texture.getRegionWidth();
+                                bottomHeight = texture.getRegionHeight();
+                            }
                         }
                     }
                     // draw objects above the bottom
                     for (CellObject obj : cell.objects) {
                         if (texturesUp.containsKey(obj.getClass())) {
                             TextureRegion texture = texturesUp.get(obj.getClass());
-                            float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
+                            if (texture != null) {
+                                float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
+                                float y = convertYFromModelToScreen(j) + bottomHeight;
+                                batch.draw(texture, x, y);
+                            }
                         }
                     }
                 }
             }
 
             // draw a thing
-            Class clazz = model.curThing != null ? model.curThing.getClass() : NullType.class;
-            TextureRegion texture = texturesThing.get(clazz);
-            batch.draw(texture, BUTTON_MARGIN, BUTTON_MARGIN);
-            buttonThing.set(BUTTON_MARGIN, BUTTON_MARGIN, texture.getRegionWidth(), texture.getRegionHeight());
+            {
+                Class clazz = model.curThing != null ? model.curThing.getClass() : NullType.class;
+                TextureRegion texture = texturesThing.get(clazz);
+                if (texture != null) {
+                    batch.draw(texture, BUTTON_MARGIN, BUTTON_MARGIN);
+                    buttonThing.set(BUTTON_MARGIN, BUTTON_MARGIN, texture.getRegionWidth(), texture.getRegionHeight());
+                }
+            }
+
+            // draw abilities
+            checkAbilities();
+            int i = 0;
+            for (Model.Ability ability : model.abilities) {
+                TextureRegion texture = texturesAbility.get(ability.name());
+                if (texture != null) {
+                    float x = i * (texture.getRegionWidth() + BUTTON_MARGIN) + ABILITIES_OFFSET;
+                    float y = BUTTON_MARGIN;
+                    batch.draw(texture, x, y);
+                    if (i < buttonAbilities.size) { // in case of concurrent modifying of model.abilities
+                        Rectangle rectangle = buttonAbilities.get(i); // it's not NULL (assert omitted)
+                        rectangle.set(x, y, texture.getRegionWidth(), texture.getRegionHeight());
+                    }
+                }
+                i++;
+            }
 
             // draw a score
             font.draw(batch, String.format(Locale.getDefault(), "Score: %d-%d", model.score1, model.score2), 620, 20);
@@ -138,7 +173,25 @@ class Gui {
         for (TextureRegion texture : texturesUp.values()) {
             texture.getTexture().dispose();
         }
+        for (TextureRegion texture : texturesThing.values()) {
+            texture.getTexture().dispose();
+        }
+        for (TextureRegion texture : texturesAbility.values()) {
+            texture.getTexture().dispose();
+        }
         atlasDown.dispose();
         atlasUp.dispose();
+        atlasThing.dispose();
+        atlasAbility.dispose();
+    }
+
+    private void checkAbilities() {
+        if (buttonAbilities.size != model.abilities.size()) {
+            buttonAbilities.setSize(model.abilities.size());
+            for (int i = 0; i < buttonAbilities.size; i++) {
+                if (buttonAbilities.get(i) == null)
+                    buttonAbilities.set(i, new Rectangle());
+            }
+        }
     }
 }

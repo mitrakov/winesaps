@@ -1,5 +1,8 @@
 package ru.mitrakov.self.rush.model;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**
@@ -35,7 +38,7 @@ public class Model {
     public static final byte WOUND = 0x19;
     public static final byte THING_TAKEN = 0x1A;
     public static final byte USE_FACILITY = 0x1B;
-    public static final byte FACILITY_LIST = 0x1C;
+    public static final byte ABILITY_LIST = 0x1C;
     public static final byte OBJECT_APPENDED = 0x1D;
 
     public interface ISender {
@@ -44,6 +47,11 @@ public class Model {
         void send(int cmd, byte arg);
 
         void send(int cmd, byte[] data);
+    }
+
+    public enum Ability {
+        None, Snorkel, Shoes, SouthWester, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16,
+        a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, Sapper
     }
 
     private static final int AGGRESSOR_ID = 1;
@@ -55,6 +63,7 @@ public class Model {
     public Field field;
     public CellObject curActor;
     public CellObject curThing;
+    public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
 
     private ISender sender;
     private boolean aggressor = true;
@@ -109,6 +118,26 @@ public class Model {
         }
     }
 
+    public void useAbilityById(int id) {
+        if (sender != null) {
+            for (Ability ability : abilities) {
+                if (ability.ordinal() == id)
+                    sender.send(USE_FACILITY, (byte) id);
+            }
+        }
+    }
+
+    public void useAbilityByIndex(int idx) {
+        if (sender != null) {
+            int i = 0;
+            for (Ability ability : abilities) {
+                if (i == idx)
+                    sender.send(USE_FACILITY, (byte) ability.ordinal());
+                i++;
+            }
+        }
+    }
+
     public void setNewField(int[] fieldData) {
         field = new Field(fieldData);
     }
@@ -147,7 +176,12 @@ public class Model {
         });
     }
 
-    public void setFacilities(int[] facilities) {
-
+    public void setAbilities(int[] ids) {
+        abilities.clear();
+        Ability[] array = Ability.values();
+        for (int id : ids) {
+            if (0 <= id && id < array.length)
+                abilities.add(array[id]);
+        }
     }
 }

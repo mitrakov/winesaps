@@ -1,0 +1,26 @@
+
+ability.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Sapper
+  rotate: false
+  xy: 0, 0
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Shoes
+  rotate: false
+  xy: 47, 0
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Snorkel
+  rotate: false
+  xy: 94, 0
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1

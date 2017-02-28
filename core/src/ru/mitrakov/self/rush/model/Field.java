@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.model;
 
 import java.util.*;
+
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**
@@ -10,6 +11,7 @@ import ru.mitrakov.self.rush.model.object.CellObject;
 public class Field {
     public static final int WIDTH = 51;
     public static final int HEIGHT = 5;
+    public static final int FAKE_CELL = WIDTH * HEIGHT;
 
     interface NextNumber {
         int next();
@@ -37,11 +39,12 @@ public class Field {
             }
         }
         // create fake cell for "removed" objects
-        cells[0xFF] = Cell.newCell(0, 0xFF, nextNumber);
+        cells[FAKE_CELL] = Cell.newCell(0, FAKE_CELL, nextNumber);
     }
 
     void appendObject(final int number, int id, int xy) {
-        if (xy < 0 || xy >= Field.WIDTH * Field.HEIGHT) throw new IllegalArgumentException("Incorrect xy");
+        if (xy < 0 || xy > FAKE_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+            throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = Cell.newObject(id, xy, new Field.NextNumber() {
             @Override
@@ -56,7 +59,8 @@ public class Field {
     }
 
     void setXy(int number, int newXy) {
-        if (newXy < 0 || newXy > 0xFF) throw new IllegalArgumentException("Incorrect xy");
+        if (newXy < 0 || newXy > FAKE_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+            throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = objects.get(number);
         if (object != null) {

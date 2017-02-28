@@ -2,6 +2,7 @@ package ru.mitrakov.self.rush;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -45,6 +46,7 @@ class Controller {
 
             // check
             checkThingButton(gui);
+            checkAbilityButtons(gui);
             checkMove(actor);
         }
     }
@@ -55,6 +57,18 @@ class Controller {
             if (gui.buttonThing.contains(touchPos.x, touchPos.y))
                 model.useThing();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) model.useThing();
+    }
+
+    private void checkAbilityButtons(Gui gui) {
+        // gui, gui.buttonAbilities must NOT be NULL (assert omitted)
+        if (Gdx.input.justTouched()) {
+            for (int i = 0; i < gui.buttonAbilities.size; i++) {
+                Rectangle rectangle = gui.buttonAbilities.get(i); // must NOT be NULL (assert omitted)
+                if (rectangle.contains(touchPos.x, touchPos.y)) {
+                    model.useAbilityByIndex(i);
+                }
+            }
+        }
     }
 
     private void checkMove(CellObject actor) {
