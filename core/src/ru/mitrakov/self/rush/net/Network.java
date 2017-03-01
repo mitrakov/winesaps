@@ -17,6 +17,8 @@ public class Network extends Thread {
     private static final int BUF_SIZ = 1024;
     private static final int HEADER_SIZ = 3;
 
+    // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
+    // otherwise new DatagramSocket() throws PermissionDeniedException
     private final DatagramSocket socket = new DatagramSocket();
     private final IHandler handler;
     private final UncaughtExceptionHandler errorHandler;
