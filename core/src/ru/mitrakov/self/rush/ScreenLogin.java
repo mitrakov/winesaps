@@ -19,18 +19,45 @@ class ScreenLogin extends ScreenAdapter {
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
 
+    private final TextField txtLogin = new TextField("", skin, "default");
+    private final TextField txtPassword = new TextField("", skin, "default") {{
+        setPasswordMode(true);
+        setPasswordCharacter('*');
+    }};
+    private final TextField txtEmail = new TextField("", skin, "default");
+
+
+    private enum CurDialog {Start, SignIn, SignUp}
+
+    private CurDialog curDialog = CurDialog.Start;
+
     ScreenLogin(PsObject psObject) {
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         stage.addActor(table);
-        setStartDialog();
+        setStartDialog(false);
 
+        // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {
             @Override
-            public void onRatioChanged(float ratio) {
-                if (ratio > 2)
-                    ; // redraw the screen
-                else setSignInDialog();
+            public void onRatioChanged(final float ratio) {
+                Gdx.app.postRunnable(new Runnable() { // @mitrakov: it is necessary to avoid OutOfSync exceptions!
+                    @Override
+                    public void run() {
+                        switch (curDialog) {
+                            case Start:
+                                setStartDialog(ratio > 2);
+                                break;
+                            case SignIn:
+                                setSignInDialog(ratio > 2);
+                                break;
+                            case SignUp:
+                                setSignUpDialog(ratio > 2);
+                                break;
+                            default:
+                        }
+                    }
+                });
             }
         });
     }
@@ -54,37 +81,43 @@ class ScreenLogin extends ScreenAdapter {
         skin.dispose();
     }
 
-    private void setStartDialog() {
+    private void setStartDialog(final boolean shiftForKeyboard) {
+        curDialog = CurDialog.Start;
+
         TextButton btnSignIn = new TextButton("Sign in", skin, "default");
         btnSignIn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setSignInDialog();
+                setSignInDialog(shiftForKeyboard);
             }
         });
         TextButton btnSignUp = new TextButton("Sign up", skin, "default");
+        btnSignUp.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                setSignUpDialog(shiftForKeyboard);
+            }
+        });
 
         table.clear();
-        table.add(btnSignIn).width(200).height(60).space(30);
+        table.add(btnSignIn).width(300).height(80).space(30);
         table.row();
-        table.add(btnSignUp).width(200).height(60);
+        table.add(btnSignUp).width(300).height(80);
+        if (shiftForKeyboard) shiftUp();
     }
 
-    private void setSignInDialog() {
-        TextField txtLogin = new TextField("", skin, "default");
-        TextField txtPassword = new TextField("", skin, "default");
-        txtPassword.setPasswordMode(true);
-        txtPassword.setPasswordCharacter('*');
+    private void setSignInDialog(final boolean shiftForKeyboard) {
+        curDialog = CurDialog.SignIn;
+        Actor focused = stage.getKeyboardFocus();
 
         TextButton btnBack = new TextButton("Back", skin, "default");
         btnBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setStartDialog();
+                setStartDialog(shiftForKeyboard);
             }
         });
         TextButton btnForth = new TextButton("OK", skin, "default");
-
 
         table.clear();
         table.add(new Label("Name", skin, "default")).align(Align.left);
@@ -95,9 +128,43 @@ class ScreenLogin extends ScreenAdapter {
         table.row().spaceTop(30);
         table.add(btnBack).width(100).height(40);
         table.add(btnForth).width(100).height(40);
+        if (shiftForKeyboard) shiftUp();
+
+        stage.setKeyboardFocus(focused);
     }
 
-    private void setSignUpDialog() {
+    private void setSignUpDialog(final boolean shiftForKeyboard) {
+        curDialog = CurDialog.SignUp;
+        Actor focused = stage.getKeyboardFocus();
 
+        TextButton btnBack = new TextButton("Back", skin, "default");
+        btnBack.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                setStartDialog(shiftForKeyboard);
+            }
+        });
+        TextButton btnForth = new TextButton("OK", skin, "default");
+
+        table.clear();
+        table.add(new Label("Name", skin, "default")).align(Align.left);
+        table.add(txtLogin);
+        table.row().spaceTop(20);
+        table.add(new Label("Password", skin, "default")).align(Align.left);
+        table.add(txtPassword);
+        table.row().spaceTop(20);
+        table.add(new Label("Email", skin, "default")).align(Align.left);
+        table.add(txtEmail);
+        table.row().spaceTop(30);
+        table.add(btnBack).width(100).height(40);
+        table.add(btnForth).width(100).height(40);
+        if (shiftForKeyboard) shiftUp();
+
+        stage.setKeyboardFocus(focused);
+    }
+
+    private void shiftUp() {
+        table.row().spaceTop(200);
+        table.add(new Label("", skin, "default"));  // WTF: empty label? are you serious?
     }
 }
