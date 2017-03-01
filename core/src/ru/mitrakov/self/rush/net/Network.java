@@ -67,6 +67,6 @@ public class Network extends Thread {
         System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
 
         // sending
-        socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), 33996));
+        socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("192.168.1.2"), 33996));
     }
 }

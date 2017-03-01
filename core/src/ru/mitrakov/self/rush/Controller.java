@@ -31,11 +31,11 @@ class Controller {
 
     void checkInput(Gui gui) {
         // gui must NOT be NULL (assert omitted)
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            model.signIn();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+
+        // tmp code
+        if (model.field == null && Gdx.input.justTouched()) {
             model.invite("Bobby");
+            return;
         }
 
         CellObject actor = model.curActor;

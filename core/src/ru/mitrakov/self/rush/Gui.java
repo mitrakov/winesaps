@@ -2,8 +2,6 @@ package ru.mitrakov.self.rush;
 
 import java.util.*;
 
-import javax.lang.model.type.NullType;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
@@ -71,7 +69,7 @@ class Gui {
         Class upClasses[] = new Class[]{Actor1.class, Actor2.class, Entry1.class, Entry2.class, Apple.class, Pear.class,
                 Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Wolf.class, Stair.class,
                 Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class};
-        Class thingClasses[] = new Class[]{NullType.class, Mine.class, Umbrella.class};
+        Class thingClasses[] = new Class[]{CellObject.class, Mine.class, Umbrella.class}; //CellObject.class means empty
         for (Class clazz : downClasses) {
             TextureRegion texture = atlasDown.findRegion(clazz.getSimpleName());
             if (texture != null)
@@ -134,9 +132,9 @@ class Gui {
                 }
             }
 
-            // draw a thing
+            // draw a thing (if thing == null then we use CellObject.class to get 'empty' texture)
             {
-                Class clazz = model.curThing != null ? model.curThing.getClass() : NullType.class;
+                Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
                 TextureRegion texture = texturesThing.get(clazz);
                 if (texture != null) {
                     batch.draw(texture, BUTTON_MARGIN, BUTTON_MARGIN);

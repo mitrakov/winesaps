@@ -59,6 +59,7 @@ public class Model {
     private static final int SKILL_OFFSET = 0x20;
 
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
+    public transient boolean authorized = false; // @mitrakov: must be transient due to multithreading access
     public int score1 = 0;
     public int score2 = 0;
     public Field field;
@@ -77,15 +78,26 @@ public class Model {
         this.sender = sender;
     }
 
-    public void signIn() {
+    // =======================
+    // === REQUEST METHODS ===
+    // =======================
+
+    public void signIn(String login, String password) {
         if (sender != null) {
-            sender.send(SIGN_IN, "\1Tommy\0Tommy".getBytes());
+            sender.send(SIGN_IN, String.format("\1%s\0%s", login, password).getBytes());
+        }
+    }
+
+    public void signUp(String login, String password, String email) {
+        if (sender != null) {
+            sender.send(SIGN_UP); // TODO
         }
     }
 
     public void invite(String victim) {
         if (sender != null) {
-            sender.send(ATTACK, "\0".concat(victim).getBytes());
+            aggressor = true;
+            sender.send(ATTACK, String.format("\0%s", victim).getBytes());
         }
     }
 
@@ -137,6 +149,14 @@ public class Model {
                 i++;
             }
         }
+    }
+
+    // ========================
+    // === RESPONSE METHODS ===
+    // ========================
+
+    public void setAuthorized() {
+        authorized = true;
     }
 
     public void setNewField(int[] fieldData) {

@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.ScreenAdapter;
@@ -10,11 +11,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import ru.mitrakov.self.rush.model.Model;
+
 /**
  * Created by mitrakov on 01.03.2017
  */
 
 class ScreenLogin extends ScreenAdapter {
+    private final Game game;
+    private final Model model;
     private final Stage stage = new Stage(new FitViewport(800, 480), new SpriteBatch());
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
@@ -31,7 +36,11 @@ class ScreenLogin extends ScreenAdapter {
 
     private CurDialog curDialog = CurDialog.Start;
 
-    ScreenLogin(PsObject psObject) {
+    ScreenLogin(Game game, Model model, PsObject psObject) {
+        assert game != null && model != null;
+        this.game = game;
+        this.model = model;
+
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         stage.addActor(table);
@@ -68,6 +77,10 @@ class ScreenLogin extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+        if (model.authorized) {
+            game.setScreen(new ScreenBattle(model));
+            dispose();
+        }
     }
 
     @Override
@@ -117,7 +130,14 @@ class ScreenLogin extends ScreenAdapter {
                 setStartDialog(shiftForKeyboard);
             }
         });
+
         TextButton btnForth = new TextButton("OK", skin, "default");
+        btnForth.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.signIn(txtLogin.getText(), txtPassword.getText());
+            }
+        });
 
         table.clear();
         table.add(new Label("Name", skin, "default")).align(Align.left);
@@ -144,7 +164,14 @@ class ScreenLogin extends ScreenAdapter {
                 setStartDialog(shiftForKeyboard);
             }
         });
+
         TextButton btnForth = new TextButton("OK", skin, "default");
+        btnForth.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.signUp(txtLogin.getText(), txtPassword.getText(), txtEmail.getText());
+            }
+        });
 
         table.clear();
         table.add(new Label("Name", skin, "default")).align(Align.left);

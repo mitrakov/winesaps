@@ -10,7 +10,7 @@ Mine
   orig: 50, 50
   offset: 0, 0
   index: -1
-NullType
+CellObject
   rotate: false
   xy: 52, 0
   size: 50, 50

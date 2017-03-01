@@ -24,6 +24,9 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int code = data[0];
             switch (code) {
+                case SIGN_IN:
+                    signIn(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case FULL_STATE:
                     fullState(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -45,6 +48,15 @@ class Parser implements Network.IHandler {
                 default:
             }
         } else throw new IllegalArgumentException("Empty data");
+    }
+
+    private void signIn(int data[]) {
+        if (data.length == 1) {
+            int ok = data[0];
+            if (ok == 0)
+                model.setAuthorized();
+            else throw new IllegalArgumentException("Incorrect login/password");
+        } else throw new IllegalArgumentException("Incorrect sign-in format");
     }
 
     private void fullState(int state[]) {
