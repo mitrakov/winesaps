@@ -3,8 +3,12 @@ package ru.mitrakov.self.rush;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.model.Model;
 
@@ -12,33 +16,46 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 01.03.2017
  */
 
-public class ScreenBattle extends ScreenAdapter {
-    private Gui gui;
-    private Controller controller;
-    private SpriteBatch batch = new SpriteBatch();
+class ScreenBattle extends ScreenAdapter {
+    private final Stage stage = new Stage(new FitViewport(800, 480), new SpriteBatch());
+    private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+    private final Table table = new Table();
+    private final Actor gui;
+    private final TextButton btnThing = new TextButton("Thing", skin, "default"); // new ImageButton(...);
+    private final Group abilityButtons = new TextButton("Abilities", skin, "default"); //new Group();
+    private final Label lblScore = new Label("Score: 0-0", skin);
 
-    public ScreenBattle(Model model) {
-        OrthographicCamera camera = new OrthographicCamera(800, 480);
-        camera.setToOrtho(false, 800, 480);
+    ScreenBattle(Model model) {
         gui = new Gui(model);
-        gui.init();
-        controller = new Controller(model, camera);
+        Gdx.input.setInputProcessor(stage);
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        initializeComponents();
+        model.invite("Bobby");
     }
 
     @Override
     public void render(float delta) {
-        // gui, controller, batch must NOT be NULL (assert omitted)
-        controller.checkInput(gui);
         Gdx.gl.glClearColor(.35f, .87f, .91f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        gui.render(batch);
-        batch.end();
+        stage.act();
+        stage.draw();
+        table.debug();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        gui.dispose();
+        stage.dispose(); // batch will also be disposed
+        skin.dispose();
+    }
+
+    private void initializeComponents() {
+        table.add(gui).colspan(3);
+        table.row();
+        table.add(btnThing);
+        table.add(abilityButtons);
+        table.add(lblScore);
+        table.setDebug(true);
     }
 }

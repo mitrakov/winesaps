@@ -53,21 +53,21 @@ class Controller {
 
     private void checkThingButton(Gui gui) {
         // gui, gui.buttonThing must NOT be NULL (assert omitted)
-        if (Gdx.input.justTouched()) {
-            if (gui.buttonThing.contains(touchPos.x, touchPos.y))
-                model.useThing();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) model.useThing();
+//        if (Gdx.input.justTouched()) {
+//            if (gui.buttonThing.contains(touchPos.x, touchPos.y))
+//                model.useThing();
+//        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) model.useThing();
     }
 
     private void checkAbilityButtons(Gui gui) {
         // gui, gui.buttonAbilities must NOT be NULL (assert omitted)
         if (Gdx.input.justTouched()) {
-            for (int i = 0; i < gui.buttonAbilities.size; i++) {
-                Rectangle rectangle = gui.buttonAbilities.get(i); // must NOT be NULL (assert omitted)
-                if (rectangle.contains(touchPos.x, touchPos.y)) {
-                    model.useAbilityByIndex(i);
-                }
-            }
+//            for (int i = 0; i < gui.buttonAbilities.size; i++) {
+//                Rectangle rectangle = gui.buttonAbilities.get(i); // must NOT be NULL (assert omitted)
+//                if (rectangle.contains(touchPos.x, touchPos.y)) {
+//                    model.useAbilityByIndex(i);
+//                }
+//            }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1))
             model.useAbilityByIndex(0);
         else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2))
@@ -93,21 +93,21 @@ class Controller {
     private void checkMove(CellObject actor) {
         if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
             if (Gdx.input.isTouched()) {
-                if (touchPos.y > Gui.TOOLBAR_WIDTH) { // touched above the toolbar
-                    // getting actor's coordinates
-                    int myX = actor.getXy() % Field.WIDTH;
-                    int myY = actor.getXy() / Field.WIDTH;
-
-                    // getting touch coordinates (touchPos MUST be already unprojected!)
-                    int touchX = Gui.convertXFromScreenToModel(touchPos.x);
-                    int touchY = Gui.convertYFromScreenToModel(touchPos.y);
-
-                    // check
-                    if (touchY < myY) moveUp();
-                    else if (touchY > myY) moveDown();
-                    else if (touchX > myX) moveRight();
-                    else if (touchX < myX) moveLeft();
-                }
+//                if (touchPos.y > Gui.TOOLBAR_WIDTH) { // touched above the toolbar
+//                    // getting actor's coordinates
+//                    int myX = actor.getXy() % Field.WIDTH;
+//                    int myY = actor.getXy() / Field.WIDTH;
+//
+//                    // getting touch coordinates (touchPos MUST be already unprojected!)
+//                    int touchX = Gui.convertXFromScreenToModel(touchPos.x);
+//                    int touchY = Gui.convertYFromScreenToModel(touchPos.y);
+//
+//                    // check
+//                    if (touchY < myY) moveUp();
+//                    else if (touchY > myY) moveDown();
+//                    else if (touchX > myX) moveRight();
+//                    else if (touchX < myX) moveLeft();
+//                }
             } else if (Gdx.input.isKeyPressed(Input.Keys.W)) moveUp();
             else if (Gdx.input.isKeyPressed(Input.Keys.S)) moveDown();
             else if (Gdx.input.isKeyPressed(Input.Keys.D)) moveRight();

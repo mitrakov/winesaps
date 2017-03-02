@@ -24,13 +24,12 @@ class ScreenLogin extends ScreenAdapter {
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
 
-    private final TextField txtLogin = new TextField("", skin, "default");
-    private final TextField txtPassword = new TextField("", skin, "default") {{
+    private final TextField txtLogin = new TextField("Tommy", skin, "default");
+    private final TextField txtPassword = new TextField("Tommy", skin, "default") {{
         setPasswordMode(true);
         setPasswordCharacter('*');
     }};
     private final TextField txtEmail = new TextField("", skin, "default");
-
 
     private enum CurDialog {Start, SignIn, SignUp}
 
