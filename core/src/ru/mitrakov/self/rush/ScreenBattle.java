@@ -42,6 +42,11 @@ class ScreenBattle extends ScreenAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
     public void dispose() {
         stage.dispose(); // batch will also be disposed
         skin.dispose();
