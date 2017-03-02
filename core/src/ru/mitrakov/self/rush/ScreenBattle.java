@@ -78,10 +78,12 @@ class ScreenBattle extends ScreenAdapter {
         stage.dispose(); // batch will also be disposed (but what about the internal actors?)
         skin.dispose();
         for (Drawable drawable : things.values()) {
+            assert drawable != null;
             if (drawable instanceof TextureRegionDrawable)
                 ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose();
         }
         for (ImageButton button : abilities.values()) {
+            assert button.getStyle() != null;
             Drawable drawable = button.getStyle().imageUp;
             if (drawable != null && drawable instanceof TextureRegionDrawable)
                 ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose();
