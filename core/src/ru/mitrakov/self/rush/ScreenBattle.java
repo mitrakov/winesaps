@@ -3,10 +3,8 @@ package ru.mitrakov.self.rush;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -41,7 +39,6 @@ class ScreenBattle extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-        table.debug();
     }
 
     @Override
@@ -56,6 +53,5 @@ class ScreenBattle extends ScreenAdapter {
         table.add(btnThing);
         table.add(abilityButtons);
         table.add(lblScore);
-        table.setDebug(true);
     }
 }

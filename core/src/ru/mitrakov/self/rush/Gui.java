@@ -3,9 +3,7 @@ package ru.mitrakov.self.rush;
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -22,6 +20,7 @@ class Gui extends Actor {
     private static final int CELL_SIZ_H = 85;
 
     private final Model model;
+    private final InputController controller;
     private final MyClickListener listener = new MyClickListener();
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("up.pack"));
@@ -29,16 +28,25 @@ class Gui extends Actor {
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
 
     private static float convertXFromModelToScreen(int x) {
-        return (x + 1) * CELL_SIZ_W + 2;  // what is "+2"? I don't know, but otherwise the field is shifted
+        return (x + 1) * CELL_SIZ_W + 3;  // +3 to smooth an inaccuracy
     }
 
     private static float convertYFromModelToScreen(int y) {
-        return (Field.HEIGHT - y) * CELL_SIZ_H - CELL_SIZ_H / 2;
+        return (Field.HEIGHT - y) * CELL_SIZ_H - .5f * CELL_SIZ_H - 1; // -1 to smooth an inaccuracy
+    }
+
+    static int convertXFromScreenToModel(float x) {
+        return (int) (x / CELL_SIZ_W);
+    }
+
+    static int convertYFromScreenToModel(float y) {
+        return (int) (Field.HEIGHT - y / CELL_SIZ_H);
     }
 
     Gui(Model model) {
         assert model != null;
         this.model = model;
+        controller = new InputController(model);
         addListener(listener);
 
         setWidth(Field.WIDTH * CELL_SIZ_W);
@@ -64,7 +72,7 @@ class Gui extends Actor {
     public void draw(Batch batch, float parentAlpha) {
 
         if (listener.getPressedButton() >= 0)
-            System.out.println(listener.x + "; " + listener.y);
+            controller.checkInput(listener.x, listener.y);
 
         if (model.field != null) {
             // draw a field
