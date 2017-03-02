@@ -25,12 +25,11 @@ class InputController {
         CellObject actor = model.curActor;
         if (actor != null) {
             if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
+                // getting coordinates
                 int myX = actor.getXy() % Field.WIDTH;
                 int myY = actor.getXy() / Field.WIDTH;
                 int touchX = Gui.convertXFromScreenToModel(x);
                 int touchY = Gui.convertYFromScreenToModel(y);
-
-                System.out.println(x + "; " + y + "           " + touchX + "; " + touchY);
 
                 // check
                 if (touchY < myY) moveUp();
