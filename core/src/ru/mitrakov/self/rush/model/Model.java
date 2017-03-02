@@ -131,23 +131,19 @@ public class Model {
         }
     }
 
-    public void useAbilityById(int id) {
+    public void useAbility(Ability ability) {
+        assert ability != null;
         if (sender != null) {
-            for (Ability ability : abilities) {
-                if (ability.ordinal() == id && ability.ordinal() > SKILL_OFFSET)
-                    sender.send(USE_FACILITY, (byte) id);
-            }
+            if (ability.ordinal() > SKILL_OFFSET) // only skills may be used
+                sender.send(USE_FACILITY, (byte) ability.ordinal());
         }
     }
 
     public void useAbilityByIndex(int idx) {
-        if (sender != null) {
-            int i = 0;
-            for (Ability ability : abilities) {
-                if (i == idx && ability.ordinal() > SKILL_OFFSET)
-                    sender.send(USE_FACILITY, (byte) ability.ordinal());
-                i++;
-            }
+        int i = 0;
+        for (Ability ability : abilities) {
+            if (i == idx) useAbility(ability);
+            i++;
         }
     }
 
