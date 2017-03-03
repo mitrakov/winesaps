@@ -101,6 +101,20 @@ public class Model {
         }
     }
 
+    public void inviteLatest() {
+        if (sender != null) {
+            aggressor = true;
+            sender.send(ATTACK, (byte)1);
+        }
+    }
+
+    public void inviteRandom() {
+        if (sender != null) {
+            aggressor = true;
+            sender.send(ATTACK, (byte)2);
+        }
+    }
+
     public void moveLeft() {
         if (sender != null) {
             sender.send(MOVE_LEFT);

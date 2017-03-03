@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.model.Model;
@@ -21,8 +20,9 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 class ScreenBattle extends ScreenAdapter {
+    private final RushClient game;
     private final Model model;
-    private final Stage stage = new Stage(new FitViewport(800, 480), new SpriteBatch());
+    private final Stage stage = new Stage(new FitViewport(800, 480));
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
     private final Actor gui;
@@ -32,20 +32,18 @@ class ScreenBattle extends ScreenAdapter {
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
-    ScreenBattle(final Model model) {
-        assert model != null;
+    ScreenBattle(RushClient game, Model model) {
+        assert game != null && model != null;
+        this.game = game;
         this.model = model;
         gui = new Gui(model);
 
-        Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         stage.addActor(table);
 
         loadTextures();
         btnThing = createButtonThing();
         buildTable();
-
-        model.invite("Bobby");
     }
 
     @Override
@@ -74,19 +72,24 @@ class ScreenBattle extends ScreenAdapter {
     }
 
     @Override
+    public void show () {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
     public void dispose() {
-        stage.dispose(); // batch will also be disposed (but what about the internal actors?)
+        stage.dispose(); // what about the internal actors?
         skin.dispose();
         for (Drawable drawable : things.values()) {
             assert drawable != null;
             if (drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose();
+                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
         }
         for (ImageButton button : abilities.values()) {
             assert button.getStyle() != null;
             Drawable drawable = button.getStyle().imageUp;
             if (drawable != null && drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose();
+                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
         }
     }
 
@@ -137,7 +140,7 @@ class ScreenBattle extends ScreenAdapter {
     private void rebuildAbilities() {
         abilityButtons.clear();
         for (Model.Ability ability : model.abilities) {
-            abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding null is OK
+            abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
         }
     }
 }

@@ -1,13 +1,11 @@
 package ru.mitrakov.self.rush;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
@@ -18,13 +16,13 @@ import ru.mitrakov.self.rush.model.Model;
  */
 
 class ScreenLogin extends ScreenAdapter {
-    private final Game game;
+    private final RushClient game;
     private final Model model;
-    private final Stage stage = new Stage(new FitViewport(800, 480), new SpriteBatch());
+    private final Stage stage = new Stage(new FitViewport(800, 480));
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
 
-    private final TextField txtLogin = new TextField("Tommy", skin, "default");
+    private final TextField txtLogin = new TextField("Tommy", skin, "default"); // ....
     private final TextField txtPassword = new TextField("Tommy", skin, "default") {{
         setPasswordMode(true);
         setPasswordCharacter('*');
@@ -35,14 +33,14 @@ class ScreenLogin extends ScreenAdapter {
 
     private CurDialog curDialog = CurDialog.Start;
 
-    ScreenLogin(Game game, Model model, PsObject psObject) {
+    ScreenLogin(RushClient game, Model model, PsObject psObject) {
         assert game != null && model != null;
         this.game = game;
         this.model = model;
 
-        Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         stage.addActor(table);
+
         setStartDialog(false);
 
         // only for Android: handling show/hide OnScreenKeyboard
@@ -76,10 +74,8 @@ class ScreenLogin extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-        if (model.authorized) {
-            game.setScreen(new ScreenBattle(model));
-            dispose();
-        }
+        if (model.authorized)
+            game.setNextScreen();
     }
 
     @Override
@@ -88,8 +84,13 @@ class ScreenLogin extends ScreenAdapter {
     }
 
     @Override
+    public void show () {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
     public void dispose() {
-        stage.dispose(); // batch will also be disposed
+        stage.dispose();
         skin.dispose();
     }
 

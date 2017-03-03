@@ -1,6 +1,6 @@
 package ru.mitrakov.self.rush;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.*;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
@@ -8,6 +8,9 @@ import ru.mitrakov.self.rush.net.Network;
 public class RushClient extends Game {
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
+    private Screen screenLogin;
+    private Screen screenMain;
+    private Screen screenBattle;
 
     public RushClient(PsObject psObject) {
         this.psObject = psObject;
@@ -30,6 +33,27 @@ public class RushClient extends Game {
 
     @Override
     public void create() {
-        setScreen(new ScreenLogin(this, model, psObject));
+        // screens may be created only since here! Do not do it in constructor, because Gdx would not be ready
+        screenLogin = new ScreenLogin(this, model, psObject);
+        screenMain = new ScreenMain(this, model);
+        screenBattle = new ScreenBattle(this, model);
+        setScreen(screenLogin);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        screenLogin.dispose();
+        screenMain.dispose();
+        screenBattle.dispose();
+    }
+
+    void setNextScreen() {
+        if (screen == screenLogin)
+            setScreen(screenMain);
+        else if (screen == screenMain)
+            setScreen(screenBattle);
+        else if (screen == screenBattle)
+            setScreen(screenMain);
     }
 }
