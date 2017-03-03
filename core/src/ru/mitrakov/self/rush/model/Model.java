@@ -167,6 +167,8 @@ public class Model {
 
     public void setAuthorized() {
         authorized = true;
+        if (sender != null)
+            sender.send(USER_INFO);
     }
 
     public void setNewField(int[] fieldData) {

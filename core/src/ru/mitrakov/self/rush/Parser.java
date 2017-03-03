@@ -27,6 +27,9 @@ class Parser implements Network.IHandler {
                 case SIGN_IN:
                     signIn(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case USER_INFO:
+                    userInfo(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case FULL_STATE:
                     fullState(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -57,6 +60,15 @@ class Parser implements Network.IHandler {
                 model.setAuthorized();
             else throw new IllegalArgumentException("Incorrect login/password");
         } else throw new IllegalArgumentException("Incorrect sign-in format");
+    }
+
+    private void userInfo(int data[]) {
+        if (data.length > 0) {
+            int ok = data[0];
+            if (ok == 0)
+                System.out.println(Arrays.toString(data));
+            else throw new IllegalArgumentException("Incorrect user info response");
+        } else throw new IllegalArgumentException("Incorrect user info format");
     }
 
     private void fullState(int state[]) {
