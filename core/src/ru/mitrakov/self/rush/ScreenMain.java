@@ -22,13 +22,17 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
+    private final Table tableRightHeader = new Table();
+    private final Table tableRightContent = new Table();
+
+    private enum CurDisplayMode {Info, Rating, History, Friends}
 
     private final TextField txtEnemyName = new TextField("", skin, "default");
     private final TextButton btnInviteByName = new TextButton("Find opponent", skin, "default") {{
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                buildTables(true);
+                rebuildLeftTable(true);
             }
         });
     }};
@@ -53,7 +57,7 @@ class ScreenMain extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.invite(txtEnemyName.getText());
-                buildTables(false);
+                rebuildLeftTable(false);
             }
         });
     }};
@@ -61,7 +65,39 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                buildTables(false);
+                rebuildLeftTable(false);
+            }
+        });
+    }};
+    private final TextButton btnInfo = new TextButton("Info", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildRightTable(CurDisplayMode.Info);
+            }
+        });
+    }};
+    private final TextButton btnRating = new TextButton("Rating", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildRightTable(CurDisplayMode.Rating);
+            }
+        });
+    }};
+    private final TextButton btnHistory = new TextButton("History", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildRightTable(CurDisplayMode.History);
+            }
+        });
+    }};
+    private final TextButton btnFriends = new TextButton("Friends", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildRightTable(CurDisplayMode.Friends);
             }
         });
     }};
@@ -75,9 +111,8 @@ class ScreenMain extends ScreenAdapter {
         tableMain.setDebug(true);
         stage.addActor(tableMain);
 
-        tableMain.add(tableLeft).spaceRight(20);
-        tableMain.add(tableRight);
-        buildTables(false);
+        initTables();
+        rebuildLeftTable(false);
     }
 
     @Override
@@ -86,7 +121,6 @@ class ScreenMain extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-        tableMain.debug();
 
         if (model.field != null)
             game.setNextScreen();
@@ -108,24 +142,53 @@ class ScreenMain extends ScreenAdapter {
         skin.dispose();
     }
 
-    private void buildTables(boolean showInputName) {
+    private void initTables() {
+        tableMain.add(tableLeft).pad(20);
+        tableMain.add(tableRight).pad(20).expand().fill();
+
+        tableLeft.setDebug(true);
+
+        tableRight.setDebug(true);
+        tableRight.add(tableRightHeader);
+        tableRight.row();
+        tableRight.add(tableRightContent).expandY();
+
+        tableRightHeader.setDebug(true);
+        tableRightHeader.row().width(90).space(20);
+        tableRightHeader.add(btnInfo);
+        tableRightHeader.add(btnRating);
+        tableRightHeader.add(btnHistory);
+        tableRightHeader.add(btnFriends);
+
+        tableRightContent.setDebug(true);
+        tableRightContent.add(new Label("Info", skin));
+    }
+
+    private void rebuildLeftTable(boolean showInputName) {
         tableLeft.clear();
 
+        // ...
         if (showInputName) {
-            tableLeft.add(txtEnemyName).colspan(2);
-            tableLeft.row();
-            tableLeft.add(btnInviteByNameOk);
-            tableLeft.add(btnInviteByNameCancel);
-            tableLeft.row();
-            tableLeft.add(btnInviteRandom).colspan(2);
-            tableLeft.row();
-            tableLeft.add(btnInviteLatest).colspan(2);
+            tableLeft.add(txtEnemyName).colspan(2).width(140).height(50);
+            tableLeft.row().space(20);
+            tableLeft.add(btnInviteByNameOk).width(60).height(40);
+            tableLeft.add(btnInviteByNameCancel).width(80).height(40);
+            tableLeft.row().space(20);
+            tableLeft.add(btnInviteRandom).colspan(2).width(160).height(80);
+            tableLeft.row().space(20);
+            tableLeft.add(btnInviteLatest).colspan(2).width(160).height(80);
         } else {
-            tableLeft.add(btnInviteByName);
-            tableLeft.row();
-            tableLeft.add(btnInviteRandom);
-            tableLeft.row();
-            tableLeft.add(btnInviteLatest);
+            tableLeft.add(btnInviteByName).width(160).height(80);
+            tableLeft.row().space(20);
+            tableLeft.add(btnInviteRandom).width(160).height(80);
+            tableLeft.row().space(20);
+            tableLeft.add(btnInviteLatest).width(160).height(80);
         }
+    }
+
+    private void rebuildRightTable(CurDisplayMode mode) {
+        tableRightContent.clear();
+
+        tableRightContent.add(new Label(mode.name(), skin, "default"));
     }
 }
