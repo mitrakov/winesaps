@@ -2,6 +2,7 @@ package ru.mitrakov.self.rush.model;
 
 import java.util.*;
 import java.util.concurrent.*;
+
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**
@@ -63,9 +64,9 @@ public class Model {
     public volatile int crystals;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
-    public Field field;
-    public CellObject curActor;
-    public CellObject curThing;
+    public volatile Field field;
+    public volatile CellObject curActor;
+    public volatile CellObject curThing;
     public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
@@ -187,16 +188,16 @@ public class Model {
         // parse crystals
         if (i + 3 < data.length)
             crystals = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // what if > 2*10^9?
-        i++;
+        i += 4;
 
         // parse abilities
         Ability[] array = Ability.values();
         abilityExpireTime.clear();
         int abilitiesCnt = data[i++];
-        for (int j = 0; j < abilitiesCnt; j++) {
-            if (i + j + 2 < data.length) {
-                int id = data[i + j];
-                int minutes = data[i + j + 1] * 256 + data[i + j + 2];
+        for (int j = 0; j < abilitiesCnt; j++, i += 3) {
+            if (i + 2 < data.length) {
+                int id = data[i];
+                int minutes = data[i + 1] * 256 + data[i + 2];
                 if (0 <= id && id < array.length)
                     abilityExpireTime.put(array[id], minutes);
             }

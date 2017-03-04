@@ -1,13 +1,15 @@
 package ru.mitrakov.self.rush;
 
-import java.util.Locale;
+import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
@@ -27,6 +29,8 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRight = new Table();
     private final Table tableRightHeader = new Table();
     private final Table tableRightContent = new Table();
+    private final Table tableRightContentAbilities = new Table();
+    private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
@@ -120,6 +124,7 @@ class ScreenMain extends ScreenAdapter {
         tableMain.setDebug(true);
         stage.addActor(tableMain);
 
+        loadTextures();
         initTables();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
@@ -134,6 +139,7 @@ class ScreenMain extends ScreenAdapter {
 
         lblName.setText(model.name);
         lblCrystalsData.setText(String.format(Locale.getDefault(), "%d", model.crystals));
+        updateAbilities();
 
         if (model.field != null)
             game.setNextScreen();
@@ -153,6 +159,31 @@ class ScreenMain extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        for (ImageButton button : abilities.values()) {
+            assert button.getStyle() != null;
+            Drawable drawable = button.getStyle().imageUp;
+            if (drawable != null && drawable instanceof TextureRegionDrawable)
+                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
+        }
+    }
+
+    private void loadTextures() {
+        TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
+
+        for (final Model.Ability ability : Model.Ability.values()) {
+            TextureRegion region = atlasAbility.findRegion(ability.name());
+            if (region != null) {
+                ImageButton imageButton = new ImageButton(new TextureRegionDrawable(region));
+                imageButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        ;
+                    }
+                });
+                abilities.put(ability, imageButton);
+            }
+        }
     }
 
     private void initTables() {
@@ -210,14 +241,26 @@ class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(lblCrystalsData).colspan(2);
                 tableRightContent.row().space(40);
                 tableRightContent.add(lblAbilities);
-                tableRightContent.add(new Label("...", skin, "default")).colspan(2);
+                tableRightContent.add(tableRightContentAbilities).colspan(2);
                 tableRightContent.row().spaceTop(140);
-                tableRightContent.add(new Label("", skin, "default"));
+                tableRightContent.add((Actor) null);
                 tableRightContent.add(lblMoreCrystalsPrefix).right();
                 tableRightContent.add(lblMoreCrystals).left();
                 break;
             default:
                 tableRightContent.add(new Label(mode.name(), skin, "default"));
+        }
+    }
+
+    private void updateAbilities() {
+        if (model.abilityExpireTime.size() != tableRightContentAbilities.getColumns()) {
+            tableRightContentAbilities.clear();
+            for (Map.Entry<Model.Ability, Integer> entry : model.abilityExpireTime.entrySet()) {
+                ImageButton btn = abilities.get(entry.getKey());
+                if (btn != null) {
+                    tableRightContentAbilities.add(btn).space(10);
+                }
+            }
         }
     }
 }
