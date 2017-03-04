@@ -66,7 +66,7 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int ok = data[0];
             if (ok == 0)
-                System.out.println(Arrays.toString(data));
+                model.setUserInfo(Arrays.copyOfRange(data, 1, data.length));
             else throw new IllegalArgumentException("Incorrect user info response");
         } else throw new IllegalArgumentException("Incorrect user info format");
     }

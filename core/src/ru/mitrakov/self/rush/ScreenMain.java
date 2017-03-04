@@ -1,8 +1,11 @@
 package ru.mitrakov.self.rush;
 
+import java.util.Locale;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -101,6 +104,12 @@ class ScreenMain extends ScreenAdapter {
             }
         });
     }};
+    private final Label lblName = new Label("aaa", skin, "default");
+    private final Label lblCrystalsHeader = new Label("Crystals:", skin, "default");
+    private final Label lblCrystalsData = new Label("", skin, "default");
+    private final Label lblAbilities = new Label("Abilities:", skin, "default");
+    private final Label lblMoreCrystalsPrefix = new Label("Get ", skin, "default");
+    private final Label lblMoreCrystals = new Label("more crystals", skin, "default-font", new Color(.4f, .4f, .9f, 1));
 
     ScreenMain(RushClient game, Model model) {
         assert game != null && model != null;
@@ -113,6 +122,7 @@ class ScreenMain extends ScreenAdapter {
 
         initTables();
         rebuildLeftTable(false);
+        rebuildRightTable(CurDisplayMode.Info);
     }
 
     @Override
@@ -121,6 +131,9 @@ class ScreenMain extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
+        lblName.setText(model.name);
+        lblCrystalsData.setText(String.format(Locale.getDefault(), "%d", model.crystals));
 
         if (model.field != null)
             game.setNextScreen();
@@ -132,7 +145,7 @@ class ScreenMain extends ScreenAdapter {
     }
 
     @Override
-    public void show () {
+    public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -161,7 +174,6 @@ class ScreenMain extends ScreenAdapter {
         tableRightHeader.add(btnFriends);
 
         tableRightContent.setDebug(true);
-        tableRightContent.add(new Label("Info", skin));
     }
 
     private void rebuildLeftTable(boolean showInputName) {
@@ -189,6 +201,23 @@ class ScreenMain extends ScreenAdapter {
     private void rebuildRightTable(CurDisplayMode mode) {
         tableRightContent.clear();
 
-        tableRightContent.add(new Label(mode.name(), skin, "default"));
+        switch (mode) {
+            case Info:
+                tableRightContent.row().space(40);
+                tableRightContent.add(lblName).colspan(3);
+                tableRightContent.row().space(40);
+                tableRightContent.add(lblCrystalsHeader);
+                tableRightContent.add(lblCrystalsData).colspan(2);
+                tableRightContent.row().space(40);
+                tableRightContent.add(lblAbilities);
+                tableRightContent.add(new Label("...", skin, "default")).colspan(2);
+                tableRightContent.row().spaceTop(140);
+                tableRightContent.add(new Label("", skin, "default"));
+                tableRightContent.add(lblMoreCrystalsPrefix).right();
+                tableRightContent.add(lblMoreCrystals).left();
+                break;
+            default:
+                tableRightContent.add(new Label(mode.name(), skin, "default"));
+        }
     }
 }

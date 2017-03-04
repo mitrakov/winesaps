@@ -1,8 +1,7 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.util.*;
+import java.util.concurrent.*;
 import ru.mitrakov.self.rush.model.object.CellObject;
 
 /**
@@ -59,13 +58,16 @@ public class Model {
     private static final int SKILL_OFFSET = 0x20;
 
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
-    public transient boolean authorized = false; // @mitrakov: must be transient due to multithreading access
-    public int score1 = 0;
-    public int score2 = 0;
+    public volatile String name;
+    public volatile boolean authorized = false; // @mitrakov: must be volatile due to multithreading access
+    public volatile int crystals;
+    public volatile int score1 = 0;
+    public volatile int score2 = 0;
     public Field field;
     public CellObject curActor;
     public CellObject curThing;
     public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
+    public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
     private ISender sender;
     private boolean aggressor = true;
@@ -104,14 +106,14 @@ public class Model {
     public void inviteLatest() {
         if (sender != null) {
             aggressor = true;
-            sender.send(ATTACK, (byte)1);
+            sender.send(ATTACK, (byte) 1);
         }
     }
 
     public void inviteRandom() {
         if (sender != null) {
             aggressor = true;
-            sender.send(ATTACK, (byte)2);
+            sender.send(ATTACK, (byte) 2);
         }
     }
 
@@ -171,6 +173,36 @@ public class Model {
             sender.send(USER_INFO);
     }
 
+    public void setUserInfo(int[] data) {
+        byte bytes[] = new byte[data.length];
+        int i = 0;
+
+        // parse name
+        for (; i < data.length && data[i] != 0; i++) {
+            bytes[i] = (byte) data[i];
+        }
+        name = new String(bytes);
+        i++;
+
+        // parse crystals
+        if (i + 3 < data.length)
+            crystals = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // what if > 2*10^9?
+        i++;
+
+        // parse abilities
+        Ability[] array = Ability.values();
+        abilityExpireTime.clear();
+        int abilitiesCnt = data[i++];
+        for (int j = 0; j < abilitiesCnt; j++) {
+            if (i + j + 2 < data.length) {
+                int id = data[i + j];
+                int minutes = data[i + j + 1] * 256 + data[i + j + 2];
+                if (0 <= id && id < array.length)
+                    abilityExpireTime.put(array[id], minutes);
+            }
+        }
+    }
+
     public void setNewField(int[] fieldData) {
         field = new Field(fieldData);
     }
@@ -190,14 +222,6 @@ public class Model {
     public void setScore(int score1, int score2) {
         this.score1 = score1;
         this.score2 = score2;
-    }
-
-    public void finishedRound(boolean me) {
-
-    }
-
-    public void finishedGame(boolean me, int score1, int score2) {
-
     }
 
     public void setThing(int thingId) {
