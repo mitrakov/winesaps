@@ -23,8 +23,8 @@ public class Model {
     public static final byte GIVE_UP = 0x0A;
     public static final byte READY = 0x0B;
     public static final byte CHAT_TO_ENEMY = 0x0C;
-    public static final byte BUY_PRODUCT = 0x0D;
-    public static final byte RESERVED1 = 0x0E;
+    public static final byte RANGE_OF_PRODUCTS = 0x0D;
+    public static final byte BUY_PRODUCT = 0x0E;
     public static final byte RESERVED2 = 0x0F;
     public static final byte FULL_STATE = 0x10;
     public static final byte STATE_CHANGED = 0x11;
@@ -170,8 +170,10 @@ public class Model {
 
     public void setAuthorized() {
         authorized = true;
-        if (sender != null)
+        if (sender != null) {
             sender.send(USER_INFO);
+            sender.send(RANGE_OF_PRODUCTS);
+        }
     }
 
     public void setUserInfo(int[] data) {
@@ -202,6 +204,10 @@ public class Model {
                     abilityExpireTime.put(array[id], minutes);
             }
         }
+    }
+
+    public void setRangeOfProducts(int[] data) {
+        System.out.println("Products:" + Arrays.toString(data));
     }
 
     public void setNewField(int[] fieldData) {

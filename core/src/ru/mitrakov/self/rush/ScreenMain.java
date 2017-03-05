@@ -108,6 +108,14 @@ class ScreenMain extends ScreenAdapter {
             }
         });
     }};
+    private final TextButton btnBuyAbilities = new TextButton("Buy abilities", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                showBuyAbilitiesDialog();
+            }
+        });
+    }};
     private final Label lblName = new Label("aaa", skin, "default");
     private final Label lblCrystalsHeader = new Label("Crystals:", skin, "default");
     private final Label lblCrystalsData = new Label("", skin, "default");
@@ -195,7 +203,7 @@ class ScreenMain extends ScreenAdapter {
         tableRight.setDebug(true);
         tableRight.add(tableRightHeader);
         tableRight.row();
-        tableRight.add(tableRightContent).expandY();
+        tableRight.add(tableRightContent).expand().fill();
 
         tableRightHeader.setDebug(true);
         tableRightHeader.row().width(90).space(20);
@@ -234,15 +242,17 @@ class ScreenMain extends ScreenAdapter {
 
         switch (mode) {
             case Info:
-                tableRightContent.row().space(40);
-                tableRightContent.add(lblName).colspan(3);
-                tableRightContent.row().space(40);
+                tableRightContent.add(lblName).colspan(3).expand();
+                tableRightContent.row().expand();
                 tableRightContent.add(lblCrystalsHeader);
                 tableRightContent.add(lblCrystalsData).colspan(2);
-                tableRightContent.row().space(40);
+                tableRightContent.row().expand();
                 tableRightContent.add(lblAbilities);
                 tableRightContent.add(tableRightContentAbilities).colspan(2);
-                tableRightContent.row().spaceTop(140);
+                tableRightContent.row().expand();
+                tableRightContent.add((Actor) null);
+                tableRightContent.add(btnBuyAbilities).colspan(2);
+                tableRightContent.row().expand();
                 tableRightContent.add((Actor) null);
                 tableRightContent.add(lblMoreCrystalsPrefix).right();
                 tableRightContent.add(lblMoreCrystals).left();
@@ -262,5 +272,22 @@ class ScreenMain extends ScreenAdapter {
                 }
             }
         }
+    }
+
+    private void showBuyAbilitiesDialog() {
+        Dialog dialog = new Dialog("Buy abilities", skin, "dialog");
+        dialog.button("Close");
+        dialog.show(stage);
+
+//        Dialog dialog = new Dialog("Warning", skin, "dialog") {
+//            public void result(Object obj) {
+//                System.out.println("result "+obj);
+//            }
+//        };
+//        dialog.text("Are you sure you want to quit?");
+//        dialog.button("Yes", true); //sends "true" as the result
+//        dialog.button("No", false);  //sends "false" as the result
+//        dialog.key(Input.Keys.ENTER, true); //sends "true" when the ENTER key is pressed
+//        dialog.show(stage);
     }
 }
