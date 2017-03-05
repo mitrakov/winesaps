@@ -28,6 +28,7 @@ class Parser implements Network.IHandler {
                     signIn(Arrays.copyOfRange(data, 1, data.length));
                     break;
                 case USER_INFO:
+                case BUY_PRODUCT:
                     userInfo(Arrays.copyOfRange(data, 1, data.length));
                     break;
                 case RANGE_OF_PRODUCTS:

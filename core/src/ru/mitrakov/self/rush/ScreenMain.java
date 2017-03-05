@@ -30,6 +30,7 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRightHeader = new Table();
     private final Table tableRightContent = new Table();
     private final Table tableRightContentAbilities = new Table();
+    private final Dialog buyAbilitiesDialog;
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
@@ -112,7 +113,7 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showBuyAbilitiesDialog();
+                buyAbilitiesDialog.show(stage);
             }
         });
     }};
@@ -127,6 +128,8 @@ class ScreenMain extends ScreenAdapter {
         assert game != null && model != null;
         this.game = game;
         this.model = model;
+
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
 
         tableMain.setFillParent(true);
         tableMain.setDebug(true);
@@ -146,7 +149,7 @@ class ScreenMain extends ScreenAdapter {
         stage.draw();
 
         lblName.setText(model.name);
-        lblCrystalsData.setText(String.format(Locale.getDefault(), "%d", model.crystals));
+        lblCrystalsData.setText(String.valueOf(model.crystals));
         updateAbilities();
 
         if (model.field != null)
@@ -272,22 +275,5 @@ class ScreenMain extends ScreenAdapter {
                 }
             }
         }
-    }
-
-    private void showBuyAbilitiesDialog() {
-        Dialog dialog = new Dialog("Buy abilities", skin, "dialog");
-        dialog.button("Close");
-        dialog.show(stage);
-
-//        Dialog dialog = new Dialog("Warning", skin, "dialog") {
-//            public void result(Object obj) {
-//                System.out.println("result "+obj);
-//            }
-//        };
-//        dialog.text("Are you sure you want to quit?");
-//        dialog.button("Yes", true); //sends "true" as the result
-//        dialog.button("No", false);  //sends "false" as the result
-//        dialog.key(Input.Keys.ENTER, true); //sends "true" when the ENTER key is pressed
-//        dialog.show(stage);
     }
 }

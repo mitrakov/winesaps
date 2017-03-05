@@ -54,6 +54,23 @@ public class Model {
         a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, Sapper
     }
 
+    public class Product {
+        public Ability ability;
+        public int days;
+        public int crystals;
+
+        public Product(Ability ability, int days, int crystals) {
+            this.ability = ability;
+            this.days = days;
+            this.crystals = crystals;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(Locale.getDefault(), "%d day(s) (%d)", days, crystals);
+        }
+    }
+
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
     private static final int SKILL_OFFSET = 0x20;
@@ -61,7 +78,7 @@ public class Model {
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
     public volatile String name;
     public volatile boolean authorized = false; // @mitrakov: must be volatile due to multithreading access
-    public volatile int crystals;
+    public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
     public volatile Field field;
@@ -69,16 +86,25 @@ public class Model {
     public volatile CellObject curThing;
     public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
+    public final Queue<Product> products = new ConcurrentLinkedQueue<Product>();
 
     private ISender sender;
     private boolean aggressor = true;
-
 
     public Model() {
     }
 
     public void setSender(ISender sender) {
         this.sender = sender;
+    }
+
+    public Collection<Product> getProductsByAbility(Ability ability) {
+        List<Product> res = new LinkedList<Product>();
+        for (Product product : products) {  // pity it's not Java 1.8
+            if (product.ability == ability)
+                res.add(product);
+        }
+        return res;
     }
 
     // =======================
@@ -156,11 +182,10 @@ public class Model {
         }
     }
 
-    public void useAbilityByIndex(int idx) {
-        int i = 0;
-        for (Ability ability : abilities) {
-            if (i == idx) useAbility(ability);
-            i++;
+    public void buyProduct(Product product) {
+        assert product != null;
+        if (sender != null) {
+            sender.send(BUY_PRODUCT, new byte[] {(byte)product.ability.ordinal(), (byte) product.days});
         }
     }
 
@@ -176,7 +201,7 @@ public class Model {
         }
     }
 
-    public void setUserInfo(int[] data) {
+    public synchronized void setUserInfo(int[] data) {
         byte bytes[] = new byte[data.length];
         int i = 0;
 
@@ -206,8 +231,16 @@ public class Model {
         }
     }
 
-    public void setRangeOfProducts(int[] data) {
-        System.out.println("Products:" + Arrays.toString(data));
+    public synchronized void setRangeOfProducts(final int[] data) {
+        Ability[] abs = Ability.values();
+        products.clear();
+        for (int i = 0; i + 2 < data.length; i += 3) {
+            int id = data[i];
+            int days = data[i + 1];
+            int cost = data[i + 2];
+            if (0 <= id && id < abs.length)
+                products.add(new Product(abs[id], days, cost));
+        }
     }
 
     public void setNewField(int[] fieldData) {
@@ -240,7 +273,7 @@ public class Model {
         });
     }
 
-    public void setAbilities(int[] ids) {
+    public synchronized void setAbilities(int[] ids) {
         abilities.clear();
         Ability[] array = Ability.values();
         for (int id : ids) {
