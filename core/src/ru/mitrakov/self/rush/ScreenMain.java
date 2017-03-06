@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush;
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Color;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.RatingItem;
 
 /**
  * Created by mitrakov on 03.03.2017
@@ -30,8 +32,11 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRightHeader = new Table();
     private final Table tableRightContent = new Table();
     private final Table tableRightContentAbilities = new Table();
+    private final Table tableRightContentRatingBtns = new Table();
+    private final Table tableRightContentRating = new Table();
     private final Dialog buyAbilitiesDialog;
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
+    private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
@@ -117,12 +122,31 @@ class ScreenMain extends ScreenAdapter {
             }
         });
     }};
+    private final TextButton btnGeneralRating = new TextButton("General Rating", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.getRating(Model.RatingType.General);
+            }
+        });
+    }};
+    private final TextButton btnWeeklyRating = new TextButton("Weekly Rating", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.getRating(Model.RatingType.Weekly);
+            }
+        });
+    }};
     private final Label lblName = new Label("aaa", skin, "default");
     private final Label lblCrystalsHeader = new Label("Crystals:", skin, "default");
     private final Label lblCrystalsData = new Label("", skin, "default");
     private final Label lblAbilities = new Label("Abilities:", skin, "default");
     private final Label lblMoreCrystalsPrefix = new Label("Get ", skin, "default");
     private final Label lblMoreCrystals = new Label("more crystals", skin, "default-font", new Color(.4f, .4f, .9f, 1));
+
+    private long generalRatingTime = 0;
+    private long weeklyRatingTime = 0;
 
     ScreenMain(RushClient game, Model model) {
         assert game != null && model != null;
@@ -150,7 +174,9 @@ class ScreenMain extends ScreenAdapter {
 
         lblName.setText(model.name);
         lblCrystalsData.setText(String.valueOf(model.crystals));
+
         updateAbilities();
+        updateRatings();
 
         if (model.field != null)
             game.setNextScreen();
@@ -201,9 +227,6 @@ class ScreenMain extends ScreenAdapter {
         tableMain.add(tableLeft).pad(20);
         tableMain.add(tableRight).pad(20).expand().fill();
 
-        tableLeft.setDebug(true);
-
-        tableRight.setDebug(true);
         tableRight.add(tableRightHeader);
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
@@ -216,6 +239,28 @@ class ScreenMain extends ScreenAdapter {
         tableRightHeader.add(btnFriends);
 
         tableRightContent.setDebug(true);
+
+        tableRightContentRatingBtns.add(btnGeneralRating).expandX();
+        tableRightContentRatingBtns.add(btnWeeklyRating).expandX();
+
+        tableRightContentRating.add(new Label("Name", skin, "default"));
+        tableRightContentRating.add(new Label("Wins", skin, "default"));
+        tableRightContentRating.add(new Label("Losses", skin, "default"));
+        tableRightContentRating.add(new Label("Score diff", skin, "default"));
+        for (int i = 0; i < Model.RATINGS_COUNT; i++) {
+            tableRightContentRating.row();
+            for (int j = 0; j < 4; j++) { // 4 = columns count
+                Label label = new Label("", skin, "default");
+                tableRightContentRating.add(label);
+                ratingLabels.add(label);
+            }
+        }
+        tableRightContentRating.add(new Label("...", skin, "default")).colspan(4);
+        for (int j = 0; j < 4; j++) { // 4 = columns count
+            Label label = new Label("", skin, "default");
+            tableRightContentRating.add(label);
+            ratingLabels.add(label);
+        }
     }
 
     private void rebuildLeftTable(boolean showInputName) {
@@ -260,6 +305,11 @@ class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(lblMoreCrystalsPrefix).right();
                 tableRightContent.add(lblMoreCrystals).left();
                 break;
+            case Rating:
+                tableRightContent.add(tableRightContentRatingBtns);
+                tableRightContent.row();
+                tableRightContent.add(tableRightContentRating).expand();
+                break;
             default:
                 tableRightContent.add(new Label(mode.name(), skin, "default"));
         }
@@ -273,6 +323,33 @@ class ScreenMain extends ScreenAdapter {
                 if (btn != null) {
                     tableRightContentAbilities.add(btn).space(10);
                 }
+            }
+        }
+    }
+
+    private void updateRatings() {
+        if (generalRatingTime != model.generalRatingTime) {
+            generalRatingTime = model.generalRatingTime;
+            updateRating(Model.RatingType.General);
+        } else if (weeklyRatingTime != model.weeklyRatingTime) {
+            weeklyRatingTime= model.weeklyRatingTime;
+            updateRating(Model.RatingType.Weekly);
+        }
+    }
+
+    private void updateRating(Model.RatingType type) {
+        for (Label label : ratingLabels) {
+            label.setText("");
+        }
+
+        Collection<RatingItem> items = type == Model.RatingType.General ? model.generalRating : model.weeklyRating;
+        int i = 0;
+        for (RatingItem item : items) {
+            if (i + 3 < ratingLabels.size) {
+                ratingLabels.get(i++).setText(item.name);
+                ratingLabels.get(i++).setText(String.valueOf(item.victories));
+                ratingLabels.get(i++).setText(String.valueOf(item.defeats));
+                ratingLabels.get(i++).setText(String.valueOf(item.score_diff));
             }
         }
     }

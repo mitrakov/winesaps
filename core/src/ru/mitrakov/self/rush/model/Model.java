@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.model;
 
+import com.badlogic.gdx.utils.TimeUtils;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -41,6 +43,8 @@ public class Model {
     public static final byte ABILITY_LIST = 0x1C;
     public static final byte OBJECT_APPENDED = 0x1D;
 
+    public static final int RATINGS_COUNT = 10;
+
     public interface ISender {
         void send(int cmd);
 
@@ -66,6 +70,8 @@ public class Model {
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
+    public volatile long generalRatingTime = 0;
+    public volatile long weeklyRatingTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -128,6 +134,13 @@ public class Model {
         if (sender != null) {
             aggressor = true;
             sender.send(ATTACK, (byte) 2);
+        }
+    }
+
+    public void getRating(RatingType type) {
+        assert type != null;
+        if (sender != null) {
+            sender.send(RATING, (byte)type.ordinal());
         }
     }
 
@@ -241,19 +254,19 @@ public class Model {
         while (i < data.length) {
             // name
             StringBuilder name = new StringBuilder();
-            int victories = 0, defeats = 0, score_diff = 0;
+            int wins = 0, losses = 0, score_diff = 0;
             for (; data[i] != 0 && i < data.length; i++) {
                 name.append((char) data[i]);
             }
             i++;
-            // victories
+            // wins
             if (i + 3 < data.length) {
-                victories = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+                wins = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
                 i += 4;
             }
-            // defeats
+            // losses
             if (i + 3 < data.length) {
-                defeats = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+                losses = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
                 i += 4;
             }
             // score_diff
@@ -261,8 +274,14 @@ public class Model {
                 score_diff = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
                 i += 4;
             }
-            rating.add(new RatingItem(name.toString(), victories, defeats, score_diff));
+            rating.add(new RatingItem(name.toString(), wins, losses, score_diff));
         }
+
+        // update current rating time to make the 'subscribers' update their states
+        if (type == RatingType.General)
+            generalRatingTime = TimeUtils.millis();
+        else if (type == RatingType.Weekly)
+            weeklyRatingTime = TimeUtils.millis();
     }
 
     public void setNewField(int[] fieldData) {
