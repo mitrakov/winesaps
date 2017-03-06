@@ -23,6 +23,7 @@ public class Field {
     private int objectNumber = 0;
 
     Field(int[] fieldData) {
+        assert fieldData != null;
         if (fieldData.length != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
 
         NextNumber nextNumber = new NextNumber() {

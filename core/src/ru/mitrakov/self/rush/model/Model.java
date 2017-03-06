@@ -25,7 +25,7 @@ public class Model {
     public static final byte CHAT_TO_ENEMY = 0x0C;
     public static final byte RANGE_OF_PRODUCTS = 0x0D;
     public static final byte BUY_PRODUCT = 0x0E;
-    public static final byte RESERVED2 = 0x0F;
+    public static final byte RATING = 0x0F;
     public static final byte FULL_STATE = 0x10;
     public static final byte STATE_CHANGED = 0x11;
     public static final byte SCORE_CHANGED = 0x12;
@@ -54,22 +54,7 @@ public class Model {
         a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, Sapper
     }
 
-    public class Product {
-        public Ability ability;
-        public int days;
-        public int crystals;
-
-        public Product(Ability ability, int days, int crystals) {
-            this.ability = ability;
-            this.days = days;
-            this.crystals = crystals;
-        }
-
-        @Override
-        public String toString() {
-            return String.format(Locale.getDefault(), "%d day(s) (%d)", days, crystals);
-        }
-    }
+    public enum RatingType {General, Weekly}
 
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
@@ -87,6 +72,8 @@ public class Model {
     public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
     public final Queue<Product> products = new ConcurrentLinkedQueue<Product>();
+    public final Queue<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
+    public final Queue<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
 
     private ISender sender;
     private boolean aggressor = true;
@@ -185,7 +172,7 @@ public class Model {
     public void buyProduct(Product product) {
         assert product != null;
         if (sender != null) {
-            sender.send(BUY_PRODUCT, new byte[] {(byte)product.ability.ordinal(), (byte) product.days});
+            sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
         }
     }
 
@@ -202,6 +189,7 @@ public class Model {
     }
 
     public synchronized void setUserInfo(int[] data) {
+        assert data != null;
         byte bytes[] = new byte[data.length];
         int i = 0;
 
@@ -232,6 +220,7 @@ public class Model {
     }
 
     public synchronized void setRangeOfProducts(final int[] data) {
+        assert data != null;
         Ability[] abs = Ability.values();
         products.clear();
         for (int i = 0; i + 2 < data.length; i += 3) {
@@ -240,6 +229,39 @@ public class Model {
             int cost = data[i + 2];
             if (0 <= id && id < abs.length)
                 products.add(new Product(abs[id], days, cost));
+        }
+    }
+
+    public synchronized void setRating(RatingType type, int[] data) {
+        assert type != null && data != null;
+        Queue<RatingItem> rating = type == RatingType.General ? generalRating : weeklyRating;
+        rating.clear();
+
+        int i = 0;
+        while (i < data.length) {
+            // name
+            StringBuilder name = new StringBuilder();
+            int victories = 0, defeats = 0, score_diff = 0;
+            for (; data[i] != 0 && i < data.length; i++) {
+                name.append((char) data[i]);
+            }
+            i++;
+            // victories
+            if (i + 3 < data.length) {
+                victories = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+                i += 4;
+            }
+            // defeats
+            if (i + 3 < data.length) {
+                defeats = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+                i += 4;
+            }
+            // score_diff
+            if (i + 3 < data.length) {
+                score_diff = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+                i += 4;
+            }
+            rating.add(new RatingItem(name.toString(), victories, defeats, score_diff));
         }
     }
 
@@ -274,6 +296,7 @@ public class Model {
     }
 
     public synchronized void setAbilities(int[] ids) {
+        assert ids != null;
         abilities.clear();
         Ability[] array = Ability.values();
         for (int id : ids) {

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 
 /**
  * Created by mitrakov on 05.03.2017
@@ -19,14 +19,14 @@ class DialogBuyAbilities extends Dialog {
     private final Label lblPicture;
     private final Label lblCrystals;
     private final Label lblCurAbility;
-    private final List<Model.Product> productsList;
+    private final List<Product> productsList;
 
     DialogBuyAbilities(final Model model, Skin skin, String windowStyleName) {
         super("Buy abilities", skin, windowStyleName);
         assert model != null;
         this.model = model;
 
-        productsList = new List<Model.Product>(skin, "default");
+        productsList = new List<Product>(skin, "default");
         lblCrystals = new Label("", skin, "default");
         lblPicture = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
@@ -93,8 +93,7 @@ class DialogBuyAbilities extends Dialog {
         lblPicture.setText("picture " + ability);
         lblCurAbility.setText(ability.name());
 
-        Array<Model.Product> items =
-                new Array<Model.Product>(model.getProductsByAbility(ability).toArray(new Model.Product[0]));
+        Array<Product> items = new Array<Product>(model.getProductsByAbility(ability).toArray(new Product[0]));
         productsList.setItems(items);
     }
 }

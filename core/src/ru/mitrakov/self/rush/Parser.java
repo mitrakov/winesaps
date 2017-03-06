@@ -34,6 +34,9 @@ class Parser implements Network.IHandler {
                 case RANGE_OF_PRODUCTS:
                     rangeOfProducts(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case RATING:
+                    rating(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case FULL_STATE:
                     fullState(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -79,6 +82,17 @@ class Parser implements Network.IHandler {
         if (data.length % 3 == 0) {
             model.setRangeOfProducts(data);
         } else throw new IllegalArgumentException("Incorrect range-of-products format");
+    }
+
+    private void rating(int[] data) {
+        if (data.length > 1) {
+            int error = data[0];
+            int type = data[1];
+            RatingType[] types = RatingType.values();
+            if (error == 0 && (0 <= type && type < types.length)) {
+                model.setRating(types[type], Arrays.copyOfRange(data, 2, data.length));
+            }
+        } else throw new IllegalArgumentException("Incorrect rating format");
     }
 
     private void fullState(int[] state) {
