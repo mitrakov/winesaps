@@ -25,6 +25,7 @@ public class RushClient extends Game {
             Network network = new Network(new Parser(model), errorHandler);
             network.start();
             model.setSender(new Sender(network, errorHandler));
+            model.setFileReader(new FileReader());
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -33,7 +34,8 @@ public class RushClient extends Game {
 
     @Override
     public void create() {
-        // screens may be created only since here! Do not do it in constructor, because Gdx would not be ready
+        // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
+        model.init();
         screenLogin = new ScreenLogin(this, model, psObject);
         screenMain = new ScreenMain(this, model);
         screenBattle = new ScreenBattle(this, model);

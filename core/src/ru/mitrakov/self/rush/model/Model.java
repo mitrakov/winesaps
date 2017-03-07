@@ -1,9 +1,8 @@
 package ru.mitrakov.self.rush.model;
 
-import com.badlogic.gdx.utils.TimeUtils;
-
 import java.util.*;
 import java.util.concurrent.*;
+import java.text.DateFormat;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
 
@@ -53,6 +52,12 @@ public class Model {
         void send(int cmd, byte[] data);
     }
 
+    public interface IFileReader {
+        void write(String filename, String s);
+
+        String read(String filename);
+    }
+
     public enum Ability {
         None, Snorkel, Shoes, SouthWester, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16,
         a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, Sapper
@@ -63,25 +68,31 @@ public class Model {
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
     private static final int SKILL_OFFSET = 0x20;
+    private static final int HISTORY_MAX = 50;
 
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
-    public volatile String name;
+    public volatile String name = "";
+    public volatile String enemy = "";
     public volatile boolean authorized = false; // @mitrakov: must be volatile due to multithreading access
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
+    public volatile int totalScore1 = 0;
+    public volatile int totalScore2 = 0;
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
-    public final Queue<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
+    public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
+    public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
+    public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
+    public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
+    public final Collection<String> history = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
-    public final Queue<Product> products = new ConcurrentLinkedQueue<Product>();
-    public final Queue<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
-    public final Queue<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
 
     private ISender sender;
+    private IFileReader fileReader;
     private boolean aggressor = true;
 
     public Model() {
@@ -91,6 +102,10 @@ public class Model {
         this.sender = sender;
     }
 
+    public void setFileReader(IFileReader fileReader) {
+        this.fileReader = fileReader;
+    }
+
     public Collection<Product> getProductsByAbility(Ability ability) {
         List<Product> res = new LinkedList<Product>();
         for (Product product : products) {  // pity it's not Java 1.8
@@ -98,6 +113,14 @@ public class Model {
                 res.add(product);
         }
         return res;
+    }
+
+    public synchronized void init() {
+        if (fileReader != null) {
+            String full = fileReader.read("history.txt");
+            history.clear();
+            history.addAll(Arrays.asList(full.split("\n")));
+        }
     }
 
     // =======================
@@ -119,6 +142,7 @@ public class Model {
     public void invite(String victim) {
         if (sender != null) {
             aggressor = true;
+            enemy = victim;
             sender.send(ATTACK, String.format("\0%s", victim).getBytes());
         }
     }
@@ -140,7 +164,7 @@ public class Model {
     public void getRating(RatingType type) {
         assert type != null;
         if (sender != null) {
-            sender.send(RATING, (byte)type.ordinal());
+            sender.send(RATING, (byte) type.ordinal());
         }
     }
 
@@ -247,7 +271,7 @@ public class Model {
 
     public synchronized void setRating(RatingType type, int[] data) {
         assert type != null && data != null;
-        Queue<RatingItem> rating = type == RatingType.General ? generalRating : weeklyRating;
+        Collection<RatingItem> rating = type == RatingType.General ? generalRating : weeklyRating;
         rating.clear();
 
         int i = 0;
@@ -279,9 +303,9 @@ public class Model {
 
         // update current rating time to make the 'subscribers' update their states
         if (type == RatingType.General)
-            generalRatingTime = TimeUtils.millis();
+            generalRatingTime = System.currentTimeMillis();
         else if (type == RatingType.Weekly)
-            weeklyRatingTime = TimeUtils.millis();
+            weeklyRatingTime = System.currentTimeMillis();
     }
 
     public void setNewField(int[] fieldData) {
@@ -312,6 +336,38 @@ public class Model {
                 return 0;
             }
         });
+    }
+
+    public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
+        this.totalScore1 = totalScore1;
+        this.totalScore2 = totalScore2;
+        System.out.println("Winner = " + winner);
+    }
+
+    public synchronized void gameFinished(boolean winner) {
+        // building an item
+        String s = String.format(Locale.getDefault(), "%s %s %s %s (%d-%d)",
+                DateFormat.getInstance().format(new Date()), enemy, aggressor ? "A" : "V", winner ? "Win" : "Loss",
+                totalScore1, totalScore2);
+
+        // prepend the item into the current history (and delete old items if necessary)
+        List<String> lst = new LinkedList<String>(history);
+        lst.add(0, s);
+        while (lst.size() > HISTORY_MAX)
+            lst.remove(HISTORY_MAX);
+        history.clear();
+        history.addAll(lst);
+
+        // store the current history in the local storage
+        if (fileReader != null) {
+            // making a single string (oh... Java 1.8 has got "mkstring" :( )
+            StringBuilder builder = new StringBuilder(lst.size());
+            for (String x : lst) {
+                builder.append(x).append('\n');
+            }
+            // writing
+            fileReader.write("history.txt", builder.toString());
+        }
     }
 
     public synchronized void setAbilities(int[] ids) {

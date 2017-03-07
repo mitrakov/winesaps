@@ -1,8 +1,10 @@
 package ru.mitrakov.self.rush;
 
 import java.util.Arrays;
+
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
+
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**
@@ -45,6 +47,9 @@ class Parser implements Network.IHandler {
                     break;
                 case SCORE_CHANGED:
                     scoreChanged(Arrays.copyOfRange(data, 1, data.length));
+                    break;
+                case FINISHED:
+                    finished(Arrays.copyOfRange(data, 1, data.length));
                     break;
                 case THING_TAKEN:
                     thingTaken(Arrays.copyOfRange(data, 1, data.length));
@@ -129,6 +134,23 @@ class Parser implements Network.IHandler {
             int score2 = score[1];
             model.setScore(score1, score2);
         } else throw new IllegalArgumentException("Incorrect score format");
+    }
+
+    private void finished(int[] data) {
+        if (data.length > 1) {
+            boolean roundFinished = data[0] == 0; // 0 = finished round, 1 = finished game
+            boolean gameFinished = data[0] == 1;
+            boolean winner = data[1] > 0;
+            if (gameFinished)
+                model.gameFinished(winner);
+            else if (roundFinished) {
+                if (data.length == 4) {
+                    int score1 = data[2];
+                    int score2 = data[3];
+                    model.roundFinished(winner, score1, score2);
+                } else throw new IllegalArgumentException("Incorrect finished round format");
+            } else throw new IllegalArgumentException("Incorrect finished type");
+        } else throw new IllegalArgumentException("Incorrect finished format");
     }
 
     private void thingTaken(int[] data) {

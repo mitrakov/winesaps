@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
@@ -35,6 +36,9 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
     private final Dialog buyAbilitiesDialog;
+    private final List<String> lstHistory = new List<String>(skin, "default");
+    private final ScrollPane lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
+
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
 
@@ -312,6 +316,10 @@ class ScreenMain extends ScreenAdapter {
                 tableRightContent.row();
                 tableRightContent.add(tableRightContentRating).expand();
                 model.getRating(Model.RatingType.General);
+                break;
+            case History:
+                lstHistory.setItems(model.history.toArray(new String[0]));
+                tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
                 break;
             default:
                 tableRightContent.add(new Label(mode.name(), skin, "default"));
