@@ -156,7 +156,6 @@ class ScreenMain extends ScreenAdapter {
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
 
         tableMain.setFillParent(true);
-        tableMain.setDebug(true);
         stage.addActor(tableMain);
 
         loadTextures();
@@ -231,7 +230,6 @@ class ScreenMain extends ScreenAdapter {
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
 
-        tableRightHeader.setDebug(true);
         tableRightHeader.row().width(90).space(20);
         tableRightHeader.add(btnInfo);
         tableRightHeader.add(btnRating);
@@ -240,22 +238,26 @@ class ScreenMain extends ScreenAdapter {
 
         tableRightContent.setDebug(true);
 
-        tableRightContentRatingBtns.add(btnGeneralRating).expandX();
-        tableRightContentRatingBtns.add(btnWeeklyRating).expandX();
+        tableRightContentRatingBtns.row().spaceLeft(30);
+        tableRightContentRatingBtns.add(btnGeneralRating);
+        tableRightContentRatingBtns.add(btnWeeklyRating);
 
+        tableRightContentRating.row().spaceLeft(20).spaceBottom(20); // don't use space(), it breaks the layout
         tableRightContentRating.add(new Label("Name", skin, "default"));
         tableRightContentRating.add(new Label("Wins", skin, "default"));
         tableRightContentRating.add(new Label("Losses", skin, "default"));
         tableRightContentRating.add(new Label("Score diff", skin, "default"));
         for (int i = 0; i < Model.RATINGS_COUNT; i++) {
-            tableRightContentRating.row();
+            tableRightContentRating.row().spaceLeft(20);
             for (int j = 0; j < 4; j++) { // 4 = columns count
                 Label label = new Label("", skin, "default");
                 tableRightContentRating.add(label);
                 ratingLabels.add(label);
             }
         }
+        tableRightContentRating.row().spaceLeft(20);
         tableRightContentRating.add(new Label("...", skin, "default")).colspan(4);
+        tableRightContentRating.row().spaceLeft(20);
         for (int j = 0; j < 4; j++) { // 4 = columns count
             Label label = new Label("", skin, "default");
             tableRightContentRating.add(label);
@@ -306,9 +308,10 @@ class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(lblMoreCrystals).left();
                 break;
             case Rating:
-                tableRightContent.add(tableRightContentRatingBtns);
+                tableRightContent.add(tableRightContentRatingBtns).pad(15);
                 tableRightContent.row();
                 tableRightContent.add(tableRightContentRating).expand();
+                model.getRating(Model.RatingType.General);
                 break;
             default:
                 tableRightContent.add(new Label(mode.name(), skin, "default"));
@@ -332,7 +335,7 @@ class ScreenMain extends ScreenAdapter {
             generalRatingTime = model.generalRatingTime;
             updateRating(Model.RatingType.General);
         } else if (weeklyRatingTime != model.weeklyRatingTime) {
-            weeklyRatingTime= model.weeklyRatingTime;
+            weeklyRatingTime = model.weeklyRatingTime;
             updateRating(Model.RatingType.Weekly);
         }
     }
