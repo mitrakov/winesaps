@@ -15,8 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.model.RatingItem;
+import ru.mitrakov.self.rush.model.*;
 
 /**
  * Created by mitrakov on 03.03.2017
@@ -35,9 +34,12 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentAbilities = new Table();
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
+    private final Table tableFriendsControl = new Table();
     private final Dialog buyAbilitiesDialog;
     private final List<String> lstHistory = new List<String>(skin, "default");
+    private final List<String> lstFriends = new List<String>(skin, "default");
     private final ScrollPane lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
+    private final ScrollPane lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
 
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
@@ -45,6 +47,7 @@ class ScreenMain extends ScreenAdapter {
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
     private final TextField txtEnemyName = new TextField("", skin, "default");
+    private final TextField txtFriendName = new TextField("", skin, "default");
     private final TextButton btnInviteByName = new TextButton("Find opponent", skin, "default") {{
         addListener(new ChangeListener() {
             @Override
@@ -139,6 +142,31 @@ class ScreenMain extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.getRating(Model.RatingType.Weekly);
+            }
+        });
+    }};
+    private final TextButton btnAddFriend = new TextButton("Add new", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildFriends(true);
+            }
+        });
+    }};
+    private final TextButton btnAddFriendOk = new TextButton("OK", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.addFriend(txtFriendName.getText());
+                rebuildRightTable(CurDisplayMode.Friends);
+            }
+        });
+    }};
+    private final TextButton btnAddFriendCancel = new TextButton("Cancel", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                rebuildFriends(false);
             }
         });
     }};
@@ -321,8 +349,27 @@ class ScreenMain extends ScreenAdapter {
                 lstHistory.setItems(model.history.toArray(new String[0]));
                 tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
                 break;
+            case Friends:
+                lstFriends.setItems(model.friends.toArray(new String[0]));
+                tableRightContent.add(tableFriendsControl);
+                tableRightContent.row();
+                tableRightContent.add(lstFriendsScroll).fill(.9f, .9f).expand();
+                rebuildFriends(false);
+                break;
             default:
-                tableRightContent.add(new Label(mode.name(), skin, "default"));
+        }
+    }
+
+    private void rebuildFriends(boolean showInputName) {
+        tableFriendsControl.clear();
+
+        if (showInputName) {
+            tableFriendsControl.add(txtFriendName);
+            tableFriendsControl.row();
+            tableFriendsControl.add(btnAddFriendOk);
+            tableFriendsControl.add(btnAddFriendCancel);
+        } else {
+            tableFriendsControl.add(btnAddFriend);
         }
     }
 

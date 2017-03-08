@@ -89,6 +89,7 @@ public class Model {
     public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<String> history = new ConcurrentLinkedQueue<String>();
+    public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
     private ISender sender;
@@ -106,6 +107,21 @@ public class Model {
         this.fileReader = fileReader;
     }
 
+    public synchronized void init() {
+        if (fileReader != null) {
+            String strHistory = fileReader.read("history.txt");
+            if (strHistory != null) {
+                history.clear();
+                history.addAll(Arrays.asList(strHistory.split("\n")));
+            }
+            String strFriends = fileReader.read("friends.txt");
+            if (strFriends != null) {
+                friends.clear();
+                friends.addAll(Arrays.asList(strFriends.split("\n")));
+            }
+        }
+    }
+
     public Collection<Product> getProductsByAbility(Ability ability) {
         List<Product> res = new LinkedList<Product>();
         for (Product product : products) {  // pity it's not Java 1.8
@@ -115,11 +131,20 @@ public class Model {
         return res;
     }
 
-    public synchronized void init() {
+    public synchronized void addFriend(String name) {
+        // TODO check existance
+        assert name != null;
+        friends.add(name);
+
+        // store friends in the local storage
         if (fileReader != null) {
-            String full = fileReader.read("history.txt");
-            history.clear();
-            history.addAll(Arrays.asList(full.split("\n")));
+            // making a single string (oh... Java 1.8 has got "mkstring" :( )
+            StringBuilder builder = new StringBuilder(friends.size());
+            for (String x : friends) {
+                builder.append(x).append("\n");
+            }
+            // writing
+            fileReader.write("friends.txt", builder.toString());
         }
     }
 

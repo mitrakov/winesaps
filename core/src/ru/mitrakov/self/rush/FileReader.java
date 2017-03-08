@@ -16,6 +16,10 @@ class FileReader implements Model.IFileReader {
 
     @Override
     public String read(String filename) {
-        return Gdx.files.local(filename).readString();
+        try {
+            return Gdx.files.local(filename).readString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
