@@ -22,6 +22,7 @@ class Parser implements Network.IHandler {
     @Override
     public void handle(int[] data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
+        assert data != null;
         System.out.println(Arrays.toString(data));
         if (data.length > 0) {
             int code = data[0];
@@ -32,6 +33,15 @@ class Parser implements Network.IHandler {
                 case USER_INFO:
                 case BUY_PRODUCT:
                     userInfo(Arrays.copyOfRange(data, 1, data.length));
+                    break;
+                case FRIEND_LIST:
+                    friendList(Arrays.copyOfRange(data, 1, data.length));
+                    break;
+                case ADD_FRIEND:
+                    addFriend(Arrays.copyOfRange(data, 1, data.length));
+                    break;
+                case REMOVE_FRIEND:
+                    removeFriend(Arrays.copyOfRange(data, 1, data.length));
                     break;
                 case RANGE_OF_PRODUCTS:
                     rangeOfProducts(Arrays.copyOfRange(data, 1, data.length));
@@ -81,6 +91,41 @@ class Parser implements Network.IHandler {
                 model.setUserInfo(Arrays.copyOfRange(data, 1, data.length));
             else throw new IllegalArgumentException("Incorrect user info response");
         } else throw new IllegalArgumentException("Incorrect user info format");
+    }
+
+    private void friendList(int[] data) {
+        if (data.length > 0) {
+            int ok = data[0];
+            if (ok == 0)
+                model.setFriendList(Arrays.copyOfRange(data, 1, data.length));
+            else throw new IllegalArgumentException("Incorrect friend list response");
+        } else throw new IllegalArgumentException("Incorrect friend list format");
+    }
+
+    private void addFriend(int[] data) {
+        if (data.length > 0) {
+            int ok = data[0];
+            if (ok == 0) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 1; i < data.length; i++) {
+                    builder.append((char)data[i]);
+                }
+                model.friendAdded(builder.toString());
+            } else throw new IllegalArgumentException("Incorrect add friend response");
+        } else throw new IllegalArgumentException("Incorrect add friend format");
+    }
+
+    private void removeFriend(int[] data) {
+        if (data.length > 0) {
+            int ok = data[0];
+            if (ok == 0) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 1; i < data.length; i++) {
+                    builder.append((char)data[i]);
+                }
+                model.friendRemoved(builder.toString());
+            } else throw new IllegalArgumentException("Incorrect remove friend response");
+        } else throw new IllegalArgumentException("Incorrect remove friend format");
     }
 
     private void rangeOfProducts(int[] data) {

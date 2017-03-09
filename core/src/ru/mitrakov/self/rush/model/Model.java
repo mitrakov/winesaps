@@ -21,9 +21,9 @@ public class Model {
     public static final byte INVITE = 0x07;
     public static final byte ACCEPT = 0x08;
     public static final byte REJECT = 0x09;
-    public static final byte GIVE_UP = 0x0A;
-    public static final byte READY = 0x0B;
-    public static final byte CHAT_TO_ENEMY = 0x0C;
+    public static final byte FRIEND_LIST = 0x0A;
+    public static final byte ADD_FRIEND = 0x0B;
+    public static final byte REMOVE_FRIEND = 0x0C;
     public static final byte RANGE_OF_PRODUCTS = 0x0D;
     public static final byte BUY_PRODUCT = 0x0E;
     public static final byte RATING = 0x0F;
@@ -96,8 +96,9 @@ public class Model {
     private IFileReader fileReader;
     private boolean aggressor = true;
 
-    public Model() {
-    }
+    // ==========================
+    // === NON-SERVER METHODS ===
+    // ==========================
 
     public void setSender(ISender sender) {
         this.sender = sender;
@@ -112,12 +113,7 @@ public class Model {
             String strHistory = fileReader.read("history.txt");
             if (strHistory != null) {
                 history.clear();
-                history.addAll(Arrays.asList(strHistory.split("\n")));
-            }
-            String strFriends = fileReader.read("friends.txt");
-            if (strFriends != null) {
-                friends.clear();
-                friends.addAll(Arrays.asList(strFriends.split("\n")));
+                Collections.addAll(history, strHistory.split("\n"));
             }
         }
     }
@@ -129,23 +125,6 @@ public class Model {
                 res.add(product);
         }
         return res;
-    }
-
-    public synchronized void addFriend(String name) {
-        // TODO check existance
-        assert name != null;
-        friends.add(name);
-
-        // store friends in the local storage
-        if (fileReader != null) {
-            // making a single string (oh... Java 1.8 has got "mkstring" :( )
-            StringBuilder builder = new StringBuilder(friends.size());
-            for (String x : friends) {
-                builder.append(x).append("\n");
-            }
-            // writing
-            fileReader.write("friends.txt", builder.toString());
-        }
     }
 
     // =======================
@@ -183,6 +162,24 @@ public class Model {
         if (sender != null) {
             aggressor = true;
             sender.send(ATTACK, (byte) 2);
+        }
+    }
+
+    public void getFriends() {
+        if (sender != null) {
+            sender.send(FRIEND_LIST);
+        }
+    }
+
+    public void addFriend(String name) {
+        if (sender != null) {
+            sender.send(ADD_FRIEND, name.getBytes());
+        }
+    }
+
+    public void removeFriend(String name) {
+        if (sender != null) {
+            sender.send(REMOVE_FRIEND, name.getBytes());
         }
     }
 
@@ -279,6 +276,24 @@ public class Model {
                     abilityExpireTime.put(array[id], minutes);
             }
         }
+    }
+
+    public synchronized void setFriendList(int[] data) {
+        assert data != null;
+        byte[] bytes = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            bytes[i] = (byte) data[i];
+        }
+        friends.clear();
+        Collections.addAll(friends, new String(bytes).split("\0"));
+    }
+
+    public void friendAdded(String name) {
+        friends.add(name);
+    }
+
+    public void friendRemoved(String name) {
+        friends.remove(name);
     }
 
     public synchronized void setRangeOfProducts(final int[] data) {

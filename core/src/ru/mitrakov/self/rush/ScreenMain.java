@@ -158,7 +158,7 @@ class ScreenMain extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.addFriend(txtFriendName.getText());
-                rebuildRightTable(CurDisplayMode.Friends);
+                rebuildFriends(false);
             }
         });
     }};
@@ -208,6 +208,7 @@ class ScreenMain extends ScreenAdapter {
 
         updateAbilities();
         updateRatings();
+        updateFriends();
 
         if (model.field != null)
             game.setNextScreen();
@@ -350,11 +351,11 @@ class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
                 break;
             case Friends:
-                lstFriends.setItems(model.friends.toArray(new String[0]));
-                tableRightContent.add(tableFriendsControl);
+                tableRightContent.add(tableFriendsControl).pad(15);
                 tableRightContent.row();
                 tableRightContent.add(lstFriendsScroll).fill(.9f, .9f).expand();
                 rebuildFriends(false);
+                model.getFriends();
                 break;
             default:
         }
@@ -364,10 +365,10 @@ class ScreenMain extends ScreenAdapter {
         tableFriendsControl.clear();
 
         if (showInputName) {
-            tableFriendsControl.add(txtFriendName);
-            tableFriendsControl.row();
-            tableFriendsControl.add(btnAddFriendOk);
-            tableFriendsControl.add(btnAddFriendCancel);
+            tableFriendsControl.add(txtFriendName).width(180).colspan(2);
+            tableFriendsControl.row().space(10);
+            tableFriendsControl.add(btnAddFriendOk).width(70);
+            tableFriendsControl.add(btnAddFriendCancel).width(100);
         } else {
             tableFriendsControl.add(btnAddFriend);
         }
@@ -410,5 +411,10 @@ class ScreenMain extends ScreenAdapter {
                 ratingLabels.get(i++).setText(String.valueOf(item.score_diff));
             }
         }
+    }
+
+    private void updateFriends() {
+        if (lstFriends.getItems().size != model.friends.size())
+            lstFriends.setItems(model.friends.toArray(new String[0]));
     }
 }

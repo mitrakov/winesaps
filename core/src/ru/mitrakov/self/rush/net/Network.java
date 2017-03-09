@@ -52,7 +52,7 @@ public class Network extends Thread {
                     // @mitrakov: on Android copyOfRange requires minSdkVersion=9
                     handler.handle(Arrays.copyOfRange(data, HEADER_SIZ, data.length));
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 errorHandler.uncaughtException(this, e);
             }
         }
