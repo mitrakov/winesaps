@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import ru.mitrakov.self.rush.model.Model;
@@ -13,38 +14,29 @@ class DialogInvite extends Dialog {
     enum InviteType {ByName, Random, Latest}
 
     private final Model model;
-    private final String name;
-    private final InviteType type;
+    private final Label lblQuestion;
     private final CheckBox chkAddToFriends;
 
-    DialogInvite(InviteType type, String name, Model model, Skin skin, String windowStyleName) {
-        super("Invite", skin, windowStyleName);
-        assert type != null && model != null;
-        this.model = model;
-        this.name = name;
-        this.type = type;
+    private InviteType type = InviteType.Random;
+    private String name = "";
 
+    DialogInvite(Model model, Skin skin, String windowStyleName) {
+        super("Invite", skin, windowStyleName);
+        assert model != null;
+        this.model = model;
+
+        lblQuestion = new Label("", skin, "default");
         chkAddToFriends = new CheckBox(" add to friends", skin, "default");
         chkAddToFriends.setChecked(true);
 
-        button("OK", true).setWidth(100);
-        button("Cancel").setWidth(100);
+        button("OK", true);
+        button("Cancel");
+    }
 
-        Table table = getContentTable();
-        switch (type) {
-            case ByName:
-                table.add(new Label(String.format("Do you wanna invite '%s'?", name), skin, "default"));
-                table.row().space(30);
-                table.add(chkAddToFriends);
-                break;
-            case Random:
-                table.add(new Label("Do you wanna invite random opponent?", skin, "default"));
-                break;
-            case Latest:
-                table.add(new Label("Do you wanna invite latest opponent?", skin, "default"));
-                break;
-            default:
-        }
+    @Override
+    public Dialog show(Stage stage) {
+        rebuildContent();
+        return super.show(stage);
     }
 
     @Override
@@ -64,6 +56,36 @@ class DialogInvite extends Dialog {
                     break;
                 default:
             }
+        }
+    }
+
+    public Dialog setArguments(InviteType type, String name) {
+        assert type != null;
+        this.type = type;
+        this.name = name;
+        return this;
+    }
+
+    private void rebuildContent() {
+        assert type != null;
+        Table table = getContentTable();
+        table.clear();
+        switch (type) {
+            case ByName:
+                lblQuestion.setText(String.format("Do you wanna invite '%s'?", name));
+                table.add(lblQuestion);
+                table.row().space(30);
+                table.add(chkAddToFriends);
+                break;
+            case Random:
+                lblQuestion.setText("Do you wanna invite random opponent?");
+                table.add(lblQuestion);
+                break;
+            case Latest:
+                lblQuestion.setText("Do you wanna invite latest opponent?");
+                table.add(lblQuestion);
+                break;
+            default:
         }
     }
 }

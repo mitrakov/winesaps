@@ -36,6 +36,8 @@ class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentRating = new Table();
     private final Table tableFriendsControl = new Table();
     private final Dialog buyAbilitiesDialog;
+    private final Dialog incomingDialog;
+    private final DialogInvite inviteDialog;
     private final List<String> lstHistory = new List<String>(skin, "default");
     private final List<String> lstFriends = new List<String>(skin, "default");
     private final ScrollPane lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
@@ -60,7 +62,7 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                new DialogInvite(DialogInvite.InviteType.Random, "", model, skin, "default").show(stage);
+                inviteDialog.setArguments(DialogInvite.InviteType.Random, "").show(stage);
             }
         });
     }};
@@ -68,7 +70,7 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                new DialogInvite(DialogInvite.InviteType.Latest, "", model, skin, "default").show(stage);
+                inviteDialog.setArguments(DialogInvite.InviteType.Latest, "").show(stage);
             }
         });
     }};
@@ -78,7 +80,7 @@ class ScreenMain extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 String name = txtEnemyName.getText();
                 if (!name.isEmpty()) {
-                    new DialogInvite(DialogInvite.InviteType.ByName, name, model, skin, "default").show(stage);
+                    inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                     rebuildLeftTable(false);
                 }
             }
@@ -182,6 +184,7 @@ class ScreenMain extends ScreenAdapter {
 
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
+    private long inviteTime = 0;
 
     ScreenMain(RushClient game, Model model) {
         assert game != null && model != null;
@@ -189,6 +192,8 @@ class ScreenMain extends ScreenAdapter {
         this.model = model;
 
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
+        incomingDialog = new DialogIncoming(model, skin, "default");
+        inviteDialog = new DialogInvite(model, skin, "default");
 
         tableMain.setFillParent(true);
         stage.addActor(tableMain);
@@ -212,6 +217,7 @@ class ScreenMain extends ScreenAdapter {
         updateAbilities();
         updateRatings();
         updateFriends();
+        updateInvite();
 
         if (model.field != null)
             game.setNextScreen();
@@ -419,5 +425,12 @@ class ScreenMain extends ScreenAdapter {
     private void updateFriends() {
         if (lstFriends.getItems().size != model.friends.size())
             lstFriends.setItems(model.friends.toArray(new String[0]));
+    }
+
+    private void updateInvite() {
+        if (inviteTime != model.inviteTime) {
+            inviteTime = model.inviteTime;
+            incomingDialog.show(stage);
+        }
     }
 }

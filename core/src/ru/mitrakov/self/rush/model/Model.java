@@ -81,6 +81,7 @@ public class Model {
     public volatile int totalScore2 = 0;
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
+    public volatile long inviteTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -94,6 +95,7 @@ public class Model {
 
     private ISender sender;
     private IFileReader fileReader;
+    private int enemySid = 0;
     private boolean aggressor = true;
 
     // ==========================
@@ -162,6 +164,19 @@ public class Model {
         if (sender != null) {
             aggressor = true;
             sender.send(ATTACK, (byte) 2);
+        }
+    }
+
+    public void accept() {
+        if (sender != null) {
+            aggressor = false;
+            sender.send(ACCEPT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
+        }
+    }
+
+    public void reject() {
+        if (sender != null) {
+            sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
     }
 
@@ -276,6 +291,13 @@ public class Model {
                     abilityExpireTime.put(array[id], minutes);
             }
         }
+    }
+
+    public void attacked(int sid, String name) {
+        assert name != null;
+        enemySid = sid;
+        enemy = name;
+        inviteTime = System.currentTimeMillis();
     }
 
     public synchronized void setFriendList(int[] data) {

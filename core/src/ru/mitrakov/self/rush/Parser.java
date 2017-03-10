@@ -34,6 +34,9 @@ class Parser implements Network.IHandler {
                 case BUY_PRODUCT:
                     userInfo(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case INVITE:
+                    invite(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case FRIEND_LIST:
                     friendList(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -91,6 +94,19 @@ class Parser implements Network.IHandler {
                 model.setUserInfo(Arrays.copyOfRange(data, 1, data.length));
             else throw new IllegalArgumentException("Incorrect user info response");
         } else throw new IllegalArgumentException("Incorrect user info format");
+    }
+
+    private void invite(int data[]) {
+        if (data.length > 3) {
+            int sidH = data[0];
+            int sidL = data[1];
+            int sid = sidH *256 + sidL;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 2; i < data.length; i++) {
+                builder.append((char)data[i]);
+            }
+            model.attacked(sid, builder.toString());
+        } else throw new IllegalArgumentException("Incorrect invite format");
     }
 
     private void friendList(int[] data) {
