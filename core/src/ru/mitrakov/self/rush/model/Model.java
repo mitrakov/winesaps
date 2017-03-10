@@ -15,7 +15,7 @@ public class Model {
     public static final byte SIGN_UP = 0x01;
     public static final byte SIGN_IN = 0x02;
     public static final byte SIGN_OUT = 0x03;
-    public static final byte CHANGE_PASSWORD = 0x04;
+    public static final byte REFUSED = 0x04;
     public static final byte USER_INFO = 0x05;
     public static final byte ATTACK = 0x06;
     public static final byte INVITE = 0x07;
@@ -82,6 +82,8 @@ public class Model {
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
     public volatile long inviteTime = 0;
+    public volatile long refusedRejectedTime = 0;
+    public volatile long refusedMissedTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -293,11 +295,23 @@ public class Model {
         }
     }
 
-    public void attacked(int sid, String name) {
-        assert name != null;
+    public void attacked(int sid, String aggressorName) {
+        assert aggressorName != null;
         enemySid = sid;
-        enemy = name;
+        enemy = aggressorName;
         inviteTime = System.currentTimeMillis();
+    }
+
+    public void refusedRejected(String coward) {
+        assert coward != null;
+        enemy = coward;
+        refusedRejectedTime = System.currentTimeMillis();
+    }
+
+    public void refusedMissed(String coward) {
+        assert coward != null;
+        enemy = coward;
+        refusedMissedTime = System.currentTimeMillis();
     }
 
     public synchronized void setFriendList(int[] data) {

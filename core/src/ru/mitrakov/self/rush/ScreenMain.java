@@ -38,6 +38,7 @@ class ScreenMain extends ScreenAdapter {
     private final Dialog buyAbilitiesDialog;
     private final Dialog incomingDialog;
     private final DialogInvite inviteDialog;
+    private final DialogInfo infoDialog;
     private final List<String> lstHistory = new List<String>(skin, "default");
     private final List<String> lstFriends = new List<String>(skin, "default");
     private final ScrollPane lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
@@ -185,6 +186,8 @@ class ScreenMain extends ScreenAdapter {
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
     private long inviteTime = 0;
+    private long rejectedTime = 0;
+    private long missedTime = 0;
 
     ScreenMain(RushClient game, Model model) {
         assert game != null && model != null;
@@ -194,6 +197,7 @@ class ScreenMain extends ScreenAdapter {
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default");
+        infoDialog = new DialogInfo(skin, "default");
 
         tableMain.setFillParent(true);
         stage.addActor(tableMain);
@@ -218,6 +222,7 @@ class ScreenMain extends ScreenAdapter {
         updateRatings();
         updateFriends();
         updateInvite();
+        updateRefused();
 
         if (model.field != null)
             game.setNextScreen();
@@ -431,6 +436,17 @@ class ScreenMain extends ScreenAdapter {
         if (inviteTime != model.inviteTime) {
             inviteTime = model.inviteTime;
             incomingDialog.show(stage);
+        }
+    }
+
+    private void updateRefused() {
+        if (rejectedTime != model.refusedRejectedTime) {
+            rejectedTime = model.refusedRejectedTime;
+            infoDialog.setText(String.format("%s rejected your invitation", model.enemy)).show(stage);
+        }
+        if (missedTime != model.refusedMissedTime) {
+            missedTime = model.refusedMissedTime;
+            infoDialog.setText(String.format("%s missed your invitation", model.enemy)).show(stage);
         }
     }
 }

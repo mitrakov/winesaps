@@ -37,6 +37,9 @@ class Parser implements Network.IHandler {
                 case INVITE:
                     invite(Arrays.copyOfRange(data, 1, data.length));
                     break;
+                case REFUSED:
+                    refused(Arrays.copyOfRange(data, 1, data.length));
+                    break;
                 case FRIEND_LIST:
                     friendList(Arrays.copyOfRange(data, 1, data.length));
                     break;
@@ -96,17 +99,33 @@ class Parser implements Network.IHandler {
         } else throw new IllegalArgumentException("Incorrect user info format");
     }
 
-    private void invite(int data[]) {
+    private void invite(int[] data) {
         if (data.length > 3) {
             int sidH = data[0];
             int sidL = data[1];
-            int sid = sidH *256 + sidL;
-            StringBuilder builder = new StringBuilder();
+            int sid = sidH * 256 + sidL;
+            StringBuilder name = new StringBuilder();
             for (int i = 2; i < data.length; i++) {
-                builder.append((char)data[i]);
+                name.append((char) data[i]);
             }
-            model.attacked(sid, builder.toString());
+            model.attacked(sid, name.toString());
         } else throw new IllegalArgumentException("Incorrect invite format");
+    }
+
+    private void refused(int[] data) {
+        if (data.length > 1) {
+            boolean rejected = data[0] == 0;
+            boolean missed = data[0] == 1;
+            StringBuilder name = new StringBuilder(); // oh... Java 1.8 has "mkstring" :(
+            for (int i = 1; i < data.length; i++) {
+                name.append((char) data[i]);
+            }
+            if (rejected)
+                model.refusedRejected(name.toString());
+            else if (missed)
+                model.refusedMissed(name.toString());
+            else throw new IllegalArgumentException("Incorrect 'refused' response");
+        } else throw new IllegalArgumentException("Incorrect 'refused' format");
     }
 
     private void friendList(int[] data) {
@@ -124,7 +143,7 @@ class Parser implements Network.IHandler {
             if (ok == 0) {
                 StringBuilder builder = new StringBuilder();
                 for (int i = 1; i < data.length; i++) {
-                    builder.append((char)data[i]);
+                    builder.append((char) data[i]);
                 }
                 model.friendAdded(builder.toString());
             } else throw new IllegalArgumentException("Incorrect add friend response");
@@ -137,7 +156,7 @@ class Parser implements Network.IHandler {
             if (ok == 0) {
                 StringBuilder builder = new StringBuilder();
                 for (int i = 1; i < data.length; i++) {
-                    builder.append((char)data[i]);
+                    builder.append((char) data[i]);
                 }
                 model.friendRemoved(builder.toString());
             } else throw new IllegalArgumentException("Incorrect remove friend response");

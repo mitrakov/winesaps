@@ -18,7 +18,7 @@ class DialogIncoming extends Dialog {
     private final CheckBox chkAddToFriends;
 
     DialogIncoming(Model model, Skin skin, String windowStyleName) {
-        super("Invite", skin, windowStyleName);
+        super("Invitation", skin, windowStyleName);
         assert model != null;
         this.model = model;
 
