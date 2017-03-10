@@ -60,7 +60,7 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.inviteRandom();
+                new DialogInvite(DialogInvite.InviteType.Random, "", model, skin, "default").show(stage);
             }
         });
     }};
@@ -68,7 +68,7 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.inviteLatest();
+                new DialogInvite(DialogInvite.InviteType.Latest, "", model, skin, "default").show(stage);
             }
         });
     }};
@@ -76,8 +76,11 @@ class ScreenMain extends ScreenAdapter {
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.invite(txtEnemyName.getText());
-                rebuildLeftTable(false);
+                String name = txtEnemyName.getText();
+                if (!name.isEmpty()) {
+                    new DialogInvite(DialogInvite.InviteType.ByName, name, model, skin, "default").show(stage);
+                    rebuildLeftTable(false);
+                }
             }
         });
     }};
