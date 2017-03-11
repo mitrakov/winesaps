@@ -4,7 +4,8 @@ package ru.mitrakov.self.rush;
  * Created by mitrakov on 01.03.2017
  */
 
-class PsObject {
+@SuppressWarnings("WeakerAccess")
+public class PsObject {
 
     interface Listener {
         void onRatioChanged(float ratio);
@@ -12,13 +13,18 @@ class PsObject {
 
     private Listener listener;
 
-    void setListener(Listener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
-    void raiseRatioChanged(float ratio) {
-        if (listener != null) {
+    public void raiseRatioChanged(float ratio) {
+        if (listener != null)
             listener.onRatioChanged(ratio);
-        }
+    }
+
+    public void hide() {
+    }
+
+    public void activate() {
     }
 }

@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush;
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,8 +21,8 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 class ScreenBattle extends ScreenAdapter {
-    private final RushClient game;
     private final Model model;
+    private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(800, 480));
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
@@ -32,10 +33,10 @@ class ScreenBattle extends ScreenAdapter {
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
-    ScreenBattle(RushClient game, Model model) {
-        assert game != null && model != null;
-        this.game = game;
+    ScreenBattle(Model model, PsObject psObject) {
+        assert model != null;
         this.model = model;
+        this.psObject = psObject;
         gui = new Gui(model);
 
         table.setFillParent(true);
@@ -64,6 +65,11 @@ class ScreenBattle extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
+        // checking BACK and MENU buttons on Android
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
+            if (psObject != null)
+                psObject.hide();
     }
 
     @Override

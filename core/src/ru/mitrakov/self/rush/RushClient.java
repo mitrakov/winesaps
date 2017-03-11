@@ -22,7 +22,7 @@ public class RushClient extends Game {
                     e.printStackTrace();
                 }
             };
-            Network network = new Network(new Parser(model), errorHandler);
+            Network network = new Network(new Parser(model, psObject), errorHandler);
             network.start();
             model.setSender(new Sender(network, errorHandler));
             model.setFileReader(new FileReader());
@@ -37,9 +37,11 @@ public class RushClient extends Game {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.init();
         screenLogin = new ScreenLogin(this, model, psObject);
-        screenMain = new ScreenMain(this, model);
-        screenBattle = new ScreenBattle(this, model);
+        screenMain = new ScreenMain(this, model, psObject);
+        screenBattle = new ScreenBattle(model, psObject);
         setScreen(screenLogin);
+
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override

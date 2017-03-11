@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush;
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,6 +25,7 @@ import ru.mitrakov.self.rush.model.*;
 class ScreenMain extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
+    private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(800, 480));
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table tableMain = new Table();
@@ -189,10 +191,11 @@ class ScreenMain extends ScreenAdapter {
     private long rejectedTime = 0;
     private long missedTime = 0;
 
-    ScreenMain(RushClient game, Model model) {
+    ScreenMain(RushClient game, Model model, PsObject psObject) {
         assert game != null && model != null;
         this.game = game;
         this.model = model;
+        this.psObject = psObject; // may be NULL
 
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
@@ -226,6 +229,11 @@ class ScreenMain extends ScreenAdapter {
 
         if (model.field != null)
             game.setNextScreen();
+
+        // checking BACK and MENU buttons on Android
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
+            if (psObject != null)
+                psObject.hide();
     }
 
     @Override

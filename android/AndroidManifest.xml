@@ -4,19 +4,20 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <!-- Overridden by Gradle: <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="25" /> -->
+    <!-- Overridden by Gradle: <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="25" /> -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REORDER_TASKS" />  <!-- To show up the hidden app -->
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme" >
+        <!-- "singleTask" is necessary for getting the current state on relaunch the app AFTER moveFromForeground() -->
         <activity
             android:name="ru.mitrakov.self.rush.AndroidLauncher"
             android:label="@string/app_name" 
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

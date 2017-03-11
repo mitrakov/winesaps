@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,6 +19,7 @@ import ru.mitrakov.self.rush.model.Model;
 class ScreenLogin extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
+    private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(800, 480));
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
@@ -37,6 +39,7 @@ class ScreenLogin extends ScreenAdapter {
         assert game != null && model != null;
         this.game = game;
         this.model = model;
+        this.psObject = psObject; // may be NULL
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -74,8 +77,14 @@ class ScreenLogin extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
         if (model.authorized)
             game.setNextScreen();
+
+        // checking BACK and MENU buttons on Android
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
+            if (psObject != null)
+                psObject.hide();
     }
 
     @Override

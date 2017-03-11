@@ -13,10 +13,12 @@ import static ru.mitrakov.self.rush.model.Model.*;
 
 class Parser implements Network.IHandler {
     private final Model model;
+    private final PsObject psObject;
 
-    Parser(Model model) {
+    Parser(Model model, PsObject psObject) {
         assert model != null;
         this.model = model;
+        this.psObject = psObject; // may be NULL
     }
 
     @Override
@@ -109,6 +111,8 @@ class Parser implements Network.IHandler {
                 name.append((char) data[i]);
             }
             model.attacked(sid, name.toString());
+            if (psObject != null)
+                psObject.activate();
         } else throw new IllegalArgumentException("Incorrect invite format");
     }
 
