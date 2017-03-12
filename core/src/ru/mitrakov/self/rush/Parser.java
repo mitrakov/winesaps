@@ -6,7 +6,6 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
 
 import static ru.mitrakov.self.rush.model.Model.*;
-import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
 /**
  * Created by mitrakov on 23.02.2017

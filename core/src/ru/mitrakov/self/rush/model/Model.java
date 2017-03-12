@@ -94,16 +94,6 @@ public class Model {
         this.fileReader = fileReader;
     }
 
-    public synchronized void init() {
-        if (fileReader != null) {
-            String strHistory = fileReader.read("history.txt");
-            if (strHistory != null) {
-                history.clear();
-                Collections.addAll(history, strHistory.split("\n"));
-            }
-        }
-    }
-
     public Collection<Product> getProductsByAbility(Ability ability) {
         List<Product> res = new LinkedList<Product>();
         for (Product product : products) {  // pity it's not Java 1.8
@@ -252,14 +242,14 @@ public class Model {
 
     public synchronized void setUserInfo(int[] data) {
         assert data != null;
-        byte bytes[] = new byte[data.length];
         int i = 0;
 
         // parse name
+        StringBuilder bld = new StringBuilder();
         for (; i < data.length && data[i] != 0; i++) {
-            bytes[i] = (byte) data[i];
+            bld.append((char) data[i]);
         }
-        name = new String(bytes);
+        name = bld.toString();
         i++;
 
         // parse crystals
@@ -277,6 +267,15 @@ public class Model {
                 int minutes = data[i + 1] * 256 + data[i + 2];
                 if (0 <= id && id < array.length)
                     abilityExpireTime.put(array[id], minutes);
+            }
+        }
+
+        // read the history from a local storage
+        if (fileReader != null) {
+            String strHistory = fileReader.read(String.format("history_%s.txt", name));
+            if (strHistory != null) {
+                history.clear();
+                Collections.addAll(history, strHistory.split("\n"));
             }
         }
     }
@@ -429,7 +428,7 @@ public class Model {
                 builder.append(x).append('\n');
             }
             // writing
-            fileReader.write("history.txt", builder.toString());
+            fileReader.write(String.format("history_%s.txt", name), builder.toString());
         }
 
         // reset reference to a field

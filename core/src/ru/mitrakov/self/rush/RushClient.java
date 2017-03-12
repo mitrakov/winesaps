@@ -36,7 +36,6 @@ public class RushClient extends Game {
     @Override
     public void create() {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
-        model.init();
         screenLogin = new ScreenLogin(this, model, psObject);
         screenMain = new ScreenMain(this, model, psObject);
         screenBattle = new ScreenBattle(this, model, psObject);
