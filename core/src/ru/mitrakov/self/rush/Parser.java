@@ -35,6 +35,7 @@ class Parser implements Network.IHandler {
                 Cmd cmd = commands[code];
                 switch (cmd) {
                     case SIGN_IN:
+                    case SIGN_UP:
                         signIn(Arrays.copyOfRange(data, 1, data.length));
                         break;
                     case USER_INFO:

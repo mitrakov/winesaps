@@ -119,13 +119,13 @@ public class Model {
 
     public void signIn(String login, String password) {
         if (sender != null) {
-            sender.send(SIGN_IN, String.format("\1%s\0%s", login, password).getBytes());
+            sender.send(SIGN_IN, String.format("\1%s\0%s", login, password).getBytes()); // \1 = Local auth
         }
     }
 
     public void signUp(String login, String password, String email) {
         if (sender != null) {
-            sender.send(SIGN_UP); // TODO
+            sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, password, email).getBytes());
         }
     }
 
