@@ -26,8 +26,8 @@ class InputController {
         if (actor != null) {
             if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
                 // getting coordinates
-                int touchX = ru.mitrakov.self.rush.screens.Gui.convertXFromScreenToModel(x);
-                int touchY = ru.mitrakov.self.rush.screens.Gui.convertYFromScreenToModel(y);
+                int touchX = Gui.convertXFromScreenToModel(x);
+                int touchY = Gui.convertYFromScreenToModel(y);
 
                 // check
                 if (touchY < actor.getY()) moveUp();
