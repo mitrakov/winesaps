@@ -291,8 +291,6 @@ class ScreenMain extends ScreenAdapter {
         tableRightHeader.add(btnHistory);
         tableRightHeader.add(btnFriends);
 
-        tableRightContent.setDebug(true);
-
         tableRightContentRatingBtns.row().spaceLeft(30);
         tableRightContentRatingBtns.add(btnGeneralRating);
         tableRightContentRatingBtns.add(btnWeeklyRating);

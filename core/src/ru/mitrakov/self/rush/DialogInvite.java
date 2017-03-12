@@ -27,7 +27,6 @@ class DialogInvite extends Dialog {
 
         lblQuestion = new Label("", skin, "default");
         chkAddToFriends = new CheckBox(" add to friends", skin, "default");
-        chkAddToFriends.setChecked(true);
 
         button("OK", true);
         button("Cancel");
@@ -64,6 +63,7 @@ class DialogInvite extends Dialog {
         assert type != null;
         this.type = type;
         this.name = name;
+        chkAddToFriends.setChecked(!model.friends.contains(name));
         return this;
     }
 
