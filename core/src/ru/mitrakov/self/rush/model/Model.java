@@ -237,6 +237,7 @@ public class Model {
         if (sender != null) {
             sender.send(USER_INFO);
             sender.send(RANGE_OF_PRODUCTS);
+            sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests add everyone to friends
         }
     }
 
@@ -370,6 +371,8 @@ public class Model {
     }
 
     public void setNewField(int[] fieldData) {
+        curThing = null;
+        curActor = null;
         field = new Field(fieldData);
     }
 
