@@ -53,6 +53,7 @@ public class RushClient extends Game {
     }
 
     public void setNextScreen() {
+        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
             setScreen(screenMain);
         else if (screen == screenMain)

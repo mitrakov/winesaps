@@ -376,15 +376,15 @@ public class Model {
         field = new Field(fieldData);
     }
 
-    public void appendObject(int number, int id, int xy) {
-        assert field != null;
+    public synchronized void appendObject(int number, int id, int xy) {
+        assert field != null; // 'field' may be NULL! ensure method is synchronized
         field.appendObject(number, id, xy);
         if (id == AGGRESSOR_ID || id == DEFENDER_ID)
             curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
     }
 
-    public void setXy(int number, int xy) {
-        assert field != null;
+    public synchronized void setXy(int number, int xy) {
+        assert field != null; // 'field' may be NULL! ensure method is synchronized
         field.setXy(number, xy);
     }
 

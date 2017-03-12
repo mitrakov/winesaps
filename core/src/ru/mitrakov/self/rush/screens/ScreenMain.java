@@ -322,6 +322,7 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void rebuildLeftTable(boolean showInputName) {
+        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         tableLeft.clear();
 
         // ...

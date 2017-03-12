@@ -46,7 +46,7 @@ public class ScreenLogin extends ScreenAdapter {
         table.setFillParent(true);
         stage.addActor(table);
 
-        setStartDialog(false);
+        setStartDialog();
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {
@@ -56,9 +56,6 @@ public class ScreenLogin extends ScreenAdapter {
                     @Override
                     public void run() {
                         switch (curDialog) {
-                            case Start:
-                                setStartDialog(ratio > 2);
-                                break;
                             case SignIn:
                                 setSignInDialog(ratio > 2);
                                 break;
@@ -105,21 +102,22 @@ public class ScreenLogin extends ScreenAdapter {
         skin.dispose();
     }
 
-    private void setStartDialog(final boolean shiftForKeyboard) {
+    private void setStartDialog() {
         curDialog = CurDialog.Start;
+        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
 
         TextButton btnSignIn = new TextButton("Sign in", skin, "default");
         btnSignIn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setSignInDialog(shiftForKeyboard);
+                setSignInDialog(false);
             }
         });
         TextButton btnSignUp = new TextButton("Sign up", skin, "default");
         btnSignUp.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setSignUpDialog(shiftForKeyboard);
+                setSignUpDialog(false);
             }
         });
 
@@ -127,10 +125,9 @@ public class ScreenLogin extends ScreenAdapter {
         table.add(btnSignIn).width(300).height(80).space(30);
         table.row();
         table.add(btnSignUp).width(300).height(80);
-        if (shiftForKeyboard) shiftUp();
     }
 
-    private void setSignInDialog(final boolean shiftForKeyboard) {
+    private void setSignInDialog(boolean shiftForKeyboard) {
         curDialog = CurDialog.SignIn;
         Actor focused = stage.getKeyboardFocus();
 
@@ -138,7 +135,7 @@ public class ScreenLogin extends ScreenAdapter {
         btnBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setStartDialog(shiftForKeyboard);
+                setStartDialog();
             }
         });
 
@@ -164,7 +161,7 @@ public class ScreenLogin extends ScreenAdapter {
         stage.setKeyboardFocus(focused);
     }
 
-    private void setSignUpDialog(final boolean shiftForKeyboard) {
+    private void setSignUpDialog(boolean shiftForKeyboard) {
         curDialog = CurDialog.SignUp;
         Actor focused = stage.getKeyboardFocus();
 
@@ -172,7 +169,7 @@ public class ScreenLogin extends ScreenAdapter {
         btnBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setStartDialog(shiftForKeyboard);
+                setStartDialog();
             }
         });
 
