@@ -190,26 +190,30 @@ public class Model {
     }
 
     public void moveLeft() {
-        if (sender != null) {
-            sender.send(MOVE_LEFT);
+        if (sender != null && curActor != null) {
+            if (curActor.getX() > 0)
+                sender.send(MOVE_LEFT);
         }
     }
 
     public void moveRight() {
-        if (sender != null) {
-            sender.send(MOVE_RIGHT);
+        if (sender != null && curActor != null) {
+            if (curActor.getX() < Field.WIDTH - 1)
+                sender.send(MOVE_RIGHT);
         }
     }
 
     public void moveUp() {
-        if (sender != null) {
-            sender.send(MOVE_UP);
+        if (sender != null && curActor != null) {
+            if (curActor.getY() > 0)
+                sender.send(MOVE_UP);
         }
     }
 
     public void moveDown() {
-        if (sender != null) {
-            sender.send(MOVE_DOWN);
+        if (sender != null && curActor != null) {
+            if (curActor.getY() < Field.HEIGHT - 1)
+                sender.send(MOVE_DOWN);
         }
     }
 

@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.model.object;
 
+import ru.mitrakov.self.rush.model.Field;
+
 /**
  * Created by mitrakov on 23.02.2017
  */
@@ -7,7 +9,7 @@ package ru.mitrakov.self.rush.model.object;
 public abstract class CellObject {
     protected int number = 0;
     protected int xy;
-    protected int id;
+    private int id;
 
     public CellObject(int id, int xy) {
         this.id = id;
@@ -28,5 +30,13 @@ public abstract class CellObject {
 
     public void setXy(int xy) {
         this.xy = xy;
+    }
+
+    public int getX() {
+        return xy % Field.WIDTH;
+    }
+
+    public int getY() {
+        return xy / Field.WIDTH;
     }
 }

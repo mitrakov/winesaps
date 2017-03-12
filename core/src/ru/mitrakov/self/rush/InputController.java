@@ -22,20 +22,18 @@ class InputController {
     }
 
     void checkInput(float x, float y) {
-        CellObject actor = model.curActor;
+        CellObject actor = model.curActor; // copy to local to avoid Null-Exceptions
         if (actor != null) {
             if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
                 // getting coordinates
-                int myX = actor.getXy() % Field.WIDTH;
-                int myY = actor.getXy() / Field.WIDTH;
                 int touchX = Gui.convertXFromScreenToModel(x);
                 int touchY = Gui.convertYFromScreenToModel(y);
 
                 // check
-                if (touchY < myY) moveUp();
-                else if (touchY > myY) moveDown();
-                else if (touchX > myX) moveRight();
-                else if (touchX < myX) moveLeft();
+                if (touchY < actor.getY()) moveUp();
+                else if (touchY > actor.getY()) moveDown();
+                else if (touchX > actor.getX()) moveRight();
+                else if (touchX < actor.getX()) moveLeft();
             }
         }
     }
