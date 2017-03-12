@@ -30,20 +30,27 @@ class ScreenBattle extends ScreenAdapter {
     private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
     private final Label lblScore = new Label("", skin);
+    private final DialogFinished infoDialog;
+
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
-    ScreenBattle(Model model, PsObject psObject) {
-        assert model != null;
+    private long roundFinishedTime = 0;
+    private long gameFinishedTime = 0;
+
+    ScreenBattle(RushClient game, Model model, PsObject psObject) {
+        assert game != null && model != null;
         this.model = model;
         this.psObject = psObject;
-        gui = new Gui(model);
 
         table.setFillParent(true);
         stage.addActor(table);
 
         loadTextures();
+        gui = new Gui(model);
+        infoDialog = new DialogFinished(game, skin, "default");
         btnThing = createButtonThing();
+
         buildTable();
     }
 
@@ -53,10 +60,6 @@ class ScreenBattle extends ScreenAdapter {
         Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
         btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
 
-        // updating the abilities
-        if (abilityButtons.getColumns() != model.abilities.size())
-            rebuildAbilities();
-
         // updating the score
         lblScore.setText(String.format(Locale.getDefault(), "Score: %d-%d", model.score1, model.score2));
 
@@ -65,6 +68,10 @@ class ScreenBattle extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
+        // checking
+        checkAbilities();
+        checkRoundFinished();
 
         // checking BACK and MENU buttons on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -78,7 +85,7 @@ class ScreenBattle extends ScreenAdapter {
     }
 
     @Override
-    public void show () {
+    public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -143,10 +150,27 @@ class ScreenBattle extends ScreenAdapter {
         table.add(lblScore);
     }
 
-    private void rebuildAbilities() {
-        abilityButtons.clear();
-        for (Model.Ability ability : model.abilities) {
-            abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
+    private void checkAbilities() {
+        if (abilityButtons.getColumns() != model.abilities.size()) {
+            abilityButtons.clear();
+            for (Model.Ability ability : model.abilities) {
+                abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
+            }
+        }
+    }
+
+    private void checkRoundFinished() {
+        if (roundFinishedTime != model.roundFinishedTime) {
+            roundFinishedTime = model.roundFinishedTime;
+            String msg = String.format("You %s the round", model.roundWinner ? "win" : "lose");
+            infoDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).show(stage);
+        }
+        if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
+            gameFinishedTime = model.gameFinishedTime;
+            String s = "GAME OVER!";
+            String msg = model.roundWinner ? "You win the battle! You get a reward of 1 crystal"
+                    : "You lose the battle...";
+            infoDialog.setText(s, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true).show(stage);
         }
     }
 }

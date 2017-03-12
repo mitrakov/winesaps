@@ -56,10 +56,11 @@ class DialogInvite extends Dialog {
                     break;
                 default:
             }
+            hide(null); // default hiding uses fadeout Action 400 ms long that may be undesirable when screens change
         }
     }
 
-    public Dialog setArguments(InviteType type, String name) {
+    Dialog setArguments(InviteType type, String name) {
         assert type != null;
         this.type = type;
         this.name = name;

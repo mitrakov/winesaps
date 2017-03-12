@@ -200,7 +200,7 @@ class ScreenMain extends ScreenAdapter {
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default");
-        infoDialog = new DialogInfo(skin, "default");
+        infoDialog = new DialogInfo("Information", skin, "default");
 
         tableMain.setFillParent(true);
         stage.addActor(tableMain);

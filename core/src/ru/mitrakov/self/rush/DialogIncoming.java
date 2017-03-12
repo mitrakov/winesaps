@@ -50,6 +50,7 @@ class DialogIncoming extends Dialog {
                 model.accept();
                 if (chkAddToFriends.isChecked())
                     model.addFriend(model.enemy);
+                hide(null); // default hiding uses fadeout Action 400 ms long that may be undesirable on screens change
                 break;
             case Reject:
                 model.reject();

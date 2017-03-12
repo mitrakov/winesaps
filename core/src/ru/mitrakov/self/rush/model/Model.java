@@ -74,6 +74,7 @@ public class Model {
     public volatile String name = "";
     public volatile String enemy = "";
     public volatile boolean authorized = false; // @mitrakov: must be volatile due to multithreading access
+    public volatile boolean roundWinner = false;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
@@ -84,6 +85,8 @@ public class Model {
     public volatile long inviteTime = 0;
     public volatile long refusedRejectedTime = 0;
     public volatile long refusedMissedTime = 0;
+    public volatile long roundFinishedTime = 0;
+    public volatile long gameFinishedTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -417,7 +420,8 @@ public class Model {
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
         this.totalScore1 = totalScore1;
         this.totalScore2 = totalScore2;
-        System.out.println("Winner = " + winner);
+        roundWinner = winner;
+        roundFinishedTime = System.currentTimeMillis();
     }
 
     public synchronized void gameFinished(boolean winner) {
@@ -444,6 +448,10 @@ public class Model {
             // writing
             fileReader.write("history.txt", builder.toString());
         }
+
+        // reset reference to a field
+        field = null;
+        gameFinishedTime = System.currentTimeMillis();
     }
 
     public synchronized void setAbilities(int[] ids) {

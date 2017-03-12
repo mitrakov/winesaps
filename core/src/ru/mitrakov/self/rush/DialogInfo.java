@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 class DialogInfo extends Dialog {
     private final Label lblMessage;
 
-    DialogInfo(Skin skin, String windowStyleName) {
-        super("Information", skin, windowStyleName);
+    DialogInfo(String title, Skin skin, String windowStyleName) {
+        super(title, skin, windowStyleName);
         lblMessage = new Label("", skin, "default");
         getContentTable().add(lblMessage); // no NULL here
 

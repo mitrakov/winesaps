@@ -74,11 +74,12 @@ class Gui extends Actor {
         if (listener.getPressedButton() >= 0)
             controller.checkInput(listener.x, listener.y);
 
-        if (model.field != null) {
+        Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
+        if (field != null) {
             // draw a field
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
-                    Cell cell = model.field.cells[j * Field.WIDTH + i]; // cell must NOT be NULL (assert omitted)
+                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell must NOT be NULL (assert omitted)
                     // @mitrakov: "Map::getOrDefault" requires too high Level API (24), so we use usual "Map::get"
                     // draw bottom (block/water/dias)
                     float bottomWidth = CELL_SIZ_W;

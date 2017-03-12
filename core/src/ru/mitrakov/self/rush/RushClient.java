@@ -38,7 +38,7 @@ public class RushClient extends Game {
         model.init();
         screenLogin = new ScreenLogin(this, model, psObject);
         screenMain = new ScreenMain(this, model, psObject);
-        screenBattle = new ScreenBattle(model, psObject);
+        screenBattle = new ScreenBattle(this, model, psObject);
         setScreen(screenLogin);
 
         Gdx.input.setCatchBackKey(true);
