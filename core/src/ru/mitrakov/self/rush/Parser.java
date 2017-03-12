@@ -6,6 +6,7 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
 
 import static ru.mitrakov.self.rush.model.Model.*;
+import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -26,60 +27,65 @@ class Parser implements Network.IHandler {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
         System.out.println(Arrays.toString(data));
+
         if (data.length > 0) {
             int code = data[0];
-            switch (code) {
-                case SIGN_IN:
-                    signIn(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case USER_INFO:
-                case BUY_PRODUCT:
-                    userInfo(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case INVITE:
-                    invite(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case REFUSED:
-                    refused(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case FRIEND_LIST:
-                    friendList(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case ADD_FRIEND:
-                    addFriend(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case REMOVE_FRIEND:
-                    removeFriend(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case RANGE_OF_PRODUCTS:
-                    rangeOfProducts(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case RATING:
-                    rating(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case FULL_STATE:
-                    fullState(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case STATE_CHANGED:
-                    stateChanged(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case SCORE_CHANGED:
-                    scoreChanged(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case FINISHED:
-                    finished(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case THING_TAKEN:
-                    thingTaken(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case ABILITY_LIST:
-                    abilitiesList(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                case OBJECT_APPENDED:
-                    objectAppended(Arrays.copyOfRange(data, 1, data.length));
-                    break;
-                default:
-            }
+            Cmd[] commands = Cmd.values();
+            if (0 <= code && code < commands.length) {
+                Cmd cmd = commands[code];
+                switch (cmd) {
+                    case SIGN_IN:
+                        signIn(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case USER_INFO:
+                    case BUY_PRODUCT:
+                        userInfo(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case INVITE:
+                        invite(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case REFUSED:
+                        refused(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case FRIEND_LIST:
+                        friendList(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case ADD_FRIEND:
+                        addFriend(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case REMOVE_FRIEND:
+                        removeFriend(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case RANGE_OF_PRODUCTS:
+                        rangeOfProducts(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case RATING:
+                        rating(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case FULL_STATE:
+                        fullState(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case STATE_CHANGED:
+                        stateChanged(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case SCORE_CHANGED:
+                        scoreChanged(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case FINISHED:
+                        finished(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case THING_TAKEN:
+                        thingTaken(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case ABILITY_LIST:
+                        abilitiesList(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    case OBJECT_APPENDED:
+                        objectAppended(Arrays.copyOfRange(data, 1, data.length));
+                        break;
+                    default:
+                }
+            } else throw new IllegalArgumentException("Incorrect command code");
         } else throw new IllegalArgumentException("Empty data");
     }
 

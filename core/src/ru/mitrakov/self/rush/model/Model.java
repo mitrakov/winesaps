@@ -6,56 +6,35 @@ import java.text.DateFormat;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
 
+import static ru.mitrakov.self.rush.model.Model.Cmd.*;
+
 /**
  * Created by mitrakov on 23.02.2017
  */
 
 @SuppressWarnings("WeakerAccess")
 public class Model {
-    public static final byte SIGN_UP = 0x01;
-    public static final byte SIGN_IN = 0x02;
-    public static final byte SIGN_OUT = 0x03;
-    public static final byte REFUSED = 0x04;
-    public static final byte USER_INFO = 0x05;
-    public static final byte ATTACK = 0x06;
-    public static final byte INVITE = 0x07;
-    public static final byte ACCEPT = 0x08;
-    public static final byte REJECT = 0x09;
-    public static final byte FRIEND_LIST = 0x0A;
-    public static final byte ADD_FRIEND = 0x0B;
-    public static final byte REMOVE_FRIEND = 0x0C;
-    public static final byte RANGE_OF_PRODUCTS = 0x0D;
-    public static final byte BUY_PRODUCT = 0x0E;
-    public static final byte RATING = 0x0F;
-    public static final byte FULL_STATE = 0x10;
-    public static final byte STATE_CHANGED = 0x11;
-    public static final byte SCORE_CHANGED = 0x12;
-    public static final byte MOVE_LEFT = 0x13;
-    public static final byte MOVE_RIGHT = 0x14;
-    public static final byte MOVE_UP = 0x15;
-    public static final byte MOVE_DOWN = 0x16;
-    public static final byte USE_THING = 0x17;
-    public static final byte FINISHED = 0x18;
-    public static final byte WOUND = 0x19;
-    public static final byte THING_TAKEN = 0x1A;
-    public static final byte USE_FACILITY = 0x1B;
-    public static final byte ABILITY_LIST = 0x1C;
-    public static final byte OBJECT_APPENDED = 0x1D;
-
     public static final int RATINGS_COUNT = 10;
 
     public interface ISender {
-        void send(int cmd);
+        void send(Cmd cmd);
 
-        void send(int cmd, byte arg);
+        void send(Cmd cmd, int arg);
 
-        void send(int cmd, byte[] data);
+        void send(Cmd cmd, byte[] data);
     }
 
     public interface IFileReader {
         void write(String filename, String s);
 
         String read(String filename);
+    }
+
+    public enum Cmd {
+        UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, INVITE, ACCEPT, REJECT, REFUSED, RANGE_OF_PRODUCTS,
+        BUY_PRODUCT, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND, FULL_STATE, ABILITY_LIST, MOVE_LEFT, MOVE_RIGHT,
+        MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
+        OBJECT_APPENDED, FINISHED
     }
 
     public enum Ability {
@@ -161,14 +140,14 @@ public class Model {
     public void inviteLatest() {
         if (sender != null) {
             aggressor = true;
-            sender.send(ATTACK, (byte) 1);
+            sender.send(ATTACK, 1);
         }
     }
 
     public void inviteRandom() {
         if (sender != null) {
             aggressor = true;
-            sender.send(ATTACK, (byte) 2);
+            sender.send(ATTACK, 2);
         }
     }
 
@@ -206,7 +185,7 @@ public class Model {
     public void getRating(RatingType type) {
         assert type != null;
         if (sender != null) {
-            sender.send(RATING, (byte) type.ordinal());
+            sender.send(RATING, type.ordinal());
         }
     }
 
@@ -236,7 +215,7 @@ public class Model {
 
     public void useThing() {
         if (sender != null && curThing != null) {
-            sender.send(USE_THING, (byte) curThing.getId());
+            sender.send(USE_THING, curThing.getId());
         }
     }
 
@@ -244,7 +223,7 @@ public class Model {
         assert ability != null;
         if (sender != null) {
             if (ability.ordinal() > SKILL_OFFSET) // only skills may be used
-                sender.send(USE_FACILITY, (byte) ability.ordinal());
+                sender.send(USE_SKILL, ability.ordinal());
         }
     }
 

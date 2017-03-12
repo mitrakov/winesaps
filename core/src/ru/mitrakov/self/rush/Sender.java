@@ -18,9 +18,9 @@ class Sender implements Model.ISender {
     }
 
     @Override
-    public void send(int cmd) {
+    public void send(Model.Cmd cmd) {
         try {
-            byte msg[] = new byte[] {(byte)cmd};
+            byte msg[] = new byte[] {(byte)cmd.ordinal()};
             network.send(msg);
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
@@ -28,9 +28,9 @@ class Sender implements Model.ISender {
     }
 
     @Override
-    public void send(int cmd, byte arg) {
+    public void send(Model.Cmd cmd, int arg) {
         try {
-            byte msg[] = new byte[] {(byte)cmd, arg};
+            byte msg[] = new byte[] {(byte)cmd.ordinal(), (byte)arg};
             network.send(msg);
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
@@ -38,10 +38,10 @@ class Sender implements Model.ISender {
     }
 
     @Override
-    public void send(int cmd, byte[] data) {
+    public void send(Model.Cmd cmd, byte[] data) {
         try {
             byte msg[] = new byte[data.length + 1];
-            msg[0] = (byte)cmd;
+            msg[0] = (byte)cmd.ordinal();
             System.arraycopy(data, 0, msg, 1, data.length);
             network.send(msg);
         } catch (Exception e) {
