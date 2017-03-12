@@ -36,6 +36,7 @@ public class DesktopLauncher extends JFrame {
         Container container = getContentPane();
         container.add(new LwjglAWTCanvas(new RushClient(obj), config).getCanvas(), BorderLayout.CENTER);
         container.setPreferredSize(new Dimension(config.width, config.height));
+        setResizable(false); // this must be BEFORE pack()!
         pack();
         setVisible(true);
         setLocationRelativeTo(null);
