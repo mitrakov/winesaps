@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
+import ru.mitrakov.self.rush.screens.*;
 
 public class RushClient extends Game {
     private final Model model = new Model();
@@ -52,7 +53,7 @@ public class RushClient extends Game {
         screenBattle.dispose();
     }
 
-    void setNextScreen() {
+    public void setNextScreen() {
         if (screen == screenLogin)
             setScreen(screenMain);
         else if (screen == screenMain)

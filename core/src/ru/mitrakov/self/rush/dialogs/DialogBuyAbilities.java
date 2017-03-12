@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,14 +14,14 @@ import ru.mitrakov.self.rush.model.*;
  * Created by mitrakov on 05.03.2017
  */
 
-class DialogBuyAbilities extends Dialog {
+public class DialogBuyAbilities extends Dialog {
     private final Model model;
     private final Label lblPicture;
     private final Label lblCrystals;
     private final Label lblCurAbility;
     private final List<Product> productsList;
 
-    DialogBuyAbilities(final Model model, Skin skin, String windowStyleName) {
+    public DialogBuyAbilities(final Model model, Skin skin, String windowStyleName) {
         super("Buy abilities", skin, windowStyleName);
         assert model != null;
         this.model = model;

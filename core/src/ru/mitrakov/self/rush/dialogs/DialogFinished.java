@@ -1,15 +1,16 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.dialogs;
 
 import java.util.Locale;
 
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+
+import ru.mitrakov.self.rush.RushClient;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
 
-class DialogFinished extends Dialog {
+public class DialogFinished extends Dialog {
     private final RushClient game;
     private final Label lblMessage1;
     private final Label lblMessage2;
@@ -17,7 +18,7 @@ class DialogFinished extends Dialog {
 
     private boolean quitOnResult = false;
 
-    DialogFinished(RushClient game, Skin skin, String windowStyleName) {
+    public DialogFinished(RushClient game, Skin skin, String windowStyleName) {
         super("Round finished", skin, windowStyleName);
         assert game != null;
         this.game = game;
@@ -37,19 +38,19 @@ class DialogFinished extends Dialog {
         }
     }
 
-    DialogFinished setText(String text1, String text2) {
+    public DialogFinished setText(String text1, String text2) {
         assert text1 != null && text2 != null;
         lblMessage1.setText(text1);
         lblMessage2.setText(text2);
         return this;
     }
 
-    DialogFinished setScore(int score1, int score2) {
+    public DialogFinished setScore(int score1, int score2) {
         lblScore.setText(String.format(Locale.getDefault(), "%d - %d", score1, score2));
         return this;
     }
 
-    DialogFinished setQuitOnResult(boolean value) {
+    public DialogFinished setQuitOnResult(boolean value) {
         quitOnResult = value;
         return this;
     }

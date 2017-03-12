@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  * Created by mitrakov on 05.03.2017
  */
 
-class DialogInfo extends Dialog {
+public class DialogInfo extends Dialog {
     private final Label lblMessage;
 
-    DialogInfo(String title, Skin skin, String windowStyleName) {
+    public DialogInfo(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
         lblMessage = new Label("", skin, "default");
         getContentTable().add(lblMessage); // no NULL here
@@ -17,7 +17,7 @@ class DialogInfo extends Dialog {
         button("OK");
     }
 
-    Dialog setText(String text) {
+    public Dialog setText(String text) {
         assert text != null;
         lblMessage.setText(text);
         return this;

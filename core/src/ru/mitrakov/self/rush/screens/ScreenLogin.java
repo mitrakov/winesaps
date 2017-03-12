@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,13 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
  * Created by mitrakov on 01.03.2017
  */
 
-class ScreenLogin extends ScreenAdapter {
+public class ScreenLogin extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
@@ -35,7 +37,7 @@ class ScreenLogin extends ScreenAdapter {
 
     private CurDialog curDialog = CurDialog.Start;
 
-    ScreenLogin(RushClient game, Model model, PsObject psObject) {
+    public ScreenLogin(RushClient game, Model model, PsObject psObject) {
         assert game != null && model != null;
         this.game = game;
         this.model = model;

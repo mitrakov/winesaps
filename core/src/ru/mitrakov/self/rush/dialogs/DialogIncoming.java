@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,7 +9,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-class DialogIncoming extends Dialog {
+public class DialogIncoming extends Dialog {
 
     private enum Result {Accept, Reject, Ignore}
 
@@ -17,7 +17,7 @@ class DialogIncoming extends Dialog {
     private final Label lblQuestion;
     private final CheckBox chkAddToFriends;
 
-    DialogIncoming(Model model, Skin skin, String windowStyleName) {
+    public DialogIncoming(Model model, Skin skin, String windowStyleName) {
         super("Invitation", skin, windowStyleName);
         assert model != null;
         this.model = model;

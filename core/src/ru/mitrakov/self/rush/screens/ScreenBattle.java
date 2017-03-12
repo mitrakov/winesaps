@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.screens;
 
 import java.util.*;
 
@@ -13,14 +13,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
+import ru.mitrakov.self.rush.dialogs.DialogFinished;
 
 /**
  * Created by mitrakov on 01.03.2017
  */
 
-class ScreenBattle extends ScreenAdapter {
+public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(800, 480));
@@ -38,7 +41,7 @@ class ScreenBattle extends ScreenAdapter {
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;
 
-    ScreenBattle(RushClient game, Model model, PsObject psObject) {
+    public ScreenBattle(RushClient game, Model model, PsObject psObject) {
         assert game != null && model != null;
         this.model = model;
         this.psObject = psObject;

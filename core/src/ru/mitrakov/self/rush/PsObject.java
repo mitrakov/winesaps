@@ -7,7 +7,7 @@ package ru.mitrakov.self.rush;
 @SuppressWarnings("WeakerAccess")
 public class PsObject {
 
-    interface Listener {
+    public interface Listener {
         void onRatioChanged(float ratio);
     }
 

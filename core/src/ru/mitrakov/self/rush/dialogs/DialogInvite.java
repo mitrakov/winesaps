@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -9,9 +9,9 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-class DialogInvite extends Dialog {
+public class DialogInvite extends Dialog {
 
-    enum InviteType {ByName, Random, Latest}
+    public enum InviteType {ByName, Random, Latest}
 
     private final Model model;
     private final Label lblQuestion;
@@ -20,7 +20,7 @@ class DialogInvite extends Dialog {
     private InviteType type = InviteType.Random;
     private String name = "";
 
-    DialogInvite(Model model, Skin skin, String windowStyleName) {
+    public DialogInvite(Model model, Skin skin, String windowStyleName) {
         super("Invite", skin, windowStyleName);
         assert model != null;
         this.model = model;
@@ -59,7 +59,7 @@ class DialogInvite extends Dialog {
         }
     }
 
-    Dialog setArguments(InviteType type, String name) {
+    public Dialog setArguments(InviteType type, String name) {
         assert type != null;
         this.type = type;
         this.name = name;

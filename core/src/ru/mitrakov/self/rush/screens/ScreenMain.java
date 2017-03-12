@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.screens;
 
 import java.util.*;
 
@@ -17,12 +17,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.model.*;
+import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.dialogs.*;
+import ru.mitrakov.self.rush.RushClient;
 
 /**
  * Created by mitrakov on 03.03.2017
  */
 
-class ScreenMain extends ScreenAdapter {
+public class ScreenMain extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
@@ -191,7 +194,7 @@ class ScreenMain extends ScreenAdapter {
     private long rejectedTime = 0;
     private long missedTime = 0;
 
-    ScreenMain(RushClient game, Model model, PsObject psObject) {
+    public ScreenMain(RushClient game, Model model, PsObject psObject) {
         assert game != null && model != null;
         this.game = game;
         this.model = model;

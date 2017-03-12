@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush;
+package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -14,7 +14,7 @@ class InputController {
     private static final int TOUCH_DELAY = 250;
 
     private final Model model;
-    private long time = TimeUtils.millis();
+    private long time = 0;
 
     InputController(Model model) {
         assert model != null;
@@ -26,8 +26,8 @@ class InputController {
         if (actor != null) {
             if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
                 // getting coordinates
-                int touchX = Gui.convertXFromScreenToModel(x);
-                int touchY = Gui.convertYFromScreenToModel(y);
+                int touchX = ru.mitrakov.self.rush.screens.Gui.convertXFromScreenToModel(x);
+                int touchY = ru.mitrakov.self.rush.screens.Gui.convertYFromScreenToModel(y);
 
                 // check
                 if (touchY < actor.getY()) moveUp();
