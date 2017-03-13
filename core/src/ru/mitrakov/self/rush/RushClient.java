@@ -61,4 +61,8 @@ public class RushClient extends Game {
         else if (screen == screenBattle)
             setScreen(screenMain);
     }
+
+    public void setLoginScreen() {
+        setScreen(screenLogin);
+    }
 }

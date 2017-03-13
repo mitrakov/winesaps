@@ -37,6 +37,9 @@ class Parser implements Network.IHandler {
                     case SIGN_UP:
                         signIn(Arrays.copyOfRange(data, 1, data.length));
                         break;
+                    case SIGN_OUT:
+                        signOut(Arrays.copyOfRange(data, 1, data.length));
+                        break;
                     case USER_INFO:
                     case BUY_PRODUCT:
                         userInfo(Arrays.copyOfRange(data, 1, data.length));
@@ -93,9 +96,18 @@ class Parser implements Network.IHandler {
         if (data.length == 1) {
             int ok = data[0];
             if (ok == 0)
-                model.setAuthorized();
+                model.setAuthorized(true);
             else throw new IllegalArgumentException("Incorrect login/password");
         } else throw new IllegalArgumentException("Incorrect sign-in format");
+    }
+
+    private void signOut(int[] data) {
+        if (data.length == 1) {
+            int ok = data[0];
+            if (ok == 0)
+                model.setAuthorized(false);
+            else throw new IllegalArgumentException("Incorrect sign out response");
+        } else throw new IllegalArgumentException("Incorrect sign-out format");
     }
 
     private void userInfo(int[] data) {

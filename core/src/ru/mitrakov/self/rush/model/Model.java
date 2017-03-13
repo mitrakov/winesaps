@@ -22,6 +22,8 @@ public class Model {
         void send(Cmd cmd, int arg);
 
         void send(Cmd cmd, byte[] data);
+
+        void resetSid();
     }
 
     public interface IFileReader {
@@ -77,6 +79,9 @@ public class Model {
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
+    // settings
+    public boolean notifyNewBattles = true;
+
     private ISender sender;
     private IFileReader fileReader;
     private int enemySid = 0;
@@ -116,6 +121,12 @@ public class Model {
     public void signUp(String login, String password, String email) {
         if (sender != null) {
             sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, password, email).getBytes());
+        }
+    }
+
+    public void signOut() {
+        if (sender != null) {
+            sender.send(SIGN_OUT);
         }
     }
 
@@ -232,12 +243,14 @@ public class Model {
     // === RESPONSE METHODS ===
     // ========================
 
-    public void setAuthorized() {
-        authorized = true;
+    public void setAuthorized(boolean value) {
+        authorized = value;
         if (sender != null) {
-            sender.send(USER_INFO);
-            sender.send(RANGE_OF_PRODUCTS);
-            sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests add everyone to friends
+            if (authorized) {
+                sender.send(USER_INFO);
+                sender.send(RANGE_OF_PRODUCTS);
+                sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests add everyone to friends
+            } else sender.resetSid();
         }
     }
 

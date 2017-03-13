@@ -48,4 +48,9 @@ class Sender implements Model.ISender {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
     }
+
+    @Override
+    public void resetSid() {
+        network.resetSid();
+    }
 }

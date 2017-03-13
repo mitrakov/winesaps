@@ -61,12 +61,16 @@ public class Network extends Thread {
     public void send(byte[] data) throws IOException {
         // concatenate a header and data
         byte[] msg = new byte[data.length + HEADER_SIZ];
-        msg[0] = (byte)(sid / 256);
-        msg[1] = (byte)(sid % 256);
+        msg[0] = (byte) (sid / 256);
+        msg[1] = (byte) (sid % 256);
         msg[2] = 0; // flags
         System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
 
         // sending
         socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("192.168.1.2"), 33996));
+    }
+
+    public void resetSid() {
+        sid = 0;
     }
 }

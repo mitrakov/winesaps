@@ -34,6 +34,8 @@ public class ScreenMain extends ScreenAdapter {
     private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
+    private final Table tableLeftInvite = new Table();
+    private final Table tableLeftToolbar = new Table();
     private final Table tableRightHeader = new Table();
     private final Table tableRightContent = new Table();
     private final Table tableRightContentAbilities = new Table();
@@ -43,6 +45,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Dialog buyAbilitiesDialog;
     private final Dialog moreCrystalsDialog;
     private final Dialog incomingDialog;
+    private final Dialog settingsDialog;
     private final DialogInvite inviteDialog;
     private final DialogInfo infoDialog;
     private final List<String> lstHistory = new List<String>(skin, "default");
@@ -98,6 +101,14 @@ public class ScreenMain extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 rebuildLeftTable(false);
+            }
+        });
+    }};
+    private final TextButton btnSettings = new TextButton("  S  ", skin, "default") {{
+        addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                settingsDialog.show(stage);
             }
         });
     }};
@@ -208,6 +219,7 @@ public class ScreenMain extends ScreenAdapter {
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
+        settingsDialog = new DialogSettings(model, game, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
 
@@ -236,8 +248,11 @@ public class ScreenMain extends ScreenAdapter {
         updateInvite();
         updateRefused();
 
+        // changing screens
         if (model.field != null)
             game.setNextScreen();
+        if (!model.authorized)
+            game.setLoginScreen();
 
         // checking BACK and MENU buttons on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -287,8 +302,13 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void initTables() {
-        tableMain.add(tableLeft).pad(20);
+        tableMain.add(tableLeft).pad(20).fill();
         tableMain.add(tableRight).pad(20).expand().fill();
+
+        tableLeft.setDebug(true);
+        tableLeft.add(tableLeftInvite).expand().fill();
+        tableLeft.row();
+        tableLeft.add(tableLeftToolbar);
 
         tableRight.add(tableRightHeader);
         tableRight.row();
@@ -329,25 +349,27 @@ public class ScreenMain extends ScreenAdapter {
 
     private void rebuildLeftTable(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
-        tableLeft.clear();
+        tableLeftInvite.clear();
 
         // ...
         if (showInputName) {
-            tableLeft.add(txtEnemyName).colspan(2).width(140).height(50);
-            tableLeft.row().space(20);
-            tableLeft.add(btnInviteByNameOk).width(60).height(40);
-            tableLeft.add(btnInviteByNameCancel).width(80).height(40);
-            tableLeft.row().space(20);
-            tableLeft.add(btnInviteRandom).colspan(2).width(160).height(80);
-            tableLeft.row().space(20);
-            tableLeft.add(btnInviteLatest).colspan(2).width(160).height(80);
+            tableLeftInvite.add(txtEnemyName).colspan(2).width(140).height(50);
+            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(btnInviteByNameOk).width(60).height(40);
+            tableLeftInvite.add(btnInviteByNameCancel).width(80).height(40);
+            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(btnInviteRandom).colspan(2).width(160).height(80);
+            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(btnInviteLatest).colspan(2).width(160).height(80);
         } else {
-            tableLeft.add(btnInviteByName).width(160).height(80);
-            tableLeft.row().space(20);
-            tableLeft.add(btnInviteRandom).width(160).height(80);
-            tableLeft.row().space(20);
-            tableLeft.add(btnInviteLatest).width(160).height(80);
+            tableLeftInvite.add(btnInviteByName).width(160).height(80);
+            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(btnInviteRandom).width(160).height(80);
+            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(btnInviteLatest).width(160).height(80);
         }
+
+        tableLeftToolbar.add(btnSettings);
     }
 
     private void rebuildRightTable(CurDisplayMode mode) {
