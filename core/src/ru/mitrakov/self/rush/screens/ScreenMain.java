@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -20,6 +19,7 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.RushClient;
+import ru.mitrakov.self.rush.ui.LinkedLabel;
 
 /**
  * Created by mitrakov on 03.03.2017
@@ -41,6 +41,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentRating = new Table();
     private final Table tableFriendsControl = new Table();
     private final Dialog buyAbilitiesDialog;
+    private final Dialog moreCrystalsDialog;
     private final Dialog incomingDialog;
     private final DialogInvite inviteDialog;
     private final DialogInfo infoDialog;
@@ -181,12 +182,16 @@ public class ScreenMain extends ScreenAdapter {
             }
         });
     }};
+    private final LinkedLabel lblMore = new LinkedLabel("Get ", "more crystals", "", skin, "default", new Runnable() {
+        @Override
+        public void run() {
+            moreCrystalsDialog.show(stage);
+        }
+    });
     private final Label lblName = new Label("aaa", skin, "default");
     private final Label lblCrystalsHeader = new Label("Crystals:", skin, "default");
     private final Label lblCrystalsData = new Label("", skin, "default");
     private final Label lblAbilities = new Label("Abilities:", skin, "default");
-    private final Label lblMoreCrystalsPrefix = new Label("Get ", skin, "default");
-    private final Label lblMoreCrystals = new Label("more crystals", skin, "default-font", new Color(.4f, .4f, .9f, 1));
 
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
@@ -201,6 +206,7 @@ public class ScreenMain extends ScreenAdapter {
         this.psObject = psObject; // may be NULL
 
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
+        moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
@@ -349,20 +355,17 @@ public class ScreenMain extends ScreenAdapter {
 
         switch (mode) {
             case Info:
-                tableRightContent.add(lblName).colspan(3).expand();
+                tableRightContent.add(lblName).colspan(2).expand();
                 tableRightContent.row().expand();
                 tableRightContent.add(lblCrystalsHeader);
-                tableRightContent.add(lblCrystalsData).colspan(2);
+                tableRightContent.add(lblCrystalsData);
                 tableRightContent.row().expand();
                 tableRightContent.add(lblAbilities);
-                tableRightContent.add(tableRightContentAbilities).colspan(2);
+                tableRightContent.add(tableRightContentAbilities);
                 tableRightContent.row().expand();
-                tableRightContent.add((Actor) null);
                 tableRightContent.add(btnBuyAbilities).colspan(2);
                 tableRightContent.row().expand();
-                tableRightContent.add((Actor) null);
-                tableRightContent.add(lblMoreCrystalsPrefix).right();
-                tableRightContent.add(lblMoreCrystals).left();
+                tableRightContent.add(lblMore).colspan(2);
                 break;
             case Rating:
                 tableRightContent.add(tableRightContentRatingBtns).pad(15);
