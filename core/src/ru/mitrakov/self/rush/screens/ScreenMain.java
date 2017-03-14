@@ -29,8 +29,8 @@ public class ScreenMain extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
+
     private final Stage stage = new Stage(new FitViewport(800, 480));
-    private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
@@ -48,161 +48,44 @@ public class ScreenMain extends ScreenAdapter {
     private final Dialog settingsDialog;
     private final DialogInvite inviteDialog;
     private final DialogInfo infoDialog;
-    private final List<String> lstHistory = new List<String>(skin, "default");
-    private final List<String> lstFriends = new List<String>(skin, "default");
-    private final ScrollPane lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
-    private final ScrollPane lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
+    private final List<String> lstHistory;
+    private final List<String> lstFriends;
+    private final ScrollPane lstHistoryScroll;
+    private final ScrollPane lstFriendsScroll;
+    private final TextField txtEnemyName;
+    private final TextField txtFriendName;
+    private final Button btnInviteByName;
+    private final Button btnInviteRandom;
+    private final Button btnInviteLatest;
+    private final Button btnInviteByNameOk;
+    private final Button btnInviteByNameCancel;
+    private final Button btnSettings;
+    private final Button btnAbout;
+    private final Button btnInfo;
+    private final Button btnRating;
+    private final Button btnHistory;
+    private final Button btnFriends;
+    private final Button btnBuyAbilities;
+    private final Button btnGeneralRating;
+    private final Button btnWeeklyRating;
+    private final Button btnAddFriend;
+    private final Button btnAddFriendOk;
+    private final Button btnAddFriendCancel;
+    private final LinkedLabel lblMore;
+    private final Label lblName;
+    private final Label lblCrystalsHeader;
+    private final Label lblCrystalsData;
+    private final Label lblAbilities;
+    private final Label lblRatingName;
+    private final Label lblRatingWins;
+    private final Label lblRatingLosses;
+    private final Label lblRatingScoreDiff;
+    private final Label lblRatingDots;
 
     private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
-
-    private final TextField txtEnemyName = new TextField("", skin, "default");
-    private final TextField txtFriendName = new TextField("", skin, "default");
-    private final TextButton btnInviteByName = new TextButton("Find opponent", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildLeftTable(true);
-            }
-        });
-    }};
-    private final TextButton btnInviteRandom = new TextButton("Random opponent", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                inviteDialog.setArguments(DialogInvite.InviteType.Random, "").show(stage);
-            }
-        });
-    }};
-    private final TextButton btnInviteLatest = new TextButton("Latest opponent", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                inviteDialog.setArguments(DialogInvite.InviteType.Latest, "").show(stage);
-            }
-        });
-    }};
-    private final TextButton btnInviteByNameOk = new TextButton("OK", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                String name = txtEnemyName.getText();
-                if (!name.isEmpty()) {
-                    inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
-                    rebuildLeftTable(false);
-                }
-            }
-        });
-    }};
-    private final TextButton btnInviteByNameCancel = new TextButton("Cancel", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildLeftTable(false);
-            }
-        });
-    }};
-    private final TextButton btnSettings = new TextButton("  S  ", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                settingsDialog.show(stage);
-            }
-        });
-    }};
-    private final TextButton btnInfo = new TextButton("Info", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildRightTable(CurDisplayMode.Info);
-            }
-        });
-    }};
-    private final TextButton btnRating = new TextButton("Rating", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildRightTable(CurDisplayMode.Rating);
-            }
-        });
-    }};
-    private final TextButton btnHistory = new TextButton("History", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildRightTable(CurDisplayMode.History);
-            }
-        });
-    }};
-    private final TextButton btnFriends = new TextButton("Friends", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildRightTable(CurDisplayMode.Friends);
-            }
-        });
-    }};
-    private final TextButton btnBuyAbilities = new TextButton("Buy abilities", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                buyAbilitiesDialog.show(stage);
-            }
-        });
-    }};
-    private final TextButton btnGeneralRating = new TextButton("General Rating", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.getRating(Model.RatingType.General);
-            }
-        });
-    }};
-    private final TextButton btnWeeklyRating = new TextButton("Weekly Rating", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.getRating(Model.RatingType.Weekly);
-            }
-        });
-    }};
-    private final TextButton btnAddFriend = new TextButton("Add new", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildFriends(true);
-            }
-        });
-    }};
-    private final TextButton btnAddFriendOk = new TextButton("OK", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.addFriend(txtFriendName.getText());
-                rebuildFriends(false);
-            }
-        });
-    }};
-    private final TextButton btnAddFriendCancel = new TextButton("Cancel", skin, "default") {{
-        addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                rebuildFriends(false);
-            }
-        });
-    }};
-    private final LinkedLabel lblMore = new LinkedLabel("Get ", "more crystals", "", skin, "default", new Runnable() {
-        @Override
-        public void run() {
-            moreCrystalsDialog.show(stage);
-        }
-    });
-    private final Label lblName = new Label("aaa", skin, "default");
-    private final Label lblCrystalsHeader = new Label("Crystals:", skin, "default");
-    private final Label lblCrystalsData = new Label("", skin, "default");
-    private final Label lblAbilities = new Label("Abilities:", skin, "default");
 
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
@@ -210,24 +93,191 @@ public class ScreenMain extends ScreenAdapter {
     private long rejectedTime = 0;
     private long missedTime = 0;
 
-    public ScreenMain(RushClient game, Model model, PsObject psObject) {
-        assert game != null && model != null;
+    public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin) {
+        assert game != null && model != null && skin != null;
         this.game = game;
         this.model = model;
         this.psObject = psObject; // may be NULL
 
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
-        moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
-        incomingDialog = new DialogIncoming(model, skin, "default");
-        settingsDialog = new DialogSettings(model, game, skin, "default");
-        inviteDialog = new DialogInvite(model, skin, "default");
-        infoDialog = new DialogInfo("Information", skin, "default");
-
         tableMain.setFillParent(true);
         stage.addActor(tableMain);
 
+        TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
+        TextureRegion regionSettings = atlasMenu.findRegion("settings");
+        TextureRegion regionAbout = atlasMenu.findRegion("about");
+        assert regionSettings != null && regionAbout != null;
+
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
+        moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
+        incomingDialog = new DialogIncoming(model, skin, "default");
+        settingsDialog = new DialogSettings(model, skin, "default");
+        inviteDialog = new DialogInvite(model, skin, "default");
+        infoDialog = new DialogInfo("Information", skin, "default");
+        lstHistory = new List<String>(skin, "default");
+        lstFriends = new List<String>(skin, "default");
+        lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
+        lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
+        txtEnemyName = new TextField("", skin, "default");
+        txtFriendName = new TextField("", skin, "default");
+        btnInviteByName = new TextButton("Find opponent", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildLeftTable(true);
+                }
+            });
+        }};
+        btnInviteRandom = new TextButton("Random opponent", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    inviteDialog.setArguments(DialogInvite.InviteType.Random, "").show(stage);
+                }
+            });
+        }};
+        btnInviteLatest = new TextButton("Latest opponent", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    inviteDialog.setArguments(DialogInvite.InviteType.Latest, "").show(stage);
+                }
+            });
+        }};
+        btnInviteByNameOk = new TextButton("OK", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    String name = txtEnemyName.getText();
+                    if (!name.isEmpty()) {
+                        inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
+                        rebuildLeftTable(false);
+                    }
+                }
+            });
+        }};
+        btnInviteByNameCancel = new TextButton("Cancel", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildLeftTable(false);
+                }
+            });
+        }};
+        btnSettings = new ImageButton(new TextureRegionDrawable(regionSettings)) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    settingsDialog.show(stage);
+                }
+            });
+        }};
+        btnAbout = new ImageButton(new TextureRegionDrawable(regionAbout)) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    System.out.println("Fuck!");
+                }
+            });
+        }};
+        btnInfo = new TextButton("Info", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildRightTable(CurDisplayMode.Info);
+                }
+            });
+        }};
+        btnRating = new TextButton("Rating", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildRightTable(CurDisplayMode.Rating);
+                }
+            });
+        }};
+        btnHistory = new TextButton("History", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildRightTable(CurDisplayMode.History);
+                }
+            });
+        }};
+        btnFriends = new TextButton("Friends", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildRightTable(CurDisplayMode.Friends);
+                }
+            });
+        }};
+        btnBuyAbilities = new TextButton("Buy abilities", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    buyAbilitiesDialog.show(stage);
+                }
+            });
+        }};
+        btnGeneralRating = new TextButton("General Rating", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.getRating(Model.RatingType.General);
+                }
+            });
+        }};
+        btnWeeklyRating = new TextButton("Weekly Rating", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.getRating(Model.RatingType.Weekly);
+                }
+            });
+        }};
+        btnAddFriend = new TextButton("Add new", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildFriends(true);
+                }
+            });
+        }};
+        btnAddFriendOk = new TextButton("OK", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.addFriend(txtFriendName.getText());
+                    rebuildFriends(false);
+                }
+            });
+        }};
+        btnAddFriendCancel = new TextButton("Cancel", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    rebuildFriends(false);
+                }
+            });
+        }};
+        lblMore = new LinkedLabel("Get ", "more crystals", "", skin, "default", new Runnable() {
+            @Override
+            public void run() {
+                moreCrystalsDialog.show(stage);
+            }
+        });
+        lblName = new Label("", skin, "default");
+        lblCrystalsHeader = new Label("Crystals:", skin, "default");
+        lblCrystalsData = new Label("", skin, "default");
+        lblAbilities = new Label("Abilities:", skin, "default");
+        lblRatingName = new Label("Name", skin, "default");
+        lblRatingWins = new Label("Wins", skin, "default");
+        lblRatingLosses = new Label("Losses", skin, "default");
+        lblRatingScoreDiff = new Label("Score diff", skin, "default");
+        lblRatingDots = new Label(". . .", skin, "default");
+
         loadTextures();
-        initTables();
+        initTables(skin);
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
     }
@@ -273,7 +323,6 @@ public class ScreenMain extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
 
         for (ImageButton button : abilities.values()) {
             assert button.getStyle() != null;
@@ -301,11 +350,10 @@ public class ScreenMain extends ScreenAdapter {
         }
     }
 
-    private void initTables() {
+    private void initTables(Skin skin) {
         tableMain.add(tableLeft).pad(20).fill();
         tableMain.add(tableRight).pad(20).expand().fill();
 
-        tableLeft.setDebug(true);
         tableLeft.add(tableLeftInvite).expand().fill();
         tableLeft.row();
         tableLeft.add(tableLeftToolbar);
@@ -325,22 +373,24 @@ public class ScreenMain extends ScreenAdapter {
         tableRightContentRatingBtns.add(btnWeeklyRating);
 
         tableRightContentRating.row().spaceLeft(20).spaceBottom(20); // don't use space(), it breaks the layout
-        tableRightContentRating.add(new Label("Name", skin, "default"));
-        tableRightContentRating.add(new Label("Wins", skin, "default"));
-        tableRightContentRating.add(new Label("Losses", skin, "default"));
-        tableRightContentRating.add(new Label("Score diff", skin, "default"));
+        tableRightContentRating.add(lblRatingName);
+        tableRightContentRating.add(lblRatingWins);
+        tableRightContentRating.add(lblRatingLosses);
+        tableRightContentRating.add(lblRatingScoreDiff);
+
+        final int RATING_COLUMNS = 4;
         for (int i = 0; i < Model.RATINGS_COUNT; i++) {
             tableRightContentRating.row().spaceLeft(20);
-            for (int j = 0; j < 4; j++) { // 4 = columns count
+            for (int j = 0; j < RATING_COLUMNS; j++) {
                 Label label = new Label("", skin, "default");
                 tableRightContentRating.add(label);
                 ratingLabels.add(label);
             }
         }
         tableRightContentRating.row().spaceLeft(20);
-        tableRightContentRating.add(new Label("...", skin, "default")).colspan(4);
+        tableRightContentRating.add(lblRatingDots).colspan(4);
         tableRightContentRating.row().spaceLeft(20);
-        for (int j = 0; j < 4; j++) { // 4 = columns count
+        for (int j = 0; j < RATING_COLUMNS; j++) {
             Label label = new Label("", skin, "default");
             tableRightContentRating.add(label);
             ratingLabels.add(label);
@@ -369,7 +419,8 @@ public class ScreenMain extends ScreenAdapter {
             tableLeftInvite.add(btnInviteLatest).width(160).height(80);
         }
 
-        tableLeftToolbar.add(btnSettings);
+        tableLeftToolbar.add(btnSettings).spaceRight(30);
+        tableLeftToolbar.add(btnAbout);
     }
 
     private void rebuildRightTable(CurDisplayMode mode) {
@@ -393,8 +444,8 @@ public class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(tableRightContentRatingBtns).pad(15);
                 tableRightContent.row();
                 tableRightContent.add(tableRightContentRating).expand();
-                model.getRating(Model.RatingType.General);
-                break;
+                model.getRating(Model.RatingType.General); // we should requery rating each time we choose the tab,
+                break;                                     // because it might be updated on the server
             case History:
                 lstHistory.setItems(model.history.toArray(new String[0]));
                 tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
@@ -404,8 +455,8 @@ public class ScreenMain extends ScreenAdapter {
                 tableRightContent.row();
                 tableRightContent.add(lstFriendsScroll).fill(.9f, .9f).expand();
                 rebuildFriends(false);
-                model.getFriends();
-                break;
+                model.getFriends(); // we should requery friends each time we choose the tab, because friends may be
+                break;              // added from different places
             default:
         }
     }

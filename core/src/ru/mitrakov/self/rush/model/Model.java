@@ -46,11 +46,6 @@ public class Model {
 
     public enum RatingType {General, Weekly}
 
-    private static final int AGGRESSOR_ID = 1;
-    private static final int DEFENDER_ID = 2;
-    private static final int SKILL_OFFSET = 0x20;
-    private static final int HISTORY_MAX = 50;
-
     // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
     public volatile String name = "";
     public volatile String enemy = "";
@@ -80,7 +75,15 @@ public class Model {
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
     // settings
-    public boolean notifyNewBattles = true;
+    public volatile boolean notifyNewBattles = true;
+    public volatile boolean languageEn = true; // convert to enum in the future
+
+    private static final int AGGRESSOR_ID = 1;
+    private static final int DEFENDER_ID = 2;
+    private static final int SKILL_OFFSET = 0x20;
+    private static final int HISTORY_MAX = 50;
+    private static final String SETTINGS_FILE = "settings";
+    private static final String HISTORY_FILE = "history";
 
     private ISender sender;
     private IFileReader fileReader;
@@ -97,6 +100,26 @@ public class Model {
 
     public void setFileReader(IFileReader fileReader) {
         this.fileReader = fileReader;
+    }
+
+    public void loadSettings() {
+        if (fileReader != null) {
+            String s = fileReader.read(SETTINGS_FILE);
+            if (s != null) {
+                String[] settings = s.split(" ");
+                if (settings.length >= 2) {
+                    languageEn = settings[0].equals("e");
+                    notifyNewBattles = settings[1].equals("1");
+                }
+            }
+        }
+    }
+
+    public void saveSettings() {
+        if (fileReader != null) {
+            String s = String.format("%s %s", languageEn ? "e" : "r", notifyNewBattles ? "1" : "0");
+            fileReader.write(SETTINGS_FILE, s);
+        }
     }
 
     public Collection<Product> getProductsByAbility(Ability ability) {
@@ -286,7 +309,7 @@ public class Model {
 
         // read the history from a local storage
         if (fileReader != null) {
-            String strHistory = fileReader.read(String.format("history_%s.txt", name));
+            String strHistory = fileReader.read(String.format("%s_%s", HISTORY_FILE, name));
             if (strHistory != null) {
                 history.clear();
                 Collections.addAll(history, strHistory.split("\n"));
@@ -444,7 +467,7 @@ public class Model {
                 builder.append(x).append('\n');
             }
             // writing
-            fileReader.write(String.format("history_%s.txt", name), builder.toString());
+            fileReader.write(String.format("%s_%s", HISTORY_FILE, name), builder.toString());
         }
 
         // reset reference to a field

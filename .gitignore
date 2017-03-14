@@ -114,5 +114,5 @@ gradle-app.setting
 Thumbs.db
 
 ## my files
-history*.txt
-friends.txt
+history_*
+settings

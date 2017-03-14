@@ -1,10 +1,10 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
@@ -14,9 +14,9 @@ import ru.mitrakov.self.rush.model.Model;
 public class DialogSettings extends Dialog {
     private final Model model;
 
-    public DialogSettings(Model model, RushClient game, Skin skin, String windowStyleName) {
+    public DialogSettings(Model model, Skin skin, String windowStyleName) {
         super("Settings", skin, windowStyleName);
-        assert model != null && game != null;
+        assert model != null;
         this.model = model;
 
         button("Close");
@@ -24,10 +24,43 @@ public class DialogSettings extends Dialog {
         init(getContentTable(), skin);
     }
 
+    @Override
+    protected void result(Object object) {
+        model.saveSettings();
+    }
+
     private void init(Table table, Skin skin) {
         assert table != null && skin != null;
+        table.pad(30);
 
-        TextButton btnNotifyYes = new TextButton("Notify about new battle", skin, "toggle");
+        // ....
+        ObjectMap<String, CheckBox.CheckBoxStyle> map = skin.getAll(CheckBox.CheckBoxStyle.class);
+        String style = map.containsKey("radio") ? "radio" : map.containsKey("default-radio") ? "default-radio"
+                : map.keys().next();
+
+        // ....
+        Button btnEng = new CheckBox(" English", skin, style);
+        btnEng.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.languageEn = true;
+            }
+        });
+        btnEng.setChecked(model.languageEn);
+
+        Button btnRus = new CheckBox(" Russian", skin, style);
+        btnRus.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.languageEn = false;
+            }
+        });
+        btnRus.setChecked(!model.languageEn);
+
+        new ButtonGroup<Button>(btnEng, btnRus);
+
+        // ....
+        Button btnNotifyYes = new CheckBox(" Notify about new battle", skin, style);
         btnNotifyYes.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -36,8 +69,8 @@ public class DialogSettings extends Dialog {
         });
         btnNotifyYes.setChecked(model.notifyNewBattles);
 
-        TextButton btnNotifyNo = new TextButton("Don't notify about new battle", skin, "toggle");
-        btnNotifyYes.addListener(new ChangeListener() {
+        Button btnNotifyNo = new CheckBox(" Don't notify about new battle", skin, style);
+        btnNotifyNo.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.notifyNewBattles = false;
@@ -45,6 +78,9 @@ public class DialogSettings extends Dialog {
         });
         btnNotifyNo.setChecked(!model.notifyNewBattles);
 
+        new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
+
+        // ....
         TextButton btnSignOut = new TextButton("Sign out", skin, "default");
         btnSignOut.addListener(new ChangeListener() {
             @Override
@@ -54,12 +90,22 @@ public class DialogSettings extends Dialog {
             }
         });
 
-        new ButtonGroup<TextButton>(btnNotifyYes, btnNotifyNo);
 
+        // ....
+        table.add(new Label("Language", skin, "default")).spaceTop(30);
+        table.row();
+        table.add(btnEng).left();
+        table.row();
+        table.add(btnRus).left();
+        table.row();
+        table.add(new Label("Notifications", skin, "default")).spaceTop(30);
+        table.row();
         table.add(btnNotifyYes).left();
         table.row();
         table.add(btnNotifyNo).left();
-        table.row().space(30);
+        table.row();
+        table.add(new Label("Sign out", skin, "default")).spaceTop(30);
+        table.row();
         table.add(btnSignOut);
     }
 }

@@ -22,8 +22,8 @@ class Gui extends Actor {
     private final Model model;
     private final InputController controller;
     private final MyClickListener listener = new MyClickListener();
-    private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("down.pack"));
-    private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("up.pack"));
+    private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
+    private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
     private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
 

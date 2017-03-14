@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
@@ -9,9 +10,10 @@ import ru.mitrakov.self.rush.screens.*;
 public class RushClient extends Game {
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
-    private Screen screenLogin;
-    private Screen screenMain;
-    private Screen screenBattle;
+    private /*final*/ Skin skin;
+    private /*final*/ Screen screenLogin;
+    private /*final*/ Screen screenMain;
+    private /*final*/ Screen screenBattle;
 
     public RushClient(PsObject psObject) {
         this.psObject = psObject;
@@ -36,9 +38,11 @@ public class RushClient extends Game {
     @Override
     public void create() {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
-        screenLogin = new ScreenLogin(this, model, psObject);
-        screenMain = new ScreenMain(this, model, psObject);
-        screenBattle = new ScreenBattle(this, model, psObject);
+        model.loadSettings();
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        screenLogin = new ScreenLogin(this, model, psObject, skin);
+        screenMain = new ScreenMain(this, model, psObject, skin);
+        screenBattle = new ScreenBattle(this, model, psObject, skin);
         setScreen(screenLogin);
 
         Gdx.input.setCatchBackKey(true);
@@ -50,6 +54,7 @@ public class RushClient extends Game {
         screenLogin.dispose();
         screenMain.dispose();
         screenBattle.dispose();
+        skin.dispose();
     }
 
     public void setNextScreen() {

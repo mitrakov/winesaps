@@ -27,12 +27,11 @@ public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(800, 480));
-    private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Table table = new Table();
     private final Actor gui;
     private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
-    private final Label lblScore = new Label("", skin);
+    private final Label lblScore;
     private final DialogFinished infoDialog;
 
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
@@ -41,10 +40,10 @@ public class ScreenBattle extends ScreenAdapter {
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;
 
-    public ScreenBattle(RushClient game, Model model, PsObject psObject) {
-        assert game != null && model != null;
+    public ScreenBattle(RushClient game, Model model, PsObject psObject, Skin skin) {
+        assert game != null && model != null && skin != null;
         this.model = model;
-        this.psObject = psObject;
+        this.psObject = psObject; // may be NULL
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -53,6 +52,7 @@ public class ScreenBattle extends ScreenAdapter {
         gui = new Gui(model);
         infoDialog = new DialogFinished(game, skin, "default");
         btnThing = createButtonThing();
+        lblScore = new Label("", skin, "default");
 
         buildTable();
     }
@@ -95,7 +95,6 @@ public class ScreenBattle extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose(); // what about the internal actors?
-        skin.dispose();
         for (Drawable drawable : things.values()) {
             assert drawable != null;
             if (drawable instanceof TextureRegionDrawable)
