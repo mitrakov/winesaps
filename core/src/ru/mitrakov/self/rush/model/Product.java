@@ -7,11 +7,11 @@ import java.util.Locale;
  */
 
 public /*case*/ class Product {
-    public final Model.Ability ability;
-    public final int days;
-    public final int crystals;
+    final Model.Ability ability;
+    final int days;
+    private final int crystals;
 
-    public Product(Model.Ability ability, int days, int crystals) {
+    Product(Model.Ability ability, int days, int crystals) {
         assert ability != null;
         this.ability = ability;
         this.days = days;

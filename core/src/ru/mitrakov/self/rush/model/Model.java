@@ -9,13 +9,21 @@ import ru.mitrakov.self.rush.model.object.CellObject;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
 /**
- * Created by mitrakov on 23.02.2017
+ * This class represents a model in the MVC pattern
+ * Class is intended to have a single instance
+ *
+ * @author mitrakov
  */
-
 @SuppressWarnings("WeakerAccess")
 public class Model {
+    /**
+     * size of the rating list (defined by server)
+     */
     public static final int RATINGS_COUNT = 10;
 
+    /**
+     * interface to send commands to the server
+     */
     public interface ISender {
         void send(Cmd cmd);
 
@@ -26,12 +34,18 @@ public class Model {
         void resetSid();
     }
 
+    /**
+     * interface to read/write files independent from a platform (Desktop, Android, etc.)
+     */
     public interface IFileReader {
         void write(String filename, String s);
 
         String read(String filename);
     }
 
+    /**
+     * server-specific commands; for more details see docs to the protocol
+     */
     public enum Cmd {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, INVITE, ACCEPT, REJECT, REFUSED, RANGE_OF_PRODUCTS,
         BUY_PRODUCT, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND, FULL_STATE, ABILITY_LIST, MOVE_LEFT, MOVE_RIGHT,
@@ -39,17 +53,31 @@ public class Model {
         OBJECT_APPENDED, FINISHED
     }
 
+    /**
+     * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
+     */
     public enum Ability {
         None, Snorkel, Shoes, SouthWester, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16,
         a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, Sapper
     }
 
-    public enum RatingType {General, Weekly}
+    /**
+     * rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server
+     */
+    public enum RatingType {
+        General, Weekly
+    }
 
-    // @mitrakov: getters are supposed to have a little overhead, so we make the fields "public" for efficiency
+    // ==============================
+    // === PUBLIC VOLATILE FIELDS ===
+    // ==============================
+    // getters are supposed to have a little overhead, so we make the fields "public" for efficiency and "volatile" for
+    // memory management inside a multithreading access; be careful! They may be changed OUTSIDE the OpenGL loop
+    // ==============================
+
     public volatile String name = "";
     public volatile String enemy = "";
-    public volatile boolean authorized = false; // @mitrakov: must be volatile due to multithreading access
+    public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
@@ -66,6 +94,15 @@ public class Model {
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
+
+    // ==================================================
+    // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
+    // ==================================================
+    // getters are supposed to have a little overhead, so we make the fields "public" for efficiency; these collections
+    // are rest upon Java-Concurrent Library, because they may be changed OUTSIDE the OpenGL loop at any moment;
+    // all 'foreach' operations are considered to be safe
+    // ==================================================
+
     public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
@@ -74,9 +111,16 @@ public class Model {
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
 
-    // settings
+    // ================
+    // === SETTINGS ===
+    // ================
+
     public volatile boolean notifyNewBattles = true;
     public volatile boolean languageEn = true; // convert to enum in the future
+
+    // ================================
+    // === PRIVATE STATIC CONSTANTS ===
+    // ================================
 
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
@@ -84,6 +128,10 @@ public class Model {
     private static final int HISTORY_MAX = 50;
     private static final String SETTINGS_FILE = "settings";
     private static final String HISTORY_FILE = "history";
+
+    // ============================
+    // === USUAL PRIVATE FIELDS ===
+    // ============================
 
     private ISender sender;
     private IFileReader fileReader;
@@ -94,14 +142,25 @@ public class Model {
     // === NON-SERVER METHODS ===
     // ==========================
 
+    /**
+     * Sets a new sender to the model
+     * @param sender - sender (may be NULL)
+     */
     public void setSender(ISender sender) {
         this.sender = sender;
     }
 
+    /**
+     * Sets a new file reader to the model
+     * @param fileReader - file reader (may be NULL)
+     */
     public void setFileReader(IFileReader fileReader) {
         this.fileReader = fileReader;
     }
 
+    /**
+     * Loads settings from the internal file
+     */
     public void loadSettings() {
         if (fileReader != null) {
             String s = fileReader.read(SETTINGS_FILE);
@@ -115,6 +174,9 @@ public class Model {
         }
     }
 
+    /**
+     * Saves current settings to the internal file
+     */
     public void saveSettings() {
         if (fileReader != null) {
             String s = String.format("%s %s", languageEn ? "e" : "r", notifyNewBattles ? "1" : "0");
@@ -122,6 +184,10 @@ public class Model {
         }
     }
 
+    /**
+     * @param ability - ability (if NULL then returns empty list)
+     * @return collection of available products by the given ability (e.g. Snorkel for 1 day, 3 days, 7 days)
+     */
     public Collection<Product> getProductsByAbility(Ability ability) {
         List<Product> res = new LinkedList<Product>();
         for (Product product : products) {  // pity it's not Java 1.8
@@ -131,28 +197,48 @@ public class Model {
         return res;
     }
 
-    // =======================
-    // === REQUEST METHODS ===
-    // =======================
+    // ==============================
+    // === SERVER REQUEST METHODS ===
+    // ==============================
+    // Feel free to call these methods from anywhere
+    // ==============================
 
+    /**
+     * Sends SIGN_IN command to the server
+     * @param login - user name
+     * @param password - password
+     */
     public void signIn(String login, String password) {
         if (sender != null) {
             sender.send(SIGN_IN, String.format("\1%s\0%s", login, password).getBytes()); // \1 = Local auth
         }
     }
 
+    /**
+     * Sends SIGN_UP command to the server
+     * @param login - user name
+     * @param password - password
+     * @param email - email address
+     */
     public void signUp(String login, String password, String email) {
         if (sender != null) {
             sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, password, email).getBytes());
         }
     }
 
+    /**
+     * Sends SIGN_OUT command to the server
+     */
     public void signOut() {
         if (sender != null) {
             sender.send(SIGN_OUT);
         }
     }
 
+    /**
+     * Sends INVITE command to the server (by name)
+     * @param victim - victim user name
+     */
     public void invite(String victim) {
         if (sender != null) {
             aggressor = true;
@@ -161,6 +247,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends INVITE command to the server (latest enemy)
+     */
     public void inviteLatest() {
         if (sender != null) {
             aggressor = true;
@@ -168,6 +257,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends INVITE command to the server (random enemy)
+     */
     public void inviteRandom() {
         if (sender != null) {
             aggressor = true;
@@ -175,6 +267,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends ACCEPT command to the server (in response to INVITE)
+     */
     public void accept() {
         if (sender != null) {
             aggressor = false;
@@ -182,30 +277,48 @@ public class Model {
         }
     }
 
+    /**
+     * Sends REJECT command to the server (in response to INVITE)
+     */
     public void reject() {
         if (sender != null) {
             sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
     }
 
+    /**
+     * Sends FRIEND_LIST command to the server
+     */
     public void getFriends() {
         if (sender != null) {
             sender.send(FRIEND_LIST);
         }
     }
 
+    /**
+     * Sends ADD_FRIEND command to the server
+     * @param name - friend user name
+     */
     public void addFriend(String name) {
         if (sender != null) {
             sender.send(ADD_FRIEND, name.getBytes());
         }
     }
 
+    /**
+     * Sends REMOVE_FRIEND command to the server
+     * @param name - quondam friend name
+     */
     public void removeFriend(String name) {
         if (sender != null) {
             sender.send(REMOVE_FRIEND, name.getBytes());
         }
     }
 
+    /**
+     * Sends RATING command to the server
+     * @param type - type of rating (General, Weekly, etc.)
+     */
     public void getRating(RatingType type) {
         assert type != null;
         if (sender != null) {
@@ -213,6 +326,20 @@ public class Model {
         }
     }
 
+    /**
+     * Sends BUY_PRODUCT command to the server
+     * @param product - product to buy
+     */
+    public void buyProduct(Product product) {
+        assert product != null;
+        if (sender != null) {
+            sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
+        }
+    }
+
+    /**
+     * Sends MOVE_LEFT battle command to the server
+     */
     public void moveLeft() {
         if (sender != null && curActor != null) {
             if (curActor.getX() > 0)
@@ -220,6 +347,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends MOVE_RIGHT battle command to the server
+     */
     public void moveRight() {
         if (sender != null && curActor != null) {
             if (curActor.getX() < Field.WIDTH - 1)
@@ -227,6 +357,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends MOVE_UP battle command to the server
+     */
     public void moveUp() {
         if (sender != null && curActor != null) {
             if (curActor.getY() > 0)
@@ -234,6 +367,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends MOVE_DOWN battle command to the server
+     */
     public void moveDown() {
         if (sender != null && curActor != null) {
             if (curActor.getY() < Field.HEIGHT - 1)
@@ -241,12 +377,19 @@ public class Model {
         }
     }
 
+    /**
+     * Sends USE_THING battle command to the server
+     */
     public void useThing() {
         if (sender != null && curThing != null) {
             sender.send(USE_THING, curThing.getId());
         }
     }
 
+    /**
+     * Sends USE_SKILL battle command to the server
+     * @param ability - ability to use (it must be a SKILL, i.e. has a number > SKILL_OFFSET)
+     */
     public void useAbility(Ability ability) {
         assert ability != null;
         if (sender != null) {
@@ -255,16 +398,11 @@ public class Model {
         }
     }
 
-    public void buyProduct(Product product) {
-        assert product != null;
-        if (sender != null) {
-            sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
-        }
-    }
-
-    // ========================
-    // === RESPONSE METHODS ===
-    // ========================
+    // ===============================
+    // === SERVER RESPONSE METHODS ===
+    // ===============================
+    // These methods are not expected to be called from external code
+    // ===============================
 
     public void setAuthorized(boolean value) {
         authorized = value;
