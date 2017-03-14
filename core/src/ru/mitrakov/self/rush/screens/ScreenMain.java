@@ -46,6 +46,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Dialog moreCrystalsDialog;
     private final Dialog incomingDialog;
     private final Dialog settingsDialog;
+    private final Dialog aboutDialog;
     private final DialogInvite inviteDialog;
     private final DialogInfo infoDialog;
     private final List<String> lstHistory;
@@ -111,6 +112,7 @@ public class ScreenMain extends ScreenAdapter {
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
         incomingDialog = new DialogIncoming(model, skin, "default");
         settingsDialog = new DialogSettings(model, skin, "default");
+        aboutDialog = new DialogAbout(skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
         lstHistory = new List<String>(skin, "default");
@@ -175,7 +177,7 @@ public class ScreenMain extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println("Fuck!");
+                    aboutDialog.show(stage);
                 }
             });
         }};
