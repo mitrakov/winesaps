@@ -19,8 +19,7 @@ public class DialogMoreCrystals extends Dialog {
     private void init(Table table, Skin skin) {
         assert table != null && skin != null;
 
-        table.add(new Label("How to get more crystals", skin, "default"));
-        table.row();
+        table.pad(30);
         table.add(new Label("There are several ways to get more crystals:", skin, "default"));
         table.row();
         table.add(new Label("1. Win the battle", skin, "default")).left();
@@ -29,8 +28,8 @@ public class DialogMoreCrystals extends Dialog {
         table.row();
         table.add(new Label("2. Invite your friends to the game", skin, "default")).left();
         table.row();
-        table.add(new Label("Invite your friends with a promo code and \nafter his/her win you'll both get extra " +
-                "crystals", skin, "default")).left().padLeft(40);
+        String msg = "Invite your friends with a promo code and \nafter his/her win you'll both get extra crystals";
+        table.add(new Label(msg, skin, "default")).left().padLeft(40);
         table.row();
         table.add(new Label("3. Achieve a paid place in a Week Rating", skin, "default")).left();
         table.row();
@@ -45,7 +44,5 @@ public class DialogMoreCrystals extends Dialog {
                 System.out.println("Hey-Hey!");
             }
         })).left().padLeft(40);
-        table.row();
-        table.add(new Label("", skin)).width(600); // to expand the window itself
     }
 }

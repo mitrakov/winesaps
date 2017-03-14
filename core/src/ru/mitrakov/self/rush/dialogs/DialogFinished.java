@@ -57,6 +57,7 @@ public class DialogFinished extends Dialog {
 
     private void init(Table table, Skin skin) {
         assert table != null;
+        table.pad(30);
         table.row().space(10);
         table.add(lblMessage1);
         table.row().space(10);
@@ -65,7 +66,5 @@ public class DialogFinished extends Dialog {
         table.add(new Label("Total score:", skin, "default"));
         table.row().space(10);
         table.add(lblScore);
-        table.row().space(10).width(400);
-        table.add(new Label("", skin, "default")); // to stretch the window up to width=400
     }
 }
