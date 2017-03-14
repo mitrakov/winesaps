@@ -46,6 +46,7 @@ public class RushClient extends Game {
         setScreen(screenLogin);
 
         Gdx.input.setCatchBackKey(true);
+        Gdx.input.setCatchMenuKey(true);
     }
 
     @Override

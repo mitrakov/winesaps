@@ -307,9 +307,12 @@ public class ScreenMain extends ScreenAdapter {
             game.setLoginScreen();
 
         // checking BACK and MENU buttons on Android
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
-            if (psObject != null)
+        if (psObject != null) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
                 psObject.hide();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.MENU))
+                settingsDialog.show(stage);
+        }
     }
 
     @Override
