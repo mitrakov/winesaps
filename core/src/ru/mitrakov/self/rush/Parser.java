@@ -44,6 +44,9 @@ class Parser implements Network.IHandler {
                     case BUY_PRODUCT:
                         userInfo(Arrays.copyOfRange(data, 1, data.length));
                         break;
+                    case ATTACK: // response on Attack
+                        attack(Arrays.copyOfRange(data, 1, data.length));
+                        break;
                     case INVITE:
                         invite(Arrays.copyOfRange(data, 1, data.length));
                         break;
@@ -117,6 +120,19 @@ class Parser implements Network.IHandler {
                 model.setUserInfo(Arrays.copyOfRange(data, 1, data.length));
             else throw new IllegalArgumentException("Incorrect user info response");
         } else throw new IllegalArgumentException("Incorrect user info format");
+    }
+
+    private void attack(int[] data) {
+        if (data.length > 1) {
+            int ok = data[0];
+            if (ok == 0) {
+                StringBuilder victim = new StringBuilder();
+                for (int i = 1; i < data.length; i++) {
+                    victim.append((char) data[i]);
+                }
+                model.setVictim(victim.toString());
+            } else throw new IllegalArgumentException("Incorrect attack response");
+        } else throw new IllegalArgumentException("Incorrect attack format");
     }
 
     private void invite(int[] data) {

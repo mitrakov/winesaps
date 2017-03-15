@@ -139,7 +139,7 @@ public class Model {
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
     private static final int SKILL_OFFSET = 0x20;
-    private static final int HISTORY_MAX = 50;
+    private static final int HISTORY_MAX = 32;
     private static final String SETTINGS_FILE = "settings";
     private static final String HISTORY_FILE = "history";
 
@@ -272,8 +272,6 @@ public class Model {
      */
     public void invite(String victim) {
         if (sender != null) {
-            aggressor = true;
-            enemy = victim;
             sender.send(ATTACK, String.format("\0%s", victim).getBytes());
         }
     }
@@ -283,7 +281,6 @@ public class Model {
      */
     public void inviteLatest() {
         if (sender != null) {
-            aggressor = true;
             sender.send(ATTACK, 1);
         }
     }
@@ -293,7 +290,6 @@ public class Model {
      */
     public void inviteRandom() {
         if (sender != null) {
-            aggressor = true;
             sender.send(ATTACK, 2);
         }
     }
@@ -507,6 +503,12 @@ public class Model {
         saveSettings();
     }
 
+    public void setVictim(String victimName) {
+        assert victimName != null;
+        aggressor = true;
+        enemy = victimName;
+    }
+
     public void attacked(int sid, String aggressorName) {
         assert aggressorName != null;
         enemySid = sid;
@@ -637,9 +639,9 @@ public class Model {
 
     public synchronized void gameFinished(boolean winner) {
         // building an item
-        String s = String.format(Locale.getDefault(), "%s %s %s %s (%d-%d)",
-                DateFormat.getInstance().format(new Date()), enemy, aggressor ? "A" : "V", winner ? "Win" : "Loss",
-                totalScore1, totalScore2);
+        String s = String.format(Locale.getDefault(), "%s    %s    %s-%s = %d-%d",
+                DateFormat.getInstance().format(new Date()), winner ? "WIN " : "LOSS", aggressor ? name : enemy,
+                aggressor ? enemy : name, totalScore1, totalScore2); // no need to ternary totalScore
 
         // prepend the item into the current history (and delete old items if necessary)
         List<String> lst = new LinkedList<String>(history);
