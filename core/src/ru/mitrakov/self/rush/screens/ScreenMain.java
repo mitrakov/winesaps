@@ -47,8 +47,9 @@ public class ScreenMain extends ScreenAdapter {
     private final Dialog incomingDialog;
     private final Dialog settingsDialog;
     private final Dialog aboutDialog;
-    private final DialogInvite inviteDialog;
     private final DialogInfo infoDialog;
+    private final DialogInvite inviteDialog;
+    private final DialogFriends friendsDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
@@ -113,10 +114,21 @@ public class ScreenMain extends ScreenAdapter {
         incomingDialog = new DialogIncoming(model, skin, "default");
         settingsDialog = new DialogSettings(model, skin, "default");
         aboutDialog = new DialogAbout(skin, "default");
-        inviteDialog = new DialogInvite(model, skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
+        inviteDialog = new DialogInvite(model, skin, "default");
+        friendsDialog = new DialogFriends(model, skin, "default", inviteDialog,
+                new DialogQuestion("Confirm action", skin, "default"), stage);
         lstHistory = new List<String>(skin, "default");
-        lstFriends = new List<String>(skin, "default");
+        lstFriends = new List<String>(skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    String friend = lstFriends.getSelected();
+                    if (friend != null)
+                        friendsDialog.setFriend(friend).show(stage);
+                }
+            });
+        }};
         lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
         lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
         txtEnemyName = new TextField("", skin, "default");
