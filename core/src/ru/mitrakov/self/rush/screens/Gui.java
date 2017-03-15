@@ -16,6 +16,30 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 class Gui extends Actor {
+    private class MyClickListener extends ClickListener {
+        float x, y = 0;
+
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            this.x = x;
+            this.y = y;
+            return super.touchDown(event, x, y, pointer, button);
+        }
+
+        @Override
+        public void touchDragged(InputEvent event, float x, float y, int pointer) {
+            this.x = x;
+            this.y = y;
+            super.touchDragged(event, x, y, pointer);
+        }
+
+        @Override
+        public boolean keyDown(InputEvent event, int keycode) {
+            System.out.println("Code = " + keycode);
+            return super.keyDown(event, keycode);
+        }
+    }
+
     private static final int CELL_SIZ_W = 15;
     private static final int CELL_SIZ_H = 85;
 
@@ -70,9 +94,7 @@ class Gui extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-
-        if (listener.getPressedButton() >= 0)
-            controller.checkInput(listener.x, listener.y);
+        controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
@@ -123,23 +145,5 @@ class Gui extends Actor {
         atlasDown.dispose();
         atlasUp.dispose();
         return super.remove();
-    }
-}
-
-class MyClickListener extends ClickListener {
-    float x, y = 0;
-
-    @Override
-    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        this.x = x;
-        this.y = y;
-        return super.touchDown(event, x, y, pointer, button);
-    }
-
-    @Override
-    public void touchDragged(InputEvent event, float x, float y, int pointer) {
-        this.x = x;
-        this.y = y;
-        super.touchDragged(event, x, y, pointer);
     }
 }

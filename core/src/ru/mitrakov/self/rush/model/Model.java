@@ -144,6 +144,7 @@ public class Model {
 
     /**
      * Sets a new sender to the model
+     *
      * @param sender - sender (may be NULL)
      */
     public void setSender(ISender sender) {
@@ -152,6 +153,7 @@ public class Model {
 
     /**
      * Sets a new file reader to the model
+     *
      * @param fileReader - file reader (may be NULL)
      */
     public void setFileReader(IFileReader fileReader) {
@@ -205,7 +207,8 @@ public class Model {
 
     /**
      * Sends SIGN_IN command to the server
-     * @param login - user name
+     *
+     * @param login    - user name
      * @param password - password
      */
     public void signIn(String login, String password) {
@@ -216,9 +219,10 @@ public class Model {
 
     /**
      * Sends SIGN_UP command to the server
-     * @param login - user name
+     *
+     * @param login    - user name
      * @param password - password
-     * @param email - email address
+     * @param email    - email address
      */
     public void signUp(String login, String password, String email) {
         if (sender != null) {
@@ -237,6 +241,7 @@ public class Model {
 
     /**
      * Sends INVITE command to the server (by name)
+     *
      * @param victim - victim user name
      */
     public void invite(String victim) {
@@ -297,6 +302,7 @@ public class Model {
 
     /**
      * Sends ADD_FRIEND command to the server
+     *
      * @param name - friend user name
      */
     public void addFriend(String name) {
@@ -307,6 +313,7 @@ public class Model {
 
     /**
      * Sends REMOVE_FRIEND command to the server
+     *
      * @param name - quondam friend name
      */
     public void removeFriend(String name) {
@@ -317,6 +324,7 @@ public class Model {
 
     /**
      * Sends RATING command to the server
+     *
      * @param type - type of rating (General, Weekly, etc.)
      */
     public void getRating(RatingType type) {
@@ -328,6 +336,7 @@ public class Model {
 
     /**
      * Sends BUY_PRODUCT command to the server
+     *
      * @param product - product to buy
      */
     public void buyProduct(Product product) {
@@ -388,6 +397,7 @@ public class Model {
 
     /**
      * Sends USE_SKILL battle command to the server
+     *
      * @param ability - ability to use (it must be a SKILL, i.e. has a number > SKILL_OFFSET)
      */
     public void useAbility(Ability ability) {
@@ -395,6 +405,14 @@ public class Model {
         if (sender != null) {
             if (ability.ordinal() > SKILL_OFFSET) // only skills may be used
                 sender.send(USE_SKILL, ability.ordinal());
+        }
+    }
+
+    public void useAbility(int index) {
+        int i = 0;
+        for (Ability ability : abilities) {
+            if (i++ == index)
+                useAbility(ability);
         }
     }
 
