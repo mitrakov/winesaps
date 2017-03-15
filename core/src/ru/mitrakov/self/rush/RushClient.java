@@ -39,6 +39,7 @@ public class RushClient extends Game {
     public void create() {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
+        model.signIn(); // try to sign in using stored credentials
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         screenLogin = new ScreenLogin(this, model, psObject, skin);
         screenMain = new ScreenMain(this, model, psObject, skin);

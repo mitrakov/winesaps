@@ -1,8 +1,11 @@
 package ru.mitrakov.self.rush.model;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.security.*;
 import java.text.DateFormat;
+import java.util.concurrent.*;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
 
@@ -68,6 +71,14 @@ public class Model {
         General, Weekly
     }
 
+    public String md5(String s) {
+        try {
+            return new HexBinaryAdapter().marshal(MessageDigest.getInstance("md5").digest(s.getBytes())).toLowerCase();
+        } catch (NoSuchAlgorithmException ignored) {
+            return "";
+        }
+    }
+
     // ==============================
     // === PUBLIC VOLATILE FIELDS ===
     // ==============================
@@ -76,6 +87,7 @@ public class Model {
     // ==============================
 
     public volatile String name = "";
+    public volatile String hash = "";
     public volatile String enemy = "";
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
@@ -168,9 +180,12 @@ public class Model {
             String s = fileReader.read(SETTINGS_FILE);
             if (s != null) {
                 String[] settings = s.split(" ");
-                if (settings.length >= 2) {
+                if (settings.length > 2) {
                     languageEn = settings[0].equals("e");
                     notifyNewBattles = settings[1].equals("1");
+                    name = settings[2];
+                    if (settings.length > 3)
+                        hash = settings[3];
                 }
             }
         }
@@ -181,7 +196,7 @@ public class Model {
      */
     public void saveSettings() {
         if (fileReader != null) {
-            String s = String.format("%s %s", languageEn ? "e" : "r", notifyNewBattles ? "1" : "0");
+            String s = String.format("%s %s %s %s", languageEn ? "e" : "r", notifyNewBattles ? "1" : "0", name, hash);
             fileReader.write(SETTINGS_FILE, s);
         }
     }
@@ -205,6 +220,13 @@ public class Model {
     // Feel free to call these methods from anywhere
     // ==============================
 
+    public void signIn() {
+        assert name != null && hash != null;
+        if (!name.isEmpty() && !hash.isEmpty() && sender != null) {
+            sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash).getBytes()); // \1 = Local auth
+        }
+    }
+
     /**
      * Sends SIGN_IN command to the server
      *
@@ -213,7 +235,8 @@ public class Model {
      */
     public void signIn(String login, String password) {
         if (sender != null) {
-            sender.send(SIGN_IN, String.format("\1%s\0%s", login, password).getBytes()); // \1 = Local auth
+            hash = md5(password);
+            sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash).getBytes()); // \1 = Local auth
         }
     }
 
@@ -226,7 +249,8 @@ public class Model {
      */
     public void signUp(String login, String password, String email) {
         if (sender != null) {
-            sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, password, email).getBytes());
+            hash = md5(password);
+            sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, hash, email).getBytes());
         }
     }
 
@@ -429,7 +453,11 @@ public class Model {
                 sender.send(USER_INFO);
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests add everyone to friends
-            } else sender.resetSid();
+            } else {
+                sender.resetSid();
+                hash = "";
+                saveSettings(); // to write empty hash to a local storage
+            }
         }
     }
 
@@ -463,7 +491,7 @@ public class Model {
             }
         }
 
-        // read the history from a local storage
+        // now we know valid user name => read the history from a local storage
         if (fileReader != null) {
             String strHistory = fileReader.read(String.format("%s_%s", HISTORY_FILE, name));
             if (strHistory != null) {
@@ -471,6 +499,9 @@ public class Model {
                 Collections.addAll(history, strHistory.split("\n"));
             }
         }
+
+        // now we know valid user name => save settings
+        saveSettings();
     }
 
     public void attacked(int sid, String aggressorName) {

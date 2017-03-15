@@ -50,8 +50,8 @@ public class ScreenLogin extends ScreenAdapter {
         table.setFillParent(true);
         stage.addActor(table);
 
-        txtLogin = new TextField("Tommy", skin, "default"); // ....
-        txtPassword = new TextField("Tommy", skin, "default") {{
+        txtLogin = new TextField("", skin, "default"); // ....
+        txtPassword = new TextField("", skin, "default") {{
             setPasswordMode(true);
             setPasswordCharacter('*');
         }};
@@ -146,7 +146,7 @@ public class ScreenLogin extends ScreenAdapter {
     }
 
     @Override
-    public void show () {
+    public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
