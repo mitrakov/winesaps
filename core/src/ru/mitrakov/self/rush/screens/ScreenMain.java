@@ -2,24 +2,28 @@ package ru.mitrakov.self.rush.screens;
 
 import java.util.*;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.ui.LinkedLabel;
+
 
 /**
  * Created by mitrakov on 03.03.2017
@@ -78,6 +82,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Label lblCrystalsHeader;
     private final Label lblCrystalsData;
     private final Label lblAbilities;
+    private final Label lblAbilityExpireTime;
     private final Label lblRatingName;
     private final Label lblRatingWins;
     private final Label lblRatingLosses;
@@ -284,6 +289,7 @@ public class ScreenMain extends ScreenAdapter {
         lblCrystalsHeader = new Label("Crystals:", skin, "default");
         lblCrystalsData = new Label("", skin, "default");
         lblAbilities = new Label("Abilities:", skin, "default");
+        lblAbilityExpireTime = new Label("", skin, "default");
         lblRatingName = new Label("Name", skin, "default");
         lblRatingWins = new Label("Wins", skin, "default");
         lblRatingLosses = new Label("Losses", skin, "default");
@@ -359,7 +365,15 @@ public class ScreenMain extends ScreenAdapter {
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        ;
+                        Integer minutes = model.abilityExpireMap.get(ability);
+                        if (minutes != null) {
+                            long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
+                            lblAbilityExpireTime.setText(String.format(Locale.getDefault(), "time left: %d:%d",
+                                    minLeft / 60, minLeft % 60));
+                            lblAbilityExpireTime.clearActions();
+                            lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
+                                    fadeOut(2, Interpolation.fade), Actions.hide()));
+                        }
                     }
                 });
                 abilities.put(ability, imageButton);
@@ -452,6 +466,9 @@ public class ScreenMain extends ScreenAdapter {
                 tableRightContent.row().expand();
                 tableRightContent.add(lblAbilities);
                 tableRightContent.add(tableRightContentAbilities);
+                tableRightContent.row().expandX();
+                tableRightContent.add();
+                tableRightContent.add(lblAbilityExpireTime);
                 tableRightContent.row().expand();
                 tableRightContent.add(btnBuyAbilities).colspan(2);
                 tableRightContent.row().expand();
@@ -492,13 +509,12 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateAbilities() {
-        if (model.abilityExpireTime.size() != tableRightContentAbilities.getColumns()) {
+        if (model.abilityExpireMap.size() != tableRightContentAbilities.getColumns()) {
             tableRightContentAbilities.clear();
-            for (Map.Entry<Model.Ability, Integer> entry : model.abilityExpireTime.entrySet()) {
-                ImageButton btn = abilities.get(entry.getKey());
-                if (btn != null) {
+            for (Model.Ability ability : model.abilityExpireMap.keySet()) {
+                ImageButton btn = abilities.get(ability);
+                if (btn != null)
                     tableRightContentAbilities.add(btn).space(10);
-                }
             }
         }
     }

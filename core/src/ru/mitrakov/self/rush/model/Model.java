@@ -97,6 +97,7 @@ public class Model {
     public volatile int score2 = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
+    public volatile long abilityExpireTime = 0;
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
     public volatile long inviteTime = 0;
@@ -122,7 +123,7 @@ public class Model {
     public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<String> history = new ConcurrentLinkedQueue<String>();
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
-    public final Map<Ability, Integer> abilityExpireTime = new ConcurrentHashMap<Ability, Integer>(4); // ....
+    public final Map<Ability, Integer> abilityExpireMap = new ConcurrentSkipListMap<Ability, Integer>(); // ....
 
     // ================
     // === SETTINGS ===
@@ -481,16 +482,17 @@ public class Model {
 
         // parse abilities
         Ability[] array = Ability.values();
-        abilityExpireTime.clear();
+        abilityExpireMap.clear();
         int abilitiesCnt = data[i++];
         for (int j = 0; j < abilitiesCnt; j++, i += 3) {
             if (i + 2 < data.length) {
                 int id = data[i];
                 int minutes = data[i + 1] * 256 + data[i + 2];
                 if (0 <= id && id < array.length)
-                    abilityExpireTime.put(array[id], minutes);
+                    abilityExpireMap.put(array[id], minutes);
             }
         }
+        abilityExpireTime = System.currentTimeMillis();
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null) {
