@@ -2,10 +2,9 @@ package ru.mitrakov.self.rush.model;
 
 import java.util.*;
 import java.security.*;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.concurrent.*;
-
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
 
@@ -73,7 +72,9 @@ public class Model {
 
     public String md5(String s) {
         try {
-            return new HexBinaryAdapter().marshal(MessageDigest.getInstance("md5").digest(s.getBytes())).toLowerCase();
+            // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
+            byte[] bytes = MessageDigest.getInstance("md5").digest(s.getBytes());
+            return String.format("%X", new BigInteger(1, bytes)).toLowerCase();
         } catch (NoSuchAlgorithmException ignored) {
             return "";
         }
