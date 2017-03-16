@@ -367,10 +367,12 @@ public class ScreenMain extends ScreenAdapter {
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        Integer minutes = model.abilityExpireMap.get(ability);
+                        Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
                         if (minutes != null) {
                             long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
-                            lblAbilityExpireTime.setText(String.format(Locale.getDefault(), "time left: %d:%d",
+                            if (minLeft < 0) // if server's expire checking period is too large, value may be < 0
+                                minLeft = 0;
+                            lblAbilityExpireTime.setText(String.format(Locale.getDefault(), "time left: %02d:%02d",
                                     minLeft / 60, minLeft % 60));
                             lblAbilityExpireTime.clearActions();
                             lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
