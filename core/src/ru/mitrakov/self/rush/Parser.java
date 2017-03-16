@@ -47,11 +47,11 @@ class Parser implements Network.IHandler {
                     case ATTACK: // response on Attack
                         attack(Arrays.copyOfRange(data, 1, data.length));
                         break;
-                    case INVITE:
-                        invite(Arrays.copyOfRange(data, 1, data.length));
+                    case CALL:
+                        call(Arrays.copyOfRange(data, 1, data.length));
                         break;
-                    case REFUSED:
-                        refused(Arrays.copyOfRange(data, 1, data.length));
+                    case STOPCALL:
+                        stopCall(Arrays.copyOfRange(data, 1, data.length));
                         break;
                     case FRIEND_LIST:
                         friendList(Arrays.copyOfRange(data, 1, data.length));
@@ -135,7 +135,7 @@ class Parser implements Network.IHandler {
         } else throw new IllegalArgumentException("Incorrect attack format");
     }
 
-    private void invite(int[] data) {
+    private void call(int[] data) {
         if (data.length > 3) {
             int sidH = data[0];
             int sidL = data[1];
@@ -147,23 +147,26 @@ class Parser implements Network.IHandler {
             model.attacked(sid, name.toString());
             if (psObject != null)
                 psObject.activate();
-        } else throw new IllegalArgumentException("Incorrect invite format");
+        } else throw new IllegalArgumentException("Incorrect call format");
     }
 
-    private void refused(int[] data) {
+    private void stopCall(int[] data) {
         if (data.length > 1) {
             boolean rejected = data[0] == 0;
             boolean missed = data[0] == 1;
+            boolean expired = data[0] == 2;
             StringBuilder name = new StringBuilder(); // oh... Java 1.8 has "mkstring" :(
             for (int i = 1; i < data.length; i++) {
                 name.append((char) data[i]);
             }
             if (rejected)
-                model.refusedRejected(name.toString());
+                model.stopCallRejected(name.toString());
             else if (missed)
-                model.refusedMissed(name.toString());
-            else throw new IllegalArgumentException("Incorrect 'refused' response");
-        } else throw new IllegalArgumentException("Incorrect 'refused' format");
+                model.stopCallMissed(name.toString());
+            else if (expired)
+                model.stopCallExpired(name.toString());
+            else throw new IllegalArgumentException("Incorrect stopCall response");
+        } else throw new IllegalArgumentException("Incorrect stopCall format");
     }
 
     private void friendList(int[] data) {

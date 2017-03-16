@@ -49,7 +49,7 @@ public class Model {
      * server-specific commands; for more details see docs to the protocol
      */
     public enum Cmd {
-        UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, INVITE, ACCEPT, REJECT, REFUSED, RANGE_OF_PRODUCTS,
+        UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, RANGE_OF_PRODUCTS,
         BUY_PRODUCT, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND, FULL_STATE, ABILITY_LIST, MOVE_LEFT, MOVE_RIGHT,
         MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
         OBJECT_APPENDED, FINISHED
@@ -101,8 +101,9 @@ public class Model {
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
     public volatile long inviteTime = 0;
-    public volatile long refusedRejectedTime = 0;
-    public volatile long refusedMissedTime = 0;
+    public volatile long stopCallRejectedTime = 0;
+    public volatile long stopCallMissedTime = 0;
+    public volatile long stopCallExpiredTime = 0;
     public volatile long roundFinishedTime = 0;
     public volatile long gameFinishedTime = 0;
     public volatile Field field;
@@ -516,16 +517,22 @@ public class Model {
         inviteTime = System.currentTimeMillis();
     }
 
-    public void refusedRejected(String coward) {
+    public void stopCallRejected(String coward) {
         assert coward != null;
         enemy = coward;
-        refusedRejectedTime = System.currentTimeMillis();
+        stopCallRejectedTime = System.currentTimeMillis();
     }
 
-    public void refusedMissed(String coward) {
-        assert coward != null;
-        enemy = coward;
-        refusedMissedTime = System.currentTimeMillis();
+    public void stopCallMissed(String aggressorName) {
+        assert aggressorName != null;
+        enemy = aggressorName;
+        stopCallMissedTime = System.currentTimeMillis();
+    }
+
+    public void stopCallExpired(String defenderName) {
+        assert defenderName != null;
+        enemy = defenderName;
+        stopCallExpiredTime = System.currentTimeMillis();
     }
 
     public synchronized void setFriendList(int[] data) {

@@ -38,7 +38,7 @@ public class DialogIncoming extends Dialog {
 
     @Override
     public Dialog show(Stage stage) {
-        lblQuestion.setText(String.format("%s wants to invite you! Do you wanna accept a battle?", model.enemy));
+        lblQuestion.setText(String.format("%s wants to attack you! Do you wanna accept a battle?", model.enemy));
         return super.show(stage);
     }
 

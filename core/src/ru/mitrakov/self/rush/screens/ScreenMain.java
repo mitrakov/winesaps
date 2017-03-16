@@ -100,6 +100,7 @@ public class ScreenMain extends ScreenAdapter {
     private long inviteTime = 0;
     private long rejectedTime = 0;
     private long missedTime = 0;
+    private long expiredTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
@@ -318,7 +319,7 @@ public class ScreenMain extends ScreenAdapter {
         updateRatings();
         updateFriends();
         updateInvite();
-        updateRefused();
+        updateStopCall();
 
         // changing screens
         if (model.field != null)
@@ -562,14 +563,19 @@ public class ScreenMain extends ScreenAdapter {
         }
     }
 
-    private void updateRefused() {
-        if (rejectedTime != model.refusedRejectedTime) {
-            rejectedTime = model.refusedRejectedTime;
+    private void updateStopCall() {
+        if (rejectedTime != model.stopCallRejectedTime) {
+            rejectedTime = model.stopCallRejectedTime;
             infoDialog.setText(String.format("%s rejected your invitation", model.enemy)).show(stage);
         }
-        if (missedTime != model.refusedMissedTime) {
-            missedTime = model.refusedMissedTime;
-            infoDialog.setText(String.format("%s missed your invitation", model.enemy)).show(stage);
+        if (missedTime != model.stopCallMissedTime) {
+            missedTime = model.stopCallMissedTime;
+            incomingDialog.hide();
+            infoDialog.setText(String.format("You missed invitation from %s", model.enemy)).show(stage); //TODO replace
+        }
+        if (expiredTime != model.stopCallExpiredTime) {
+            expiredTime = model.stopCallExpiredTime;
+            infoDialog.setText(String.format("%s doesn't respond", model.enemy)).show(stage);
         }
     }
 }
