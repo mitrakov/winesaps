@@ -58,6 +58,7 @@ public class ScreenMain extends ScreenAdapter {
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
     private final ScrollPane lstFriendsScroll;
+    private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextField txtEnemyName;
     private final TextField txtFriendName;
     private final Button btnInviteByName;
@@ -136,6 +137,7 @@ public class ScreenMain extends ScreenAdapter {
         }};
         lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
         lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
+        tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
         txtEnemyName = new TextField("", skin, "default");
         txtFriendName = new TextField("", skin, "default");
         btnInviteByName = new TextButton("Find opponent", skin, "default") {{
@@ -465,7 +467,7 @@ public class ScreenMain extends ScreenAdapter {
                 tableRightContent.add(lblCrystalsData);
                 tableRightContent.row().expand();
                 tableRightContent.add(lblAbilities);
-                tableRightContent.add(tableRightContentAbilities);
+                tableRightContent.add(tableRightContentAbilitiesScroll).pad(15);
                 tableRightContent.row().expandX();
                 tableRightContent.add();
                 tableRightContent.add(lblAbilityExpireTime);

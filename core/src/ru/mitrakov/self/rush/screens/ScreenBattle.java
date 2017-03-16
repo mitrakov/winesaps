@@ -32,6 +32,7 @@ public class ScreenBattle extends ScreenAdapter {
     private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
+    private final ScrollPane abilityButtonsScroll;
     private final DialogFinished infoDialog;
 
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
@@ -53,6 +54,11 @@ public class ScreenBattle extends ScreenAdapter {
         infoDialog = new DialogFinished(game, skin, "default");
         btnThing = createButtonThing();
         lblScore = new Label("", skin, "default");
+        abilityButtonsScroll = new ScrollPane(abilityButtons);
+
+        // @mitrakov: BUG in LibGDX! If a skin is not assigned to a ScrollPane then ScrollPane supposes any upper actor
+        // as its scrollbar and makes it invisible after fadeOut; all that remains is to forbid fading
+        abilityButtonsScroll.setFadeScrollBars(false);
 
         buildTable();
     }
@@ -145,10 +151,15 @@ public class ScreenBattle extends ScreenAdapter {
     }
 
     private void buildTable() {
-        table.add(gui).colspan(3);
+        table.add(gui).colspan(4);
+        table.row(); // fake row to make the table think there are 4 columns instead of 3
+        table.add(); // without the fake row "abilityButtonsScroll.colspan(2)" would work incorrectly
+        table.add();
+        table.add();
+        table.add();
         table.row();
         table.add(btnThing).align(Align.left);
-        table.add(abilityButtons);
+        table.add(abilityButtonsScroll).colspan(2);
         table.add(lblScore);
     }
 
