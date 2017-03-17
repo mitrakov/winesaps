@@ -52,7 +52,7 @@ public class Model {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, RANGE_OF_PRODUCTS,
         BUY_PRODUCT, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND, FULL_STATE, ABILITY_LIST, MOVE_LEFT, MOVE_RIGHT,
         MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
-        OBJECT_APPENDED, FINISHED
+        OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, CANCEL_CALL
     }
 
     /**
@@ -366,6 +366,12 @@ public class Model {
         assert product != null;
         if (sender != null) {
             sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
+        }
+    }
+
+    public void cancelCall() {
+        if (sender != null) {
+            sender.send(CANCEL_CALL);
         }
     }
 

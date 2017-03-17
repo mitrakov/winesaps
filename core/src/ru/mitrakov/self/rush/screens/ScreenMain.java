@@ -52,6 +52,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Dialog settingsDialog;
     private final Dialog aboutDialog;
     private final DialogInfo infoDialog;
+    private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
     private final DialogFriends friendsDialog;
     private final List<String> lstHistory;
@@ -122,7 +123,8 @@ public class ScreenMain extends ScreenAdapter {
         settingsDialog = new DialogSettings(model, skin, "default");
         aboutDialog = new DialogAbout(skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
-        inviteDialog = new DialogInvite(model, skin, "default");
+        dialupDialog = new DialogDialup(model, skin, "default");
+        inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage);
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog,
                 new DialogQuestion("Confirm action", skin, "default"), stage);
         lstHistory = new List<String>(skin, "default");
@@ -312,7 +314,7 @@ public class ScreenMain extends ScreenAdapter {
         stage.act();
         stage.draw();
 
-        lblName.setText(model.name);
+        lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
         updateAbilities();
@@ -322,10 +324,12 @@ public class ScreenMain extends ScreenAdapter {
         updateStopCall();
 
         // changing screens
-        if (model.field != null)
-            game.setNextScreen();
         if (!model.authorized)
             game.setLoginScreen();
+        if (model.field != null) {
+            dialupDialog.hide(null); // null = close immediately (without fadeOut)
+            game.setNextScreen();
+        }
 
         // checking BACK and MENU buttons on Android
         if (psObject != null) {
@@ -566,15 +570,17 @@ public class ScreenMain extends ScreenAdapter {
     private void updateStopCall() {
         if (rejectedTime != model.stopCallRejectedTime) {
             rejectedTime = model.stopCallRejectedTime;
+            dialupDialog.hide();
             infoDialog.setText(String.format("%s rejected your invitation", model.enemy)).show(stage);
         }
         if (missedTime != model.stopCallMissedTime) {
             missedTime = model.stopCallMissedTime;
             incomingDialog.hide();
-            infoDialog.setText(String.format("You missed invitation from %s", model.enemy)).show(stage); //TODO replace
+            infoDialog.setText(String.format("You missed invitation from %s", model.enemy)).show(stage);
         }
         if (expiredTime != model.stopCallExpiredTime) {
             expiredTime = model.stopCallExpiredTime;
+            dialupDialog.hide();
             infoDialog.setText(String.format("%s doesn't respond", model.enemy)).show(stage);
         }
     }

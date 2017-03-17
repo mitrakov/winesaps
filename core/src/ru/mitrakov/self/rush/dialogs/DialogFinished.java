@@ -34,7 +34,7 @@ public class DialogFinished extends Dialog {
     protected void result(Object object) {
         if (quitOnResult) {
             game.setNextScreen();
-            hide(null); // default hiding uses fadeout Action 400 ms long that may be undesirable when screens change
+            hide(null); // null = close immediately (without fadeOut)
         }
     }
 

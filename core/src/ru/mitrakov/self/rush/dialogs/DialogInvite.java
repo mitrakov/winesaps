@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import ru.mitrakov.self.rush.model.Model;
 
@@ -14,16 +14,20 @@ public class DialogInvite extends Dialog {
     public enum InviteType {ByName, Random, Latest}
 
     private final Model model;
+    private final Dialog dialup;
+    private final Stage stage;
     private final Label lblQuestion;
     private final CheckBox chkAddToFriends;
 
     private InviteType type = InviteType.Random;
     private String name = "";
 
-    public DialogInvite(Model model, Skin skin, String windowStyleName) {
+    public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage) {
         super("Invite", skin, windowStyleName);
-        assert model != null;
+        assert model != null && dialup != null && stage != null;
         this.model = model;
+        this.dialup = dialup;
+        this.stage = stage;
 
         lblQuestion = new Label("", skin, "default");
         chkAddToFriends = new CheckBox(" add to friends", skin, "default");
@@ -55,7 +59,8 @@ public class DialogInvite extends Dialog {
                     break;
                 default:
             }
-            hide(null); // default hiding uses fadeout Action 400 ms long that may be undesirable when screens change
+            hide(null); // null = close immediately (without fadeOut)
+            dialup.show(stage);
         }
     }
 
@@ -68,9 +73,10 @@ public class DialogInvite extends Dialog {
     }
 
     private void rebuildContent() {
-        assert type != null;
         Table table = getContentTable();
-        table.clear();
+        assert type != null && table != null;
+
+        table.pad(20).clear();
         switch (type) {
             case ByName:
                 lblQuestion.setText(String.format("Do you wanna invite '%s'?", name));

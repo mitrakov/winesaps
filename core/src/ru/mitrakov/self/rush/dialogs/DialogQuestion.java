@@ -13,8 +13,9 @@ public class DialogQuestion extends Dialog {
 
     public DialogQuestion(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
+
         lblMessage = new Label("", skin, "default");
-        getContentTable().add(lblMessage); // no NULL here
+        getContentTable().pad(20).add(lblMessage); // here getContentTable != null
 
         button("Yes", true);
         button("No");

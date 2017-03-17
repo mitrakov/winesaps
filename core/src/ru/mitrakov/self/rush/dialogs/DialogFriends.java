@@ -24,7 +24,7 @@ public class DialogFriends extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    hide(null); // hide this dialog immediately
+                    hide(null); // null = close immediately (without fadeOut)
                     invDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                 }
             });
@@ -33,7 +33,7 @@ public class DialogFriends extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    hide(null); // hide this dialog immediately
+                    hide(null); // null = close immediately (without fadeOut)
                     yesNoDialog.setText(String.format("Do you wanna remove %s?", name)).setRunnable(new Runnable() {
                         @Override
                         public void run() {
