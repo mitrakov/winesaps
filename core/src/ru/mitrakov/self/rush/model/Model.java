@@ -52,7 +52,8 @@ public class Model {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
         RANGE_OF_PRODUCTS, BUY_PRODUCT, RESERVED_0D, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
         MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
-        OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND
+        OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
+        CHECK_PROMOCODE
     }
 
     /**
@@ -142,6 +143,7 @@ public class Model {
     private static final int DEFENDER_ID = 2;
     private static final int SKILL_OFFSET = 0x20;
     private static final int HISTORY_MAX = 32;
+    private static final int PROMOCODE_LEN = 5;
     private static final String SETTINGS_FILE = "settings";
     private static final String HISTORY_FILE = "history";
 
@@ -355,6 +357,13 @@ public class Model {
         assert type != null;
         if (sender != null) {
             sender.send(RATING, type.ordinal());
+        }
+    }
+
+    public void checkPromocode(String promocode) {
+        assert promocode != null;
+        if (sender != null && promocode.length() >= PROMOCODE_LEN) {
+            sender.send(CHECK_PROMOCODE, promocode.getBytes());
         }
     }
 
@@ -618,6 +627,10 @@ public class Model {
             generalRatingTime = System.currentTimeMillis();
         else if (type == RatingType.Weekly)
             weeklyRatingTime = System.currentTimeMillis();
+    }
+
+    public void setPromocodeValid(boolean valid) {
+        System.out.println("Promocode valid = " + valid);
     }
 
     public void setNewField(int[] fieldData) {

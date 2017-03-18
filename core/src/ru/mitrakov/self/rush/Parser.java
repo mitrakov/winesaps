@@ -89,6 +89,9 @@ class Parser implements Network.IHandler {
                     case OBJECT_APPENDED:
                         objectAppended(Arrays.copyOfRange(data, 1, data.length));
                         break;
+                    case CHECK_PROMOCODE:
+                        checkPromocode(Arrays.copyOfRange(data, 1, data.length));
+                        break;
                     default:
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
@@ -288,6 +291,15 @@ class Parser implements Network.IHandler {
             int xy = data[2];
             model.appendObject(objNum, id, xy);
         } else throw new IllegalArgumentException("Incorrect object format");
+    }
+
+    private void checkPromocode(int[] data) {
+        if (data.length == 1) {
+            int res = data[0];
+            if (res == 0 || res == 1) {
+                model.setPromocodeValid(res == 1);
+            } else throw new IllegalArgumentException("Incorrect checkPromocode response");
+        } else throw new IllegalArgumentException("Incorrect checkPromocode format");
     }
 
     private void abilitiesList(int[] data) {

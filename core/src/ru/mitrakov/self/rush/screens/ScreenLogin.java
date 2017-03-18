@@ -28,11 +28,13 @@ public class ScreenLogin extends ScreenAdapter {
     private final TextField txtLogin; // ....
     private final TextField txtPassword;
     private final TextField txtEmail;
+    private final TextField txtPromocode;
     private final TextButton btnSignIn;
     private final TextButton btnSignUp;
     private final TextButton btnBack;
     private final TextButton btnOkSignIn;
     private final TextButton btnOkSignUp;
+    private final CheckBox chkPromocode;
     private final Label lblName;
     private final Label lblPassword;
     private final Label lblEmail;
@@ -56,6 +58,14 @@ public class ScreenLogin extends ScreenAdapter {
             setPasswordCharacter('*');
         }};
         txtEmail = new TextField("", skin, "default");
+        txtPromocode = new TextField("", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.checkPromocode(txtPromocode.getText());
+                }
+            });
+        }};
         btnSignIn = new TextButton("Sign in", skin, "default") {{
             addListener(new ChangeListener() {
                 @Override
@@ -68,7 +78,7 @@ public class ScreenLogin extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignUpDialog(false);
+                    setSignUpDialog(false, false);
                 }
             });
         }};
@@ -96,6 +106,14 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
+        chkPromocode = new CheckBox(" I have a promo code", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    setSignUpDialog(false, chkPromocode.isChecked());
+                }
+            });
+        }};
         lblName = new Label("Name", skin, "default");
         lblPassword = new Label("Password", skin, "default");
         lblEmail = new Label("Email", skin, "default");
@@ -114,7 +132,7 @@ public class ScreenLogin extends ScreenAdapter {
                                 setSignInDialog(ratio > 2);
                                 break;
                             case SignUp:
-                                setSignUpDialog(ratio > 2);
+                                setSignUpDialog(ratio > 2, false);
                                 break;
                             default:
                         }
@@ -170,9 +188,10 @@ public class ScreenLogin extends ScreenAdapter {
         Actor focused = stage.getKeyboardFocus();
 
         table.clear();
+        table.row().space(20);
         table.add(lblName).align(Align.left);
         table.add(txtLogin);
-        table.row().spaceTop(20);
+        table.row().space(20);
         table.add(lblPassword).align(Align.left);
         table.add(txtPassword);
         table.row().spaceTop(30);
@@ -183,19 +202,24 @@ public class ScreenLogin extends ScreenAdapter {
         stage.setKeyboardFocus(focused);
     }
 
-    private void setSignUpDialog(boolean shiftForKeyboard) {
+    private void setSignUpDialog(boolean shiftForKeyboard, boolean havePromocode) {
         curDialog = CurDialog.SignUp;
         Actor focused = stage.getKeyboardFocus();
 
         table.clear();
+        table.row().space(20);
         table.add(lblName).align(Align.left);
         table.add(txtLogin);
-        table.row().spaceTop(20);
+        table.row().space(20);
         table.add(lblPassword).align(Align.left);
         table.add(txtPassword);
-        table.row().spaceTop(20);
+        table.row().space(20);
         table.add(lblEmail).align(Align.left);
         table.add(txtEmail);
+        table.row().space(20);
+        table.add(chkPromocode);
+        if (havePromocode)
+            table.add(txtPromocode);
         table.row().spaceTop(30);
         table.add(btnBack).width(100).height(40);
         table.add(btnOkSignUp).width(100).height(40);
