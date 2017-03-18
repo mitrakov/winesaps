@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import ru.mitrakov.self.rush.ui.LinkedLabel;
 
@@ -10,13 +11,16 @@ import ru.mitrakov.self.rush.ui.LinkedLabel;
 
 public class DialogMoreCrystals extends Dialog {
 
-    public DialogMoreCrystals(Skin skin, String windowStyleName) {
+    public DialogMoreCrystals(Skin skin, String windowStyleName, Dialog promoDialog, Stage stage) {
         super("Getting more crystals", skin, windowStyleName);
+        assert promoDialog != null && stage != null;
+
+        init(getContentTable(), skin, promoDialog, stage);
+
         button("Close");
-        init(getContentTable(), skin);
     }
 
-    private void init(Table table, Skin skin) {
+    private void init(Table table, Skin skin, final Dialog promoDialog, final Stage stage) {
         assert table != null && skin != null;
 
         table.pad(30);
@@ -28,8 +32,15 @@ public class DialogMoreCrystals extends Dialog {
         table.row();
         table.add(new Label("2. Invite your friends to the game", skin, "default")).left();
         table.row();
-        String msg = "Invite your friends with a promo code and \nafter his/her win you'll both get extra crystals";
-        table.add(new Label(msg, skin, "default")).left().padLeft(40);
+        table.add(new LinkedLabel("Invite your friends with a ", "promo code ", "and after his/her win", skin,
+                "default", new Runnable() {
+            @Override
+            public void run() {
+                promoDialog.show(stage);
+            }
+        })).left().padLeft(40);
+        table.row();
+        table.add(new Label("you'll both get extra crystals", skin, "default")).left().padLeft(40);
         table.row();
         table.add(new Label("3. Achieve a paid place in a Week Rating", skin, "default")).left();
         table.row();

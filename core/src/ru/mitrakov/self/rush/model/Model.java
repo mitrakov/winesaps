@@ -90,6 +90,7 @@ public class Model {
     public volatile String name = "";
     public volatile String hash = "";
     public volatile String enemy = "";
+    public volatile String promocode = "";
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
     public volatile int crystals = 0;
@@ -476,6 +477,14 @@ public class Model {
             bld.append((char) data[i]);
         }
         name = bld.toString();
+        i++;
+
+        // parse promo code
+        bld = new StringBuilder(name);
+        for (; i < data.length && data[i] != 0; i++) {
+            bld.append((char) data[i]);
+        }
+        promocode = bld.toString();
         i++;
 
         // parse crystals

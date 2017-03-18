@@ -118,7 +118,8 @@ public class ScreenMain extends ScreenAdapter {
         assert regionSettings != null && regionAbout != null;
 
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
-        moreCrystalsDialog = new DialogMoreCrystals(skin, "default");
+        moreCrystalsDialog = new DialogMoreCrystals(skin, "default", new DialogPromocode(model, skin, "default"),
+                stage);
         incomingDialog = new DialogIncoming(model, skin, "default");
         settingsDialog = new DialogSettings(model, skin, "default");
         aboutDialog = new DialogAbout(skin, "default");
