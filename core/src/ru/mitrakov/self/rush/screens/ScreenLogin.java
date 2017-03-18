@@ -102,7 +102,7 @@ public class ScreenLogin extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.signUp(txtLogin.getText(), txtPassword.getText(), txtEmail.getText());
+                    model.signUp(txtLogin.getText(), txtPassword.getText(), txtEmail.getText(), txtPromocode.getText());
                 }
             });
         }};

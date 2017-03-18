@@ -253,10 +253,10 @@ public class Model {
      * @param password - password
      * @param email    - email address
      */
-    public void signUp(String login, String password, String email) {
+    public void signUp(String login, String password, String email, String promocode) {
         if (sender != null) {
             hash = md5(password);
-            sender.send(SIGN_UP, String.format("%s\0%s\0%s", login, hash, email).getBytes());
+            sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode).getBytes());
         }
     }
 
