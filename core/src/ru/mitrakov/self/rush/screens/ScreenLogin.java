@@ -1,10 +1,8 @@
 package ru.mitrakov.self.rush.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -47,6 +45,7 @@ public class ScreenLogin extends ScreenAdapter {
     private enum CurDialog {Start, SignIn, SignUp}
 
     private CurDialog curDialog = CurDialog.Start;
+    private boolean shiftedByKeyboard = false;
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
@@ -82,7 +81,7 @@ public class ScreenLogin extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignInDialog(false);
+                    setSignInDialog();
                 }
             });
         }};
@@ -90,7 +89,7 @@ public class ScreenLogin extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignUpDialog(false, false);
+                    setSignUpDialog(false);
                 }
             });
         }};
@@ -122,7 +121,7 @@ public class ScreenLogin extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignUpDialog(false, chkPromocode.isChecked());
+                    setSignUpDialog(chkPromocode.isChecked());
                 }
             });
         }};
@@ -138,12 +137,13 @@ public class ScreenLogin extends ScreenAdapter {
                 Gdx.app.postRunnable(new Runnable() { // @mitrakov: it is necessary to avoid OutOfSync exceptions!
                     @Override
                     public void run() {
+                        shiftedByKeyboard = ratio > 2;
                         switch (curDialog) {
                             case SignIn:
-                                setSignInDialog(ratio > 2);
+                                setSignInDialog();
                                 break;
                             case SignUp:
-                                setSignUpDialog(ratio > 2, false);
+                                setSignUpDialog(chkPromocode.isChecked());
                                 break;
                             default:
                         }
@@ -202,7 +202,7 @@ public class ScreenLogin extends ScreenAdapter {
         table.add(btnSignUp).width(300).height(80);
     }
 
-    private void setSignInDialog(boolean shiftForKeyboard) {
+    private void setSignInDialog() {
         curDialog = CurDialog.SignIn;
         Actor focused = stage.getKeyboardFocus();
 
@@ -216,12 +216,12 @@ public class ScreenLogin extends ScreenAdapter {
         table.row().spaceTop(30);
         table.add(btnBack).width(100).height(40);
         table.add(btnOkSignIn).width(100).height(40);
-        if (shiftForKeyboard) shiftUp();
+        if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
     }
 
-    private void setSignUpDialog(boolean shiftForKeyboard, boolean havePromocode) {
+    private void setSignUpDialog(boolean havePromocode) {
         curDialog = CurDialog.SignUp;
         Actor focused = stage.getKeyboardFocus();
 
@@ -244,7 +244,7 @@ public class ScreenLogin extends ScreenAdapter {
         table.row().spaceTop(30);
         table.add(btnBack).width(100).height(40);
         table.add(btnOkSignUp).width(100).height(40);
-        if (shiftForKeyboard) shiftUp();
+        if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
     }
