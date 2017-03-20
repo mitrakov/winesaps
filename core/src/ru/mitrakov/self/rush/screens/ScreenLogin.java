@@ -118,8 +118,6 @@ public class ScreenLogin extends ScreenAdapter {
         lblPassword = new Label("Password", skin, "default");
         lblEmail = new Label("Email", skin, "default");
 
-        setStartDialog();
-
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {
             @Override
@@ -166,6 +164,7 @@ public class ScreenLogin extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        setStartDialog();
     }
 
     @Override

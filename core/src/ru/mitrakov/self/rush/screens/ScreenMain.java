@@ -101,7 +101,9 @@ public class ScreenMain extends ScreenAdapter {
     private long inviteTime = 0;
     private long rejectedTime = 0;
     private long missedTime = 0;
-    private long expiredTime = 0;
+    private long timerExpiredTime = 0;
+    private long friendsTime = 0;
+    private long abilityExpireTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
@@ -519,7 +521,8 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateAbilities() {
-        if (model.abilityExpireMap.size() != tableRightContentAbilities.getColumns()) {
+        if (abilityExpireTime != model.abilityExpireTime) {
+            abilityExpireTime = model.abilityExpireTime;
             tableRightContentAbilities.clear();
             for (Model.Ability ability : model.abilityExpireMap.keySet()) {
                 ImageButton btn = abilities.get(ability);
@@ -557,8 +560,10 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateFriends() {
-        if (lstFriends.getItems().size != model.friends.size())
+        if (friendsTime != model.friendsListTime) {
+            friendsTime = model.friendsListTime;
             lstFriends.setItems(model.friends.toArray(new String[0]));
+        }
     }
 
     private void updateInvite() {
@@ -579,8 +584,8 @@ public class ScreenMain extends ScreenAdapter {
             incomingDialog.hide();
             infoDialog.setText(String.format("You missed invitation from %s", model.enemy)).show(stage);
         }
-        if (expiredTime != model.stopCallExpiredTime) {
-            expiredTime = model.stopCallExpiredTime;
+        if (timerExpiredTime != model.stopCallExpiredTime) {
+            timerExpiredTime = model.stopCallExpiredTime;
             dialupDialog.hide();
             infoDialog.setText(String.format("%s doesn't respond", model.enemy)).show(stage);
         }

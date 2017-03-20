@@ -99,6 +99,10 @@ public class Model {
     public volatile int score2 = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
+    public volatile Field field;
+    public volatile CellObject curActor;
+    public volatile CellObject curThing;
+
     public volatile long abilityExpireTime = 0;
     public volatile long generalRatingTime = 0;
     public volatile long weeklyRatingTime = 0;
@@ -108,9 +112,7 @@ public class Model {
     public volatile long stopCallExpiredTime = 0;
     public volatile long roundFinishedTime = 0;
     public volatile long gameFinishedTime = 0;
-    public volatile Field field;
-    public volatile CellObject curActor;
-    public volatile CellObject curThing;
+    public volatile long friendsListTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -566,7 +568,10 @@ public class Model {
             bytes[i] = (byte) data[i];
         }
         friends.clear();
-        Collections.addAll(friends, new String(bytes).split("\0"));
+        String s = new String(bytes);
+        if (!s.isEmpty()) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
+            Collections.addAll(friends, s.split("\0"));
+        friendsListTime = System.currentTimeMillis();
     }
 
     public void friendAdded(String name) {
