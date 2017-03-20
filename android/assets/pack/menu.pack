@@ -5,15 +5,29 @@ filter: Nearest,Nearest
 repeat: none
 settings
   rotate: false
-  xy: 1, 1
+  xy: 0, 0
   size: 28, 27
   orig: 28, 27
   offset: 0, 0
   index: -1
 about
   rotate: false
-  xy: 31, 1
+  xy: 30, 0
   size: 27, 27
   orig: 27, 27
+  offset: 0, 0
+  index: -1
+invalid
+  rotate: false
+  xy: 59, 9
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+valid
+  rotate: false
+  xy: 79, 12
+  size: 15, 15
+  orig: 15, 15
   offset: 0, 0
   index: -1

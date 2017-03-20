@@ -3,10 +3,12 @@ package ru.mitrakov.self.rush.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
@@ -38,6 +40,9 @@ public class ScreenLogin extends ScreenAdapter {
     private final Label lblName;
     private final Label lblPassword;
     private final Label lblEmail;
+    private final Image imgValid;
+    private final Drawable textureValid;
+    private final Drawable textureInvalid;
 
     private enum CurDialog {Start, SignIn, SignUp}
 
@@ -51,6 +56,13 @@ public class ScreenLogin extends ScreenAdapter {
 
         table.setFillParent(true);
         stage.addActor(table);
+
+        TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
+        TextureRegion regionValid = atlasMenu.findRegion("valid");
+        TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
+        assert regionValid != null && regionInvalid != null;
+        textureValid = new TextureRegionDrawable(regionValid);
+        textureInvalid = new TextureRegionDrawable(regionInvalid);
 
         txtLogin = new TextField("", skin, "default"); // ....
         txtPassword = new TextField("", skin, "default") {{
@@ -117,6 +129,7 @@ public class ScreenLogin extends ScreenAdapter {
         lblName = new Label("Name", skin, "default");
         lblPassword = new Label("Password", skin, "default");
         lblEmail = new Label("Email", skin, "default");
+        imgValid = new Image(textureInvalid);
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {
@@ -150,6 +163,8 @@ public class ScreenLogin extends ScreenAdapter {
         if (model.authorized)
             game.setNextScreen();
 
+        imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
+
         // checking BACK and MENU buttons on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
             if (psObject != null)
@@ -170,10 +185,15 @@ public class ScreenLogin extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
+        if (textureValid instanceof TextureRegionDrawable)
+            ((TextureRegionDrawable)textureValid).getRegion().getTexture().dispose(); // no NULL references here
+        if (textureInvalid instanceof TextureRegionDrawable)
+            ((TextureRegionDrawable)textureInvalid).getRegion().getTexture().dispose(); // no NULL references here
     }
 
     private void setStartDialog() {
         curDialog = CurDialog.Start;
+        chkPromocode.setChecked(false);              // clear checking
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
 
         table.clear();
@@ -217,8 +237,10 @@ public class ScreenLogin extends ScreenAdapter {
         table.add(txtEmail);
         table.row().space(20);
         table.add(chkPromocode);
-        if (havePromocode)
+        if (havePromocode) {
             table.add(txtPromocode);
+            table.add(imgValid).spaceLeft(20);
+        }
         table.row().spaceTop(30);
         table.add(btnBack).width(100).height(40);
         table.add(btnOkSignUp).width(100).height(40);

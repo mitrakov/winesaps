@@ -94,6 +94,7 @@ public class Model {
     public volatile String promocode = "";
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
+    public volatile boolean promocodeValid = false;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
@@ -635,7 +636,7 @@ public class Model {
     }
 
     public void setPromocodeValid(boolean valid) {
-        System.out.println("Promocode valid = " + valid);
+        promocodeValid = valid;
     }
 
     public void setNewField(int[] fieldData) {
