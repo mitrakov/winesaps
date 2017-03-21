@@ -2,6 +2,8 @@ package ru.mitrakov.self.rush.screens;
 
 import java.util.*;
 
+import static java.lang.Math.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -45,6 +47,7 @@ class Gui extends Actor {
     private static final int CELL_SIZ_H = 85;
     private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
     private static final int OFFSET_Y = 33; // inferred by expertise
+    private static final float SPEED = 1000f * CELL_SIZ_W / InputController.TOUCH_DELAY;
 
     private final Model model;
     private final InputController controller;
@@ -56,6 +59,7 @@ class Gui extends Actor {
 
 //    Animation<TextureRegion> animation;
 //    float stateTime = 0;
+    float actorX = -1;
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -110,6 +114,7 @@ class Gui extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
 //        stateTime += Gdx.graphics.getDeltaTime();
+        float dx = SPEED * Gdx.graphics.getDeltaTime();
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -140,6 +145,15 @@ class Gui extends Actor {
                             if (texture != null) {
                                 float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
                                 float y = convertYFromModelToScreen(j) + bottomHeight;
+                                if (obj.getClass() == Actor1.class) {
+                                    float d = x - actorX;
+                                    if (abs(d) < dx / 2 || actorX < 0) { // if actorX==x || actorX not initialized
+                                        actorX = x;
+                                    } else {
+                                        x = actorX;
+                                        actorX += signum(d) * dx;
+                                    }
+                                }
                                 batch.draw(texture, x, y);
                             }
                         }

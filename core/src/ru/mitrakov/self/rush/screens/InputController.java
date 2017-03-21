@@ -13,7 +13,7 @@ import ru.mitrakov.self.rush.model.object.CellObject;
 
 class InputController {
 
-    private static final int TOUCH_DELAY = 250;
+    public static final int TOUCH_DELAY = 250;
 
     private final Model model;
     private long time = 0;
