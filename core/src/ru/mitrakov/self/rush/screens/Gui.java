@@ -54,6 +54,9 @@ class Gui extends Actor {
     private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
 
+//    Animation<TextureRegion> animation;
+//    float stateTime = 0;
+
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
     }
@@ -94,10 +97,19 @@ class Gui extends Actor {
             if (texture != null)
                 texturesUp.put(clazz, texture);
         }
+
+//        Texture sheet = new Texture(Gdx.files.internal("sprite-animation4.png"));
+//        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / 6, sheet.getHeight() / 5);
+//        List<TextureRegion> lst = new ArrayList<TextureRegion>(30);
+//        for (TextureRegion[] array : tmp) {
+//            lst.addAll(Arrays.asList(array));
+//        }
+//        animation = new Animation<TextureRegion>(0.033f, lst.toArray(new TextureRegion[0]));
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+//        stateTime += Gdx.graphics.getDeltaTime();
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -131,6 +143,14 @@ class Gui extends Actor {
                                 batch.draw(texture, x, y);
                             }
                         }
+//                        TextureRegion texture = texturesUp.get(obj.getClass());
+//                        if (obj.getClass() == Actor1.class)
+//                            texture = animation.getKeyFrame(stateTime, true);
+//                        if (texture != null) {
+//                            float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
+//                            float y = convertYFromModelToScreen(j) + bottomHeight;
+//                            batch.draw(texture, x, y);
+//                        }
                     }
                 }
             }
