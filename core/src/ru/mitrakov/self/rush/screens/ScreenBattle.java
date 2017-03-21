@@ -26,7 +26,7 @@ import ru.mitrakov.self.rush.dialogs.DialogFinished;
 public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
-    private final Stage stage = new Stage(new FitViewport(800, 480));
+    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table table = new Table();
     private final Actor gui;
     private final ImageButton btnThing;

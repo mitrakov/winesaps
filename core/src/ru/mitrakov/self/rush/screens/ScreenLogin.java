@@ -22,7 +22,7 @@ public class ScreenLogin extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
-    private final Stage stage = new Stage(new FitViewport(800, 480));
+    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table table = new Table();
 
     private final TextField txtLogin; // ....

@@ -581,10 +581,12 @@ public class Model {
 
     public void friendAdded(String name) {
         friends.add(name);
+        friendsListTime = System.currentTimeMillis();
     }
 
     public void friendRemoved(String name) {
         friends.remove(name);
+        friendsListTime = System.currentTimeMillis();
     }
 
     public synchronized void setRangeOfProducts(final int[] data) {
@@ -652,8 +654,8 @@ public class Model {
     }
 
     public void setNewField(int[] fieldData) {
-        curThing = null;
-        curActor = null;
+        curThing = curActor = null;
+        score1 = score2 = 0;
         field = new Field(fieldData);
     }
 

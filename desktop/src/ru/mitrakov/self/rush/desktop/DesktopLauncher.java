@@ -16,8 +16,8 @@ public class DesktopLauncher extends JFrame {
             @Override
             public void run() {
                 final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-                config.width = 800;
-                config.height = 480;
+                config.width = RushClient.WIDTH;
+                config.height = RushClient.HEIGHT;
                 new DesktopLauncher(config);
             }
         });

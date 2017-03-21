@@ -19,51 +19,58 @@ RopeLine
   index: -1
 Water
   rotate: false
-  xy: 29, 47
-  size: 15, 75
-  orig: 15, 75
+  xy: 29, 49
+  size: 14, 73
+  orig: 14, 73
   offset: 0, 0
   index: -1
 Block
   rotate: false
-  xy: 46, 52
-  size: 15, 70
-  orig: 15, 70
+  xy: 45, 50
+  size: 14, 72
+  orig: 14, 72
   offset: 0, 0
   index: -1
 LadderBottom
   rotate: false
-  xy: 63, 67
+  xy: 61, 67
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 LadderTop
   rotate: false
-  xy: 95, 67
+  xy: 93, 67
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 OpenedUmbrella
   rotate: false
-  xy: 127, 67
+  xy: 125, 67
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 Actor1
   rotate: false
-  xy: 159, 72
+  xy: 157, 72
   size: 30, 50
   orig: 30, 50
   offset: 0, 0
   index: -1
 Actor2
   rotate: false
-  xy: 191, 72
+  xy: 189, 72
   size: 30, 50
   orig: 30, 50
+  offset: 0, 0
+  index: -1
+Wolf
+  rotate: false
+  xy: 221, 77
+  size: 30, 45
+  orig: 30, 45
   offset: 0, 0
   index: -1
 Mine
@@ -75,28 +82,21 @@ Mine
   index: -1
 Umbrella
   rotate: false
-  xy: 223, 96
+  xy: 61, 39
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Apple
   rotate: false
-  xy: 223, 66
+  xy: 89, 37
   size: 22, 28
   orig: 22, 28
   offset: 0, 0
   index: -1
-Wolf
-  rotate: false
-  xy: 63, 20
-  size: 30, 45
-  orig: 30, 45
-  offset: 0, 0
-  index: -1
 Pear
   rotate: false
-  xy: 95, 37
+  xy: 113, 37
   size: 22, 28
   orig: 22, 28
   offset: 0, 0

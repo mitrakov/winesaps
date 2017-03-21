@@ -8,6 +8,9 @@ import ru.mitrakov.self.rush.net.Network;
 import ru.mitrakov.self.rush.screens.*;
 
 public class RushClient extends Game {
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 480;
+
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
     private /*final*/ Skin skin;

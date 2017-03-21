@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.object.*;
 
@@ -40,8 +41,10 @@ class Gui extends Actor {
         }
     }
 
-    private static final int CELL_SIZ_W = 15;
+    private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
+    private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
+    private static final int OFFSET_Y = 33; // inferred by expertise
 
     private final Model model;
     private final InputController controller;
@@ -52,15 +55,15 @@ class Gui extends Actor {
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
 
     private static float convertXFromModelToScreen(int x) {
-        return (x + 1) * CELL_SIZ_W + 3;  // +3 to smooth an inaccuracy
+        return x * CELL_SIZ_W + OFFSET_X;
     }
 
     private static float convertYFromModelToScreen(int y) {
-        return (Field.HEIGHT - y) * CELL_SIZ_H - .5f * CELL_SIZ_H - 1; // -1 to smooth an inaccuracy
+        return (Field.HEIGHT - y) * CELL_SIZ_H - OFFSET_Y;
     }
 
     static int convertXFromScreenToModel(float x) {
-        return (int) (x / CELL_SIZ_W);
+        return (int) ((x - OFFSET_X) / CELL_SIZ_W);
     }
 
     static int convertYFromScreenToModel(float y) {
@@ -73,7 +76,8 @@ class Gui extends Actor {
         controller = new InputController(model);
         addListener(listener);
 
-        setWidth(Field.WIDTH * CELL_SIZ_W);
+        // in theory width must be "Field.WIDTH * CELL_SIZ_W", but we use full width for convenience on touch screens
+        setWidth(RushClient.WIDTH);
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
         Class downClasses[] = new Class[]{Block.class, Dias.class, Water.class};
@@ -102,7 +106,6 @@ class Gui extends Actor {
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell must NOT be NULL (assert omitted)
-                    // @mitrakov: "Map::getOrDefault" requires too high Level API (24), so we use usual "Map::get"
                     // draw bottom (block/water/dias)
                     float bottomWidth = CELL_SIZ_W;
                     float bottomHeight = 0;

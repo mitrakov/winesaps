@@ -5,22 +5,22 @@ filter: Nearest,Nearest
 repeat: none
 Dias
   rotate: false
-  xy: 0, 32
-  size: 15, 30
-  orig: 15, 30
+  xy: 0, 0
+  size: 14, 28
+  orig: 14, 28
   offset: 0, 0
   index: -1
 Block
   rotate: false
-  xy: 0, 15
-  size: 15, 15
-  orig: 15, 15
+  xy: 16, 14
+  size: 14, 14
+  orig: 14, 14
   offset: 0, 0
   index: -1
 Water
   rotate: false
-  xy: 0, 0
-  size: 15, 13
-  orig: 15, 13
+  xy: 16, 0
+  size: 14, 12
+  orig: 14, 12
   offset: 0, 0
   index: -1

@@ -34,7 +34,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
 
-    private final Stage stage = new Stage(new FitViewport(800, 480));
+    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();

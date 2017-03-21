@@ -30,7 +30,7 @@ public class DialogInvite extends Dialog {
         this.stage = stage;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox(" add to friends", skin, "default");
+        chkAddToFriends = new CheckBox(" add to friends", skin, "default"); // not checked by default
 
         button("OK", true);
         button("Cancel");
@@ -68,7 +68,7 @@ public class DialogInvite extends Dialog {
         assert type != null;
         this.type = type;
         this.name = name;
-        chkAddToFriends.setChecked(!model.friends.contains(name));
+        chkAddToFriends.setVisible(!model.friends.contains(name));
         return this;
     }
 

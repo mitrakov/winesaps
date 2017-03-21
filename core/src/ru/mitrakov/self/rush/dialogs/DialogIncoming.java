@@ -38,6 +38,7 @@ public class DialogIncoming extends Dialog {
 
     @Override
     public Dialog show(Stage stage) {
+        chkAddToFriends.setVisible(!model.friends.contains(model.enemy));
         lblQuestion.setText(String.format("%s wants to attack you! Do you wanna accept a battle?", model.enemy));
         return super.show(stage);
     }
