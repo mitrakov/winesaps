@@ -55,6 +55,7 @@ public class ScreenMain extends ScreenAdapter {
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
     private final DialogFriends friendsDialog;
+    private final DialogPromocodeDone promocodeDoneDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
@@ -104,6 +105,7 @@ public class ScreenMain extends ScreenAdapter {
     private long timerExpiredTime = 0;
     private long friendsTime = 0;
     private long abilityExpireTime = 0;
+    private long promocodeDoneTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
@@ -130,6 +132,7 @@ public class ScreenMain extends ScreenAdapter {
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage);
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog,
                 new DialogQuestion("Confirm action", skin, "default"), stage);
+        promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
         lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
             addListener(new ClickListener() {
@@ -320,11 +323,13 @@ public class ScreenMain extends ScreenAdapter {
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
-        updateAbilities();
+        // updating internal state
+        updateInvite();
         updateRatings();
         updateFriends();
-        updateInvite();
         updateStopCall();
+        updateAbilities();
+        updatePromocodeDone();
 
         // changing screens
         if (!model.authorized)
@@ -570,6 +575,14 @@ public class ScreenMain extends ScreenAdapter {
         if (inviteTime != model.inviteTime) {
             inviteTime = model.inviteTime;
             incomingDialog.show(stage);
+        }
+    }
+
+    private void updatePromocodeDone() {
+        if (promocodeDoneTime != model.promocodeDoneTime) {
+            promocodeDoneTime = model.promocodeDoneTime;
+            promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
+                    model.promocodeDoneCrystals).show(stage);
         }
     }
 

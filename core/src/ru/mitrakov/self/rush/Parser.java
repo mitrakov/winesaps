@@ -92,6 +92,9 @@ class Parser implements Network.IHandler {
                     case CHECK_PROMOCODE:
                         checkPromocode(Arrays.copyOfRange(data, 1, data.length));
                         break;
+                    case PROMOCODE_DONE:
+                        promocodeDone(Arrays.copyOfRange(data, 1, data.length));
+                        break;
                     default:
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
@@ -300,6 +303,18 @@ class Parser implements Network.IHandler {
                 model.setPromocodeValid(res == 1);
             } else throw new IllegalArgumentException("Incorrect checkPromocode response");
         } else throw new IllegalArgumentException("Incorrect checkPromocode format");
+    }
+
+    private void promocodeDone(int[] data) {
+        if (data.length > 2) {
+            boolean inviter = data[0] == 1;
+            int crystals = data[1];
+            StringBuilder name = new StringBuilder();
+            for (int i = 2; i < data.length; i++) {
+                name.append((char) data[i]);
+            }
+            model.setPromocodeDone(name.toString(), inviter, crystals);
+        } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
     }
 
     private void abilitiesList(int[] data) {

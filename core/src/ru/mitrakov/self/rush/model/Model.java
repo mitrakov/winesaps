@@ -53,7 +53,7 @@ public class Model {
         RANGE_OF_PRODUCTS, BUY_PRODUCT, RESERVED_0D, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
         MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
         OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
-        CHECK_PROMOCODE
+        CHECK_PROMOCODE, PROMOCODE_DONE
     }
 
     /**
@@ -92,14 +92,17 @@ public class Model {
     public volatile String hash = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
+    public volatile String promocodeDoneName = "";
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
     public volatile boolean promocodeValid = false;
+    public volatile boolean promocodeDoneInviter = false;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
+    public volatile int promocodeDoneCrystals = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -114,6 +117,7 @@ public class Model {
     public volatile long roundFinishedTime = 0;
     public volatile long gameFinishedTime = 0;
     public volatile long friendsListTime = 0;
+    public volatile long promocodeDoneTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -637,6 +641,14 @@ public class Model {
 
     public void setPromocodeValid(boolean valid) {
         promocodeValid = valid;
+    }
+
+    public void setPromocodeDone(String name, boolean inviter, int crystals) {
+        assert name != null;
+        promocodeDoneName = name;
+        promocodeDoneInviter = inviter;
+        promocodeDoneCrystals = crystals;
+        promocodeDoneTime = System.currentTimeMillis();
     }
 
     public void setNewField(int[] fieldData) {
