@@ -45,14 +45,15 @@ class Gui extends Actor {
     }
 
     private class AnimInfo {
-        float x = -1;
-        float t = 0;
-        boolean run = false;
-        int delay = 0;
-        Animation<TextureRegion> animation;
+        float x;
+        float t;
+        boolean dirRight;
+        int delay;
+        final Animation<TextureRegion> animation;
 
-        AnimInfo(Animation<TextureRegion> animation) {
+        AnimInfo(Animation<TextureRegion> animation, boolean dirRight) {
             this.animation = animation;
+            this.dirRight = dirRight;
         }
     }
 
@@ -115,7 +116,8 @@ class Gui extends Actor {
         }
         for (Class clazz : animClasses) {
             Array<TextureAtlas.AtlasRegion> frames = atlasAnim.findRegions(clazz.getSimpleName());
-            texturesAnim.put(clazz, new AnimInfo(new Animation<TextureRegion>(.08f, frames, Animation.PlayMode.LOOP)));
+            Animation<TextureRegion> animation = new Animation<TextureRegion>(.09f, frames, Animation.PlayMode.LOOP);
+            texturesAnim.put(clazz, new AnimInfo(animation, clazz != Actor2.class));
         }
     }
 
@@ -162,27 +164,31 @@ class Gui extends Actor {
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
 
-                            // correct x-coordinate adjusted for animation
-                            float d = x - anim.x;
-                            if (abs(d) < dx / 2 || abs(d) > 2*CELL_SIZ_W) { // if anim.x==x || x re-initialized
+                            // correct x-coordinate, direction and time adjusted for animation
+                            float delta = x - anim.x;
+                            boolean delta_equals_0 = abs(delta) < dx / 2;
+                            boolean not_initialized = abs(delta) > 2 * CELL_SIZ_W;
+                            if (delta_equals_0 || not_initialized) {
                                 anim.x = x;
-                                anim.run = false;
+                                if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
+                                    anim.t = 0;
                             } else {
                                 x = anim.x;
-                                anim.x += signum(d) * dx;
-                                anim.run = true;
-                            }
-
-                            // recalculate current animation time
-                            if (anim.run) {
+                                anim.x += signum(delta) * dx;
                                 anim.t += dt;
                                 anim.delay = 0;
-                            } else {
-                                if (anim.delay++ == 10) anim.t = 0;
+                                if (abs(delta) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
+                                    anim.dirRight = delta > 0;
                             }
 
-                            // draw
-                            batch.draw(texture, x, y);
+                            // if direction == right then draw pure texture, else draw flipped texture
+                            if (anim.dirRight)
+                                batch.draw(texture, x, y);
+                            else {
+                                texture.flip(true, false); // flip is not intensive operation (just affects UV-mapping)
+                                batch.draw(texture, x, y);
+                                texture.flip(true, false);
+                            }
                         }
                     }
                 }
