@@ -115,7 +115,7 @@ class Gui extends Actor {
         }
         for (Class clazz : animClasses) {
             Array<TextureAtlas.AtlasRegion> frames = atlasAnim.findRegions(clazz.getSimpleName());
-            texturesAnim.put(clazz, new AnimInfo(new Animation<TextureRegion>(.08f, frames)));
+            texturesAnim.put(clazz, new AnimInfo(new Animation<TextureRegion>(.08f, frames, Animation.PlayMode.LOOP)));
         }
     }
 
@@ -156,7 +156,7 @@ class Gui extends Actor {
                         // draw animated characters
                         if (texturesAnim.containsKey(obj.getClass())) {
                             AnimInfo anim = texturesAnim.get(obj.getClass()); // info != null (assert omitted)
-                            TextureRegion texture = anim.animation.getKeyFrame(anim.t, true); // assert omitted
+                            TextureRegion texture = anim.animation.getKeyFrame(anim.t); // assert omitted
 
                             // get coordinates BY SERVER
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
@@ -174,11 +174,12 @@ class Gui extends Actor {
                             }
 
                             // recalculate current animation time
-                            if (anim.run)
+                            if (anim.run) {
                                 anim.t += dt;
-                            else if (anim.delay == 10)
-                                anim.t = anim.delay = 0;
-                            else anim.delay++;
+                                anim.delay = 0;
+                            } else {
+                                if (anim.delay++ == 10) anim.t = 0;
+                            }
 
                             // draw
                             batch.draw(texture, x, y);
