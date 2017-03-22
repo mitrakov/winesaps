@@ -46,6 +46,9 @@ class Gui extends Actor {
 
     private class AnimInfo {
         float x = -1;
+        float t = 0;
+        boolean run = false;
+        int delay = 0;
         Animation<TextureRegion> animation;
 
         AnimInfo(Animation<TextureRegion> animation) {
@@ -68,8 +71,6 @@ class Gui extends Actor {
     private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
     private final Map<Class, AnimInfo> texturesAnim = new HashMap<Class, AnimInfo>(3);
-
-    private float state = 0;
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -120,8 +121,8 @@ class Gui extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        state += Gdx.graphics.getDeltaTime();
-        float dx = SPEED * Gdx.graphics.getDeltaTime();
+        float dt = Gdx.graphics.getDeltaTime();
+        float dx = SPEED * dt;
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -155,16 +156,31 @@ class Gui extends Actor {
                         // draw animated characters
                         if (texturesAnim.containsKey(obj.getClass())) {
                             AnimInfo anim = texturesAnim.get(obj.getClass()); // info != null (assert omitted)
-                            TextureRegion texture = anim.animation.getKeyFrame(state, true); // assert omitted
+                            TextureRegion texture = anim.animation.getKeyFrame(anim.t, true); // assert omitted
+
+                            // get coordinates BY SERVER
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
+
+                            // correct x-coordinate adjusted for animation
                             float d = x - anim.x;
-                            if (abs(d) < dx / 2 || anim.x < 0) { // if anim.x==x || anim.x not initialized
+                            if (abs(d) < dx / 2 || abs(d) > 2*CELL_SIZ_W) { // if anim.x==x || x re-initialized
                                 anim.x = x;
+                                anim.run = false;
                             } else {
                                 x = anim.x;
                                 anim.x += signum(d) * dx;
+                                anim.run = true;
                             }
+
+                            // recalculate current animation time
+                            if (anim.run)
+                                anim.t += dt;
+                            else if (anim.delay == 10)
+                                anim.t = anim.delay = 0;
+                            else anim.delay++;
+
+                            // draw
                             batch.draw(texture, x, y);
                         }
                     }

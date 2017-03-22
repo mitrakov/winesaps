@@ -9,403 +9,403 @@ Actor1
   size: 43, 52
   orig: 43, 52
   offset: 0, 0
-  index: 4
+  index: 9
 Actor2
   rotate: false
   xy: 0, 54
   size: 43, 52
   orig: 43, 52
   offset: 0, 0
+  index: 9
+Actor1
+  rotate: false
+  xy: 0, 0
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 13
+Actor2
+  rotate: false
+  xy: 0, 0
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 13
+Actor1
+  rotate: false
+  xy: 45, 54
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 23
+Actor2
+  rotate: false
+  xy: 45, 54
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 23
+Actor1
+  rotate: false
+  xy: 45, 0
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 28
+Actor2
+  rotate: false
+  xy: 45, 0
+  size: 43, 52
+  orig: 43, 52
+  offset: 0, 0
+  index: 28
+Actor1
+  rotate: false
+  xy: 90, 54
+  size: 42, 52
+  orig: 42, 52
+  offset: 0, 0
+  index: 4
+Actor2
+  rotate: false
+  xy: 90, 54
+  size: 42, 52
+  orig: 42, 52
+  offset: 0, 0
   index: 4
 Actor1
   rotate: false
-  xy: 0, 0
-  size: 43, 52
-  orig: 43, 52
+  xy: 134, 55
+  size: 43, 51
+  orig: 43, 51
   offset: 0, 0
-  index: 14
+  index: 6
 Actor2
   rotate: false
-  xy: 0, 0
-  size: 43, 52
-  orig: 43, 52
+  xy: 134, 55
+  size: 43, 51
+  orig: 43, 51
   offset: 0, 0
-  index: 14
+  index: 6
 Actor1
   rotate: false
-  xy: 45, 54
-  size: 43, 52
-  orig: 43, 52
+  xy: 179, 55
+  size: 43, 51
+  orig: 43, 51
   offset: 0, 0
-  index: 19
+  index: 7
 Actor2
   rotate: false
-  xy: 45, 54
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 19
-Actor1
-  rotate: false
-  xy: 45, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 29
-Actor2
-  rotate: false
-  xy: 45, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 29
-Actor1
-  rotate: false
-  xy: 90, 55
+  xy: 179, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
-  index: 1
-Actor2
-  rotate: false
-  xy: 90, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 1
-Actor1
-  rotate: false
-  xy: 90, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 2
-Actor2
-  rotate: false
-  xy: 90, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 2
-Actor1
-  rotate: false
-  xy: 135, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 3
-Actor2
-  rotate: false
-  xy: 135, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 3
-Actor1
-  rotate: false
-  xy: 135, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 5
-Actor2
-  rotate: false
-  xy: 135, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 5
-Actor1
-  rotate: false
-  xy: 180, 54
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 9
-Actor2
-  rotate: false
-  xy: 180, 54
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 9
+  index: 7
 Actor1
   rotate: false
   xy: 224, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
-  index: 11
+  index: 8
 Actor2
   rotate: false
   xy: 224, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
+  index: 8
+Actor1
+  rotate: false
+  xy: 269, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 10
+Actor2
+  rotate: false
+  xy: 269, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 10
+Actor1
+  rotate: false
+  xy: 314, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 11
+Actor2
+  rotate: false
+  xy: 314, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
   index: 11
 Actor1
   rotate: false
-  xy: 269, 55
+  xy: 359, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
   index: 12
 Actor2
   rotate: false
-  xy: 269, 55
+  xy: 359, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
   index: 12
 Actor1
   rotate: false
-  xy: 314, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 13
-Actor2
-  rotate: false
-  xy: 314, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 13
-Actor1
-  rotate: false
-  xy: 359, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 15
-Actor2
-  rotate: false
-  xy: 359, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 15
-Actor1
-  rotate: false
   xy: 404, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
-  index: 16
+  index: 14
 Actor2
   rotate: false
   xy: 404, 55
   size: 43, 51
   orig: 43, 51
   offset: 0, 0
+  index: 14
+Actor1
+  rotate: false
+  xy: 90, 0
+  size: 42, 52
+  orig: 42, 52
+  offset: 0, 0
+  index: 18
+Actor2
+  rotate: false
+  xy: 90, 0
+  size: 42, 52
+  orig: 42, 52
+  offset: 0, 0
+  index: 18
+Actor1
+  rotate: false
+  xy: 134, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 20
+Actor2
+  rotate: false
+  xy: 134, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 20
+Actor1
+  rotate: false
+  xy: 449, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 21
+Actor2
+  rotate: false
+  xy: 449, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 21
+Actor1
+  rotate: false
+  xy: 179, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 22
+Actor2
+  rotate: false
+  xy: 179, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 22
+Actor1
+  rotate: false
+  xy: 494, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 24
+Actor2
+  rotate: false
+  xy: 494, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 24
+Actor1
+  rotate: false
+  xy: 224, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 25
+Actor2
+  rotate: false
+  xy: 224, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 25
+Actor1
+  rotate: false
+  xy: 539, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 26
+Actor2
+  rotate: false
+  xy: 539, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 26
+Actor1
+  rotate: false
+  xy: 269, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 27
+Actor2
+  rotate: false
+  xy: 269, 2
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 27
+Actor1
+  rotate: false
+  xy: 584, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 29
+Actor2
+  rotate: false
+  xy: 584, 55
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: 29
+Actor1
+  rotate: false
+  xy: 314, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 1
+Actor2
+  rotate: false
+  xy: 314, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 1
+Actor1
+  rotate: false
+  xy: 629, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 2
+Actor2
+  rotate: false
+  xy: 629, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 2
+Actor1
+  rotate: false
+  xy: 358, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 3
+Actor2
+  rotate: false
+  xy: 358, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 3
+Actor1
+  rotate: false
+  xy: 673, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 5
+Actor2
+  rotate: false
+  xy: 673, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 5
+Actor1
+  rotate: false
+  xy: 402, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 15
+Actor2
+  rotate: false
+  xy: 402, 2
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 15
+Actor1
+  rotate: false
+  xy: 717, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
+  index: 16
+Actor2
+  rotate: false
+  xy: 717, 55
+  size: 42, 51
+  orig: 42, 51
+  offset: 0, 0
   index: 16
 Actor1
   rotate: false
-  xy: 449, 55
-  size: 43, 51
-  orig: 43, 51
+  xy: 446, 2
+  size: 42, 51
+  orig: 42, 51
   offset: 0, 0
   index: 17
 Actor2
   rotate: false
-  xy: 449, 55
-  size: 43, 51
-  orig: 43, 51
+  xy: 446, 2
+  size: 42, 51
+  orig: 42, 51
   offset: 0, 0
   index: 17
 Actor1
   rotate: false
-  xy: 494, 55
-  size: 43, 51
-  orig: 43, 51
+  xy: 761, 55
+  size: 42, 51
+  orig: 42, 51
   offset: 0, 0
-  index: 18
+  index: 19
 Actor2
   rotate: false
-  xy: 494, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 18
-Actor1
-  rotate: false
-  xy: 539, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 20
-Actor2
-  rotate: false
-  xy: 539, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 20
-Actor1
-  rotate: false
-  xy: 584, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 26
-Actor2
-  rotate: false
-  xy: 584, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 26
-Actor1
-  rotate: false
-  xy: 629, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 27
-Actor2
-  rotate: false
-  xy: 629, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 27
-Actor1
-  rotate: false
-  xy: 674, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 28
-Actor2
-  rotate: false
-  xy: 674, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 28
-Actor1
-  rotate: false
-  xy: 719, 55
+  xy: 761, 55
   size: 42, 51
   orig: 42, 51
   offset: 0, 0
-  index: 6
-Actor2
-  rotate: false
-  xy: 719, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 6
-Actor1
-  rotate: false
-  xy: 763, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 7
-Actor2
-  rotate: false
-  xy: 763, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 7
-Actor1
-  rotate: false
-  xy: 807, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 8
-Actor2
-  rotate: false
-  xy: 807, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 8
-Actor1
-  rotate: false
-  xy: 851, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 10
-Actor2
-  rotate: false
-  xy: 851, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 10
-Actor1
-  rotate: false
-  xy: 895, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 21
-Actor2
-  rotate: false
-  xy: 895, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 21
-Actor1
-  rotate: false
-  xy: 939, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 22
-Actor2
-  rotate: false
-  xy: 939, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 22
-Actor1
-  rotate: false
-  xy: 180, 1
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 23
-Actor2
-  rotate: false
-  xy: 180, 1
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 23
-Actor1
-  rotate: false
-  xy: 224, 1
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 24
-Actor2
-  rotate: false
-  xy: 224, 1
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 24
-Actor1
-  rotate: false
-  xy: 268, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 25
-Actor2
-  rotate: false
-  xy: 268, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 25
+  index: 19
