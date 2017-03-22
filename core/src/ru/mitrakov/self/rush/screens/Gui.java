@@ -5,6 +5,7 @@ import java.util.*;
 import static java.lang.Math.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -43,6 +44,15 @@ class Gui extends Actor {
         }
     }
 
+    private class AnimInfo {
+        float x = -1;
+        Animation<TextureRegion> animation;
+
+        AnimInfo(Animation<TextureRegion> animation) {
+            this.animation = animation;
+        }
+    }
+
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
     private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
@@ -54,12 +64,12 @@ class Gui extends Actor {
     private final MyClickListener listener = new MyClickListener();
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
+    private final TextureAtlas atlasAnim = new TextureAtlas(Gdx.files.internal("pack/anim.pack"));
     private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
     private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
+    private final Map<Class, AnimInfo> texturesAnim = new HashMap<Class, AnimInfo>(3);
 
-//    Animation<TextureRegion> animation;
-//    float stateTime = 0;
-    float actorX = -1;
+    private float state = 0;
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -87,10 +97,11 @@ class Gui extends Actor {
         setWidth(RushClient.WIDTH);
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
-        Class downClasses[] = new Class[]{Block.class, Dias.class, Water.class};
-        Class upClasses[] = new Class[]{Actor1.class, Actor2.class, Entry1.class, Entry2.class, Apple.class, Pear.class,
-                Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Wolf.class, Stair.class,
+        Class[] downClasses = new Class[]{Block.class, Dias.class, Water.class};
+        Class[] upClasses = new Class[]{Entry1.class, Entry2.class, Apple.class, Pear.class,
+                Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Stair.class,
                 Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class};
+        Class[] animClasses = new Class[]{Actor1.class, Actor2.class, Wolf.class};
         for (Class clazz : downClasses) {
             TextureRegion texture = atlasDown.findRegion(clazz.getSimpleName());
             if (texture != null)
@@ -101,19 +112,15 @@ class Gui extends Actor {
             if (texture != null)
                 texturesUp.put(clazz, texture);
         }
-
-//        Texture sheet = new Texture(Gdx.files.internal("sprite-animation4.png"));
-//        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / 6, sheet.getHeight() / 5);
-//        List<TextureRegion> lst = new ArrayList<TextureRegion>(30);
-//        for (TextureRegion[] array : tmp) {
-//            lst.addAll(Arrays.asList(array));
-//        }
-//        animation = new Animation<TextureRegion>(0.033f, lst.toArray(new TextureRegion[0]));
+        for (Class clazz : animClasses) {
+            Array<TextureAtlas.AtlasRegion> frames = atlasAnim.findRegions(clazz.getSimpleName());
+            texturesAnim.put(clazz, new AnimInfo(new Animation<TextureRegion>(.08f, frames)));
+        }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-//        stateTime += Gdx.graphics.getDeltaTime();
+        state += Gdx.graphics.getDeltaTime();
         float dx = SPEED * Gdx.graphics.getDeltaTime();
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
@@ -128,43 +135,38 @@ class Gui extends Actor {
                     float bottomHeight = 0;
                     if (cell.bottom != null) {
                         if (texturesDown.containsKey(cell.bottom.getClass())) {
-                            TextureRegion texture = texturesDown.get(cell.bottom.getClass());
-                            if (texture != null) {
-                                float x = convertXFromModelToScreen(i);
-                                float y = convertYFromModelToScreen(j);
-                                batch.draw(texture, x, y);
-                                bottomWidth = texture.getRegionWidth();
-                                bottomHeight = texture.getRegionHeight();
-                            }
+                            TextureRegion texture = texturesDown.get(cell.bottom.getClass()); // here texture != null
+                            float x = convertXFromModelToScreen(i);
+                            float y = convertYFromModelToScreen(j);
+                            batch.draw(texture, x, y);
+                            bottomWidth = texture.getRegionWidth();
+                            bottomHeight = texture.getRegionHeight();
                         }
                     }
                     // draw objects above the bottom
                     for (CellObject obj : cell.objects) {
+                        // draw static objects
                         if (texturesUp.containsKey(obj.getClass())) {
-                            TextureRegion texture = texturesUp.get(obj.getClass());
-                            if (texture != null) {
-                                float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
-                                float y = convertYFromModelToScreen(j) + bottomHeight;
-                                if (obj.getClass() == Actor1.class) {
-                                    float d = x - actorX;
-                                    if (abs(d) < dx / 2 || actorX < 0) { // if actorX==x || actorX not initialized
-                                        actorX = x;
-                                    } else {
-                                        x = actorX;
-                                        actorX += signum(d) * dx;
-                                    }
-                                }
-                                batch.draw(texture, x, y);
-                            }
+                            TextureRegion texture = texturesUp.get(obj.getClass()); // here texture != null
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
                         }
-//                        TextureRegion texture = texturesUp.get(obj.getClass());
-//                        if (obj.getClass() == Actor1.class)
-//                            texture = animation.getKeyFrame(stateTime, true);
-//                        if (texture != null) {
-//                            float x = convertXFromModelToScreen(i) - .5f * (texture.getRegionWidth() - bottomWidth);
-//                            float y = convertYFromModelToScreen(j) + bottomHeight;
-//                            batch.draw(texture, x, y);
-//                        }
+                        // draw animated characters
+                        if (texturesAnim.containsKey(obj.getClass())) {
+                            AnimInfo anim = texturesAnim.get(obj.getClass()); // info != null (assert omitted)
+                            TextureRegion texture = anim.animation.getKeyFrame(state, true); // assert omitted
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            float d = x - anim.x;
+                            if (abs(d) < dx / 2 || anim.x < 0) { // if anim.x==x || anim.x not initialized
+                                anim.x = x;
+                            } else {
+                                x = anim.x;
+                                anim.x += signum(d) * dx;
+                            }
+                            batch.draw(texture, x, y);
+                        }
                     }
                 }
             }
@@ -179,8 +181,13 @@ class Gui extends Actor {
         for (TextureRegion texture : texturesUp.values()) {
             texture.getTexture().dispose();
         }
+        for (AnimInfo anim : texturesAnim.values()) {
+            for (TextureRegion texture : anim.animation.getKeyFrames())
+                texture.getTexture().dispose();
+        }
         atlasDown.dispose();
         atlasUp.dispose();
+        atlasAnim.dispose();
         return super.remove();
     }
 }
