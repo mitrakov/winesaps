@@ -50,7 +50,7 @@ public class Model {
      */
     public enum Cmd {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
-        RANGE_OF_PRODUCTS, BUY_PRODUCT, RESERVED_0D, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
+        RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
         MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
         OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
         CHECK_PROMOCODE, PROMOCODE_DONE
@@ -97,6 +97,7 @@ public class Model {
     public volatile boolean roundWinner = false;
     public volatile boolean promocodeValid = false;
     public volatile boolean promocodeDoneInviter = false;
+    public volatile boolean newbie = true;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
     public volatile int score2 = 0;
@@ -200,6 +201,7 @@ public class Model {
                     if (settings.length > 3)
                         hash = settings[3];
                 }
+                newbie = false;
             }
         }
     }
@@ -321,6 +323,12 @@ public class Model {
     public void reject() {
         if (sender != null) {
             sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
+        }
+    }
+
+    public void receiveTraining() {
+        if (sender != null) {
+            sender.send(RECEIVE_TRAINING);
         }
     }
 

@@ -15,6 +15,7 @@ public class RushClient extends Game {
     private final PsObject psObject; // may be NULL
     private /*final*/ Skin skin;
     private /*final*/ Screen screenLogin;
+    private /*final*/ Screen screenTraining;
     private /*final*/ Screen screenMain;
     private /*final*/ Screen screenBattle;
 
@@ -45,10 +46,12 @@ public class RushClient extends Game {
         model.signIn(); // try to sign in using stored credentials
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         screenLogin = new ScreenLogin(this, model, psObject, skin);
+        screenTraining = new ScreenTraining(this, model, psObject, skin);
         screenMain = new ScreenMain(this, model, psObject, skin);
         screenBattle = new ScreenBattle(this, model, psObject, skin);
         setScreen(screenLogin);
 
+        // catch Android buttons
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
     }
@@ -65,6 +68,8 @@ public class RushClient extends Game {
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
+            setScreen(screenTraining);
+        else if (screen == screenTraining)
             setScreen(screenMain);
         else if (screen == screenMain)
             setScreen(screenBattle);

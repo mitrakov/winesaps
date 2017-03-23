@@ -23,27 +23,25 @@ import ru.mitrakov.self.rush.dialogs.DialogFinished;
  * Created by mitrakov on 01.03.2017
  */
 
-public class ScreenBattle extends ScreenAdapter {
+public class ScreenTraining extends ScreenAdapter {
     private final Model model;
+    private final RushClient game;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table table = new Table();
     private final Actor gui;
     private final ImageButton btnThing;
-    private final Table abilityButtons = new Table();
-    private final Label lblScore;
-    private final ScrollPane abilityButtonsScroll;
     private final DialogFinished infoDialog;
 
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
-    private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
 
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;
 
-    public ScreenBattle(RushClient game, Model model, PsObject psObject, Skin skin) {
+    public ScreenTraining(RushClient game, Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
         this.model = model;
+        this.game = game;
         this.psObject = psObject; // may be NULL
 
         table.setFillParent(true);
@@ -53,12 +51,6 @@ public class ScreenBattle extends ScreenAdapter {
         gui = new Gui(model);
         infoDialog = new DialogFinished(game, skin, "default");
         btnThing = createButtonThing();
-        lblScore = new Label("", skin, "default");
-        abilityButtonsScroll = new ScrollPane(abilityButtons);
-
-        // @mitrakov: BUG in LibGDX! If a skin is not assigned to a ScrollPane then ScrollPane supposes any upper actor
-        // as its scrollbar and makes it invisible after fadeOut; all that remains is to forbid fading
-        abilityButtonsScroll.setFadeScrollBars(false);
 
         buildTable();
     }
@@ -75,11 +67,7 @@ public class ScreenBattle extends ScreenAdapter {
         Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
         btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
 
-        // updating the score
-        lblScore.setText(String.format(Locale.getDefault(), "Score: %d-%d", model.score1, model.score2));
-
         // checking
-        checkAbilities();
         checkRoundFinished();
 
         // checking BACK and MENU buttons on Android
@@ -95,7 +83,10 @@ public class ScreenBattle extends ScreenAdapter {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        if (model.newbie) {
+            model.receiveTraining();
+            Gdx.input.setInputProcessor(stage);
+        } else game.setNextScreen();
     }
 
     @Override
@@ -106,36 +97,15 @@ public class ScreenBattle extends ScreenAdapter {
             if (drawable instanceof TextureRegionDrawable)
                 ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
         }
-        for (ImageButton button : abilities.values()) {
-            assert button.getStyle() != null;
-            Drawable drawable = button.getStyle().imageUp;
-            if (drawable != null && drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
-        }
     }
 
     private void loadTextures() {
         TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
-        TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
         for (Class clazz : new Class[]{CellObject.class, Mine.class, Umbrella.class}) { // all subclasses of CellObject
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));
-        }
-
-        for (final Model.Ability ability : Model.Ability.values()) {
-            TextureRegion region = atlasAbility.findRegion(ability.name());
-            if (region != null) {
-                ImageButton imageButton = new ImageButton(new TextureRegionDrawable(region));
-                imageButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        model.useAbility(ability);
-                    }
-                });
-                abilities.put(ability, imageButton);
-            }
         }
     }
 
@@ -159,17 +129,6 @@ public class ScreenBattle extends ScreenAdapter {
         table.add();
         table.row();
         table.add(btnThing).align(Align.left);
-        table.add(abilityButtonsScroll).colspan(2);
-        table.add(lblScore);
-    }
-
-    private void checkAbilities() {
-        if (abilityButtons.getColumns() != model.abilities.size()) {
-            abilityButtons.clear();
-            for (Model.Ability ability : model.abilities) {
-                abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
-            }
-        }
     }
 
     private void checkRoundFinished() {
