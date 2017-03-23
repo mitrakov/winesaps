@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.RushClient;
+import ru.mitrakov.self.rush.dialogs.DialogTraining;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
 import ru.mitrakov.self.rush.dialogs.DialogFinished;
@@ -32,9 +33,13 @@ public class ScreenTraining extends ScreenAdapter {
     private final Actor gui;
     private final ImageButton btnThing;
     private final DialogFinished infoDialog;
+    private final DialogTraining trainingDialog;
 
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
 
+    private int score = 0;
+    private CellObject thing = null;
+    private boolean started = false;
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;
 
@@ -50,9 +55,11 @@ public class ScreenTraining extends ScreenAdapter {
         loadTextures();
         gui = new Gui(model);
         infoDialog = new DialogFinished(game, skin, "default");
+        trainingDialog = new DialogTraining(skin, "default");
         btnThing = createButtonThing();
 
         buildTable();
+        addContent();
     }
 
     @Override
@@ -68,6 +75,8 @@ public class ScreenTraining extends ScreenAdapter {
         btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
 
         // checking
+        checkStarted();
+        checkNextMessage();
         checkRoundFinished();
 
         // checking BACK and MENU buttons on Android
@@ -102,7 +111,7 @@ public class ScreenTraining extends ScreenAdapter {
     private void loadTextures() {
         TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
 
-        for (Class clazz : new Class[]{CellObject.class, Mine.class, Umbrella.class}) { // all subclasses of CellObject
+        for (Class clazz : new Class[]{CellObject.class, Umbrella.class}) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));
@@ -121,14 +130,42 @@ public class ScreenTraining extends ScreenAdapter {
     }
 
     private void buildTable() {
-        table.add(gui).colspan(4);
-        table.row(); // fake row to make the table think there are 4 columns instead of 3
-        table.add(); // without the fake row "abilityButtonsScroll.colspan(2)" would work incorrectly
-        table.add();
-        table.add();
-        table.add();
+        table.add(gui);
         table.row();
         table.add(btnThing).align(Align.left);
+    }
+
+    private void addContent() {
+        trainingDialog
+                .addMessage(null, "Tap on the left or right hand of\n a character to move\nOn keyboard you can also " +
+                        "use arrows or AD keys", "Move right and take an apple")
+                .addMessage(null, "You can use doors to move up and down\nJust tap on the top or bottom of a " +
+                        "character\nOn keyboard you can also use arrows or WS " +
+                        "keys", "Go to the door, move down and take a pear")
+                .addMessage(null, "You can use ropes to move up", "Go to the rope, crawl up and take an apple")
+                .addMessage(null, "You can take some useful stuff\nE.g. an umbrella assists to keep you from\n " +
+                        "getting wet", "Go left and take an umbrella")
+                .addMessage(null, "Now push the button on the bottom-left corner\n to use the umbrella\nOn keyboard " +
+                        "you can also push a space button", "")
+                .addMessage(null, "Good! Take the last pear to finish training", "");
+    }
+
+    private void checkStarted() {
+        if (!started && model.field != null) {
+            started = true;
+            trainingDialog.show(stage).next();
+        }
+    }
+
+    private void checkNextMessage() {
+        if (score != model.score1) {
+            score = model.score1;
+            trainingDialog.next();
+        }
+        if (thing != model.curThing) {
+            thing = model.curThing;
+            trainingDialog.next();
+        }
     }
 
     private void checkRoundFinished() {
