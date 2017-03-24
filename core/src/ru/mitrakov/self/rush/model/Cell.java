@@ -86,6 +86,8 @@ public class Cell {
                 return new OpenedUmbrella(xy, number.next());
             case 0x18:
                 return new Waterfall(xy);
+            case 0x19:
+                return new WaterfallSafe(xy);
             default:
                 return null;
         }

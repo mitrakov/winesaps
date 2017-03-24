@@ -3,100 +3,93 @@ up.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Waterfall
-  rotate: false
-  xy: 0, 37
-  size: 15, 85
-  orig: 15, 85
-  offset: 0, 0
-  index: -1
 RopeLine
   rotate: false
-  xy: 17, 37
+  xy: 0, 9
   size: 10, 85
   orig: 10, 85
   offset: 0, 0
   index: -1
 Water
   rotate: false
-  xy: 29, 49
+  xy: 12, 21
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
 Block
   rotate: false
-  xy: 45, 50
+  xy: 28, 22
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 LadderBottom
   rotate: false
-  xy: 61, 67
+  xy: 44, 39
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 LadderTop
   rotate: false
-  xy: 93, 67
+  xy: 76, 39
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 OpenedUmbrella
   rotate: false
-  xy: 125, 67
+  xy: 108, 39
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
-Actor1
-  rotate: false
-  xy: 157, 72
-  size: 30, 50
-  orig: 30, 50
-  offset: 0, 0
-  index: -1
-Actor2
-  rotate: false
-  xy: 189, 72
-  size: 30, 50
-  orig: 30, 50
-  offset: 0, 0
-  index: -1
 Wolf
   rotate: false
-  xy: 221, 77
+  xy: 140, 49
   size: 30, 45
   orig: 30, 45
   offset: 0, 0
   index: -1
+Waterfall
+  rotate: false
+  xy: 172, 24
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+WaterfallSafe
+  rotate: false
+  xy: 172, 24
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
 Mine
   rotate: false
-  xy: 0, 9
+  xy: 189, 68
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Umbrella
   rotate: false
-  xy: 61, 39
+  xy: 189, 40
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Apple
   rotate: false
-  xy: 89, 37
+  xy: 217, 66
   size: 22, 28
   orig: 22, 28
   offset: 0, 0
   index: -1
 Pear
   rotate: false
-  xy: 113, 37
+  xy: 217, 36
   size: 22, 28
   orig: 22, 28
   offset: 0, 0

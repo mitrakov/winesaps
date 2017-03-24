@@ -7,16 +7,16 @@ import com.badlogic.gdx.utils.TimeUtils;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.object.CellObject;
 
+import static ru.mitrakov.self.rush.screens.Gui.TOUCH_DELAY;
+
 /**
  * Created by mitrakov on 27.02.2017
  */
 
 class InputController {
-
-    public static final int TOUCH_DELAY = 250;
-
     private final Model model;
     private long time = 0;
+    private boolean movesAllowed = true;
 
     InputController(Model model) {
         assert model != null;
@@ -27,7 +27,7 @@ class InputController {
         CellObject actor = model.curActor; // copy to local to avoid Null-Exceptions
         if (actor != null) {
             // MOVEMENT HANDLING (restricted by TOUCH_DELAY intervals)
-            if (TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
+            if (movesAllowed && TimeUtils.timeSinceMillis(time) > TOUCH_DELAY) {
                 if (mouseButton >= 0) {
                     // getting coordinates
                     int touchX = Gui.convertXFromScreenToModel(x);
@@ -60,6 +60,10 @@ class InputController {
             else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9)) model.useAbility(8);
             else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) model.useAbility(9);
         }
+    }
+
+    public void setMovesAllowed(boolean movesAllowed) {
+        this.movesAllowed = movesAllowed;
     }
 
     private void moveLeft() {

@@ -57,11 +57,12 @@ class Gui extends Actor {
         }
     }
 
+    static final int TOUCH_DELAY = 250;
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
     private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
     private static final int OFFSET_Y = 33; // inferred by expertise
-    private static final float SPEED = 1000f * CELL_SIZ_W / InputController.TOUCH_DELAY;
+    private static final float SPEED = 1000f * CELL_SIZ_W / TOUCH_DELAY;
 
     private final Model model;
     private final InputController controller;
@@ -102,7 +103,7 @@ class Gui extends Actor {
         Class[] downClasses = new Class[]{Block.class, Dias.class, Water.class};
         Class[] upClasses = new Class[]{Entry1.class, Entry2.class, Apple.class, Pear.class,
                 Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Stair.class,
-                Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class};
+                Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class, WaterfallSafe.class};
         Class[] animClasses = new Class[]{Actor1.class, Actor2.class, Wolf.class};
         for (Class clazz : downClasses) {
             TextureRegion texture = atlasDown.findRegion(clazz.getSimpleName());
@@ -212,5 +213,9 @@ class Gui extends Actor {
         atlasUp.dispose();
         atlasAnim.dispose();
         return super.remove();
+    }
+
+    public void setMovesAllowed(boolean value) {
+        controller.setMovesAllowed(value);
     }
 }

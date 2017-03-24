@@ -29,7 +29,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table table = new Table();
-    private final Actor gui;
+    private final Gui gui;
     private final ImageButton btnThing;
     private final Button btnSkip;
     private final DialogFinished infoDialog;
@@ -194,6 +194,7 @@ public class ScreenTraining extends ScreenAdapter {
         if (thing != model.curThing) {
             thing = model.curThing;
             trainingDialog.next();
+            gui.setMovesAllowed(thing == null); // forbid moving to make a user use the umbrella (see note#1)
         }
     }
 
@@ -207,3 +208,5 @@ public class ScreenTraining extends ScreenAdapter {
         }
     }
 }
+
+// note#1 (@mitrakov): even though bool condition "thing==null" is unreliable, actor won't die because waterfall is fake

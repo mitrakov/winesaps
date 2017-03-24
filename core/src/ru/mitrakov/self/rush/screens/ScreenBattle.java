@@ -96,6 +96,7 @@ public class ScreenBattle extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        infoDialog.hide(null); // close dialogs that might be opened by Training Level (null = close immediately)
     }
 
     @Override
