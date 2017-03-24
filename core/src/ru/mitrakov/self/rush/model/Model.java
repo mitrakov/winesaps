@@ -52,7 +52,7 @@ public class Model {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
         RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
         MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
-        OBJECT_APPENDED, FINISHED, RESERVED_1E, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
+        OBJECT_APPENDED, FINISHED, GIVE_UP, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
         CHECK_PROMOCODE, PROMOCODE_DONE
     }
 
@@ -470,6 +470,12 @@ public class Model {
         }
     }
 
+    public void stopBattle() {
+        if (sender != null) {
+            sender.send(GIVE_UP);
+        }
+    }
+
     // ===============================
     // === SERVER RESPONSE METHODS ===
     // ===============================
@@ -701,28 +707,31 @@ public class Model {
     }
 
     public synchronized void gameFinished(boolean winner) {
-        // building an item
-        String s = String.format(Locale.getDefault(), "%s    %s    %s-%s = %d-%d",
-                DateFormat.getInstance().format(new Date()), winner ? "WIN " : "LOSS", aggressor ? name : enemy,
-                aggressor ? enemy : name, totalScore1, totalScore2); // no need to ternary totalScore
+        // updating history
+        if (!enemy.isEmpty()) { // it may be empty, e.g. in the Training Level
+            // building a history item
+            String s = String.format(Locale.getDefault(), "%s    %s    %s-%s = %d-%d",
+                    DateFormat.getInstance().format(new Date()), winner ? "WIN " : "LOSS", aggressor ? name : enemy,
+                    aggressor ? enemy : name, totalScore1, totalScore2); // no need to ternary totalScore
 
-        // prepend the item into the current history (and delete old items if necessary)
-        List<String> lst = new LinkedList<String>(history);
-        lst.add(0, s);
-        while (lst.size() > HISTORY_MAX)
-            lst.remove(HISTORY_MAX);
-        history.clear();
-        history.addAll(lst);
+            // prepend the item into the current history (and delete old items if necessary)
+            List<String> lst = new LinkedList<String>(history);
+            lst.add(0, s);
+            while (lst.size() > HISTORY_MAX)
+                lst.remove(HISTORY_MAX);
+            history.clear();
+            history.addAll(lst);
 
-        // store the current history in the local storage
-        if (fileReader != null) {
-            // making a single string (oh... Java 1.8 has got "mkstring" :( )
-            StringBuilder builder = new StringBuilder(lst.size());
-            for (String x : lst) {
-                builder.append(x).append('\n');
+            // store the current history in the local storage
+            if (fileReader != null) {
+                // making a single string (oh... Java 1.8 has got "mkstring" :( )
+                StringBuilder builder = new StringBuilder(lst.size());
+                for (String x : lst) {
+                    builder.append(x).append('\n');
+                }
+                // writing
+                fileReader.write(String.format("%s_%s", HISTORY_FILE, name), builder.toString());
             }
-            // writing
-            fileReader.write(String.format("%s_%s", HISTORY_FILE, name), builder.toString());
         }
 
         // reset reference to a field

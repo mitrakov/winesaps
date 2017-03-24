@@ -13,12 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import ru.mitrakov.self.rush.PsObject;
-import ru.mitrakov.self.rush.RushClient;
-import ru.mitrakov.self.rush.dialogs.DialogTraining;
+import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
-import ru.mitrakov.self.rush.dialogs.DialogFinished;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -40,8 +38,7 @@ public class ScreenTraining extends ScreenAdapter {
     private int score = 0;
     private CellObject thing = null;
     private boolean started = false;
-    private long roundFinishedTime = 0;
-    private long gameFinishedTime = 0;
+    private boolean finished = false;
 
     public ScreenTraining(RushClient game, Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
@@ -77,7 +74,7 @@ public class ScreenTraining extends ScreenAdapter {
         // checking
         checkStarted();
         checkNextMessage();
-        checkRoundFinished();
+        checkFinished();
 
         // checking BACK and MENU buttons on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -137,15 +134,15 @@ public class ScreenTraining extends ScreenAdapter {
 
     private void addContent() {
         trainingDialog
-                .addMessage(null, "Tap on the left or right hand of\n a character to move\nOn keyboard you can also " +
+                .addMessage(null, "Tap on the left or right hand of\na character to move\nOn keyboard you can also " +
                         "use arrows or AD keys", "Move right and take an apple")
                 .addMessage(null, "You can use doors to move up and down\nJust tap on the top or bottom of a " +
                         "character\nOn keyboard you can also use arrows or WS " +
                         "keys", "Go to the door, move down and take a pear")
                 .addMessage(null, "You can use ropes to move up", "Go to the rope, crawl up and take an apple")
-                .addMessage(null, "You can take some useful stuff\nE.g. an umbrella assists to keep you from\n " +
+                .addMessage(null, "You can take some useful stuff\nE.g. an umbrella assists to keep you from\n" +
                         "getting wet", "Go left and take an umbrella")
-                .addMessage(null, "Now push the button on the bottom-left corner\n to use the umbrella\nOn keyboard " +
+                .addMessage(null, "Now push the button on the bottom-left corner\nto use the umbrella\nOn keyboard " +
                         "you can also push a space button", "")
                 .addMessage(null, "Good! Take the last pear to finish training", "");
     }
@@ -168,18 +165,13 @@ public class ScreenTraining extends ScreenAdapter {
         }
     }
 
-    private void checkRoundFinished() {
-        if (roundFinishedTime != model.roundFinishedTime) {
-            roundFinishedTime = model.roundFinishedTime;
-            String msg = String.format("You %s the round", model.roundWinner ? "win" : "lose");
-            infoDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).show(stage);
-        }
-        if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
-            gameFinishedTime = model.gameFinishedTime;
-            String s = "GAME OVER!";
-            String msg = model.roundWinner ? "You win the battle! You get a reward of 1 crystal"
-                    : "You lose the battle...";
-            infoDialog.setText(s, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true).show(stage);
+    private void checkFinished() {
+        if (!finished && model.roundFinishedTime > 0) {
+            finished = true;
+            model.stopBattle();
+            trainingDialog.remove();
+            String msg = "Now invite your friends and tear them to shreds in a real battle!";
+            infoDialog.setText("Nice going!", msg).setScore(1, 0).setQuitOnResult(true).show(stage);
         }
     }
 }

@@ -1,7 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
@@ -32,13 +31,12 @@ public class DialogTraining extends Window {
     public DialogTraining(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
 
-        pad(10);
-        add(imgMessage = new Image());
-        row().space(10);
-        add(lblMessage1 = new Label("", skin, "default"));
-        row().spaceTop(20);
-        add(lblMessage2 = new Label("", skin, "default"));
-        //addAction(sequence(Actions.alpha(0), Actions.fadeIn(2, Interpolation.fade)));
+        imgMessage = new Image();
+        lblMessage1 = new Label("", skin, "default");
+        lblMessage2 = new Label("", skin, "default");
+
+        lblMessage1.setAlignment(Align.center, Align.center);
+        buildTable();
     }
 
     public DialogTraining show(Stage stage) {
@@ -63,5 +61,14 @@ public class DialogTraining extends Window {
             lblMessage1.setText(item.text1);
             lblMessage2.setText(item.text2);
         }
+    }
+
+    private void buildTable() {
+        pad(10);
+        add(imgMessage);
+        row().space(10);
+        add(lblMessage1);
+        row().spaceTop(20);
+        add(lblMessage2);
     }
 }
