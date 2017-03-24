@@ -1,0 +1,47 @@
+
+training.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+msg1
+  rotate: false
+  xy: 0, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1
+msg2
+  rotate: false
+  xy: 142, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1
+msg3
+  rotate: false
+  xy: 284, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1
+msg4
+  rotate: false
+  xy: 426, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1
+msg5
+  rotate: false
+  xy: 568, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1
+msg6
+  rotate: false
+  xy: 710, 0
+  size: 140, 100
+  orig: 140, 100
+  offset: 0, 0
+  index: -1

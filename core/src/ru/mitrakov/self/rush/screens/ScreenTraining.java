@@ -28,6 +28,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final RushClient game;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
+    private final TextureAtlas atlasMsgs = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
     private final Table table = new Table();
     private final Gui gui;
     private final ImageButton btnThing;
@@ -115,6 +116,9 @@ public class ScreenTraining extends ScreenAdapter {
             if (drawable instanceof TextureRegionDrawable)
                 ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
         }
+        for (TextureRegion texture : atlasMsgs.getRegions()) {
+            texture.getTexture().dispose();
+        }
     }
 
     private void loadTextures() {
@@ -163,18 +167,20 @@ public class ScreenTraining extends ScreenAdapter {
     }
 
     private void addContent() {
+        // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
         trainingDialog
-                .addMessage(null, "Tap on the left or right hand of\na character to move\nOn keyboard you can also " +
-                        "use arrows or AD keys", "Move right and take an apple")
-                .addMessage(null, "You can use doors to move up and down\nJust tap on the top or bottom of a " +
-                        "character\nOn keyboard you can also use arrows or WS " +
-                        "keys", "Go to the door, move down and take a pear")
-                .addMessage(null, "You can use ropes to move up", "Go to the rope, crawl up and take an apple")
-                .addMessage(null, "You can take some useful stuff\nE.g. an umbrella assists to keep you from\n" +
-                        "getting wet", "Go left and take an umbrella")
-                .addMessage(null, "Now push the button on the bottom-left corner\nto use the umbrella\nOn keyboard " +
-                        "you can also push a space button", "")
-                .addMessage(null, "Good! Take the last pear to finish training", "");
+                .addMessage(atlasMsgs.findRegion("msg1"), "Tap on the left or right hand of\na character to move.\n" +
+                        "On keyboard you can also use arrows or AD keys", "Move right and take an apple")
+                .addMessage(atlasMsgs.findRegion("msg2"), "You can use doors to move up and down.\nJust tap on the " +
+                                "top or bottom of a character.\nOn keyboard you can also use arrows or WS keys",
+                        "Go to the door, move down and take a pear")
+                .addMessage(atlasMsgs.findRegion("msg3"), "You can use ropes to move up",
+                        "Go to the rope, crawl up and take an apple")
+                .addMessage(atlasMsgs.findRegion("msg4"), "You can take some useful stuff\nE.g. an umbrella assists " +
+                        "to keep you from\ngetting wet", "Go left and take an umbrella")
+                .addMessage(atlasMsgs.findRegion("msg5"), "Now push the button on the bottom-left corner\nto use " +
+                        "the umbrella\nOn keyboard you can also push a space button", "")
+                .addMessage(atlasMsgs.findRegion("msg6"), "Good! Take the last pear to finish training", "");
     }
 
     private void checkStarted() {
