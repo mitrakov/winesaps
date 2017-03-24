@@ -30,17 +30,18 @@ public class ScreenTraining extends ScreenAdapter {
     private final Table table = new Table();
     private final Actor gui;
     private final ImageButton btnThing;
+    private final Button btnSkip;
     private final DialogFinished infoDialog;
     private final DialogTraining trainingDialog;
 
-    private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
+    private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(2);
 
-    private int score = 0;
-    private CellObject thing = null;
+    private int score;
+    private CellObject thing;
     private boolean started = false;
     private boolean finished = false;
 
-    public ScreenTraining(RushClient game, Model model, PsObject psObject, Skin skin) {
+    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin) {
         assert game != null && model != null && skin != null;
         this.model = model;
         this.game = game;
@@ -54,6 +55,15 @@ public class ScreenTraining extends ScreenAdapter {
         infoDialog = new DialogFinished(game, skin, "default");
         trainingDialog = new DialogTraining(skin, "default");
         btnThing = createButtonThing();
+        btnSkip = new TextButton("Skip Training", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.stopBattle();
+                    game.setNextScreen();
+                }
+            });
+        }};
 
         buildTable();
         addContent();
@@ -127,9 +137,10 @@ public class ScreenTraining extends ScreenAdapter {
     }
 
     private void buildTable() {
-        table.add(gui);
+        table.add(gui).colspan(2);
         table.row();
         table.add(btnThing).align(Align.left);
+        table.add(btnSkip).align(Align.right).width(200).height(btnThing.getHeight());
     }
 
     private void addContent() {
