@@ -1,10 +1,11 @@
 package ru.mitrakov.self.rush.screens;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -35,6 +36,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final DialogTraining trainingDialog;
 
     private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(2);
+    private final Queue<Window> curtains = new Queue<Window>(3);
 
     private int score;
     private CellObject thing;
@@ -65,7 +67,7 @@ public class ScreenTraining extends ScreenAdapter {
             });
         }};
 
-        buildTable();
+        initComponents(skin);
         addContent();
     }
 
@@ -136,11 +138,28 @@ public class ScreenTraining extends ScreenAdapter {
         }};
     }
 
-    private void buildTable() {
+    private void initComponents(Skin skin) {
+        // building table
         table.add(gui).colspan(2);
         table.row();
         table.add(btnThing).align(Align.left);
         table.add(btnSkip).align(Align.right).width(200).height(btnThing.getHeight());
+
+        // initialize curtains windows
+        Window window;
+        window = new Window("", skin, "default");
+        window.setBounds(235, 380, 125, 268);
+        curtains.addLast(window);
+        window = new Window("", skin, "default");
+        window.setBounds(135, 212, 105, 180);
+        curtains.addLast(window);
+        window = new Window("", skin, "default");
+        window.setBounds(35, 212, 105, 180);
+        curtains.addLast(window);
+        for (Window w : curtains) {
+            w.setTouchable(Touchable.disabled); // skip touch events through the window
+            stage.addActor(w);
+        }
     }
 
     private void addContent() {
@@ -169,6 +188,8 @@ public class ScreenTraining extends ScreenAdapter {
         if (score != model.score1) {
             score = model.score1;
             trainingDialog.next();
+            if (curtains.size > 0)
+                curtains.removeFirst().remove();
         }
         if (thing != model.curThing) {
             thing = model.curThing;
