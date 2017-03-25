@@ -1,10 +1,6 @@
 package ru.mitrakov.self.rush.screens;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -36,7 +32,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final DialogFinished infoDialog;
     private final DialogTraining trainingDialog;
 
-    private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(2);
+    private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
     private int score;

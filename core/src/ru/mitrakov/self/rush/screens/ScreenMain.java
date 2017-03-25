@@ -3,11 +3,10 @@ package ru.mitrakov.self.rush.screens;
 import java.util.*;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -92,7 +91,7 @@ public class ScreenMain extends ScreenAdapter {
     private final Label lblRatingScoreDiff;
     private final Label lblRatingDots;
 
-    private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
+    private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
 
     private enum CurDisplayMode {Info, Rating, History, Friends}

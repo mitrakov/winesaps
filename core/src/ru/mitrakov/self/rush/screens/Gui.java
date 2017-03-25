@@ -1,11 +1,9 @@
 package ru.mitrakov.self.rush.screens;
 
-import java.util.*;
-
 import static java.lang.Math.*;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -44,7 +42,7 @@ class Gui extends Actor {
         }
     }
 
-    private class AnimInfo {
+    private final class AnimInfo {
         float x;
         float t;
         boolean dirRight;
@@ -70,9 +68,9 @@ class Gui extends Actor {
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
     private final TextureAtlas atlasAnim = new TextureAtlas(Gdx.files.internal("pack/anim.pack"));
-    private final Map<Class, TextureRegion> texturesDown = new HashMap<Class, TextureRegion>(3);
-    private final Map<Class, TextureRegion> texturesUp = new HashMap<Class, TextureRegion>(20);
-    private final Map<Class, AnimInfo> texturesAnim = new HashMap<Class, AnimInfo>(3);
+    private final ObjectMap<Class, TextureRegion> texturesDown = new ObjectMap<Class, TextureRegion>(3);
+    private final ObjectMap<Class, TextureRegion> texturesUp = new ObjectMap<Class, TextureRegion>(20);
+    private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -215,7 +213,7 @@ class Gui extends Actor {
         return super.remove();
     }
 
-    public void setMovesAllowed(boolean value) {
+    void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);
     }
 }

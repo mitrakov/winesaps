@@ -1,10 +1,9 @@
 package ru.mitrakov.self.rush.screens;
 
-import java.util.*;
+import java.util.Locale;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -35,8 +34,8 @@ public class ScreenBattle extends ScreenAdapter {
     private final ScrollPane abilityButtonsScroll;
     private final DialogFinished infoDialog;
 
-    private final Map<Class, Drawable> things = new HashMap<Class, Drawable>(3);
-    private final Map<Model.Ability, ImageButton> abilities = new HashMap<Model.Ability, ImageButton>(10);
+    private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
+    private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
 
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;

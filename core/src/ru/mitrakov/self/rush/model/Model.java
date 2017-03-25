@@ -488,7 +488,7 @@ public class Model {
             if (authorized) {
                 sender.send(USER_INFO);
                 sender.send(RANGE_OF_PRODUCTS);
-                sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests add everyone to friends
+                sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
                 sender.resetSid();
                 hash = "";
