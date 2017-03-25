@@ -99,10 +99,10 @@ public class ScreenMain extends ScreenAdapter {
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
     private long inviteTime = 0;
-    private long rejectedTime = 0;
-    private long missedTime = 0;
-    private long timerExpiredTime = 0;
-    private long friendsTime = 0;
+    private long stopCallRejectedTime = 0;
+    private long stopCallMissedTime = 0;
+    private long stopCallExpiredTime = 0;
+    private long friendsListTime = 0;
     private long abilityExpireTime = 0;
     private long promocodeDoneTime = 0;
 
@@ -355,6 +355,16 @@ public class ScreenMain extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+
+        generalRatingTime = model.generalRatingTime;
+        weeklyRatingTime = model.weeklyRatingTime;
+        inviteTime = model.inviteTime;
+        stopCallRejectedTime = model.stopCallRejectedTime;
+        stopCallMissedTime = model.stopCallMissedTime;
+        stopCallExpiredTime = model.stopCallExpiredTime;
+        friendsListTime = model.friendsListTime;
+        abilityExpireTime = model.abilityExpireTime;
+        promocodeDoneTime = model.promocodeDoneTime;
     }
 
     @Override
@@ -564,8 +574,8 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateFriends() {
-        if (friendsTime != model.friendsListTime) {
-            friendsTime = model.friendsListTime;
+        if (friendsListTime != model.friendsListTime) {
+            friendsListTime = model.friendsListTime;
             lstFriends.setItems(model.friends.toArray(new String[0]));
         }
     }
@@ -586,18 +596,18 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateStopCall() {
-        if (rejectedTime != model.stopCallRejectedTime) {
-            rejectedTime = model.stopCallRejectedTime;
+        if (stopCallRejectedTime != model.stopCallRejectedTime) {
+            stopCallRejectedTime = model.stopCallRejectedTime;
             dialupDialog.hide();
             infoDialog.setText(String.format("%s rejected your invitation", model.enemy)).show(stage);
         }
-        if (missedTime != model.stopCallMissedTime) {
-            missedTime = model.stopCallMissedTime;
+        if (stopCallMissedTime != model.stopCallMissedTime) {
+            stopCallMissedTime = model.stopCallMissedTime;
             incomingDialog.hide();
             infoDialog.setText(String.format("You missed invitation from %s", model.enemy)).show(stage);
         }
-        if (timerExpiredTime != model.stopCallExpiredTime) {
-            timerExpiredTime = model.stopCallExpiredTime;
+        if (stopCallExpiredTime != model.stopCallExpiredTime) {
+            stopCallExpiredTime = model.stopCallExpiredTime;
             dialupDialog.hide();
             infoDialog.setText(String.format("%s doesn't respond", model.enemy)).show(stage);
         }

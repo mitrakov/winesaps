@@ -95,8 +95,8 @@ public class ScreenBattle extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        roundFinishedTime = model.roundFinishedTime; // it's not necessarily right that model has finished time = 0
-        gameFinishedTime = model.gameFinishedTime;   // it's not necessarily right that model has finished time = 0
+        roundFinishedTime = model.roundFinishedTime;
+        gameFinishedTime = model.gameFinishedTime;
     }
 
     @Override

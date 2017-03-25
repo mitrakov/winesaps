@@ -25,7 +25,7 @@ public class ScreenLogin extends ScreenAdapter {
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final Table table = new Table();
 
-    private final TextField txtLogin; // ....
+    private final TextField txtLogin;
     private final TextField txtPassword;
     private final TextField txtEmail;
     private final TextField txtPromocode;

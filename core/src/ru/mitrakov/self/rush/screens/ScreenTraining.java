@@ -35,8 +35,8 @@ public class ScreenTraining extends ScreenAdapter {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
-    private int score;
-    private CellObject thing;
+    private int score = 0;
+    private CellObject thing = null;
     private boolean started = false;
     private boolean finished = false;
 
