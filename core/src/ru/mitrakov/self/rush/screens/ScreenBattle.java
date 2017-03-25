@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ru.mitrakov.self.rush.ui.Gui;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;

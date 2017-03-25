@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush.screens;
+package ru.mitrakov.self.rush.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush.screens;
+package ru.mitrakov.self.rush.ui;
 
 import static java.lang.Math.*;
 
@@ -17,7 +17,7 @@ import ru.mitrakov.self.rush.model.object.*;
  * Created by mitrakov on 23.02.2017
  */
 
-class Gui extends Actor {
+public class Gui extends Actor {
     private class MyClickListener extends ClickListener {
         float x, y = 0;
 
@@ -88,7 +88,7 @@ class Gui extends Actor {
         return (int) (Field.HEIGHT - y / CELL_SIZ_H);
     }
 
-    Gui(Model model) {
+    public Gui(Model model) {
         assert model != null;
         this.model = model;
         controller = new InputController(model);
@@ -213,7 +213,7 @@ class Gui extends Actor {
         return super.remove();
     }
 
-    void setMovesAllowed(boolean value) {
+    public void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);
     }
 }

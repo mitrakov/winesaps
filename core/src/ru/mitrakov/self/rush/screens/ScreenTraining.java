@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.ui.Gui;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
