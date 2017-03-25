@@ -33,9 +33,10 @@ public class DialogTraining extends Window {
 
         imgMessage = new Image();
         lblMessage1 = new Label("", skin, "default");
-        lblMessage2 = new Label("", skin, "default");
-
         lblMessage1.setAlignment(Align.center, Align.center);
+        lblMessage2 = new Label("", skin, "default");
+        lblMessage2.setAlignment(Align.center, Align.center);
+
         setMovable(false);
         buildTable();
     }
