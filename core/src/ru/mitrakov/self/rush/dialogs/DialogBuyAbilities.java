@@ -19,6 +19,7 @@ public class DialogBuyAbilities extends Dialog {
     private final Label lblCrystals;
     private final Label lblCurAbility;
     private final List<Product> productsList;
+    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
     public DialogBuyAbilities(final Model model, Skin skin, String windowStyleName) {
         super("Buy abilities", skin, windowStyleName);
@@ -48,9 +49,14 @@ public class DialogBuyAbilities extends Dialog {
             model.buyProduct(productsList.getSelected());
     }
 
+    @Override
+    public boolean remove() {
+        atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
+        return super.remove();
+    }
+
     private Array<Actor> loadTextures() {
         Array<Actor> res = new Array<Actor>();
-        TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());

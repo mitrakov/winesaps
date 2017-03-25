@@ -23,8 +23,9 @@ public class ScreenLogin extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
-    private final Table table = new Table();
+    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
 
+    private final Table table = new Table();
     private final TextField txtLogin;
     private final TextField txtPassword;
     private final TextField txtEmail;
@@ -56,7 +57,6 @@ public class ScreenLogin extends ScreenAdapter {
         table.setFillParent(true);
         stage.addActor(table);
 
-        TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
         TextureRegion regionValid = atlasMenu.findRegion("valid");
         TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
         assert regionValid != null && regionInvalid != null;
@@ -185,10 +185,8 @@ public class ScreenLogin extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
-        if (textureValid instanceof TextureRegionDrawable)
-            ((TextureRegionDrawable)textureValid).getRegion().getTexture().dispose(); // no NULL references here
-        if (textureInvalid instanceof TextureRegionDrawable)
-            ((TextureRegionDrawable)textureInvalid).getRegion().getTexture().dispose(); // no NULL references here
+        atlasMenu.dispose(); // disposing an atlas also disposes all its internal textures
+        super.dispose();
     }
 
     private void setStartDialog() {

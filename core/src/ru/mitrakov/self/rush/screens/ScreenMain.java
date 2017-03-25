@@ -32,8 +32,10 @@ public class ScreenMain extends ScreenAdapter {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
-
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
+    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
+    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
+
     private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
@@ -115,7 +117,6 @@ public class ScreenMain extends ScreenAdapter {
         tableMain.setFillParent(true);
         stage.addActor(tableMain);
 
-        TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         assert regionSettings != null && regionAbout != null;
@@ -370,18 +371,12 @@ public class ScreenMain extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
-
-        for (ImageButton button : abilities.values()) {
-            assert button.getStyle() != null;
-            Drawable drawable = button.getStyle().imageUp;
-            if (drawable != null && drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
-        }
+        atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
+        atlasMenu.dispose();
+        super.dispose();
     }
 
     private void loadTextures() {
-        TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
-
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {

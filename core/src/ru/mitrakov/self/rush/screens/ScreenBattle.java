@@ -27,6 +27,9 @@ public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
+    private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
+    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
+
     private final Table table = new Table();
     private final Actor gui;
     private final ImageButton btnThing;
@@ -102,23 +105,14 @@ public class ScreenBattle extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        stage.dispose(); // what about the internal actors?
-        for (Drawable drawable : things.values()) {
-            assert drawable != null;
-            if (drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
-        }
-        for (ImageButton button : abilities.values()) {
-            assert button.getStyle() != null;
-            Drawable drawable = button.getStyle().imageUp;
-            if (drawable != null && drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
-        }
+        stage.dispose();
+        atlasThing.dispose();   // disposing an atlas also disposes all its internal textures
+        atlasAbility.dispose();
+        super.dispose();
     }
 
     private void loadTextures() {
-        TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
-        TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
+
 
         for (Class clazz : new Class[]{CellObject.class, Mine.class, Umbrella.class}) { // all subclasses of CellObject
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());

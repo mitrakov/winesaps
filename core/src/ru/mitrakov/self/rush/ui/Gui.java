@@ -197,17 +197,7 @@ public class Gui extends Actor {
 
     @Override
     public boolean remove() {
-        for (TextureRegion texture : texturesDown.values()) {
-            texture.getTexture().dispose();
-        }
-        for (TextureRegion texture : texturesUp.values()) {
-            texture.getTexture().dispose();
-        }
-        for (AnimInfo anim : texturesAnim.values()) {
-            for (TextureRegion texture : anim.animation.getKeyFrames())
-                texture.getTexture().dispose();
-        }
-        atlasDown.dispose();
+        atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
         atlasAnim.dispose();
         return super.remove();

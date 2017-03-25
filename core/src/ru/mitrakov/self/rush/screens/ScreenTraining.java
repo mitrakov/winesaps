@@ -25,7 +25,9 @@ public class ScreenTraining extends ScreenAdapter {
     private final RushClient game;
     private final PsObject psObject;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
-    private final TextureAtlas atlasMsgs = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
+    private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
+    private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
+
     private final Table table = new Table();
     private final Gui gui;
     private final ImageButton btnThing;
@@ -107,20 +109,13 @@ public class ScreenTraining extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        stage.dispose(); // what about the internal actors?
-        for (Drawable drawable : things.values()) {
-            assert drawable != null;
-            if (drawable instanceof TextureRegionDrawable)
-                ((TextureRegionDrawable) drawable).getRegion().getTexture().dispose(); // no NULL references here
-        }
-        for (TextureRegion texture : atlasMsgs.getRegions()) {
-            texture.getTexture().dispose();
-        }
+        stage.dispose();
+        atlasTraining.dispose(); // disposing an atlas also disposes all its internal textures
+        atlasThing.dispose();
+        super.dispose();
     }
 
     private void loadTextures() {
-        TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
-
         for (Class clazz : new Class[]{CellObject.class, Umbrella.class}) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
@@ -166,18 +161,18 @@ public class ScreenTraining extends ScreenAdapter {
     private void addContent() {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
         trainingDialog
-                .addMessage(atlasMsgs.findRegion("msg1"), "Tap on the left or right hand of\na character to move.\n" +
+                .addMessage(atlasTraining.findRegion("msg1"), "Tap on the left or right hand of\na character to move.\n" +
                         "On keyboard you can also use arrows or AD keys", "Move right and take an apple")
-                .addMessage(atlasMsgs.findRegion("msg2"), "You can use doors to move up and down.\nJust tap on the " +
+                .addMessage(atlasTraining.findRegion("msg2"), "You can use doors to move up and down.\nJust tap on the " +
                                 "top or bottom of a character.\nOn keyboard you can also use arrows or WS keys",
                         "Go to the door, move down and take a pear")
-                .addMessage(atlasMsgs.findRegion("msg3"), "You can use ropes to move up",
+                .addMessage(atlasTraining.findRegion("msg3"), "You can use ropes to move up",
                         "Go to the rope, crawl up and take an apple")
-                .addMessage(atlasMsgs.findRegion("msg4"), "You can take some useful stuff\nE.g. an umbrella assists " +
+                .addMessage(atlasTraining.findRegion("msg4"), "You can take some useful stuff\nE.g. an umbrella assists " +
                         "to keep you from\ngetting wet", "Go left and take an umbrella")
-                .addMessage(atlasMsgs.findRegion("msg5"), "Now push the button on the bottom-left corner\nto use " +
+                .addMessage(atlasTraining.findRegion("msg5"), "Now push the button on the bottom-left corner\nto use " +
                         "the umbrella\nOn keyboard you can also push a space button", "")
-                .addMessage(atlasMsgs.findRegion("msg6"), "Good! Take the last pear to finish training", "");
+                .addMessage(atlasTraining.findRegion("msg6"), "Good! Take the last pear to finish training", "");
     }
 
     private void checkStarted() {
