@@ -153,7 +153,7 @@ public class Model {
     private static final int HISTORY_MAX = 32;
     private static final int PROMOCODE_LEN = 5;
     private static final String SETTINGS_FILE = "settings";
-    private static final String HISTORY_FILE = "history";
+    private static final String HISTORY_PREFIX = "history/";
 
     // ============================
     // === USUAL PRIVATE FIELDS ===
@@ -538,7 +538,7 @@ public class Model {
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null) {
-            String strHistory = fileReader.read(String.format("%s_%s", HISTORY_FILE, name));
+            String strHistory = fileReader.read(String.format("%s%s", HISTORY_PREFIX, name));
             if (strHistory != null) {
                 history.clear();
                 Collections.addAll(history, strHistory.split("\n"));
@@ -730,7 +730,7 @@ public class Model {
                     builder.append(x).append('\n');
                 }
                 // writing
-                fileReader.write(String.format("%s_%s", HISTORY_FILE, name), builder.toString());
+                fileReader.write(String.format("%s%s", HISTORY_PREFIX, name), builder.toString());
             }
         }
 
