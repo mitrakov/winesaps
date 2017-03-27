@@ -60,7 +60,8 @@ public class Gui extends Actor {
     private static final int CELL_SIZ_H = 85;
     private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
     private static final int OFFSET_Y = 33; // inferred by expertise
-    private static final float SPEED = 1000f * CELL_SIZ_W / TOUCH_DELAY;
+    private static final float SPEED_X = 1000f * CELL_SIZ_W / TOUCH_DELAY;
+    private static final float SPEED_Y = 1000f * CELL_SIZ_H / TOUCH_DELAY;
 
     private final Model model;
     private final InputController controller;
@@ -123,7 +124,7 @@ public class Gui extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float dt = Gdx.graphics.getDeltaTime();
-        float dx = SPEED * dt;
+        float dx = SPEED_X * dt, dy = SPEED_Y * dt;
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -188,9 +189,9 @@ public class Gui extends Actor {
 
                             // correct x-coordinate, direction and time adjusted for animation
                             float deltaX = x - anim.x;
-                            boolean delta_equals_0 = abs(deltaX) < dx / 2;
+                            boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
                             boolean not_initialized = abs(deltaX) > 2 * CELL_SIZ_W;
-                            if (delta_equals_0 || not_initialized) {
+                            if (deltaX_equals_0 || not_initialized) {
                                 anim.x = x;
                                 if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
                                     anim.t = 0;
@@ -201,6 +202,16 @@ public class Gui extends Actor {
                                 anim.delay = 0;
                                 if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
                                     anim.dirRight = deltaX > 0;
+                            }
+
+                            // correct y-coordinate
+                            float deltaY = y - anim.y;
+                            boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
+                            if (deltaY_equals_0 || not_initialized || ladderExists(cell))
+                                anim.y = y;
+                            else {
+                                y = anim.y;
+                                anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
                             }
 
                             // if direction == right then draw pure texture, else draw flipped texture
@@ -249,5 +260,14 @@ public class Gui extends Actor {
             }
         }
         return bottomHeight;
+    }
+
+    private boolean ladderExists(Cell cell) {
+        // cell != null (assert omitted because it's called inside 'render()')
+        for (CellObject obj : cell.objects) { // in Java 8 may be replaced with lambda
+            if (obj instanceof LadderBottom || obj instanceof  LadderTop)
+                return true;
+        }
+        return false;
     }
 }

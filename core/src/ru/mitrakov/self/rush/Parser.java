@@ -135,7 +135,7 @@ class Parser implements Network.IHandler {
         if (data.length > 1) {
             int ok = data[0];
             if (ok == 0) {
-                StringBuilder victim = new StringBuilder();
+                StringBuilder victim = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
                 for (int i = 1; i < data.length; i++) {
                     victim.append((char) data[i]);
                 }
@@ -149,7 +149,7 @@ class Parser implements Network.IHandler {
             int sidH = data[0];
             int sidL = data[1];
             int sid = sidH * 256 + sidL;
-            StringBuilder name = new StringBuilder();
+            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
             for (int i = 2; i < data.length; i++) {
                 name.append((char) data[i]);
             }
@@ -164,7 +164,7 @@ class Parser implements Network.IHandler {
             boolean rejected = data[0] == 0;
             boolean missed = data[0] == 1;
             boolean expired = data[0] == 2;
-            StringBuilder name = new StringBuilder(); // oh... Java 1.8 has "mkstring" :(
+            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
             for (int i = 1; i < data.length; i++) {
                 name.append((char) data[i]);
             }
@@ -191,11 +191,11 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int ok = data[0];
             if (ok == 0) {
-                StringBuilder builder = new StringBuilder();
+                StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
                 for (int i = 1; i < data.length; i++) {
-                    builder.append((char) data[i]);
+                    name.append((char) data[i]);
                 }
-                model.friendAdded(builder.toString());
+                model.friendAdded(name.toString());
             } else throw new IllegalArgumentException("Incorrect add friend response");
         } else throw new IllegalArgumentException("Incorrect add friend format");
     }
@@ -204,7 +204,7 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int ok = data[0];
             if (ok == 0) {
-                StringBuilder name = new StringBuilder();
+                StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
                 for (int i = 1; i < data.length; i++) {
                     name.append((char) data[i]);
                 }
@@ -321,7 +321,7 @@ class Parser implements Network.IHandler {
         if (data.length > 2) {
             boolean inviter = data[0] == 1;
             int crystals = data[1];
-            StringBuilder name = new StringBuilder();
+            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
             for (int i = 2; i < data.length; i++) {
                 name.append((char) data[i]);
             }

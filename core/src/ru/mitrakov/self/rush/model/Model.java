@@ -225,7 +225,7 @@ public class Model {
      */
     public Collection<Product> getProductsByAbility(Ability ability) {
         List<Product> res = new LinkedList<Product>();
-        for (Product product : products) {  // pity it's not Java 1.8
+        for (Product product : products) {   // in Java 8 may be replaced with lambda
             if (product.ability == ability)
                 res.add(product);
         }
@@ -732,8 +732,7 @@ public class Model {
 
             // store the current history in the local storage
             if (fileReader != null) {
-                // making a single string (oh... Java 1.8 has got "mkstring" :( )
-                StringBuilder builder = new StringBuilder(lst.size());
+                StringBuilder builder = new StringBuilder(lst.size()); // in Java 8 may be replaced with a StringJoiner
                 for (String x : lst) {
                     builder.append(x).append('\n');
                 }
