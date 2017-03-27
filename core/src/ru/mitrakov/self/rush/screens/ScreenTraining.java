@@ -112,6 +112,7 @@ public class ScreenTraining extends ScreenAdapter {
         stage.dispose();
         atlasTraining.dispose(); // disposing an atlas also disposes all its internal textures
         atlasThing.dispose();
+        gui.dispose();
         super.dispose();
     }
 

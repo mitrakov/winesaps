@@ -31,7 +31,7 @@ public class ScreenBattle extends ScreenAdapter {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
     private final Table table = new Table();
-    private final Actor gui;
+    private final Gui gui;
     private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
@@ -112,6 +112,7 @@ public class ScreenBattle extends ScreenAdapter {
         stage.dispose();
         atlasThing.dispose();   // disposing an atlas also disposes all its internal textures
         atlasAbility.dispose();
+        gui.dispose();
         super.dispose();
     }
 

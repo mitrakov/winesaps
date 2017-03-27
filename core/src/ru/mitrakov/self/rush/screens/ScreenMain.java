@@ -47,11 +47,11 @@ public class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
     private final Table tableFriendsControl = new Table();
-    private final Dialog buyAbilitiesDialog;
     private final Dialog moreCrystalsDialog;
     private final Dialog incomingDialog;
     private final Dialog settingsDialog;
     private final Dialog aboutDialog;
+    private final DialogBuyAbilities buyAbilitiesDialog;
     private final DialogInfo infoDialog;
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
@@ -121,12 +121,12 @@ public class ScreenMain extends ScreenAdapter {
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         assert regionSettings != null && regionAbout != null;
 
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", new DialogPromocode(model, skin, "default"),
                 stage);
         incomingDialog = new DialogIncoming(model, skin, "default");
         settingsDialog = new DialogSettings(model, skin, "default");
         aboutDialog = new DialogAbout(skin, "default");
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
         infoDialog = new DialogInfo("Information", skin, "default");
         dialupDialog = new DialogDialup(model, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage);
@@ -373,6 +373,7 @@ public class ScreenMain extends ScreenAdapter {
         stage.dispose();
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
         atlasMenu.dispose();
+        buyAbilitiesDialog.dispose();
         super.dispose();
     }
 

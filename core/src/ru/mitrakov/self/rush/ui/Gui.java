@@ -195,15 +195,13 @@ public class Gui extends Actor {
         }
     }
 
-    @Override
-    public boolean remove() {
+    public void setMovesAllowed(boolean value) {
+        controller.setMovesAllowed(value);
+    }
+
+    public void dispose() {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
         atlasAnim.dispose();
-        return super.remove();
-    }
-
-    public void setMovesAllowed(boolean value) {
-        controller.setMovesAllowed(value);
     }
 }

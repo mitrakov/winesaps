@@ -49,10 +49,8 @@ public class DialogBuyAbilities extends Dialog {
             model.buyProduct(productsList.getSelected());
     }
 
-    @Override
-    public boolean remove() {
+    public void dispose() {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
-        return super.remove();
     }
 
     private Array<Actor> loadTextures() {
