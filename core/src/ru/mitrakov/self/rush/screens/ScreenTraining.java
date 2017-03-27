@@ -61,6 +61,7 @@ public class ScreenTraining extends ScreenAdapter {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    model.newbie = false;
                     model.stopBattle();
                     game.setNextScreen();
                 }
@@ -200,6 +201,7 @@ public class ScreenTraining extends ScreenAdapter {
     private void checkFinished() {
         if (!finished && model.roundFinishedTime > 0) {
             finished = true;
+            model.newbie = false;
             model.stopBattle();
             trainingDialog.remove();
             String msg = "Now invite your friends and tear them to shreds in a real battle!";
