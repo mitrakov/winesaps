@@ -43,7 +43,7 @@ public class Gui extends Actor {
     }
 
     private final class AnimInfo {
-        float x;
+        float x, y;
         float t;
         boolean dirRight;
         int delay;
@@ -187,20 +187,20 @@ public class Gui extends Actor {
                             float y = convertYFromModelToScreen(j) + bottomHeight;
 
                             // correct x-coordinate, direction and time adjusted for animation
-                            float delta = x - anim.x;
-                            boolean delta_equals_0 = abs(delta) < dx / 2;
-                            boolean not_initialized = abs(delta) > 2 * CELL_SIZ_W;
+                            float deltaX = x - anim.x;
+                            boolean delta_equals_0 = abs(deltaX) < dx / 2;
+                            boolean not_initialized = abs(deltaX) > 2 * CELL_SIZ_W;
                             if (delta_equals_0 || not_initialized) {
                                 anim.x = x;
                                 if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
                                     anim.t = 0;
                             } else {
                                 x = anim.x;
-                                anim.x += signum(delta) * dx;
+                                anim.x += signum(deltaX) * dx;
                                 anim.t += dt;
                                 anim.delay = 0;
-                                if (abs(delta) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
-                                    anim.dirRight = delta > 0;
+                                if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
+                                    anim.dirRight = deltaX > 0;
                             }
 
                             // if direction == right then draw pure texture, else draw flipped texture
