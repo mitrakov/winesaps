@@ -9,7 +9,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogIncoming extends Dialog {
+public class DialogIncoming extends DialogFeat {
 
     private enum Result {Accept, Reject, Ignore}
 
@@ -51,7 +51,6 @@ public class DialogIncoming extends Dialog {
                 model.accept();
                 if (chkAddToFriends.isChecked())
                     model.addFriend(model.enemy);
-                hide(null); // null = close immediately (without fadeOut)
                 break;
             case Reject:
                 model.reject();

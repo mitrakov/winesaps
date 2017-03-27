@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogInfo extends Dialog {
+public class DialogInfo extends DialogFeat {
     private final Label lblMessage;
 
     public DialogInfo(String title, Skin skin, String windowStyleName) {

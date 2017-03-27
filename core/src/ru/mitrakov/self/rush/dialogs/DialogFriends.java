@@ -10,7 +10,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogFriends extends Dialog {
+public class DialogFriends extends DialogFeat {
     private final TextButton btnInvite;
     private final TextButton btnRemove;
     private String name = "";
@@ -24,7 +24,7 @@ public class DialogFriends extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    hide(null); // null = close immediately (without fadeOut)
+                    hide();
                     invDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                 }
             });
@@ -33,7 +33,7 @@ public class DialogFriends extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    hide(null); // null = close immediately (without fadeOut)
+                    hide();
                     yesNoDialog.setText(String.format("Do you wanna remove %s?", name)).setRunnable(new Runnable() {
                         @Override
                         public void run() {

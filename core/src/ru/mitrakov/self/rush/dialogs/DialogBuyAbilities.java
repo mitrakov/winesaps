@@ -13,7 +13,7 @@ import ru.mitrakov.self.rush.model.*;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogBuyAbilities extends Dialog {
+public class DialogBuyAbilities extends DialogFeat {
     private final Model model;
     private final Label lblPicture;
     private final Label lblCrystals;

@@ -1,10 +1,7 @@
 package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import ru.mitrakov.self.rush.model.Model;
 
@@ -12,7 +9,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogDialup extends Dialog {
+public class DialogDialup extends DialogFeat {
     private final Model model;
     private final Label lblMessage;
 

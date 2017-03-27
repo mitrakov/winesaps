@@ -10,7 +10,7 @@ import ru.mitrakov.self.rush.RushClient;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogFinished extends Dialog {
+public class DialogFinished extends DialogFeat {
     private final RushClient game;
     private final Label lblMessage1;
     private final Label lblMessage2;
@@ -34,7 +34,6 @@ public class DialogFinished extends Dialog {
     protected void result(Object object) {
         if (quitOnResult) {
             game.setNextScreen();
-            hide(null); // null = close immediately (without fadeOut)
         }
     }
 

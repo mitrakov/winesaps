@@ -9,7 +9,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogInvite extends Dialog {
+public class DialogInvite extends DialogFeat {
 
     public enum InviteType {ByName, Random, Latest}
 
@@ -59,7 +59,6 @@ public class DialogInvite extends Dialog {
                     break;
                 default:
             }
-            hide(null); // null = close immediately (without fadeOut)
             dialup.show(stage);
         }
     }

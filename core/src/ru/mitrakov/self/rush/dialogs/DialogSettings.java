@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogSettings extends Dialog {
+public class DialogSettings extends DialogFeat {
     private final Model model;
 
     public DialogSettings(Model model, Skin skin, String windowStyleName) {
@@ -85,7 +85,7 @@ public class DialogSettings extends Dialog {
         btnSignOut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                hide(null);  // null = close immediately (without fadeOut)
+                hide();
                 model.signOut();
             }
         });

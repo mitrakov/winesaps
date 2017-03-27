@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogPromocode extends Dialog {
+public class DialogPromocode extends DialogFeat {
     private final Model model;
     private final TextField field;
 

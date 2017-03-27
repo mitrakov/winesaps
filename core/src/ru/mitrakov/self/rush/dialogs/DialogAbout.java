@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogAbout extends Dialog {
+public class DialogAbout extends DialogFeat {
     public DialogAbout(Skin skin, String windowStyleName) {
         super("About the game", skin, windowStyleName);
 

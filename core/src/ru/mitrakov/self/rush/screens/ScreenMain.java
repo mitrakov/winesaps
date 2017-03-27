@@ -335,7 +335,7 @@ public class ScreenMain extends ScreenAdapter {
         if (!model.authorized)
             game.setLoginScreen();
         if (model.field != null) {
-            dialupDialog.hide(null); // null = close immediately (without fadeOut)
+            dialupDialog.hide();
             game.setNextScreen();
         }
 

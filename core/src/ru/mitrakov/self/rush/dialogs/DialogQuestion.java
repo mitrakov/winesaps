@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class DialogQuestion extends Dialog {
+public class DialogQuestion extends DialogFeat {
     private final Label lblMessage;
     private Runnable action;
 

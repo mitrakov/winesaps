@@ -9,7 +9,7 @@ import ru.mitrakov.self.rush.ui.LinkedLabel;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogMoreCrystals extends Dialog {
+public class DialogMoreCrystals extends DialogFeat {
 
     public DialogMoreCrystals(Skin skin, String windowStyleName, Dialog promoDialog, Stage stage) {
         super("Getting more crystals", skin, windowStyleName);

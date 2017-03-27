@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  * Created by mitrakov on 05.03.2017
  */
 
-public class DialogPromocodeDone extends Dialog {
+public class DialogPromocodeDone extends DialogFeat {
     private final Label lblMessage;
 
     public DialogPromocodeDone(Skin skin, String windowStyleName) {
