@@ -35,6 +35,7 @@ public class ScreenBattle extends ScreenAdapter {
     private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
+    private final Label lblTime;
     private final ScrollPane abilityButtonsScroll;
     private final DialogFinished infoDialog;
 
@@ -57,6 +58,7 @@ public class ScreenBattle extends ScreenAdapter {
         infoDialog = new DialogFinished(game, skin, "default");
         btnThing = createButtonThing();
         lblScore = new Label("", skin, "default");
+        lblTime = new Label("", skin, "default");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
 
         // @mitrakov: BUG in LibGDX! If a skin is not assigned to a ScrollPane then ScrollPane supposes any upper actor
@@ -78,8 +80,10 @@ public class ScreenBattle extends ScreenAdapter {
         Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
         btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
 
-        // updating the score
+        // updating labels
+        long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
         lblScore.setText(String.format(Locale.getDefault(), "Score: %d-%d", model.score1, model.score2));
+        lblTime.setText(String.valueOf(t >= 0 ? t : 0));
 
         // checking
         checkAbilities();
@@ -112,8 +116,6 @@ public class ScreenBattle extends ScreenAdapter {
     }
 
     private void loadTextures() {
-
-
         for (Class clazz : new Class[]{CellObject.class, Mine.class, Umbrella.class}) { // all subclasses of CellObject
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
@@ -147,9 +149,10 @@ public class ScreenBattle extends ScreenAdapter {
     }
 
     private void buildTable() {
-        table.add(gui).colspan(4);
-        table.row(); // fake row to make the table think there are 4 columns instead of 3
-        table.add(); // without the fake row "abilityButtonsScroll.colspan(2)" would work incorrectly
+        table.add(gui).colspan(5);
+        table.row(); // fake row to make the table think there are 5 columns instead of 4;
+        table.add(); // without the fake row "abilityButtonsScroll.colspan(2)" would not work properly
+        table.add();
         table.add();
         table.add();
         table.add();
@@ -157,6 +160,7 @@ public class ScreenBattle extends ScreenAdapter {
         table.add(btnThing).align(Align.left);
         table.add(abilityButtonsScroll).colspan(2);
         table.add(lblScore);
+        table.add(lblTime);
     }
 
     private void checkAbilities() {

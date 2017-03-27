@@ -52,7 +52,7 @@ public class Model {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
         RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
         MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
-        OBJECT_APPENDED, FINISHED, GIVE_UP, RESERVED_1F, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
+        OBJECT_APPENDED, FINISHED, GIVE_UP, ROUND_INFO, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
         CHECK_PROMOCODE, PROMOCODE_DONE
     }
 
@@ -104,6 +104,8 @@ public class Model {
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
     public volatile int promocodeDoneCrystals = 0;
+    public volatile int roundNumber = 0;
+    public volatile int roundLengthSec = 60;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
@@ -115,6 +117,7 @@ public class Model {
     public volatile long stopCallRejectedTime = 0;
     public volatile long stopCallMissedTime = 0;
     public volatile long stopCallExpiredTime = 0;
+    public volatile long roundStartTime = 0;
     public volatile long roundFinishedTime = 0;
     public volatile long gameFinishedTime = 0;
     public volatile long friendsListTime = 0;
@@ -312,7 +315,6 @@ public class Model {
      */
     public void accept() {
         if (sender != null) {
-            aggressor = false;
             sender.send(ACCEPT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
     }
@@ -551,7 +553,6 @@ public class Model {
 
     public void setVictim(String victimName) {
         assert victimName != null;
-        aggressor = true;
         enemy = victimName;
     }
 
@@ -667,9 +668,16 @@ public class Model {
         promocodeDoneTime = System.currentTimeMillis();
     }
 
-    public void setNewField(int[] fieldData) {
+    public void setRoundInfo(int number, int timeSec, boolean aggressor) {
         curThing = curActor = null;
         score1 = score2 = 0;
+        roundNumber = number;
+        roundLengthSec = timeSec;
+        this.aggressor = aggressor;
+        roundStartTime = System.currentTimeMillis();
+    }
+
+    public void setNewField(int[] fieldData) {
         field = new Field(fieldData);
     }
 

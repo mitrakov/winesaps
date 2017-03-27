@@ -65,6 +65,9 @@ class Parser implements Network.IHandler {
                     case RANGE_OF_PRODUCTS:
                         rangeOfProducts(Arrays.copyOfRange(data, 1, data.length));
                         break;
+                    case ROUND_INFO:
+                        roundInfo(Arrays.copyOfRange(data, 1, data.length));
+                        break;
                     case RATING:
                         rating(Arrays.copyOfRange(data, 1, data.length));
                         break;
@@ -201,11 +204,11 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int ok = data[0];
             if (ok == 0) {
-                StringBuilder builder = new StringBuilder();
+                StringBuilder name = new StringBuilder();
                 for (int i = 1; i < data.length; i++) {
-                    builder.append((char) data[i]);
+                    name.append((char) data[i]);
                 }
-                model.friendRemoved(builder.toString());
+                model.friendRemoved(name.toString());
             } else throw new IllegalArgumentException("Incorrect remove friend response");
         } else throw new IllegalArgumentException("Incorrect remove friend format");
     }
@@ -214,6 +217,15 @@ class Parser implements Network.IHandler {
         if (data.length % 3 == 0) {
             model.setRangeOfProducts(data);
         } else throw new IllegalArgumentException("Incorrect range-of-products format");
+    }
+
+    private void roundInfo(int[] data) {
+        if (data.length > 2) {
+            int number = data[0];
+            int timeSec = data[1];
+            boolean aggressor = data[2] != 0;
+            model.setRoundInfo(number, timeSec, aggressor);
+        } else throw new IllegalArgumentException("Incorrect round info format");
     }
 
     private void rating(int[] data) {
