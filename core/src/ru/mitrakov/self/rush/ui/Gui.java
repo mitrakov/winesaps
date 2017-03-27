@@ -128,38 +128,61 @@ public class Gui extends Actor {
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
-            // draw a field
+            // draw 1-st layer (bottom, static objects except food)
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
-                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell must NOT be NULL (assert omitted)
+                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                    float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                     // draw bottom (block/water/dias)
-                    float bottomWidth = CELL_SIZ_W;
-                    float bottomHeight = 0;
                     if (cell.bottom != null) {
                         if (texturesDown.containsKey(cell.bottom.getClass())) {
                             TextureRegion texture = texturesDown.get(cell.bottom.getClass()); // here texture != null
                             float x = convertXFromModelToScreen(i);
                             float y = convertYFromModelToScreen(j);
                             batch.draw(texture, x, y);
-                            bottomWidth = texture.getRegionWidth();
-                            bottomHeight = texture.getRegionHeight();
                         }
                     }
-                    // draw objects above the bottom
+                    // draw static objects (except food) above the bottom
                     for (CellObject obj : cell.objects) {
-                        // draw static objects
-                        if (texturesUp.containsKey(obj.getClass())) {
-                            TextureRegion texture = texturesUp.get(obj.getClass()); // here texture != null
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
+                        if (!(obj instanceof CellObjectFood)) {
+                            if (texturesUp.containsKey(obj.getClass())) {
+                                TextureRegion texture = texturesUp.get(obj.getClass()); // here texture != null
+                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                                float y = convertYFromModelToScreen(j) + bottomHeight;
+                                batch.draw(texture, x, y);
+                            }
                         }
-                        // draw animated characters
+                    }
+                }
+            }
+            // draw 2-nd layer (food)
+            for (int j = 0; j < Field.HEIGHT; j++) {
+                for (int i = 0; i < Field.WIDTH; i++) {
+                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                    float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                    for (CellObject obj : cell.objects) {
+                        if (obj instanceof CellObjectFood) {
+                            if (texturesUp.containsKey(obj.getClass())) {
+                                TextureRegion texture = texturesUp.get(obj.getClass()); // here texture != null
+                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                                float y = convertYFromModelToScreen(j) + bottomHeight;
+                                batch.draw(texture, x, y);
+                            }
+                        }
+                    }
+                }
+            }
+            // draw 3-rd layer (animated characters)
+            for (int j = 0; j < Field.HEIGHT; j++) {
+                for (int i = 0; i < Field.WIDTH; i++) {
+                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                    float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                    for (CellObject obj : cell.objects) {
                         if (texturesAnim.containsKey(obj.getClass())) {
-                            AnimInfo anim = texturesAnim.get(obj.getClass()); // info != null (assert omitted)
+                            AnimInfo anim = texturesAnim.get(obj.getClass()); // anim != null (assert omitted)
                             TextureRegion texture = anim.animation.getKeyFrame(anim.t); // assert omitted
 
-                            // get coordinates BY SERVER
+                            // get non-animated server-side coordinates
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
 
@@ -192,6 +215,7 @@ public class Gui extends Actor {
                     }
                 }
             }
+            // draw 4-th layer here...
         }
     }
 
@@ -203,5 +227,27 @@ public class Gui extends Actor {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
         atlasAnim.dispose();
+    }
+
+    private float getBottomWidth(Cell cell) {
+        // cell != null (assert omitted because it's called inside 'render()')
+        float bottomWidth = CELL_SIZ_W;
+        if (cell.bottom != null) {
+            if (texturesDown.containsKey(cell.bottom.getClass())) {
+                bottomWidth = texturesDown.get(cell.bottom.getClass()).getRegionWidth(); // texture != null
+            }
+        }
+        return bottomWidth;
+    }
+
+    private float getBottomHeight(Cell cell) {
+        // cell != null (assert omitted because it's called inside 'render()')
+        float bottomHeight = 0;
+        if (cell.bottom != null) {
+            if (texturesDown.containsKey(cell.bottom.getClass())) {
+                bottomHeight = texturesDown.get(cell.bottom.getClass()).getRegionHeight(); // texture != null
+            }
+        }
+        return bottomHeight;
     }
 }

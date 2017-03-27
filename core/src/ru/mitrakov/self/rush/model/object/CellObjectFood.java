@@ -1,0 +1,10 @@
+package ru.mitrakov.self.rush.model.object;
+
+/**
+ * Created by mitrakov on 23.02.2017
+ */
+public abstract class CellObjectFood extends CellObject {
+    public CellObjectFood(int id, int xy) {
+        super(id, xy);
+    }
+}
