@@ -152,6 +152,7 @@ public class Model {
 
     private static final int AGGRESSOR_ID = 1;
     private static final int DEFENDER_ID = 2;
+    private static final int PING_PERIOD_MSEC = 60000;
     private static final int SKILL_OFFSET = 0x20;
     private static final int HISTORY_MAX = 32;
     private static final int PROMOCODE_LEN = 5;
@@ -166,6 +167,17 @@ public class Model {
     private IFileReader fileReader;
     private int enemySid = 0;
     private boolean aggressor = true;
+
+    public Model() {
+        // create timer to ping the server (otherwise the server will make "signOut due to inaction")
+        new Timer(true).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (sender != null)
+                    sender.send(USER_INFO);
+            }
+        }, PING_PERIOD_MSEC, PING_PERIOD_MSEC);
+    }
 
     // ==========================
     // === NON-SERVER METHODS ===
