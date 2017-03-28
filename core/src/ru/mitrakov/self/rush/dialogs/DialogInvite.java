@@ -30,7 +30,7 @@ public class DialogInvite extends DialogFeat {
         this.stage = stage;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox(" add to friends", skin, "default"); // not checked by default
+        chkAddToFriends = new CheckBox(" add to friends", skin, "default") {{setChecked(true);}};
 
         button("OK", true);
         button("Cancel");
