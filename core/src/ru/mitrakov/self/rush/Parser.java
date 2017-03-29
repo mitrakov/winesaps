@@ -6,6 +6,7 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
 
 import static ru.mitrakov.self.rush.model.Model.*;
+import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -38,68 +39,68 @@ class Parser implements Network.IHandler {
                 switch (cmd) {
                     case SIGN_IN:
                     case SIGN_UP:
-                        signIn(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        signIn(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case SIGN_OUT:
-                        signOut(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        signOut(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case USER_INFO:
                     case BUY_PRODUCT:
-                        userInfo(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        userInfo(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case ATTACK: // response on Attack
-                        attack(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        attack(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case CALL:
-                        call(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        call(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case STOPCALL:
-                        stopCall(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        stopCall(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case FRIEND_LIST:
-                        friendList(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        friendList(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case ADD_FRIEND:
-                        addFriend(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        addFriend(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case REMOVE_FRIEND:
-                        removeFriend(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        removeFriend(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case RANGE_OF_PRODUCTS:
-                        rangeOfProducts(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        rangeOfProducts(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case ROUND_INFO:
-                        roundInfo(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        roundInfo(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case RATING:
-                        rating(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        rating(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case FULL_STATE:
-                        fullState(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        fullState(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case STATE_CHANGED:
-                        stateChanged(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        stateChanged(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case SCORE_CHANGED:
-                        scoreChanged(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        scoreChanged(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case FINISHED:
-                        finished(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        finished(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case THING_TAKEN:
-                        thingTaken(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        thingTaken(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case ABILITY_LIST:
-                        abilitiesList(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        abilitiesList(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case OBJECT_APPENDED:
-                        objectAppended(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        objectAppended(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case CHECK_PROMOCODE:
-                        checkPromocode(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        checkPromocode(cmd, copyOfRange(data, 1, data.length));
                         break;
                     case PROMOCODE_DONE:
-                        promocodeDone(cmd, Arrays.copyOfRange(data, 1, data.length));
+                        promocodeDone(cmd, copyOfRange(data, 1, data.length));
                         break;
                     default:
                 }
@@ -129,7 +130,7 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int error = data[0];
             if (error == 0)
-                model.setUserInfo(Arrays.copyOfRange(data, 1, data.length));
+                model.setUserInfo(copyOfRange(data, 1, data.length));
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect user info format");
     }
@@ -187,7 +188,7 @@ class Parser implements Network.IHandler {
         if (data.length > 0) {
             int error = data[0];
             if (error == 0)
-                model.setFriendList(Arrays.copyOfRange(data, 1, data.length));
+                model.setFriendList(copyOfRange(data, 1, data.length));
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect friend list format");
     }
@@ -243,7 +244,7 @@ class Parser implements Network.IHandler {
             int type = data[1];
             RatingType[] types = RatingType.values();
             if (error == 0 && (0 <= type && type < types.length)) {
-                model.setRating(types[type], Arrays.copyOfRange(data, 2, data.length));
+                model.setRating(types[type], copyOfRange(data, 2, data.length));
             } else inspectError(cmd, error);
         } else if (data.length == 1) {
             inspectError(cmd, data[0]);
@@ -253,8 +254,8 @@ class Parser implements Network.IHandler {
     private void fullState(Cmd cmd, int[] state) {
         int n = Field.HEIGHT * Field.WIDTH;
         if (state.length >= n) {
-            int field[] = Arrays.copyOfRange(state, 0, n);
-            int tail[] = Arrays.copyOfRange(state, n, state.length);
+            int field[] = copyOfRange(state, 0, n);
+            int tail[] = copyOfRange(state, n, state.length);
 
             model.setNewField(field);
             if (tail.length % 3 == 0) {
@@ -315,7 +316,7 @@ class Parser implements Network.IHandler {
         if (data.length == 1) {
             int thingId = data[0];
             model.setThing(thingId);
-        } else throw new IllegalArgumentException("Incorrect thing format");
+        } else throw new IllegalArgumentException("Incorrect thing format: " + cmd);
     }
 
     private void objectAppended(Cmd cmd, int[] data) {
@@ -355,7 +356,7 @@ class Parser implements Network.IHandler {
     private void abilitiesList(Cmd cmd, int[] data) {
         if (data.length > 0) {
             int count = data[0];
-            int abilities[] = Arrays.copyOfRange(data, 1, data.length);
+            int abilities[] = copyOfRange(data, 1, data.length);
             if (abilities.length == count)
                 model.setAbilities(abilities);
             else inspectError(cmd, data[0]);

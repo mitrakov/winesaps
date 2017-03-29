@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "ru.mitrakov.self.rush"
-        minSdkVersion 9
+        minSdkVersion 8
         targetSdkVersion 25
     }
 }

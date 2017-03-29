@@ -1,8 +1,9 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.Arrays;
 import java.io.IOException;
+
+import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
 
 
 /**
@@ -49,8 +50,7 @@ public class Network extends Thread {
                 if (data.length > HEADER_SIZ) {
                     sid = data[0] * 256 + data[1];
                     token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
-                    // @mitrakov: on Android copyOfRange requires minSdkVersion=9
-                    handler.handle(Arrays.copyOfRange(data, HEADER_SIZ, data.length));
+                    handler.handle(copyOfRange(data, HEADER_SIZ, data.length));
                 }
             } catch (Exception e) {
                 errorHandler.uncaughtException(this, e);
