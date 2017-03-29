@@ -173,7 +173,7 @@ public class Model {
         new Timer(true).schedule(new TimerTask() {
             @Override
             public void run() {
-                if (sender != null)
+                if (authorized && sender != null)
                     sender.send(USER_INFO);
             }
         }, PING_PERIOD_MSEC, PING_PERIOD_MSEC);
@@ -253,6 +253,7 @@ public class Model {
     public void signIn() {
         assert name != null && hash != null;
         if (!name.isEmpty() && !hash.isEmpty() && sender != null) {
+            sender.reset();
             sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash).getBytes()); // \1 = Local auth
         }
     }
@@ -266,6 +267,7 @@ public class Model {
     public void signIn(String login, String password) {
         if (sender != null) {
             hash = md5(password);
+            sender.reset();
             sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash).getBytes()); // \1 = Local auth
         }
     }
@@ -280,6 +282,7 @@ public class Model {
     public void signUp(String login, String password, String email, String promocode) {
         if (sender != null) {
             hash = md5(password);
+            sender.reset();
             sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode).getBytes());
         }
     }
@@ -504,7 +507,6 @@ public class Model {
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
-                sender.reset();
                 hash = "";
                 saveSettings(); // to write empty hash to a local storage
             }
