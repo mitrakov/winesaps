@@ -48,8 +48,10 @@ public class Network extends Thread {
                     data[i] = datagram.getData()[i] >= 0 ? datagram.getData()[i] : datagram.getData()[i] + 256;
                 }
                 if (data.length > HEADER_SIZ) {
-                    sid = data[0] * 256 + data[1];
-                    token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+                    if (sid * token == 0) {
+                        sid = data[0] * 256 + data[1];
+                        token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+                    }
                     handler.handle(copyOfRange(data, HEADER_SIZ, data.length));
                 }
             } catch (Exception e) {
