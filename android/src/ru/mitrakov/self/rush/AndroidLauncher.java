@@ -1,9 +1,9 @@
 package ru.mitrakov.self.rush;
 
-import android.os.Bundle;
+import android.os.*;
 import android.view.View;
-import android.content.Intent;
 import android.graphics.Rect;
+import android.content.Intent;
 import android.app.PendingIntent;
 
 import com.badlogic.gdx.backends.android.*;
@@ -34,16 +34,17 @@ public class AndroidLauncher extends AndroidApplication {
             }
         };
 
-        // @mitrakov: "addOnLayoutChangeListener" requires Level API 11
-        getWindow().getDecorView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() { //no NULL
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int a, int b, int c, int d) {
-                Rect rect = new Rect();
-                v.getWindowVisibleDisplayFrame(rect);
-                System.out.println("New Size: " + rect.width() + "; " + rect.height());
-                obj.raiseRatioChanged(1f * rect.width() / rect.height());
-            }
-        });
+        if (Build.VERSION.SDK_INT >= 11) { // "addOnLayoutChangeListener" requires Level API 11
+            getWindow().getDecorView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bot, int a, int b, int c, int d) {
+                    Rect rect = new Rect();
+                    v.getWindowVisibleDisplayFrame(rect);
+                    System.out.println("New Size: " + rect.width() + "; " + rect.height());
+                    obj.raiseRatioChanged(1f * rect.width() / rect.height());
+                }
+            });
+        }
 
         initialize(new RushClient(obj), config);
     }
