@@ -33,7 +33,7 @@ public class Model {
 
         void send(Cmd cmd, byte[] data);
 
-        void resetSid();
+        void reset();
     }
 
     /**
@@ -504,7 +504,7 @@ public class Model {
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
-                sender.resetSid();
+                sender.reset();
                 hash = "";
                 saveSettings(); // to write empty hash to a local storage
             }

@@ -15,7 +15,7 @@ public class Network extends Thread {
     }
 
     private static final int BUF_SIZ = 1024;
-    private static final int HEADER_SIZ = 3;
+    private static final int HEADER_SIZ = 7;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException
@@ -24,6 +24,7 @@ public class Network extends Thread {
     private final UncaughtExceptionHandler errorHandler;
 
     private int sid = 0;
+    private long token = 0;
 
     public Network(IHandler handler, UncaughtExceptionHandler errorHandler) throws IOException {
         assert handler != null;
@@ -46,9 +47,8 @@ public class Network extends Thread {
                     data[i] = datagram.getData()[i] >= 0 ? datagram.getData()[i] : datagram.getData()[i] + 256;
                 }
                 if (data.length > HEADER_SIZ) {
-                    int id = data[0] * 256 + data[1];
-                    if (id > 0)
-                        sid = id;
+                    sid = data[0] * 256 + data[1];
+                    token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
                     // @mitrakov: on Android copyOfRange requires minSdkVersion=9
                     handler.handle(Arrays.copyOfRange(data, HEADER_SIZ, data.length));
                 }
@@ -63,14 +63,19 @@ public class Network extends Thread {
         byte[] msg = new byte[data.length + HEADER_SIZ];
         msg[0] = (byte) (sid / 256);
         msg[1] = (byte) (sid % 256);
-        msg[2] = 0; // flags
+        msg[2] = (byte) ((token >> 24) & 0xFF);
+        msg[3] = (byte) ((token >> 16) & 0xFF);
+        msg[4] = (byte) ((token >> 8) & 0xFF);
+        msg[5] = (byte) (token & 0xFF);
+        msg[6] = 0; // flags
         System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
 
         // sending
         socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("192.168.1.2"), 33996));
     }
 
-    public void resetSid() {
+    public void reset() {
         sid = 0;
+        token = 0;
     }
 }

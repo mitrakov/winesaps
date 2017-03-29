@@ -50,7 +50,7 @@ class Sender implements Model.ISender {
     }
 
     @Override
-    public void resetSid() {
-        network.resetSid();
+    public void reset() {
+        network.reset();
     }
 }
