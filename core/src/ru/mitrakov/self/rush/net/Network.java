@@ -43,9 +43,11 @@ public class Network extends Thread {
             try {
                 DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
                 socket.receive(datagram);
-                int[] data = new int[datagram.getLength()];
-                for (int i = 0; i < datagram.getLength(); i++) {
-                    data[i] = datagram.getData()[i] >= 0 ? datagram.getData()[i] : datagram.getData()[i] + 256;
+                socket.send(new DatagramPacket(new byte[] {datagram.getData()[0]}, 1, datagram.getAddress(),
+                        datagram.getPort())); // TODO
+                int[] data = new int[datagram.getLength()-1]; // TODO -1
+                for (int i = 1; i < datagram.getLength(); i++) { // TODO i=1
+                    data[i-1] = datagram.getData()[i] >= 0 ? datagram.getData()[i] : datagram.getData()[i] + 256; // TODO -1
                 }
                 if (data.length > HEADER_SIZ) {
                     if (sid * token == 0) {
@@ -62,15 +64,16 @@ public class Network extends Thread {
 
     public void send(byte[] data) throws IOException {
         // concatenate a header and data
-        byte[] msg = new byte[data.length + HEADER_SIZ];
-        msg[0] = (byte) (sid / 256);
-        msg[1] = (byte) (sid % 256);
-        msg[2] = (byte) ((token >> 24) & 0xFF);
-        msg[3] = (byte) ((token >> 16) & 0xFF);
-        msg[4] = (byte) ((token >> 8) & 0xFF);
-        msg[5] = (byte) (token & 0xFF);
-        msg[6] = 0; // flags
-        System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
+        byte[] msg = new byte[data.length + HEADER_SIZ + 1]; // TODO +1
+        msg[0] = (byte) 0xCC; // TODO
+        msg[1] = (byte) (sid / 256);
+        msg[2] = (byte) (sid % 256);
+        msg[3] = (byte) ((token >> 24) & 0xFF);
+        msg[4] = (byte) ((token >> 16) & 0xFF);
+        msg[5] = (byte) ((token >> 8) & 0xFF);
+        msg[6] = (byte) (token & 0xFF);
+        msg[7] = 0; // flags
+        System.arraycopy(data, 0, msg, HEADER_SIZ+1, data.length);// TODO +1
 
         // sending
         socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("192.168.1.2"), 33996));
