@@ -13,4 +13,22 @@ public class Utils {
         System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
+
+    public static byte[] toByte(int[] original, int len) {
+        assert original != null;
+        byte[] copy = new byte[Math.min(original.length, len)];
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] = (byte) original[i];
+        }
+        return copy;
+    }
+
+    public static int[] toInt(byte[] original, int len) {
+        assert original != null;
+        int[] copy = new int[Math.min(original.length, len)];
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] = original[i] >= 0 ? original[i] : original[i] + 256;
+        }
+        return copy;
+    }
 }

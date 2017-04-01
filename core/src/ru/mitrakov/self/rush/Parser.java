@@ -3,7 +3,7 @@ package ru.mitrakov.self.rush;
 import java.util.*;
 
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.net.Network;
+import ru.mitrakov.self.rush.net.IHandler;
 
 import static ru.mitrakov.self.rush.model.Model.*;
 import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
@@ -12,7 +12,7 @@ import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
  * Created by mitrakov on 23.02.2017
  */
 
-class Parser implements Network.IHandler {
+class Parser implements IHandler {
     private static final int ERR_USER_NOT_FOUND = 105;
     private static final int ERR_INCORRECT_TOKEN = 106;
 
@@ -29,7 +29,6 @@ class Parser implements Network.IHandler {
     public void handle(int[] data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
-        System.out.println(Arrays.toString(data));
 
         if (data.length > 0) {
             int code = data[0];
