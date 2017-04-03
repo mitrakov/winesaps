@@ -39,6 +39,7 @@ public class RushClient extends Game {
             network.setProtocol(new Protocol(network.getSocket(), address, port, network));
             network.start();
 
+            // set up model
             model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
         } catch (Exception e) {
