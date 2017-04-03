@@ -16,17 +16,19 @@ class Sender {
     private final DatagramSocket socket;
     private final InetAddress addr;
     private final int port;
+    private final IHandler handler;
     private final Item[] buffer = new Item[N];
     private final Timer timer;
 
     private int id = 0, expectedAck = 0;
     private boolean connected = false;
 
-    Sender(DatagramSocket socket, InetAddress addr, int port) {
-        assert socket != null && addr != null && 0 < port && port < 65536;
+    Sender(DatagramSocket socket, InetAddress addr, int port, IHandler handler) {
+        assert socket != null && addr != null && 0 < port && port < 65536 && handler != null;
         this.socket = socket;
         this.addr = addr;
         this.port = port;
+        this.handler = handler;
 
         timer = new Timer("protocol timer", true);
         timer.schedule(new TimerTask() {
@@ -70,8 +72,9 @@ class Sender {
             else trigger();
         }
         if (ack == SYN) {
-            System.out.println("Connected!");
+            handler.onConnected();
             connected = true;
+            System.out.println("Connected!");
         }
     }
 
@@ -94,7 +97,7 @@ class Sender {
                     for (int j = 0; j < buffer.length; j++) {
                         buffer[j] = null;
                     }
-                    // TODO connection failed
+                    handler.onConnectionFailed();
                     System.out.println("Connection failed");
                     return;
                 } else if (buffer[i].attempts > 1) {

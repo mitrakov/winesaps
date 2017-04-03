@@ -10,8 +10,6 @@ import static ru.mitrakov.self.rush.net.Protocol.*;
  */
 
 class Receiver {
-
-
     private final DatagramSocket socket;
     private final InetAddress addr;
     private final int port;

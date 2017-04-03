@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -129,6 +130,8 @@ public class ScreenLogin extends ScreenAdapter {
         lblPassword = new Label("Password", skin, "default");
         lblEmail = new Label("Email", skin, "default");
         imgValid = new Image(textureInvalid);
+
+        new DialogConnect(model, skin, "default").show(stage);
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {

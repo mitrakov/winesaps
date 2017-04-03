@@ -63,6 +63,11 @@ public class Network extends Thread implements IHandler {
     }
 
     @Override
+    public void onConnected() {
+        handler.onConnected();
+    }
+
+    @Override
     public void onReceived(int[] data) {
         if (data.length > HEADER_SIZ) {
             if (sid * token == 0) {
@@ -71,6 +76,11 @@ public class Network extends Thread implements IHandler {
             }
             handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
         }
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        handler.onConnectionFailed();
     }
 
     public void send(int[] data) throws IOException {

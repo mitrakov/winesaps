@@ -178,7 +178,7 @@ public class ScreenMain extends ScreenAdapter {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     String name = txtEnemyName.getText();
-                    if (!name.isEmpty()) {
+                    if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
                         inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                         rebuildLeftTable(false);
                     }
@@ -534,7 +534,8 @@ public class ScreenMain extends ScreenAdapter {
         if (abilityExpireTime != model.abilityExpireTime) {
             abilityExpireTime = model.abilityExpireTime;
             tableRightContentAbilities.clear();
-            for (Model.Ability ability : model.abilityExpireMap.keySet()) {
+            // we sort abilities (via TreeSet), because since 2017.04.03 'model.abilityExpireMap' is not SkipListMap
+            for (Model.Ability ability : new TreeSet<Model.Ability>(model.abilityExpireMap.keySet())) {
                 ImageButton btn = abilities.get(ability);
                 if (btn != null)
                     tableRightContentAbilities.add(btn).space(10);

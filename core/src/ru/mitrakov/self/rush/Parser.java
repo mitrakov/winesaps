@@ -26,6 +26,11 @@ class Parser implements IHandler {
     }
 
     @Override
+    public void onConnected() {
+        model.setConnected(true);
+    }
+
+    @Override
     public void onReceived(int[] data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
@@ -105,6 +110,11 @@ class Parser implements IHandler {
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
         } else throw new IllegalArgumentException("Empty data");
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        model.setConnected(false);
     }
 
     private void signIn(Cmd cmd, int[] data) {

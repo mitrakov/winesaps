@@ -93,6 +93,7 @@ public class Model {
     public volatile String enemy = "";
     public volatile String promocode = "";
     public volatile String promocodeDoneName = "";
+    public volatile boolean connected = false;
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
     public volatile boolean promocodeValid = false;
@@ -131,13 +132,13 @@ public class Model {
     // all 'foreach' operations are considered to be safe
     // ==================================================
 
-    public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // ....
+    public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>();
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<String> history = new ConcurrentLinkedQueue<String>();
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
-    public final Map<Ability, Integer> abilityExpireMap = new ConcurrentSkipListMap<Ability, Integer>(); // ....
+    public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
 
     // ================
     // === SETTINGS ===
@@ -252,7 +253,7 @@ public class Model {
 
     public void signIn() {
         assert name != null && hash != null;
-        if (!name.isEmpty() && !hash.isEmpty() && sender != null) {
+        if (name.length() > 0 && hash.length() > 0 && sender != null) { // don't use method 'isEmpty()' (Android API 8)
             sender.reset();
             sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash).getBytes()); // \1 = Local auth
         }
@@ -499,6 +500,10 @@ public class Model {
     // These methods are not expected to be called from external code
     // ===============================
 
+    public void setConnected(boolean value) {
+        connected = value;
+    }
+
     public void setAuthorized(boolean value) {
         authorized = value;
         if (sender != null) {
@@ -603,7 +608,7 @@ public class Model {
         }
         friends.clear();
         String s = new String(bytes);
-        if (!s.isEmpty()) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
+        if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
             Collections.addAll(friends, s.split("\0"));
         friendsListTime = System.currentTimeMillis();
     }
@@ -730,7 +735,7 @@ public class Model {
 
     public synchronized void gameFinished(boolean winner) {
         // updating history
-        if (!enemy.isEmpty()) { // it may be empty, e.g. in the Training Level
+        if (enemy.length() > 0) { // it may be empty, e.g. in the Training Level
             // building a history item
             String s = String.format(Locale.getDefault(), "%s    %s    %s-%s = %d-%d",
                     DateFormat.getInstance().format(new Date()), winner ? "WIN " : "LOSS", aggressor ? name : enemy,
@@ -770,3 +775,5 @@ public class Model {
         }
     }
 }
+
+// note#1 (2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8

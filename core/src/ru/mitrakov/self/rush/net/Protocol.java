@@ -38,7 +38,7 @@ public class Protocol implements IProtocol {
 
     public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) throws IOException {
         assert socket != null && addr != null && handler != null && 0 < port && port < 65536;
-        sender = new Sender(socket, addr, port);
+        sender = new Sender(socket, addr, port, handler);
         receiver = new Receiver(socket, addr, port, handler);
     }
 
