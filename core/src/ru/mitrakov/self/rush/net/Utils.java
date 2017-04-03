@@ -31,4 +31,12 @@ public class Utils {
         }
         return copy;
     }
+
+    public static int[] append(int[] original, int... elements) {
+        assert original != null;
+        int[] copy = new int[original.length + elements.length];
+        System.arraycopy(original, 0, copy, 0, original.length);
+        System.arraycopy(elements, 0, copy, original.length, elements.length);
+        return copy;
+    }
 }

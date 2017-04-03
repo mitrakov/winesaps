@@ -26,7 +26,7 @@ class Parser implements IHandler {
     }
 
     @Override
-    public void handle(int[] data) {
+    public void onReceived(int[] data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
 

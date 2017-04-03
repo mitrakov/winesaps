@@ -19,68 +19,88 @@ public class Network extends Thread implements IHandler {
     private final DatagramSocket socket = new DatagramSocket();
     private final IHandler handler;
     private final UncaughtExceptionHandler errorHandler;
+    private final InetAddress addr;
+    private final int port;
 
     private int sid = 0;
     private long token = 0;
-    private Protocol protocol = new Protocol(socket, InetAddress.getByName("192.168.1.2"), 33996, this);
+    private IProtocol protocol;
 
-    public Network(IHandler handler, UncaughtExceptionHandler errorHandler) throws IOException {
-        assert handler != null;
+    public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port) throws IOException {
+        assert handler != null && eHandler != null && addr != null && 0 < port && port < 65536;
         this.handler = handler;
-        this.errorHandler = errorHandler;
+        this.errorHandler = eHandler;
+        this.addr = addr;
+        this.port = port;
+
         setDaemon(true);
         setName("Network thread");
-        setUncaughtExceptionHandler(errorHandler);
-    }
-
-    @Override
-    public void handle(int[] data) {
-        if (data.length > HEADER_SIZ) {
-            if (sid * token == 0) {
-                sid = data[0] * 256 + data[1];
-                token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
-            }
-            handler.handle(copyOfRange(data, HEADER_SIZ, data.length));
-        }
+        setUncaughtExceptionHandler(eHandler);
     }
 
     @Override
     public void run() {
-        //noinspection InfiniteLoopStatement
+        // connect to the server
+        if (protocol != null) try {
+            protocol.connect();
+        } catch (IOException e) {
+            errorHandler.uncaughtException(this, e);
+        }
+
+        // noinspection InfiniteLoopStatement: run infinite loop
         while (true) {
             try {
                 DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
                 socket.receive(datagram);
                 System.out.println("Recv: " + Arrays.toString(toInt(datagram.getData(), datagram.getLength())));
                 if (protocol != null)
-                    protocol.received(toInt(datagram.getData(), datagram.getLength()));
-                else handle(toInt(datagram.getData(), datagram.getLength()));
+                    protocol.onReceived(toInt(datagram.getData(), datagram.getLength()));
+                else onReceived(toInt(datagram.getData(), datagram.getLength()));
             } catch (Exception e) {
                 errorHandler.uncaughtException(this, e);
             }
         }
     }
 
-    public void send(byte[] data) throws IOException {
+    @Override
+    public void onReceived(int[] data) {
+        if (data.length > HEADER_SIZ) {
+            if (sid * token == 0) {
+                sid = data[0] * 256 + data[1];
+                token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+            }
+            handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
+        }
+    }
+
+    public void send(int[] data) throws IOException {
         // concatenate a header and data
-        byte[] msg = new byte[data.length + HEADER_SIZ + 1]; // TODO +1
-        msg[0] = (byte) (sid / 256);
-        msg[1] = (byte) (sid % 256);
-        msg[2] = (byte) ((token >> 24) & 0xFF);
-        msg[3] = (byte) ((token >> 16) & 0xFF);
-        msg[4] = (byte) ((token >> 8) & 0xFF);
-        msg[5] = (byte) (token & 0xFF);
+        int[] msg = new int[data.length + HEADER_SIZ];
+        msg[0] = sid / 256;
+        msg[1] = sid % 256;
+        msg[2] = (int) ((token >> 24) & 0xFF);
+        msg[3] = (int) ((token >> 16) & 0xFF);
+        msg[4] = (int) ((token >> 8) & 0xFF);
+        msg[5] = (int) (token & 0xFF);
         msg[6] = 0; // flags
         System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
-        msg[msg.length - 1] = (byte) 0xCC; // TODO
 
         // sending
-        System.out.println("Send: " + Arrays.toString(toInt(msg, msg.length)));
-        socket.send(new DatagramPacket(msg, msg.length, InetAddress.getByName("192.168.1.2"), 33996));
+        if (protocol != null)
+            protocol.send(msg);
+        else socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
     }
 
     public void reset() {
         sid = 0;
         token = 0;
+    }
+
+    public DatagramSocket getSocket() {
+        return socket;
+    }
+
+    public void setProtocol(IProtocol protocol) {
+        this.protocol = protocol;
     }
 }

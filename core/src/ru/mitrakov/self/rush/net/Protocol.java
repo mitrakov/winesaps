@@ -8,9 +8,15 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 /**
  * Created by mitrakov on 31.03.2017
  */
-class Protocol {
+public class Protocol implements IProtocol {
+    final static int N = 256;
+    final static int SYN = 0;
+    final static int MAX_ATTEMPTS = 16;
+    final static int REPEAT_MSEC = 120;
 
-    private class Item {
+    static class Item {
+        boolean ack = false;
+        int attempts = 0;
         int[] msg;
 
         Item(int[] msg) {
@@ -18,61 +24,44 @@ class Protocol {
         }
     }
 
-    private final static int N = 256;
-
-    private final DatagramSocket socket;
-    private final InetAddress addr;
-    private final int port;
-    private final IHandler handler;
-    private final Item[] buffer = new Item[N];
-    private int expected = 0;
-
-    Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) {
-        assert socket != null && addr != null && 0 < port && port < 65536 && handler != null;
-        this.socket = socket;
-        this.addr = addr;
-        this.port = port;
-        this.handler = handler;
-        init();
+    static int next(int n) {
+        int result = (n + 1) % N;
+        return result != SYN ? result : next(result);
     }
 
-    void received(int[] data) throws IOException {
-        if (data.length > 0) {
-            int N = data.length - 1;
-            int id = data[N];
-            onMsg(id, copyOfRange(data, 0, N));
-        }
-    }
-
-    private void init() {
-        expected = next(expected);
-    }
-
-    private void onMsg(int id, int[] msg) throws IOException {
-        System.out.println("Send: [" + id + "]");
-        socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, addr, port));
-        if (id == expected) {
-            handler.handle(msg);
-            expected = next(expected);
-            accept();
-        } else if (after(id, expected))
-            buffer[id] = new Item(msg);
-    }
-
-    private void accept() {
-        if (buffer[expected] != null) {
-            handler.handle(buffer[expected].msg);
-            buffer[expected] = null;
-            expected = next(expected);
-            accept();
-        }
-    }
-
-    private int next(int n) {
-        return (n + 1) % N;
-    }
-
-    private boolean after(int x, int y) {
+    static boolean after(int x, int y) {
         return (y - x + N) % N > N / 2;
+    }
+
+    private final Sender sender;
+    private final Receiver receiver;
+
+    public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) throws IOException {
+        assert socket != null && addr != null && handler != null && 0 < port && port < 65536;
+        sender = new Sender(socket, addr, port);
+        receiver = new Receiver(socket, addr, port, handler);
+    }
+
+    @Override
+    public void connect() throws IOException {
+        sender.connect();
+    }
+
+    @Override
+    public void send(int[] data) throws IOException {
+        sender.send(data);
+    }
+
+    @Override
+    public void onReceived(int[] data) throws IOException {
+        assert data != null && data.length > 0;
+        if (data.length == 1) // Ack
+            sender.onAck(data[0]);
+        else receiver.onMsg(data[data.length - 1], copyOfRange(data, 0, data.length - 1));
+    }
+
+    @Override
+    public void close() {
+        sender.close();
     }
 }

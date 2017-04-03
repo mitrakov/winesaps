@@ -1,11 +1,13 @@
 package ru.mitrakov.self.rush;
 
+import java.net.InetAddress;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.net.Network;
+import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.screens.*;
+import ru.mitrakov.self.rush.model.Model;
 
 public class RushClient extends Game {
     public static final int WIDTH = 800;
@@ -23,15 +25,21 @@ public class RushClient extends Game {
         this.psObject = psObject;
         try {
             ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // turn the asserts on
+
+            // start Network in a separate thread (requirement of Android)
             Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread t, Throwable e) {
                     e.printStackTrace();
                 }
             };
-            Network network = new Network(new Parser(model, psObject), errorHandler);
+            InetAddress address = InetAddress.getByName("192.168.1.2");
+            int port = 33996;
+            Network network = new Network(new Parser(model, psObject), errorHandler, address, port);
+            network.setProtocol(new Protocol(network.getSocket(), address, port, network));
             network.start();
-            model.setSender(new Sender(network, errorHandler));
+
+            model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
         } catch (Exception e) {
             e.printStackTrace();
