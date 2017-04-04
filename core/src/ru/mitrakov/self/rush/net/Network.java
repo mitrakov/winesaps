@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.Arrays;
+import java.util.*;
 import java.io.IOException;
 
 import static ru.mitrakov.self.rush.net.Utils.*;
@@ -13,6 +13,7 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 public class Network extends Thread implements IHandler {
     private static final int BUF_SIZ = 1024;
     private static final int HEADER_SIZ = 7;
+    private static final int RECONNECT_MSEC = 8000;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException
@@ -25,6 +26,7 @@ public class Network extends Thread implements IHandler {
     private int sid = 0;
     private long token = 0;
     private IProtocol protocol;
+    private boolean connected = true;
 
     public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port) throws IOException {
         assert handler != null && eHandler != null && addr != null && 0 < port && port < 65536;
@@ -40,14 +42,22 @@ public class Network extends Thread implements IHandler {
 
     @Override
     public void run() {
-        // connect to the server
-        if (protocol != null) try {
-            protocol.connect();
-        } catch (IOException e) {
-            errorHandler.uncaughtException(this, e);
+        // connect to the server inside a timer
+        if (protocol != null) {
+            new Timer("Connect timer", true).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (protocol != null && !connected) try {
+                        protocol.connect();
+                    } catch (IOException e) {
+                        errorHandler.uncaughtException(null, e);
+                    }
+                }
+            }, 0, RECONNECT_MSEC);
         }
 
-        // noinspection InfiniteLoopStatement: run infinite loop
+        // run infinite loop
+        // noinspection InfiniteLoopStatement
         while (true) {
             try {
                 DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
@@ -64,6 +74,7 @@ public class Network extends Thread implements IHandler {
 
     @Override
     public void onConnected() {
+        connected = true;
         handler.onConnected();
     }
 
@@ -80,6 +91,7 @@ public class Network extends Thread implements IHandler {
 
     @Override
     public void onConnectionFailed() {
+        connected = false;
         handler.onConnectionFailed();
     }
 
@@ -112,5 +124,6 @@ public class Network extends Thread implements IHandler {
 
     public void setProtocol(IProtocol protocol) {
         this.protocol = protocol;
+        connected = protocol == null;
     }
 }

@@ -14,10 +14,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.ui.Gui;
 import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
-import ru.mitrakov.self.rush.dialogs.DialogFinished;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -38,6 +38,7 @@ public class ScreenBattle extends ScreenAdapter {
     private final Label lblTime;
     private final ScrollPane abilityButtonsScroll;
     private final DialogFinished infoDialog;
+    private final DialogConnect connectingDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
@@ -56,6 +57,7 @@ public class ScreenBattle extends ScreenAdapter {
         loadTextures();
         gui = new Gui(model);
         infoDialog = new DialogFinished(game, skin, "default");
+        connectingDialog = new DialogConnect(skin, "default", stage);
         btnThing = createButtonThing();
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
@@ -75,6 +77,8 @@ public class ScreenBattle extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
+        connectingDialog.setVisible(!model.connected);
 
         // updating the thing
         Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;

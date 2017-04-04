@@ -72,9 +72,9 @@ class Sender {
             else trigger();
         }
         if (ack == SYN) {
-            handler.onConnected();
             connected = true;
             System.out.println("Connected!");
+            handler.onConnected();
         }
     }
 
@@ -97,8 +97,8 @@ class Sender {
                     for (int j = 0; j < buffer.length; j++) {
                         buffer[j] = null;
                     }
-                    handler.onConnectionFailed();
                     System.out.println("Connection failed");
+                    handler.onConnectionFailed();
                     return;
                 } else if (buffer[i].attempts > 1) {
                     int[] msg = buffer[i].msg;

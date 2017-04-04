@@ -93,7 +93,7 @@ public class Model {
     public volatile String enemy = "";
     public volatile String promocode = "";
     public volatile String promocodeDoneName = "";
-    public volatile boolean connected = false;
+    public volatile boolean connected = true;
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
     public volatile boolean promocodeValid = false;
@@ -174,7 +174,7 @@ public class Model {
         new Timer(true).schedule(new TimerTask() {
             @Override
             public void run() {
-                if (authorized && sender != null)
+                if (connected && authorized && sender != null)
                     sender.send(USER_INFO);
             }
         }, PING_PERIOD_MSEC, PING_PERIOD_MSEC);
@@ -502,6 +502,8 @@ public class Model {
 
     public void setConnected(boolean value) {
         connected = value;
+        if (connected && !authorized)
+            signIn(); // try to sign in using stored credentials
     }
 
     public void setAuthorized(boolean value) {
@@ -776,4 +778,4 @@ public class Model {
     }
 }
 
-// note#1 (2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8
+// note#1 (mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8

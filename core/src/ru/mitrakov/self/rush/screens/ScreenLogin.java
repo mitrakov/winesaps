@@ -43,6 +43,7 @@ public class ScreenLogin extends ScreenAdapter {
     private final Image imgValid;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
+    private final DialogConnect connectingDialog;
 
     private enum CurDialog {Start, SignIn, SignUp}
 
@@ -130,8 +131,7 @@ public class ScreenLogin extends ScreenAdapter {
         lblPassword = new Label("Password", skin, "default");
         lblEmail = new Label("Email", skin, "default");
         imgValid = new Image(textureInvalid);
-
-        new DialogConnect(model, skin, "default").show(stage);
+        connectingDialog = new DialogConnect(skin, "default", stage);
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setListener(new PsObject.Listener() {
@@ -165,6 +165,8 @@ public class ScreenLogin extends ScreenAdapter {
 
         if (model.authorized)
             game.setNextScreen();
+
+        connectingDialog.setVisible(!model.connected);
 
         imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
 

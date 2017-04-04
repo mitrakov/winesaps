@@ -57,6 +57,7 @@ public class ScreenMain extends ScreenAdapter {
     private final DialogInvite inviteDialog;
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
+    private final DialogConnect connectingDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
@@ -133,6 +134,7 @@ public class ScreenMain extends ScreenAdapter {
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog,
                 new DialogQuestion("Confirm action", skin, "default"), stage);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
+        connectingDialog = new DialogConnect(skin, "default", stage);
         lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
             addListener(new ClickListener() {
@@ -322,6 +324,8 @@ public class ScreenMain extends ScreenAdapter {
 
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
+
+        connectingDialog.setVisible(!model.connected);
 
         // updating internal state
         updateInvite();
