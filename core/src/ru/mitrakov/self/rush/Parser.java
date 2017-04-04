@@ -109,7 +109,7 @@ class Parser implements IHandler {
 
     @Override
     public void onChanged(boolean connected) {
-        model.connected = connected;
+        model.setConnected(connected);
     }
 
     private void signIn(Cmd cmd, int[] data) {
