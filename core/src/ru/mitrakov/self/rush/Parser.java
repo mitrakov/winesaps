@@ -26,11 +26,6 @@ class Parser implements IHandler {
     }
 
     @Override
-    public void onConnected() {
-        model.setConnected(true);
-    }
-
-    @Override
     public void onReceived(int[] data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
@@ -113,8 +108,8 @@ class Parser implements IHandler {
     }
 
     @Override
-    public void onConnectionFailed() {
-        model.setConnected(false);
+    public void onChanged(boolean connected) {
+        model.connected = connected;
     }
 
     private void signIn(Cmd cmd, int[] data) {

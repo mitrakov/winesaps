@@ -10,5 +10,9 @@ interface IProtocol {
     void connect() throws IOException;
     void send(int[] data) throws IOException;
     void onReceived(int[] data) throws IOException;
+    void onSenderConnected() throws IOException;
+    void onReceiverConnected() throws IOException;
+    void connectionFailed() throws IOException;
     void close();
+    boolean isConnected();
 }

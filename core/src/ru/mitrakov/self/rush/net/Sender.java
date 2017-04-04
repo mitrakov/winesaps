@@ -16,19 +16,19 @@ class Sender {
     private final DatagramSocket socket;
     private final InetAddress addr;
     private final int port;
-    private final IHandler handler;
+    private final IProtocol protocol;
     private final Item[] buffer = new Item[N];
     private final Timer timer;
 
     private int id = 0, expectedAck = 0;
-    private boolean connected = false;
+    boolean connected = false;
 
-    Sender(DatagramSocket socket, InetAddress addr, int port, IHandler handler) {
-        assert socket != null && addr != null && 0 < port && port < 65536 && handler != null;
+    Sender(DatagramSocket socket, InetAddress addr, int port, IProtocol protocol) {
+        assert socket != null && addr != null && 0 < port && port < 65536 && protocol != null;
         this.socket = socket;
         this.addr = addr;
         this.port = port;
-        this.handler = handler;
+        this.protocol = protocol;
 
         timer = new Timer("protocol timer", true);
         timer.schedule(new TimerTask() {
@@ -48,6 +48,10 @@ class Sender {
 
     void connect() throws IOException {
         id = expectedAck = SYN;
+        connected = false;
+        for (int j = 0; j < buffer.length; j++) {
+            buffer[j] = null;
+        }
         int[] data = new int[]{0, id}; // 0 = fake data
         buffer[id] = new Item(data);
         System.out.println("Send: " + Arrays.toString(data));
@@ -73,8 +77,7 @@ class Sender {
         }
         if (ack == SYN) {
             connected = true;
-            System.out.println("Connected!");
-            handler.onConnected();
+            protocol.onSenderConnected();
         }
     }
 
@@ -97,8 +100,7 @@ class Sender {
                     for (int j = 0; j < buffer.length; j++) {
                         buffer[j] = null;
                     }
-                    System.out.println("Connection failed");
-                    handler.onConnectionFailed();
+                    protocol.connectionFailed();
                     return;
                 } else if (buffer[i].attempts > 1) {
                     int[] msg = buffer[i].msg;

@@ -35,11 +35,13 @@ public class Protocol implements IProtocol {
 
     private final Sender sender;
     private final Receiver receiver;
+    private final IHandler handler;
 
     public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) throws IOException {
         assert socket != null && addr != null && handler != null && 0 < port && port < 65536;
-        sender = new Sender(socket, addr, port, handler);
-        receiver = new Receiver(socket, addr, port, handler);
+        this.handler = handler;
+        sender = new Sender(socket, addr, port, this);
+        receiver = new Receiver(socket, addr, port, handler, this);
     }
 
     @Override
@@ -61,7 +63,29 @@ public class Protocol implements IProtocol {
     }
 
     @Override
+    public void onSenderConnected() throws IOException {
+        System.out.println("Sender connected!");
+    }
+
+    @Override
+    public void onReceiverConnected() throws IOException {
+        System.out.println("Receiver connected!");
+        handler.onChanged(true);
+    }
+
+    @Override
+    public void connectionFailed() throws IOException {
+        System.out.println("Connection failed!");
+        handler.onChanged(false);
+    }
+
+    @Override
     public void close() {
         sender.close();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return sender.connected && receiver.connected;
     }
 }

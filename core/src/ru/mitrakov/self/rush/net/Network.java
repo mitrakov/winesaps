@@ -26,7 +26,6 @@ public class Network extends Thread implements IHandler {
     private int sid = 0;
     private long token = 0;
     private IProtocol protocol;
-    private boolean connected = true;
 
     public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port) throws IOException {
         assert handler != null && eHandler != null && addr != null && 0 < port && port < 65536;
@@ -47,7 +46,7 @@ public class Network extends Thread implements IHandler {
             new Timer("Connect timer", true).schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (protocol != null && !connected) try {
+                    if (protocol != null && !protocol.isConnected()) try {
                         protocol.connect();
                     } catch (IOException e) {
                         errorHandler.uncaughtException(null, e);
@@ -73,12 +72,6 @@ public class Network extends Thread implements IHandler {
     }
 
     @Override
-    public void onConnected() {
-        connected = true;
-        handler.onConnected();
-    }
-
-    @Override
     public void onReceived(int[] data) {
         if (data.length > HEADER_SIZ) {
             if (sid * token == 0) {
@@ -90,9 +83,8 @@ public class Network extends Thread implements IHandler {
     }
 
     @Override
-    public void onConnectionFailed() {
-        connected = false;
-        handler.onConnectionFailed();
+    public void onChanged(boolean connected) {
+        handler.onChanged(connected);
     }
 
     public void send(int[] data) throws IOException {
@@ -124,6 +116,5 @@ public class Network extends Thread implements IHandler {
 
     public void setProtocol(IProtocol protocol) {
         this.protocol = protocol;
-        connected = protocol == null;
     }
 }
