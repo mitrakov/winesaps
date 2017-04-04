@@ -361,14 +361,12 @@ public class ScreenMain extends ScreenAdapter {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
-        generalRatingTime = model.generalRatingTime;
-        weeklyRatingTime = model.weeklyRatingTime;
+        // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. during battle)
+        // be careful! it usually concerns dialogs (to avoid their showing) so not all timestamps should be updated here
         inviteTime = model.inviteTime;
         stopCallRejectedTime = model.stopCallRejectedTime;
         stopCallMissedTime = model.stopCallMissedTime;
         stopCallExpiredTime = model.stopCallExpiredTime;
-        friendsListTime = model.friendsListTime;
-        abilityExpireTime = model.abilityExpireTime;
         promocodeDoneTime = model.promocodeDoneTime;
     }
 

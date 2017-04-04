@@ -107,6 +107,8 @@ public class ScreenBattle extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+
+        // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. in Training)
         roundFinishedTime = model.roundFinishedTime;
         gameFinishedTime = model.gameFinishedTime;
     }

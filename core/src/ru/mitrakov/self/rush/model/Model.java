@@ -171,7 +171,7 @@ public class Model {
 
     public Model() {
         // create timer to ping the server (otherwise the server will make "signOut due to inaction")
-        new Timer(true).schedule(new TimerTask() {
+        new Timer("Ping timer", true).schedule(new TimerTask() {
             @Override
             public void run() {
                 if (connected && authorized && sender != null)
