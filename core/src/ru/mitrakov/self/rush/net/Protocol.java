@@ -11,12 +11,16 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 public class Protocol implements IProtocol {
     final static int N = 256;
     final static int SYN = 0;
-    final static int MAX_ATTEMPTS = 16;
-    final static int REPEAT_MSEC = 120;
+    final static int MAX_ATTEMPTS = 8;
+    final static int PERIOD = 10;
+    final static int DEFAULT_RTT = 4;
+    final static float RC = .8f;
 
     static class Item {
         boolean ack = false;
-        int attempts = 0;
+        int ticks = 0;
+        int attempt = 0;
+        int nextRepeat = 0;
         int[] msg;
 
         Item(int[] msg) {

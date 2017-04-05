@@ -20,7 +20,7 @@ class Sender {
     private final Item[] buffer = new Item[N];
     private final Timer timer;
 
-    private int id = 0, expectedAck = 0;
+    private int id = 0, expectedAck = 0, rtt = 0, srtt = 0;
     boolean connected = false;
 
     Sender(DatagramSocket socket, InetAddress addr, int port, IProtocol protocol) {
@@ -39,20 +39,21 @@ class Sender {
                 } catch (IOException ignored) {
                 }
             }
-        }, REPEAT_MSEC, REPEAT_MSEC);
+        }, PERIOD, PERIOD);
     }
 
     void close() {
         timer.cancel();
     }
 
-    void connect() throws IOException {
+    synchronized void connect() throws IOException {
         id = expectedAck = SYN;
+        rtt = srtt = DEFAULT_RTT;
         connected = false;
         for (int j = 0; j < buffer.length; j++) {
             buffer[j] = null;
         }
-        int[] data = new int[]{0, id}; // 0 = fake data
+        int[] data = new int[]{0xFD, id}; // FD = fake data
         buffer[id] = new Item(data);
         System.out.println("Send: " + Arrays.toString(data));
         socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
@@ -71,9 +72,11 @@ class Sender {
     synchronized void onAck(int ack) throws IOException {
         if (buffer[ack] != null) {
             buffer[ack].ack = true;
-            if (ack == expectedAck)
+            if (ack == expectedAck) {
+                srtt = (int) (RC * srtt + (1 - RC) * rtt);
+                rtt = 1;
                 accept();
-            else trigger();
+            }
         }
         if (ack == SYN) {
             connected = true;
@@ -92,21 +95,28 @@ class Sender {
     }
 
     private synchronized void trigger() throws IOException {
+        rtt++;
         for (int i = 0; i < buffer.length; i++) {
             if (buffer[i] != null && !buffer[i].ack) {
-                buffer[i].attempts++;
-                if (buffer[i].attempts > MAX_ATTEMPTS) {
+                if (buffer[i].attempt > MAX_ATTEMPTS) {
                     connected = false;
                     for (int j = 0; j < buffer.length; j++) {
                         buffer[j] = null;
                     }
                     protocol.connectionFailed();
                     return;
-                } else if (buffer[i].attempts > 1) {
-                    int[] msg = buffer[i].msg;
-                    System.out.println("Send^ " + Arrays.toString(msg) + "; cnt = " + buffer[i].attempts);
-                    socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
+                } else if (buffer[i].ticks == buffer[i].nextRepeat) {
+                    buffer[i].attempt++;
+                    buffer[i].nextRepeat += 2*srtt*buffer[i].attempt;
+                    if (buffer[i].attempt > 1) {
+                        int[] msg = buffer[i].msg;
+                        System.out.println("Send^ " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
+                                buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" + rtt + ";srtt=" + srtt);
+                        socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
+                        rtt = 1;
+                    }
                 }
+                buffer[i].ticks++;
             }
         }
     }
