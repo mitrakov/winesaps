@@ -11,13 +11,14 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 public class Protocol implements IProtocol {
     final static int N = 256;
     final static int SYN = 0;
-    final static int MAX_ATTEMPTS = 8;
+    final static int MAX_ATTEMPTS = 12;
     final static int PERIOD = 10;
-    final static int DEFAULT_RTT = 4;
+    final static int DEFAULT_SRTT = 4;
     final static float RC = .8f;
 
     static class Item {
         boolean ack = false;
+        int startRtt = 0;
         int ticks = 0;
         int attempt = 0;
         int nextRepeat = 0;
@@ -25,6 +26,11 @@ public class Protocol implements IProtocol {
 
         Item(int[] msg) {
             this.msg = msg;
+        }
+
+        Item(int[] msg, int startRtt) {
+            this.msg = msg;
+            this.startRtt = startRtt;
         }
     }
 

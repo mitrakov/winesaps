@@ -20,7 +20,7 @@ class Sender {
     private final Item[] buffer = new Item[N];
     private final Timer timer;
 
-    private int id = 0, expectedAck = 0, rtt = 0, srtt = 0;
+    private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0;
     boolean connected = false;
 
     Sender(DatagramSocket socket, InetAddress addr, int port, IProtocol protocol) {
@@ -48,7 +48,8 @@ class Sender {
 
     synchronized void connect() throws IOException {
         id = expectedAck = SYN;
-        rtt = srtt = DEFAULT_RTT;
+        srtt = DEFAULT_SRTT;
+        totalTicks = 0;
         connected = false;
         for (int j = 0; j < buffer.length; j++) {
             buffer[j] = null;
@@ -63,7 +64,7 @@ class Sender {
         if (connected) {
             id = next(id);
             int[] data = append(msg, id);
-            buffer[id] = new Item(data);
+            buffer[id] = new Item(data, totalTicks);
             System.out.println("Send: " + Arrays.toString(data));
             socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
         } else throw new ConnectException("Not connected");
@@ -73,8 +74,8 @@ class Sender {
         if (buffer[ack] != null) {
             buffer[ack].ack = true;
             if (ack == expectedAck) {
+                int rtt = totalTicks - buffer[ack].startRtt + 1;
                 srtt = (int) (RC * srtt + (1 - RC) * rtt);
-                rtt = 1;
                 accept();
             }
         }
@@ -95,7 +96,7 @@ class Sender {
     }
 
     private synchronized void trigger() throws IOException {
-        rtt++;
+        totalTicks++;
         for (int i = 0; i < buffer.length; i++) {
             if (buffer[i] != null && !buffer[i].ack) {
                 if (buffer[i].attempt > MAX_ATTEMPTS) {
@@ -107,13 +108,14 @@ class Sender {
                     return;
                 } else if (buffer[i].ticks == buffer[i].nextRepeat) {
                     buffer[i].attempt++;
-                    buffer[i].nextRepeat += 2*srtt*buffer[i].attempt;
+                    buffer[i].nextRepeat += 2 * srtt * buffer[i].attempt;
                     if (buffer[i].attempt > 1) {
                         int[] msg = buffer[i].msg;
                         System.out.println("Send^ " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
-                                buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" + rtt + ";srtt=" + srtt);
+                                buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
+                                (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);
+                        buffer[i].startRtt = totalTicks;
                         socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
-                        rtt = 1;
                     }
                 }
                 buffer[i].ticks++;
