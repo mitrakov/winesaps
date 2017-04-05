@@ -253,7 +253,7 @@ public class Model {
 
     public void signIn() {
         assert name != null && hash != null;
-        if (name.length() > 0 && hash.length() > 0 && sender != null) { // don't use method 'isEmpty()' (Android API 8)
+        if (name.length() > 0 && hash.length() > 0 && connected && sender != null) { // don't use method 'isEmpty()'
             sender.reset();
             sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash).getBytes()); // \1 = Local auth
         }
@@ -266,7 +266,7 @@ public class Model {
      * @param password - password
      */
     public void signIn(String login, String password) {
-        if (sender != null) {
+        if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
             sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash).getBytes()); // \1 = Local auth
@@ -281,7 +281,7 @@ public class Model {
      * @param email    - email address
      */
     public void signUp(String login, String password, String email, String promocode) {
-        if (sender != null) {
+        if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
             sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode).getBytes());
@@ -292,7 +292,7 @@ public class Model {
      * Sends SIGN_OUT command to the server
      */
     public void signOut() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(SIGN_OUT);
         }
     }
@@ -303,7 +303,7 @@ public class Model {
      * @param victim - victim user name
      */
     public void invite(String victim) {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(ATTACK, String.format("\0%s", victim).getBytes());
         }
     }
@@ -312,7 +312,7 @@ public class Model {
      * Sends INVITE command to the server (latest enemy)
      */
     public void inviteLatest() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(ATTACK, 1);
         }
     }
@@ -321,7 +321,7 @@ public class Model {
      * Sends INVITE command to the server (random enemy)
      */
     public void inviteRandom() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(ATTACK, 2);
         }
     }
@@ -330,7 +330,7 @@ public class Model {
      * Sends ACCEPT command to the server (in response to INVITE)
      */
     public void accept() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(ACCEPT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
     }
@@ -339,13 +339,13 @@ public class Model {
      * Sends REJECT command to the server (in response to INVITE)
      */
     public void reject() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
     }
 
     public void receiveTraining() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(RECEIVE_TRAINING);
         }
     }
@@ -354,7 +354,7 @@ public class Model {
      * Sends FRIEND_LIST command to the server
      */
     public void getFriends() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(FRIEND_LIST);
         }
     }
@@ -365,7 +365,7 @@ public class Model {
      * @param name - friend user name
      */
     public void addFriend(String name) {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(ADD_FRIEND, name.getBytes());
         }
     }
@@ -376,7 +376,7 @@ public class Model {
      * @param name - quondam friend name
      */
     public void removeFriend(String name) {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(REMOVE_FRIEND, name.getBytes());
         }
     }
@@ -388,14 +388,14 @@ public class Model {
      */
     public void getRating(RatingType type) {
         assert type != null;
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(RATING, type.ordinal());
         }
     }
 
     public void checkPromocode(String promocode) {
         assert promocode != null;
-        if (sender != null && promocode.length() >= PROMOCODE_LEN) {
+        if (connected && sender != null && promocode.length() >= PROMOCODE_LEN) {
             sender.send(CHECK_PROMOCODE, promocode.getBytes());
         }
     }
@@ -407,13 +407,13 @@ public class Model {
      */
     public void buyProduct(Product product) {
         assert product != null;
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
         }
     }
 
     public void cancelCall() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(CANCEL_CALL);
         }
     }
@@ -422,7 +422,7 @@ public class Model {
      * Sends MOVE_LEFT battle command to the server
      */
     public void moveLeft() {
-        if (sender != null && curActor != null) {
+        if (connected && sender != null && curActor != null) {
             if (curActor.getX() > 0)
                 sender.send(MOVE_LEFT);
         }
@@ -432,7 +432,7 @@ public class Model {
      * Sends MOVE_RIGHT battle command to the server
      */
     public void moveRight() {
-        if (sender != null && curActor != null) {
+        if (connected && sender != null && curActor != null) {
             if (curActor.getX() < Field.WIDTH - 1)
                 sender.send(MOVE_RIGHT);
         }
@@ -442,7 +442,7 @@ public class Model {
      * Sends MOVE_UP battle command to the server
      */
     public void moveUp() {
-        if (sender != null && curActor != null) {
+        if (connected && sender != null && curActor != null) {
             if (curActor.getY() > 0)
                 sender.send(MOVE_UP);
         }
@@ -452,7 +452,7 @@ public class Model {
      * Sends MOVE_DOWN battle command to the server
      */
     public void moveDown() {
-        if (sender != null && curActor != null) {
+        if (connected && sender != null && curActor != null) {
             if (curActor.getY() < Field.HEIGHT - 1)
                 sender.send(MOVE_DOWN);
         }
@@ -462,7 +462,7 @@ public class Model {
      * Sends USE_THING battle command to the server
      */
     public void useThing() {
-        if (sender != null && curThing != null) {
+        if (connected && sender != null && curThing != null) {
             sender.send(USE_THING, curThing.getId());
         }
     }
@@ -474,7 +474,7 @@ public class Model {
      */
     public void useAbility(Ability ability) {
         assert ability != null;
-        if (sender != null) {
+        if (connected && sender != null) {
             if (ability.ordinal() > SKILL_OFFSET) // only skills may be used
                 sender.send(USE_SKILL, ability.ordinal());
         }
@@ -489,7 +489,7 @@ public class Model {
     }
 
     public void stopBattle() {
-        if (sender != null) {
+        if (connected && sender != null) {
             sender.send(GIVE_UP);
         }
     }
@@ -508,7 +508,7 @@ public class Model {
 
     public void setAuthorized(boolean value) {
         authorized = value;
-        if (sender != null) {
+        if (connected && sender != null) {
             if (authorized) {
                 sender.send(USER_INFO);
                 sender.send(RANGE_OF_PRODUCTS);

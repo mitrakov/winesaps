@@ -42,7 +42,7 @@ public class RushClient extends Game {
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
-            model.connected = false;
+            model.connected = false; // it's true by default because no Protocols provided, but now we have SwUDP
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
