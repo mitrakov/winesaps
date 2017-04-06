@@ -16,6 +16,7 @@ public class RushClient extends Game {
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
     private /*final*/ Skin skin;
+    private /*final*/ SoundManager soundManager;
     private /*final*/ Screen screenLogin;
     private /*final*/ Screen screenTraining;
     private /*final*/ Screen screenMain;
@@ -55,24 +56,37 @@ public class RushClient extends Game {
         model.loadSettings();
         model.signIn(); // try to sign in using stored credentials
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        soundManager = new SoundManager("theme");
         screenLogin = new ScreenLogin(this, model, psObject, skin);
         screenTraining = new ScreenTraining(this, model, psObject, skin);
         screenMain = new ScreenMain(this, model, psObject, skin);
-        screenBattle = new ScreenBattle(this, model, psObject, skin);
+        screenBattle = new ScreenBattle(this, model, psObject, soundManager, skin);
         setScreen(screenLogin);
 
         // catch Android buttons
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
+
+        // stop music on hide
+        if (psObject != null) {
+            psObject.setVisibleListener(new PsObject.VisibleListener() {
+                @Override
+                public void onVisibleChanged(boolean visible) {
+                    soundManager.pauseOrResumeMusic();
+                }
+            });
+        }
     }
 
     @Override
     public void dispose() {
         super.dispose();
+        skin.dispose();
+        soundManager.dispose();
         screenLogin.dispose();
+        screenTraining.dispose();
         screenMain.dispose();
         screenBattle.dispose();
-        skin.dispose();
     }
 
     public void setNextScreen() {

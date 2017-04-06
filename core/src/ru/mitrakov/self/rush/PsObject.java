@@ -3,23 +3,36 @@ package ru.mitrakov.self.rush;
 /**
  * Created by mitrakov on 01.03.2017
  */
-
 @SuppressWarnings("WeakerAccess")
 public class PsObject {
 
-    public interface Listener {
+    public interface RatioListener {
         void onRatioChanged(float ratio);
     }
 
-    private Listener listener;
+    public interface VisibleListener {
+        void onVisibleChanged(boolean visible);
+    }
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    private RatioListener ratioListener;
+    private VisibleListener visibleListener;
+
+    public void setRatioListener(RatioListener listener) {
+        ratioListener = listener;
+    }
+
+    public void setVisibleListener(VisibleListener listener) {
+        visibleListener = listener;
     }
 
     public void raiseRatioChanged(float ratio) {
-        if (listener != null)
-            listener.onRatioChanged(ratio);
+        if (ratioListener != null)
+            ratioListener.onRatioChanged(ratio);
+    }
+
+    public void raiseVisibleChanged(boolean visible) {
+        if (visibleListener != null)
+            visibleListener.onVisibleChanged(visible);
     }
 
     public void hide() {

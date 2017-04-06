@@ -134,7 +134,7 @@ public class ScreenLogin extends ScreenAdapter {
         connectingDialog = new DialogConnect(skin, "default", stage);
 
         // only for Android: handling show/hide OnScreenKeyboard
-        if (psObject != null) psObject.setListener(new PsObject.Listener() {
+        if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {
             @Override
             public void onRatioChanged(final float ratio) {
                 Gdx.app.postRunnable(new Runnable() { // @mitrakov: it is necessary to avoid OutOfSync exceptions!

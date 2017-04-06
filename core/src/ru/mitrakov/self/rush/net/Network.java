@@ -13,7 +13,7 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 public class Network extends Thread implements IHandler {
     private static final int BUF_SIZ = 1024;
     private static final int HEADER_SIZ = 7;
-    private static final int RECONNECT_MSEC = 8000;
+    private static final int RECONNECT_MSEC = 15000;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException

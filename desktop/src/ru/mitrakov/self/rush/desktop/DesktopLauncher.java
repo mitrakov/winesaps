@@ -2,6 +2,7 @@ package ru.mitrakov.self.rush.desktop;
 
 import java.awt.*;
 import java.net.*;
+import java.awt.event.*;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class DesktopLauncher extends JFrame {
     private DesktopLauncher(LwjglApplicationConfiguration config) throws HeadlessException {
         super();
         registerInstance();
-        PsObject obj = new PsObject() {
+        final PsObject obj = new PsObject() {
             @Override
             public void activate() {
                 setVisible(true);
@@ -40,6 +41,17 @@ public class DesktopLauncher extends JFrame {
         pack();
         setVisible(true);
         setLocationRelativeTo(null);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                obj.raiseVisibleChanged(true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                obj.raiseVisibleChanged(false);
+            }
+        });
     }
 
     private void registerInstance() {

@@ -32,7 +32,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final Gui gui;
     private final ImageButton btnThing;
     private final Button btnSkip;
-    private final DialogFinished infoDialog;
+    private final DialogFinished finishedDialog;
     private final DialogTraining trainingDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
@@ -54,7 +54,7 @@ public class ScreenTraining extends ScreenAdapter {
 
         loadTextures();
         gui = new Gui(model);
-        infoDialog = new DialogFinished(game, skin, "default");
+        finishedDialog = new DialogFinished(game, skin, "default");
         trainingDialog = new DialogTraining(skin, "default");
         btnThing = createButtonThing();
         btnSkip = new TextButton("Skip Training", skin, "default") {{
@@ -205,7 +205,7 @@ public class ScreenTraining extends ScreenAdapter {
             model.stopBattle();
             trainingDialog.remove();
             String msg = "Now invite your friends and tear them to shreds in a real battle!";
-            infoDialog.setText("Nice going!", msg).setScore(1, 0).setQuitOnResult(true).show(stage);
+            finishedDialog.setText("Nice going!", msg).setScore(1, 0).setQuitOnResult(true).show(stage);
         }
     }
 }
