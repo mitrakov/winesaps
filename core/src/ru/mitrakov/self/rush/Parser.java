@@ -332,10 +332,15 @@ class Parser implements IHandler {
     }
 
     private void thingTaken(Cmd cmd, int[] data) {
-        if (data.length == 1) {
-            int thingId = data[0];
-            model.setThing(thingId);
-        } else throw new IllegalArgumentException("Incorrect thing format: " + cmd);
+        if (data.length == 2) {
+            boolean me = data[0] != 0;
+            int thingId = data[1];
+            if (me)
+                model.setThing(thingId);
+            else model.setEnemyThing(thingId);
+        } else if (data.length == 1) {
+            inspectError(cmd, data[0]);
+        } else throw new IllegalArgumentException("Incorrect thing format");
     }
 
     private void objectAppended(Cmd cmd, int[] data) {

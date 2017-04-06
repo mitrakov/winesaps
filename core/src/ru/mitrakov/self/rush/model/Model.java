@@ -112,6 +112,7 @@ public class Model {
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
+    public volatile CellObject enemyThing;
 
     public volatile long abilityExpireTime = 0;
     public volatile long generalRatingTime = 0;
@@ -692,7 +693,7 @@ public class Model {
     }
 
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int myLives, int enemyLives) {
-        curThing = curActor = null;
+        curThing = enemyThing = curActor = null;
         score1 = score2 = 0;
         this.myLives = myLives;
         this.enemyLives = enemyLives;
@@ -725,6 +726,15 @@ public class Model {
 
     public void setThing(int thingId) {
         curThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
+            @Override
+            public int next() {
+                return 0;
+            }
+        });
+    }
+
+    public void setEnemyThing(int thingId) {
+        enemyThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
             @Override
             public int next() {
                 return 0;

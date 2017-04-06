@@ -50,7 +50,7 @@ public class ScreenBattle extends ScreenAdapter {
     private long gameFinishedTime = 0;
     private int scores = 0;
     private int lives = 0;
-    private CellObject curThing;
+    private CellObject curThing, enemyThing;
 
     public ScreenBattle(RushClient game, Model model, PsObject psObject, AudioManager audioManager, Skin skin) {
         assert game != null && model != null && audioManager != null && skin != null;
@@ -99,9 +99,10 @@ public class ScreenBattle extends ScreenAdapter {
         // checking
         checkAbilities();
         checkScore();
+        checkRoundFinished(); // this must be before 'checkLives()' but after 'checkScore()' (to play sounds correctly)
         checkLives();
         checkThing();
-        checkRoundFinished();
+        checkEnemyThing();
 
         // checking BACK and MENU buttons on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -186,6 +187,7 @@ public class ScreenBattle extends ScreenAdapter {
         scores = model.score1 + model.score2;
         lives = model.myLives + model.enemyLives;
         curThing = model.curThing;
+        enemyThing = model.enemyThing;
     }
 
     private void checkAbilities() {
@@ -238,6 +240,15 @@ public class ScreenBattle extends ScreenAdapter {
                 audioManager.sound(curThing.getClass().getSimpleName());
             else audioManager.sound("thing");
             curThing = model.curThing;
+        }
+    }
+
+    private void checkEnemyThing() {
+        if (enemyThing != model.enemyThing) {
+            if (enemyThing != null && model.enemyThing == null)
+                audioManager.sound(enemyThing.getClass().getSimpleName());
+            else audioManager.sound("thing");
+            enemyThing = model.enemyThing;
         }
     }
 }
