@@ -18,7 +18,7 @@ import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.SoundManager;
+import ru.mitrakov.self.rush.AudioManager;
 import ru.mitrakov.self.rush.model.object.*;
 
 /**
@@ -28,7 +28,7 @@ import ru.mitrakov.self.rush.model.object.*;
 public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
-    private final SoundManager soundManager;
+    private final AudioManager audioManager;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
@@ -48,12 +48,15 @@ public class ScreenBattle extends ScreenAdapter {
 
     private long roundFinishedTime = 0;
     private long gameFinishedTime = 0;
+    private int scores = 0;
+    private int lives = 0;
+    private CellObject curThing;
 
-    public ScreenBattle(RushClient game, Model model, PsObject psObject, SoundManager soundManager, Skin skin) {
-        assert game != null && model != null && soundManager != null && skin != null;
+    public ScreenBattle(RushClient game, Model model, PsObject psObject, AudioManager audioManager, Skin skin) {
+        assert game != null && model != null && audioManager != null && skin != null;
         this.model = model;
         this.psObject = psObject; // may be NULL
-        this.soundManager = soundManager;
+        this.audioManager = audioManager;
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -95,6 +98,9 @@ public class ScreenBattle extends ScreenAdapter {
 
         // checking
         checkAbilities();
+        checkScore();
+        checkLives();
+        checkThing();
         checkRoundFinished();
 
         // checking BACK and MENU buttons on Android
@@ -111,11 +117,12 @@ public class ScreenBattle extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        soundManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
+        audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
 
         // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. in Training)
         roundFinishedTime = model.roundFinishedTime;
         gameFinishedTime = model.gameFinishedTime;
+        reset();
     }
 
     @Override
@@ -175,6 +182,12 @@ public class ScreenBattle extends ScreenAdapter {
         table.add(lblTime);
     }
 
+    private void reset() {
+        scores = model.score1 + model.score2;
+        lives = model.myLives + model.enemyLives;
+        curThing = model.curThing;
+    }
+
     private void checkAbilities() {
         if (abilityButtons.getColumns() != model.abilities.size()) {
             abilityButtons.clear();
@@ -187,17 +200,44 @@ public class ScreenBattle extends ScreenAdapter {
     private void checkRoundFinished() {
         if (roundFinishedTime != model.roundFinishedTime) {
             roundFinishedTime = model.roundFinishedTime;
+            audioManager.sound("round");
+            reset();
             String msg = String.format("You %s the round", model.roundWinner ? "win" : "lose");
             finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).show(stage);
-            soundManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
+            audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
         }
         if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
             gameFinishedTime = model.gameFinishedTime;
+            audioManager.sound("game");
+            reset();
             String s = "GAME OVER!";
             String msg = model.roundWinner ? "You win the battle! You get a reward of 1 crystal"
                     : "You lose the battle...";
             finishedDialog.setText(s, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true).show(stage);
-            soundManager.music("theme");
+            audioManager.music("theme");
+        }
+    }
+
+    private void checkScore() {
+        if (scores != model.score1 + model.score2) {
+            scores = model.score1 + model.score2;
+            audioManager.sound("food");
+        }
+    }
+
+    private void checkLives() {
+        if (lives != model.myLives + model.enemyLives) {
+            lives = model.myLives + model.enemyLives;
+            audioManager.sound("die");
+        }
+    }
+
+    private void checkThing() {
+        if (curThing != model.curThing) {
+            if (curThing != null && model.curThing == null)
+                audioManager.sound(curThing.getClass().getSimpleName());
+            else audioManager.sound("thing");
+            curThing = model.curThing;
         }
     }
 }

@@ -104,6 +104,8 @@ public class Model {
     public volatile int score2 = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
+    public volatile int myLives = 2;
+    public volatile int enemyLives = 2;
     public volatile int promocodeDoneCrystals = 0;
     public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
@@ -689,9 +691,11 @@ public class Model {
         promocodeDoneTime = System.currentTimeMillis();
     }
 
-    public void setRoundInfo(int number, int timeSec, boolean aggressor) {
+    public void setRoundInfo(int number, int timeSec, boolean aggressor, int myLives, int enemyLives) {
         curThing = curActor = null;
         score1 = score2 = 0;
+        this.myLives = myLives;
+        this.enemyLives = enemyLives;
         roundNumber = number;
         roundLengthSec = timeSec;
         this.aggressor = aggressor;
@@ -726,6 +730,11 @@ public class Model {
                 return 0;
             }
         });
+    }
+
+    public void setLives(int myLives, int enemyLives) {
+        this.myLives = myLives;
+        this.enemyLives = enemyLives;
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {

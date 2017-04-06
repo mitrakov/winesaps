@@ -83,6 +83,9 @@ class Parser implements IHandler {
                     case SCORE_CHANGED:
                         scoreChanged(cmd, copyOfRange(data, 1, data.length));
                         break;
+                    case PLAYER_WOUNDED:
+                        playerWounded(cmd, copyOfRange(data, 1, data.length));
+                        break;
                     case FINISHED:
                         finished(cmd, copyOfRange(data, 1, data.length));
                         break;
@@ -232,11 +235,13 @@ class Parser implements IHandler {
     }
 
     private void roundInfo(Cmd cmd, int[] data) {
-        if (data.length > 2) {
+        if (data.length > 4) {
             int number = data[0];
             int timeSec = data[1];
             boolean aggressor = data[2] != 0;
-            model.setRoundInfo(number, timeSec, aggressor);
+            int myLives = data[3];
+            int enemyLives = data[4];
+            model.setRoundInfo(number, timeSec, aggressor, myLives, enemyLives);
         } else if (data.length == 1) {
             inspectError(cmd, data[0]);
         } else throw new IllegalArgumentException("Incorrect round info format");
@@ -295,6 +300,16 @@ class Parser implements IHandler {
         } else if (score.length == 1) {
             inspectError(cmd, score[0]);
         } else throw new IllegalArgumentException("Incorrect score format");
+    }
+
+    private void playerWounded(Cmd cmd, int[] lives) {
+        if (lives.length == 2) {
+            int myLives = lives[0];
+            int enemyLives = lives[1];
+            model.setLives(myLives, enemyLives);
+        } else if (lives.length == 1) {
+            inspectError(cmd, lives[0]);
+        } else throw new IllegalArgumentException("Incorrect lives format");
     }
 
     private void finished(Cmd cmd, int[] data) {
