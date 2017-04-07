@@ -5,23 +5,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.AudioManager;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
-
 public class DialogSettings extends DialogFeat {
     private final Model model;
 
-    public DialogSettings(Model model, Skin skin, String windowStyleName) {
+    public DialogSettings(Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
         super("Settings", skin, windowStyleName);
-        assert model != null;
+        assert model != null; // audioManager may be NULL
         this.model = model;
 
         button("Close");
 
-        init(getContentTable(), skin);
+        init(getContentTable(), skin, audioManager);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class DialogSettings extends DialogFeat {
         model.saveSettings();
     }
 
-    private void init(Table table, Skin skin) {
+    private void init(Table table, Skin skin, AudioManager audioManager) {
         assert table != null && skin != null;
         table.pad(30);
 
@@ -81,15 +82,15 @@ public class DialogSettings extends DialogFeat {
         new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
 
         // ....
-        TextButton btnSignOut = new TextButton("Sign out", skin, "default");
-        btnSignOut.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                hide();
-                model.signOut();
-            }
-        });
-
+        TextButton btnSignOut = new TextButtonFeat("Sign out", skin, "default", audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    hide();
+                    model.signOut();
+                }
+            });
+        }};
 
         // ....
         table.add(new Label("Language", skin, "default")).spaceTop(30);

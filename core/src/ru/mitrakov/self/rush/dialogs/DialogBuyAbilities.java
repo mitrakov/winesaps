@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
+import ru.mitrakov.self.rush.AudioManager;
 
 /**
  * Created by mitrakov on 05.03.2017
@@ -21,9 +23,9 @@ public class DialogBuyAbilities extends DialogFeat {
     private final List<Product> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
-    public DialogBuyAbilities(final Model model, Skin skin, String windowStyleName) {
+    public DialogBuyAbilities(final Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
         super("Buy abilities", skin, windowStyleName);
-        assert model != null;
+        assert model != null; // audioManager may be NULL
         this.model = model;
 
         productsList = new List<Product>(skin, "default");
@@ -34,7 +36,7 @@ public class DialogBuyAbilities extends DialogFeat {
         button("Buy", true);
         button("Close");
 
-        init(getContentTable(), loadTextures(), skin);
+        init(getContentTable(), loadTextures(audioManager), skin);
     }
 
     @Override
@@ -53,19 +55,20 @@ public class DialogBuyAbilities extends DialogFeat {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
     }
 
-    private Array<Actor> loadTextures() {
+    private Array<Actor> loadTextures(AudioManager audioManager) {
         Array<Actor> res = new Array<Actor>();
 
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButton(new TextureRegionDrawable(region));
-                imageButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        rebuildContent(ability);
-                    }
-                });
+                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
+                    addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            rebuildContent(ability);
+                        }
+                    });
+                }};
                 res.add(imageButton);
             }
         }

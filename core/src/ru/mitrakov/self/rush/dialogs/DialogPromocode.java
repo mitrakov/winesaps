@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
  * Created by mitrakov on 05.03.2017

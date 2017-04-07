@@ -4,7 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.AudioManager;
 
 /**
  * Created by mitrakov on 05.03.2017
@@ -16,11 +18,11 @@ public class DialogFriends extends DialogFeat {
     private String name = "";
 
     public DialogFriends(final Model model, Skin skin, String style, final DialogInvite invDialog,
-                         final DialogQuestion yesNoDialog, final Stage stage) {
+                         final DialogQuestion yesNoDialog, final Stage stage, AudioManager audioManager) {
         super("", skin, style);
         assert model != null && invDialog != null && yesNoDialog != null && stage != null;
 
-        btnInvite = new TextButton("", skin, "default") {{
+        btnInvite = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -29,7 +31,7 @@ public class DialogFriends extends DialogFeat {
                 }
             });
         }};
-        btnRemove = new TextButton("", skin, "default") {{
+        btnRemove = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

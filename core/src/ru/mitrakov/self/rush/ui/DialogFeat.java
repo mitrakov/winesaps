@@ -1,4 +1,4 @@
-package ru.mitrakov.self.rush.dialogs;
+package ru.mitrakov.self.rush.ui;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  * Created by mitrakov on 27.03.2017
  */
 
-public class DialogFeat extends Dialog {
+public abstract class DialogFeat extends Dialog {
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 

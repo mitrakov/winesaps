@@ -57,10 +57,10 @@ public class RushClient extends Game {
         model.signIn(); // try to sign in using stored credentials
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
-        screenLogin = new ScreenLogin(this, model, psObject, skin);
-        screenTraining = new ScreenTraining(this, model, psObject, skin);
-        screenMain = new ScreenMain(this, model, psObject, skin);
-        screenBattle = new ScreenBattle(this, model, psObject, audioManager, skin);
+        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager);
+        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager);
+        screenMain = new ScreenMain(this, model, psObject, skin, audioManager);
+        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager);
         setScreen(screenLogin);
 
         // catch Android buttons

@@ -20,6 +20,7 @@ import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.AudioManager;
 import ru.mitrakov.self.rush.model.object.*;
+import ru.mitrakov.self.rush.ui.ImageButtonFeat;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -35,11 +36,11 @@ public class ScreenBattle extends ScreenAdapter {
 
     private final Table table = new Table();
     private final Gui gui;
-    private final ImageButton btnThing;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
     private final Label lblTime;
     private final ScrollPane abilityButtonsScroll;
+    private final ImageButton btnThing;
     private final DialogFinished finishedDialog;
     private final DialogConnect connectingDialog;
 
@@ -52,8 +53,8 @@ public class ScreenBattle extends ScreenAdapter {
     private int lives = 0;
     private CellObject curThing, enemyThing;
 
-    public ScreenBattle(RushClient game, Model model, PsObject psObject, AudioManager audioManager, Skin skin) {
-        assert game != null && model != null && audioManager != null && skin != null;
+    public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+        assert game != null && model != null && skin != null && audioManager != null;
         this.model = model;
         this.psObject = psObject; // may be NULL
         this.audioManager = audioManager;
@@ -65,10 +66,18 @@ public class ScreenBattle extends ScreenAdapter {
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
         connectingDialog = new DialogConnect(skin, "default", stage);
-        btnThing = createButtonThing();
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
+
+        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.useThing();
+                }
+            });
+        }};
 
         // @mitrakov: BUG in LibGDX! If a skin is not assigned to a ScrollPane then ScrollPane supposes any upper actor
         // as its scrollbar and makes it invisible after fadeOut; all that remains is to forbid fading
@@ -145,27 +154,17 @@ public class ScreenBattle extends ScreenAdapter {
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButton(new TextureRegionDrawable(region));
-                imageButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        model.useAbility(ability);
-                    }
-                });
+                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
+                    addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            model.useAbility(ability);
+                        }
+                    });
+                }};
                 abilities.put(ability, imageButton);
             }
         }
-    }
-
-    private ImageButton createButtonThing() {
-        return new ImageButton(things.get(CellObject.class)) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.useThing();
-                }
-            });
-        }};
     }
 
     private void buildTable() {

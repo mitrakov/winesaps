@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
  * Created by mitrakov on 05.03.2017

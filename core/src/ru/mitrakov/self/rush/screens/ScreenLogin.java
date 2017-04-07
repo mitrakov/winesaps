@@ -10,9 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ru.mitrakov.self.rush.PsObject;
-import ru.mitrakov.self.rush.RushClient;
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.ui.TextButtonFeat;
 import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
@@ -31,11 +31,11 @@ public class ScreenLogin extends ScreenAdapter {
     private final TextField txtPassword;
     private final TextField txtEmail;
     private final TextField txtPromocode;
-    private final TextButton btnSignIn;
-    private final TextButton btnSignUp;
-    private final TextButton btnBack;
-    private final TextButton btnOkSignIn;
-    private final TextButton btnOkSignUp;
+    private final Button btnSignIn;
+    private final Button btnSignUp;
+    private final Button btnBack;
+    private final Button btnOkSignIn;
+    private final Button btnOkSignUp;
     private final CheckBox chkPromocode;
     private final Label lblName;
     private final Label lblPassword;
@@ -50,8 +50,8 @@ public class ScreenLogin extends ScreenAdapter {
     private CurDialog curDialog = CurDialog.Start;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin) {
-        assert game != null && model != null && skin != null;
+    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+        assert game != null && model != null && skin != null; // audioManager may be NULL
         this.game = game;
         this.model = model;
         this.psObject = psObject; // may be NULL
@@ -79,7 +79,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnSignIn = new TextButton("Sign in", skin, "default") {{
+        btnSignIn = new TextButtonFeat("Sign in", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -87,7 +87,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnSignUp = new TextButton("Sign up", skin, "default") {{
+        btnSignUp = new TextButtonFeat("Sign up", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -95,7 +95,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnBack = new TextButton("Back", skin, "default") {{
+        btnBack = new TextButtonFeat("Back", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -103,7 +103,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnOkSignIn = new TextButton("OK", skin, "default") {{
+        btnOkSignIn = new TextButtonFeat("OK", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -111,7 +111,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnOkSignUp = new TextButton("OK", skin, "default") {{
+        btnOkSignUp = new TextButtonFeat("OK", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

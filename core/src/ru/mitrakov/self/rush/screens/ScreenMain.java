@@ -17,11 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.dialogs.*;
-import ru.mitrakov.self.rush.RushClient;
-import ru.mitrakov.self.rush.ui.LinkedLabel;
 
 
 /**
@@ -109,8 +108,8 @@ public class ScreenMain extends ScreenAdapter {
     private long abilityExpireTime = 0;
     private long promocodeDoneTime = 0;
 
-    public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin) {
-        assert game != null && model != null && skin != null;
+    public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+        assert game != null && model != null && skin != null; // audioManager may be NULL
         this.game = game;
         this.model = model;
         this.psObject = psObject; // may be NULL
@@ -125,14 +124,14 @@ public class ScreenMain extends ScreenAdapter {
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", new DialogPromocode(model, skin, "default"),
                 stage);
         incomingDialog = new DialogIncoming(model, skin, "default");
-        settingsDialog = new DialogSettings(model, skin, "default");
+        settingsDialog = new DialogSettings(model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default");
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager);
         infoDialog = new DialogInfo("Information", skin, "default");
         dialupDialog = new DialogDialup(model, skin, "default");
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage);
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog,
-                new DialogQuestion("Confirm action", skin, "default"), stage);
+                new DialogQuestion("Confirm action", skin, "default"), stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
         connectingDialog = new DialogConnect(skin, "default", stage);
         lstHistory = new List<String>(skin, "default");
@@ -151,7 +150,7 @@ public class ScreenMain extends ScreenAdapter {
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
         txtEnemyName = new TextField("", skin, "default");
         txtFriendName = new TextField("", skin, "default");
-        btnInviteByName = new TextButton("Find opponent", skin, "default") {{
+        btnInviteByName = new TextButtonFeat("Find opponent", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -159,7 +158,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnInviteRandom = new TextButton("Random opponent", skin, "default") {{
+        btnInviteRandom = new TextButtonFeat("Random opponent", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -167,7 +166,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnInviteLatest = new TextButton("Latest opponent", skin, "default") {{
+        btnInviteLatest = new TextButtonFeat("Latest opponent", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -175,7 +174,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnInviteByNameOk = new TextButton("OK", skin, "default") {{
+        btnInviteByNameOk = new TextButtonFeat("OK", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -187,7 +186,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnInviteByNameCancel = new TextButton("Cancel", skin, "default") {{
+        btnInviteByNameCancel = new TextButtonFeat("Cancel", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -195,7 +194,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnSettings = new ImageButton(new TextureRegionDrawable(regionSettings)) {{
+        btnSettings = new ImageButtonFeat(new TextureRegionDrawable(regionSettings), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -203,7 +202,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnAbout = new ImageButton(new TextureRegionDrawable(regionAbout)) {{
+        btnAbout = new ImageButtonFeat(new TextureRegionDrawable(regionAbout), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -211,7 +210,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnInfo = new TextButton("Info", skin, "default") {{
+        btnInfo = new TextButtonFeat("Info", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -219,7 +218,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnRating = new TextButton("Rating", skin, "default") {{
+        btnRating = new TextButtonFeat("Rating", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -227,7 +226,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnHistory = new TextButton("History", skin, "default") {{
+        btnHistory = new TextButtonFeat("History", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -235,7 +234,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnFriends = new TextButton("Friends", skin, "default") {{
+        btnFriends = new TextButtonFeat("Friends", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -243,7 +242,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnBuyAbilities = new TextButton("Buy abilities", skin, "default") {{
+        btnBuyAbilities = new TextButtonFeat("Buy abilities", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -251,7 +250,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnGeneralRating = new TextButton("General Rating", skin, "default") {{
+        btnGeneralRating = new TextButtonFeat("General Rating", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -259,7 +258,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnWeeklyRating = new TextButton("Weekly Rating", skin, "default") {{
+        btnWeeklyRating = new TextButtonFeat("Weekly Rating", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -267,7 +266,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnAddFriend = new TextButton("Add new", skin, "default") {{
+        btnAddFriend = new TextButtonFeat("Add new", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -275,7 +274,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnAddFriendOk = new TextButton("OK", skin, "default") {{
+        btnAddFriendOk = new TextButtonFeat("OK", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -284,7 +283,7 @@ public class ScreenMain extends ScreenAdapter {
                 }
             });
         }};
-        btnAddFriendCancel = new TextButton("Cancel", skin, "default") {{
+        btnAddFriendCancel = new TextButtonFeat("Cancel", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -309,7 +308,7 @@ public class ScreenMain extends ScreenAdapter {
         lblRatingScoreDiff = new Label("Score diff", skin, "default");
         lblRatingDots = new Label(". . .", skin, "default");
 
-        loadTextures();
+        loadTextures(audioManager);
         initTables(skin);
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
@@ -379,27 +378,28 @@ public class ScreenMain extends ScreenAdapter {
         super.dispose();
     }
 
-    private void loadTextures() {
+    private void loadTextures(AudioManager audioManager) {
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButton(new TextureRegionDrawable(region));
-                imageButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
-                        if (minutes != null) {
-                            long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
-                            if (minLeft < 0) // if server's expire checking period is too large, value may be < 0
-                                minLeft = 0;
-                            lblAbilityExpireTime.setText(String.format(Locale.getDefault(), "time left: %02d:%02d",
-                                    minLeft / 60, minLeft % 60));
-                            lblAbilityExpireTime.clearActions();
-                            lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
-                                    fadeOut(2, Interpolation.fade), Actions.hide()));
+                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
+                    addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
+                            if (minutes != null) {
+                                long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
+                                if (minLeft < 0) // if server's expire checking period is too large, value may be < 0
+                                    minLeft = 0;
+                                lblAbilityExpireTime.setText(String.format(Locale.getDefault(), "time left: %02d:%02d",
+                                        minLeft / 60, minLeft % 60));
+                                lblAbilityExpireTime.clearActions();
+                                lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
+                                        fadeOut(2, Interpolation.fade), Actions.hide()));
+                            }
                         }
-                    }
-                });
+                    });
+                }};
                 abilities.put(ability, imageButton);
             }
         }
@@ -538,7 +538,7 @@ public class ScreenMain extends ScreenAdapter {
             tableRightContentAbilities.clear();
             // we sort abilities (via TreeSet), because since 2017.04.03 'model.abilityExpireMap' is not SkipListMap
             for (Model.Ability ability : new TreeSet<Model.Ability>(model.abilityExpireMap.keySet())) {
-                ImageButton btn = abilities.get(ability);
+                Button btn = abilities.get(ability);
                 if (btn != null)
                     tableRightContentAbilities.add(btn).space(10);
             }

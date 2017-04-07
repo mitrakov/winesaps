@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
-import ru.mitrakov.self.rush.ui.Gui;
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
@@ -43,8 +43,8 @@ public class ScreenTraining extends ScreenAdapter {
     private boolean started = false;
     private boolean finished = false;
 
-    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin) {
-        assert game != null && model != null && skin != null;
+    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager mgr) {
+        assert game != null && model != null && skin != null; // audioManager may be NULL
         this.model = model;
         this.game = game;
         this.psObject = psObject; // may be NULL
@@ -56,8 +56,15 @@ public class ScreenTraining extends ScreenAdapter {
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
         trainingDialog = new DialogTraining(skin, "default");
-        btnThing = createButtonThing();
-        btnSkip = new TextButton("Skip Training", skin, "default") {{
+        btnThing = new ImageButtonFeat(things.get(CellObject.class), mgr) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.useThing();
+                }
+            });
+        }};
+        btnSkip = new TextButtonFeat("Skip Training", skin, "default", mgr) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -123,17 +130,6 @@ public class ScreenTraining extends ScreenAdapter {
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));
         }
-    }
-
-    private ImageButton createButtonThing() {
-        return new ImageButton(things.get(CellObject.class)) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.useThing();
-                }
-            });
-        }};
     }
 
     private void initComponents(Skin skin) {
