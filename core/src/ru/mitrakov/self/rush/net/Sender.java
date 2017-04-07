@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.*;
 import java.io.IOException;
 
+import static java.lang.Math.max;
 import static ru.mitrakov.self.rush.net.Utils.*;
 import static ru.mitrakov.self.rush.net.Protocol.*;
 
@@ -75,7 +76,7 @@ class Sender {
             buffer[ack].ack = true;
             if (ack == expectedAck) {
                 int rtt = totalTicks - buffer[ack].startRtt + 1;
-                srtt = (int) (RC * srtt + (1 - RC) * rtt);
+                srtt = max((int) (RC * srtt + (1 - RC) * rtt), DEFAULT_SRTT);
                 accept();
             }
         }
