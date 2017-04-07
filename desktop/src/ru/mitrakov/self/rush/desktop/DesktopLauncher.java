@@ -24,24 +24,33 @@ public class DesktopLauncher extends JFrame {
         });
     }
 
-    private DesktopLauncher(LwjglApplicationConfiguration config) throws HeadlessException {
+    private DesktopLauncher(LwjglApplicationConfiguration config) {
         super();
+
+        // register single instance application
         registerInstance();
+        try {
+            Thread.sleep(100); // see note below
+        } catch (InterruptedException ignored) {}
+
+        // create platform specific object
         final PsObject obj = new PsObject() {
             @Override
             public void activate() {
                 setVisible(true);
             }
         };
+
+        // set up JFrame
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         Container container = getContentPane();
         container.add(new LwjglAWTCanvas(new RushClient(obj), config).getCanvas(), BorderLayout.CENTER);
         container.setPreferredSize(new Dimension(config.width, config.height));
         setResizable(false); // this must be BEFORE pack()!
         pack();
+        setIconImage(new ImageIcon("icon.png").getImage()); // if icon not found => let it crash
         setVisible(true);
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon("icon.png").getImage()); // if icon not found => let it crash
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -64,10 +73,9 @@ public class DesktopLauncher extends JFrame {
             public void run() {
                 try {
                     // start listening on a loopback socket (if no exceptions thrown, then we run a first instance
-                    ServerSocket serverSocket =
-                            new ServerSocket(PORT, 10, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
+                    ServerSocket srv = new ServerSocket(PORT, 10, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
                     while (true) {
-                        Socket sock = serverSocket.accept();
+                        Socket sock = srv.accept();
                         // this code would run only if the user is attempting to start another instance of the app;
                         // it usually means that the user wants to switch the app from background to normal mode;
                         // so we just restart itself (whilst the other instance will be closed automatically)
@@ -80,8 +88,7 @@ public class DesktopLauncher extends JFrame {
                     try {
                         new Socket("127.0.0.1", PORT).close();
                         System.exit(0);
-                    } catch (IOException ignore) {
-                    }
+                    } catch (IOException ignore) {}
                 }
             }
         });
@@ -89,3 +96,7 @@ public class DesktopLauncher extends JFrame {
         th.start();
     }
 }
+
+// note#3 (@mitrakov, 2017-04-07): without delay, a new app instance is late to detect the first instance (because a new
+// thread is being created) and SwUDP protocol sends needless 'SYN' message to the server; it's not dangerous, but it'd
+// better terminate the new instance before that

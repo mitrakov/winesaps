@@ -797,4 +797,4 @@ public class Model {
     }
 }
 
-// note#1 (mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8
+// note#2 (@mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8

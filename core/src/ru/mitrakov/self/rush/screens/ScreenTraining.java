@@ -206,4 +206,5 @@ public class ScreenTraining extends ScreenAdapter {
     }
 }
 
-// note#1 (@mitrakov): even though bool condition "thing==null" is unreliable, actor won't die because waterfall is fake
+// note#1 (@mitrakov, 2017-03-24): even though bool condition "thing==null" is unreliable, an actor won't die because
+// waterfall is fake
