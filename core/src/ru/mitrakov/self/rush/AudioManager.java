@@ -12,6 +12,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class AudioManager {
     private final ObjectMap<String, Sound> sounds = new ObjectMap<String, Sound>(10);
     private Music curMusic;
+    private String curMusicName = "";
 
     public AudioManager(String defaultMusic) {
         for (FileHandle handle : Gdx.files.internal("wav").list()) {
@@ -23,14 +24,17 @@ public class AudioManager {
 
     public void music(String name) {
         assert name != null;
-        if (curMusic != null)
-            curMusic.dispose();
-        curMusic = Gdx.audio.newMusic(Gdx.files.internal(String.format("tune/%s.mp3", name)));
-        if (curMusic != null) {
-            curMusic.setVolume(.2f);
-            curMusic.setLooping(true);
-            curMusic.play();
-        } else throw new RuntimeException(String.format("Music %s not found", name));
+        if (!curMusicName.equals(name)) {
+            if (curMusic != null)
+                curMusic.dispose();
+            curMusic = Gdx.audio.newMusic(Gdx.files.internal(String.format("tune/%s.mp3", name)));
+            if (curMusic != null) {
+                curMusicName = name;
+                curMusic.setVolume(.2f);
+                curMusic.setLooping(true);
+                curMusic.play();
+            } else throw new RuntimeException(String.format("Music %s not found", name));
+        }
     }
 
     public void pauseMusic(boolean pause) {

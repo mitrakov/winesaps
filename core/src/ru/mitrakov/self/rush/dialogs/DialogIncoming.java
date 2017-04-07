@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.AudioManager;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
@@ -17,11 +18,13 @@ public class DialogIncoming extends DialogFeat {
     private final Model model;
     private final Label lblQuestion;
     private final CheckBox chkAddToFriends;
+    private final AudioManager audioManager;
 
-    public DialogIncoming(Model model, Skin skin, String windowStyleName) {
+    public DialogIncoming(Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
         super("Invitation", skin, windowStyleName);
-        assert model != null;
+        assert model != null && audioManager != null;
         this.model = model;
+        this.audioManager = audioManager;
 
         lblQuestion = new Label("", skin, "default");
         chkAddToFriends = new CheckBox(" add to friends", skin, "default"); // not checked by default
@@ -39,6 +42,7 @@ public class DialogIncoming extends DialogFeat {
 
     @Override
     public Dialog show(Stage stage) {
+        audioManager.music("call");
         chkAddToFriends.setVisible(!model.friends.contains(model.enemy));
         lblQuestion.setText(String.format("%s wants to attack you! Do you wanna accept a battle?", model.enemy));
         return super.show(stage);
@@ -58,5 +62,11 @@ public class DialogIncoming extends DialogFeat {
                 break;
             default:
         }
+    }
+
+    @Override
+    public void hide() {
+        audioManager.music("theme");
+        super.hide();
     }
 }

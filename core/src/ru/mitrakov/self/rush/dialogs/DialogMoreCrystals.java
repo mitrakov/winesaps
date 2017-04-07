@@ -3,7 +3,7 @@ package ru.mitrakov.self.rush.dialogs;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import ru.mitrakov.self.rush.ui.LinkedLabel;
+import ru.mitrakov.self.rush.ui.*;
 
 /**
  * Created by mitrakov on 05.03.2017

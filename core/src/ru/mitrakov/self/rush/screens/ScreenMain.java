@@ -123,7 +123,7 @@ public class ScreenMain extends ScreenAdapter {
 
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", new DialogPromocode(model, skin, "default"),
                 stage);
-        incomingDialog = new DialogIncoming(model, skin, "default");
+        incomingDialog = new DialogIncoming(model, skin, "default", audioManager);
         settingsDialog = new DialogSettings(model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager);
