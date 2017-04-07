@@ -41,6 +41,7 @@ public class DesktopLauncher extends JFrame {
         pack();
         setVisible(true);
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon("icon.png").getImage()); // if icon not found => let it crash
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {

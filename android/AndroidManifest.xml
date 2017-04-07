@@ -9,7 +9,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/applepear"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme" >
         <!-- "singleTask" is necessary for getting the current state on relaunch the app AFTER moveFromForeground() -->
