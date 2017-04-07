@@ -15,6 +15,7 @@ public class Protocol implements IProtocol {
     final static int PERIOD = 10;
     final static int DEFAULT_SRTT = 4;
     final static float RC = .8f;
+    final static int AC = 4;
 
     static class Item {
         boolean ack = false;

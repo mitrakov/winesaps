@@ -108,7 +108,7 @@ class Sender {
                     return;
                 } else if (buffer[i].ticks == buffer[i].nextRepeat) {
                     buffer[i].attempt++;
-                    buffer[i].nextRepeat += 2 * srtt * buffer[i].attempt;
+                    buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                     if (buffer[i].attempt > 1) {
                         int[] msg = buffer[i].msg;
                         System.out.println("Send^ " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
