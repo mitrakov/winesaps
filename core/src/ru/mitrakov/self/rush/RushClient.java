@@ -1,8 +1,10 @@
 package ru.mitrakov.self.rush;
 
+import java.util.Locale;
 import java.net.InetAddress;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import ru.mitrakov.self.rush.net.*;
@@ -55,12 +57,13 @@ public class RushClient extends Game {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
         model.signIn(); // try to sign in using stored credentials
+        I18NBundle i18n = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), Locale.getDefault());
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
-        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager);
-        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager);
-        screenMain = new ScreenMain(this, model, psObject, skin, audioManager);
-        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager);
+        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager, i18n);
+        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager, i18n);
+        screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18n);
+        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18n);
         setScreen(screenLogin);
 
         // catch Android buttons

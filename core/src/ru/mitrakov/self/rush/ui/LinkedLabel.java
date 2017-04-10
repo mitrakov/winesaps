@@ -18,7 +18,7 @@ public class LinkedLabel extends Table {
         String font = fonts.containsKey("default-font") ? "default-font" : fonts.containsKey("font") ? "font"
                 : fonts.keys().next();
 
-        if (txtBefore != null && !txtBefore.isEmpty())
+        if (txtBefore != null && txtBefore.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
             add(new Label(txtBefore, skin, style));
         Label lblLink = new Label(txtLink, skin, font, Color.BLUE);
         lblLink.addListener(new ClickListener() {
@@ -29,7 +29,7 @@ public class LinkedLabel extends Table {
             }
         });
         add(lblLink);
-        if (txtAfter != null && !txtAfter.isEmpty())
+        if (txtAfter != null && txtAfter.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
             add(new Label(txtAfter, skin, style));
     }
 }

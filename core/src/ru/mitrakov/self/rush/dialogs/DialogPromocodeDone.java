@@ -1,9 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import java.util.Locale;
-
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
@@ -11,24 +10,24 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
  */
 
 public class DialogPromocodeDone extends DialogFeat {
+    private final I18NBundle i18n;
     private final Label lblMessage;
 
-    public DialogPromocodeDone(Skin skin, String windowStyleName) {
-        super("You've got extra crystals!", skin, windowStyleName);
+    public DialogPromocodeDone(Skin skin, String windowStyleName, I18NBundle i18n) {
+        super(i18n.format("dialog.promocode.done.header"), skin, windowStyleName);
+        this.i18n = i18n;
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center, Align.center);
         getContentTable().pad(20).add(lblMessage); // here getContentTable != null
 
-        button("OK");
+        button(i18n.format("ok"));
     }
 
     public Dialog setArguments(String name, boolean inviter, int crystals) {
         assert name != null;
-        String s1 = String.format(Locale.getDefault(),
-                "%s has won with your promo code,\nso you've got %d extra crystals!", name, crystals);
-        String s2 = String.format(Locale.getDefault(),
-                "You have won with a promo code provided by %s,\nso you've got %d extra crystals!", name, crystals);
+        String s1 = i18n.format("dialog.promocode.done.inviter", name, crystals);
+        String s2 = i18n.format("dialog.promocode.done.winner", name, crystals);
         lblMessage.setText(inviter ? s1 : s2);
         return this;
     }

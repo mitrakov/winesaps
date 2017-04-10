@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -50,8 +50,9 @@ public class ScreenLogin extends ScreenAdapter {
     private CurDialog curDialog = CurDialog.Start;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
-        assert game != null && model != null && skin != null; // audioManager may be NULL
+    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+                       I18NBundle i18n) {
+        assert game != null && model != null && skin != null && i18n != null; // psObject, audioManager may be NULL
         this.game = game;
         this.model = model;
         this.psObject = psObject; // may be NULL
@@ -79,7 +80,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnSignIn = new TextButtonFeat("Sign in", skin, "default", audioManager) {{
+        btnSignIn = new TextButtonFeat(i18n.format("sign.in"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -87,7 +88,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnSignUp = new TextButtonFeat("Sign up", skin, "default", audioManager) {{
+        btnSignUp = new TextButtonFeat(i18n.format("sign.up"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -95,7 +96,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnBack = new TextButtonFeat("Back", skin, "default", audioManager) {{
+        btnBack = new TextButtonFeat(i18n.format("back"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -103,7 +104,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnOkSignIn = new TextButtonFeat("OK", skin, "default", audioManager) {{
+        btnOkSignIn = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -111,7 +112,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        btnOkSignUp = new TextButtonFeat("OK", skin, "default", audioManager) {{
+        btnOkSignUp = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -119,7 +120,7 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        chkPromocode = new CheckBox(" I have a promo code", skin, "default") {{
+        chkPromocode = new CheckBox(i18n.format("sign.promocode"), skin, "default") {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -127,11 +128,11 @@ public class ScreenLogin extends ScreenAdapter {
                 }
             });
         }};
-        lblName = new Label("Name", skin, "default");
-        lblPassword = new Label("Password", skin, "default");
-        lblEmail = new Label("Email", skin, "default");
+        lblName = new Label(i18n.format("sign.name"), skin, "default");
+        lblPassword = new Label(i18n.format("sign.password"), skin, "default");
+        lblEmail = new Label(i18n.format("sign.email"), skin, "default");
         imgValid = new Image(textureInvalid);
-        connectingDialog = new DialogConnect(skin, "default", stage);
+        connectingDialog = new DialogConnect(skin, "default", stage, i18n);
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {

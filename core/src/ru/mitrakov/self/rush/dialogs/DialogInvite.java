@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -9,12 +10,12 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 /**
  * Created by mitrakov on 05.03.2017
  */
-
 public class DialogInvite extends DialogFeat {
 
     public enum InviteType {ByName, Random, Latest}
 
     private final Model model;
+    private final I18NBundle i18n;
     private final Dialog dialup;
     private final Stage stage;
     private final Label lblQuestion;
@@ -23,18 +24,19 @@ public class DialogInvite extends DialogFeat {
     private InviteType type = InviteType.Random;
     private String name = "";
 
-    public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage) {
-        super("Invite", skin, windowStyleName);
+    public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage, I18NBundle i18n) {
+        super(i18n.format("dialog.invite.header"), skin, windowStyleName);
         assert model != null && dialup != null && stage != null;
         this.model = model;
         this.dialup = dialup;
         this.stage = stage;
+        this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox(" add to friends", skin, "default");
+        chkAddToFriends = new CheckBox(i18n.format("dialog.friends.add"), skin, "default"); // not checked by default
 
-        button("OK", true);
-        button("Cancel");
+        button(i18n.format("ok"), true);
+        button(i18n.format("cancel"));
     }
 
     @Override
@@ -80,17 +82,17 @@ public class DialogInvite extends DialogFeat {
         table.pad(20).clear();
         switch (type) {
             case ByName:
-                lblQuestion.setText(String.format("Do you wanna invite '%s'?", name));
+                lblQuestion.setText(i18n.format("dialog.invite.name", name));
                 table.add(lblQuestion);
                 table.row().space(30);
                 table.add(chkAddToFriends);
                 break;
             case Random:
-                lblQuestion.setText("Do you wanna invite random opponent?");
+                lblQuestion.setText(i18n.format("dialog.invite.random"));
                 table.add(lblQuestion);
                 break;
             case Latest:
-                lblQuestion.setText("Do you wanna invite latest opponent?");
+                lblQuestion.setText(i18n.format("dialog.invite.latest"));
                 table.add(lblQuestion);
                 break;
             default:

@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -11,45 +12,45 @@ import ru.mitrakov.self.rush.ui.*;
 
 public class DialogMoreCrystals extends DialogFeat {
 
-    public DialogMoreCrystals(Skin skin, String windowStyleName, Dialog promoDialog, Stage stage) {
-        super("Getting more crystals", skin, windowStyleName);
+    public DialogMoreCrystals(Skin skin, String windowStyleName, Dialog promoDialog, Stage stage, I18NBundle i18n) {
+        super(i18n.format("dialog.crystals.header"), skin, windowStyleName);
         assert promoDialog != null && stage != null;
 
-        init(getContentTable(), skin, promoDialog, stage);
+        init(getContentTable(), skin, promoDialog, stage, i18n);
 
-        button("Close");
+        button(i18n.format("close"));
     }
 
-    private void init(Table table, Skin skin, final Dialog promoDialog, final Stage stage) {
-        assert table != null && skin != null;
+    private void init(Table table, Skin skin, final Dialog promoDialog, final Stage stage, I18NBundle i18n) {
+        assert table != null && skin != null && i18n != null;
 
         table.pad(30);
-        table.add(new Label("There are several ways to get more crystals:", skin, "default"));
+        table.add(new Label(i18n.format("dialog.crystals.overview"), skin, "default"));
         table.row();
-        table.add(new Label("1. Win the battle", skin, "default")).left();
+        table.add(new Label(i18n.format("dialog.crystals.way1"), skin, "default")).left();
         table.row();
-        table.add(new Label("You earn 1 crystal for each battle you won", skin, "default")).left().padLeft(40);
+        table.add(new Label(i18n.format("dialog.crystals.text1"), skin, "default")).left().padLeft(40);
         table.row();
-        table.add(new Label("2. Invite your friends to the game", skin, "default")).left();
+        table.add(new Label(i18n.format("dialog.crystals.way2"), skin, "default")).left();
         table.row();
-        table.add(new LinkedLabel("Invite your friends with a ", "promo code ", "and after his/her win", skin,
-                "default", new Runnable() {
+        table.add(new LinkedLabel(i18n.format("dialog.crystals.text2.start"), i18n.format("dialog.crystals.text2.link"),
+                i18n.format("dialog.crystals.text2.end"), skin, "default", new Runnable() {
             @Override
             public void run() {
                 promoDialog.show(stage);
             }
         })).left().padLeft(40);
         table.row();
-        table.add(new Label("you'll both get extra crystals", skin, "default")).left().padLeft(40);
+        table.add(new Label(i18n.format("dialog.crystals.text2.extra"), skin, "default")).left().padLeft(40);
         table.row();
-        table.add(new Label("3. Achieve a paid place in a Week Rating", skin, "default")).left();
+        table.add(new Label(i18n.format("dialog.crystals.way3"), skin, "default")).left();
         table.row();
-        table.add(new Label("Top players in a Week Rating get additional crystals every Monday", skin, "default"))
-                .left().padLeft(40);
+        table.add(new Label(i18n.format("dialog.crystals.text3"), skin, "default")).left().padLeft(40);
         table.row();
-        table.add(new Label("4. Buy crystals", skin, "default")).left();
+        table.add(new Label(i18n.format("dialog.crystals.way4"), skin, "default")).left();
         table.row();
-        table.add(new LinkedLabel("You can buy crystals ", " here", "", skin, "default", new Runnable() {
+        table.add(new LinkedLabel(i18n.format("dialog.crystals.text4.start"), i18n.format("dialog.crystals.text4.link"),
+                "", skin, "default", new Runnable() {
             @Override
             public void run() {
                 System.out.println("Hey-Hey!");

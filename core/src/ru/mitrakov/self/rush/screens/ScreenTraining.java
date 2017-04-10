@@ -2,7 +2,6 @@ package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -24,6 +23,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final Model model;
     private final RushClient game;
     private final PsObject psObject;
+    private final I18NBundle i18n;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
@@ -43,20 +43,22 @@ public class ScreenTraining extends ScreenAdapter {
     private boolean started = false;
     private boolean finished = false;
 
-    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager mgr) {
-        assert game != null && model != null && skin != null; // audioManager may be NULL
+    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin,
+                          AudioManager audioManager, I18NBundle i18n) {
+        assert game != null && model != null && skin != null && i18n != null; // psObject, audioManager may be NULL
         this.model = model;
         this.game = game;
         this.psObject = psObject; // may be NULL
+        this.i18n = i18n;
 
         table.setFillParent(true);
         stage.addActor(table);
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default");
+        finishedDialog = new DialogFinished(game, skin, "default", i18n);
         trainingDialog = new DialogTraining(skin, "default");
-        btnThing = new ImageButtonFeat(things.get(CellObject.class), mgr) {{
+        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -64,7 +66,7 @@ public class ScreenTraining extends ScreenAdapter {
                 }
             });
         }};
-        btnSkip = new TextButtonFeat("Skip Training", skin, "default", mgr) {{
+        btnSkip = new TextButtonFeat(i18n.format("train.skip"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -158,19 +160,14 @@ public class ScreenTraining extends ScreenAdapter {
 
     private void addContent() {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
+        final TextureAtlas atlas = atlasTraining;
         trainingDialog
-                .addMessage(atlasTraining.findRegion("msg1"), "Tap on the left or right hand of\na character to move.\n" +
-                        "On keyboard you can also use arrows or AD keys", "Move right and take an apple")
-                .addMessage(atlasTraining.findRegion("msg2"), "You can use doors to move up and down.\nJust tap on the " +
-                                "top or bottom of a character.\nOn keyboard you can also use arrows or WS keys",
-                        "Go to the door, move down and take a pear")
-                .addMessage(atlasTraining.findRegion("msg3"), "You can use ropes to move up",
-                        "Go to the rope, crawl up and take an apple")
-                .addMessage(atlasTraining.findRegion("msg4"), "You can take some useful stuff\nE.g. an umbrella assists " +
-                        "to keep you from\ngetting wet", "Go left and take an umbrella")
-                .addMessage(atlasTraining.findRegion("msg5"), "Now push the button on the bottom-left corner\nto use " +
-                        "the umbrella\nOn keyboard you can also push a space button", "")
-                .addMessage(atlasTraining.findRegion("msg6"), "Good! Take the last pear to finish training", "");
+                .addMessage(atlas.findRegion("msg1"), i18n.format("train.msg1.text"), i18n.format("train.msg1.action"))
+                .addMessage(atlas.findRegion("msg2"), i18n.format("train.msg2.text"), i18n.format("train.msg2.action"))
+                .addMessage(atlas.findRegion("msg3"), i18n.format("train.msg3.text"), i18n.format("train.msg3.action"))
+                .addMessage(atlas.findRegion("msg4"), i18n.format("train.msg4.text"), i18n.format("train.msg4.action"))
+                .addMessage(atlas.findRegion("msg5"), i18n.format("train.msg5.text"), i18n.format("train.msg5.action"))
+                .addMessage(atlas.findRegion("msg6"), i18n.format("train.msg6.text"), i18n.format("train.msg6.action"));
     }
 
     private void checkStarted() {
@@ -200,8 +197,8 @@ public class ScreenTraining extends ScreenAdapter {
             model.newbie = false;
             model.stopBattle();
             trainingDialog.remove();
-            String msg = "Now invite your friends and tear them to shreds in a real battle!";
-            finishedDialog.setText("Nice going!", msg).setScore(1, 0).setQuitOnResult(true).show(stage);
+            finishedDialog.setText(i18n.format("train.msgX.text"), i18n.format("train.msgX.action")).setScore(1, 0)
+                    .setQuitOnResult(true).show(stage);
         }
     }
 }

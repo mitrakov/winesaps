@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -23,8 +23,8 @@ public class DialogBuyAbilities extends DialogFeat {
     private final List<Product> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
-    public DialogBuyAbilities(final Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
-        super("Buy abilities", skin, windowStyleName);
+    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
+        super(i18n.format("dialog.abilities.header"), skin, style);
         assert model != null; // audioManager may be NULL
         this.model = model;
 
@@ -33,10 +33,10 @@ public class DialogBuyAbilities extends DialogFeat {
         lblPicture = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
 
-        button("Buy", true);
-        button("Close");
+        button(i18n.format("buy"), true);
+        button(i18n.format("close"));
 
-        init(getContentTable(), loadTextures(audioManager), skin);
+        init(getContentTable(), loadTextures(audioManager), skin, i18n);
     }
 
     @Override
@@ -75,10 +75,10 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
-    private void init(Table table, final Array<Actor> abilities, Skin skin) {
-        assert table != null;
+    private void init(Table table, final Array<Actor> abilities, Skin skin, I18NBundle i18n) {
+        assert table != null && skin != null && i18n != null;
 
-        table.add(new Label("Crystals total:", skin, "default"));
+        table.add(new Label(i18n.format("dialog.abilities.total"), skin, "default"));
         table.add(lblCrystals);
         table.row();
         table.add(new Table() {{

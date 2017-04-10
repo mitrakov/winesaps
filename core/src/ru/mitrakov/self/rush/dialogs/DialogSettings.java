@@ -1,6 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -15,14 +15,14 @@ import ru.mitrakov.self.rush.AudioManager;
 public class DialogSettings extends DialogFeat {
     private final Model model;
 
-    public DialogSettings(Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
-        super("Settings", skin, windowStyleName);
+    public DialogSettings(Model model, Skin skin, String windowStyleName, AudioManager audioManager, I18NBundle i18n) {
+        super(i18n.format("dialog.settings.header"), skin, windowStyleName);
         assert model != null; // audioManager may be NULL
         this.model = model;
 
-        button("Close");
+        button(i18n.format("close"));
 
-        init(getContentTable(), skin, audioManager);
+        init(getContentTable(), skin, audioManager, i18n);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class DialogSettings extends DialogFeat {
         model.saveSettings();
     }
 
-    private void init(Table table, Skin skin, AudioManager audioManager) {
-        assert table != null && skin != null;
+    private void init(Table table, Skin skin, AudioManager audioManager, I18NBundle i18n) {
+        assert table != null && skin != null && i18n != null;
         table.pad(30);
 
         // ....
@@ -40,7 +40,7 @@ public class DialogSettings extends DialogFeat {
                 : map.keys().next();
 
         // ....
-        Button btnEng = new CheckBox(" English", skin, style);
+        Button btnEng = new CheckBox(i18n.format("dialog.settings.lang.english"), skin, style);
         btnEng.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -49,7 +49,7 @@ public class DialogSettings extends DialogFeat {
         });
         btnEng.setChecked(model.languageEn);
 
-        Button btnRus = new CheckBox(" Russian", skin, style);
+        Button btnRus = new CheckBox(i18n.format("dialog.settings.lang.russian"), skin, style);
         btnRus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -61,7 +61,7 @@ public class DialogSettings extends DialogFeat {
         new ButtonGroup<Button>(btnEng, btnRus);
 
         // ....
-        Button btnNotifyYes = new CheckBox(" Notify about new battle", skin, style);
+        Button btnNotifyYes = new CheckBox(i18n.format("dialog.settings.notify.yes"), skin, style);
         btnNotifyYes.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -70,7 +70,7 @@ public class DialogSettings extends DialogFeat {
         });
         btnNotifyYes.setChecked(model.notifyNewBattles);
 
-        Button btnNotifyNo = new CheckBox(" Don't notify about new battle", skin, style);
+        Button btnNotifyNo = new CheckBox(i18n.format("dialog.settings.notify.no"), skin, style);
         btnNotifyNo.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -82,7 +82,7 @@ public class DialogSettings extends DialogFeat {
         new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
 
         // ....
-        TextButton btnSignOut = new TextButtonFeat("Sign out", skin, "default", audioManager) {{
+        TextButton btnSignOut = new TextButtonFeat(i18n.format("dialog.settings.out"), skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -93,19 +93,19 @@ public class DialogSettings extends DialogFeat {
         }};
 
         // ....
-        table.add(new Label("Language", skin, "default")).spaceTop(30);
+        table.add(new Label(i18n.format("dialog.settings.lang.header"), skin, "default")).spaceTop(30);
         table.row();
         table.add(btnEng).left();
         table.row();
         table.add(btnRus).left();
         table.row();
-        table.add(new Label("Notifications", skin, "default")).spaceTop(30);
+        table.add(new Label(i18n.format("dialog.settings.notify.header"), skin, "default")).spaceTop(30);
         table.row();
         table.add(btnNotifyYes).left();
         table.row();
         table.add(btnNotifyNo).left();
         table.row();
-        table.add(new Label("Sign out", skin, "default")).spaceTop(30);
+        table.add(new Label(i18n.format("dialog.settings.out"), skin, "default")).spaceTop(30);
         table.row();
         table.add(btnSignOut);
     }

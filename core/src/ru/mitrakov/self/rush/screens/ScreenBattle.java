@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -13,14 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import ru.mitrakov.self.rush.ui.Gui;
-import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.dialogs.*;
-import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.AudioManager;
 import ru.mitrakov.self.rush.model.object.*;
-import ru.mitrakov.self.rush.ui.ImageButtonFeat;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -30,6 +26,7 @@ public class ScreenBattle extends ScreenAdapter {
     private final Model model;
     private final PsObject psObject;
     private final AudioManager audioManager;
+    private final I18NBundle i18n;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
@@ -53,19 +50,21 @@ public class ScreenBattle extends ScreenAdapter {
     private int lives = 0;
     private CellObject curThing, enemyThing;
 
-    public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
-        assert game != null && model != null && skin != null && audioManager != null;
+    public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+                        I18NBundle i18n) {
+        assert game != null && model != null && skin != null && i18n != null; // psObject may be NULL
         this.model = model;
         this.psObject = psObject; // may be NULL
-        this.audioManager = audioManager;
+        this.audioManager = audioManager; // may be NULL
+        this.i18n = i18n;
 
         table.setFillParent(true);
         stage.addActor(table);
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default");
-        connectingDialog = new DialogConnect(skin, "default", stage);
+        finishedDialog = new DialogFinished(game, skin, "default", i18n);
+        connectingDialog = new DialogConnect(skin, "default", stage, i18n);
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
@@ -102,7 +101,7 @@ public class ScreenBattle extends ScreenAdapter {
 
         // updating labels
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblScore.setText(String.format(Locale.getDefault(), "Score: %d-%d", model.score1, model.score2));
+        lblScore.setText(i18n.format("battle.score", model.score1, model.score2));
         lblTime.setText(String.valueOf(t >= 0 ? t : 0));
 
         // checking
@@ -203,7 +202,7 @@ public class ScreenBattle extends ScreenAdapter {
             roundFinishedTime = model.roundFinishedTime;
             audioManager.sound("round");
             reset();
-            String msg = String.format("You %s the round", model.roundWinner ? "win" : "lose");
+            String msg = model.roundWinner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
             finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).show(stage);
             audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
         }
@@ -211,10 +210,10 @@ public class ScreenBattle extends ScreenAdapter {
             gameFinishedTime = model.gameFinishedTime;
             audioManager.sound("game");
             reset();
-            String s = "GAME OVER!";
-            String msg = model.roundWinner ? "You win the battle! You get a reward of 1 crystal"
-                    : "You lose the battle...";
-            finishedDialog.setText(s, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true).show(stage);
+            String header = i18n.format("battle.finish");
+            String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
+            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true)
+                    .show(stage);
             audioManager.music("theme");
         }
     }
