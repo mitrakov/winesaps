@@ -22,11 +22,10 @@ import ru.mitrakov.self.rush.model.object.*;
  * Created by mitrakov on 01.03.2017
  */
 
-public class ScreenBattle extends ScreenAdapter {
+public class ScreenBattle extends LocalizableScreen {
     private final Model model;
     private final PsObject psObject;
     private final AudioManager audioManager;
-    private final I18NBundle i18n;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
@@ -49,6 +48,7 @@ public class ScreenBattle extends ScreenAdapter {
     private int scores = 0;
     private int lives = 0;
     private CellObject curThing, enemyThing;
+    private I18NBundle i18n;
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
@@ -101,7 +101,7 @@ public class ScreenBattle extends ScreenAdapter {
 
         // updating labels
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblScore.setText(i18n.format("battle.score", model.score1, model.score2));
+        lblScore.setText(i18n.format("battle.score", model.score1, model.score2)); // i18n != NULL (assert omitted)
         lblTime.setText(String.valueOf(t >= 0 ? t : 0));
 
         // checking
@@ -141,6 +141,14 @@ public class ScreenBattle extends ScreenAdapter {
         atlasAbility.dispose();
         gui.dispose();
         super.dispose();
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+        finishedDialog.onLocaleChanged(bundle);
+        connectingDialog.onLocaleChanged(bundle);
     }
 
     private void loadTextures() {
@@ -198,6 +206,7 @@ public class ScreenBattle extends ScreenAdapter {
     }
 
     private void checkRoundFinished() {
+        // i18n != NULL (assert omitted because it's called from within render() method)
         if (roundFinishedTime != model.roundFinishedTime) {
             roundFinishedTime = model.roundFinishedTime;
             audioManager.sound("round");

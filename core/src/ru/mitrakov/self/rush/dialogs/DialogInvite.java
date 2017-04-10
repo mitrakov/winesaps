@@ -1,8 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.ui.DialogFeat;
@@ -15,7 +15,6 @@ public class DialogInvite extends DialogFeat {
     public enum InviteType {ByName, Random, Latest}
 
     private final Model model;
-    private final I18NBundle i18n;
     private final Dialog dialup;
     private final Stage stage;
     private final Label lblQuestion;
@@ -23,6 +22,7 @@ public class DialogInvite extends DialogFeat {
 
     private InviteType type = InviteType.Random;
     private String name = "";
+    private I18NBundle i18n;
 
     public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage, I18NBundle i18n) {
         super(i18n.format("dialog.invite.header"), skin, windowStyleName);
@@ -47,6 +47,7 @@ public class DialogInvite extends DialogFeat {
 
     @Override
     protected void result(Object object) {
+        assert type != null;
         if (object != null) {                // "OK" is pressed
             switch (type) {
                 case ByName:
@@ -66,6 +67,29 @@ public class DialogInvite extends DialogFeat {
         }
     }
 
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+
+        chkAddToFriends.setText(bundle.format("dialog.friends.add"));
+
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.invite.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 2) {
+                Actor ok = buttons.first();
+                if (ok != null && ok instanceof TextButton)
+                    ((TextButton) ok).setText(bundle.format("ok"));
+                Actor cancel = buttons.get(1);
+                if (cancel != null && cancel instanceof TextButton)
+                    ((TextButton) cancel).setText(bundle.format("cancel"));
+            }
+        }
+    }
+
     public Dialog setArguments(InviteType type, String name) {
         assert type != null;
         this.type = type;
@@ -77,7 +101,7 @@ public class DialogInvite extends DialogFeat {
 
     private void rebuildContent() {
         Table table = getContentTable();
-        assert type != null && table != null;
+        assert type != null && table != null && i18n != null;
 
         table.pad(20).clear();
         switch (type) {

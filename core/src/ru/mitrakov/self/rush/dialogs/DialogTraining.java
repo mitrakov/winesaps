@@ -56,6 +56,11 @@ public class DialogTraining extends Window {
         return this;
     }
 
+    public DialogTraining clearMessages() {
+        items.clear();
+        return this;
+    }
+
     public void next() {
         if (items.size > 0) {
             Item item = items.removeFirst(); // item is always != NULL

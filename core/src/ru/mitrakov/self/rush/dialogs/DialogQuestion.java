@@ -1,7 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
@@ -29,6 +30,24 @@ public class DialogQuestion extends DialogFeat {
         if (object != null) { // 'Yes' pressed
             if (action != null)
                 action.run();
+        }
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 2) {
+                Actor yes = buttons.first();
+                if (yes != null && yes instanceof TextButton)
+                    ((TextButton) yes).setText(bundle.format("yes"));
+                Actor no = buttons.get(1);
+                if (no != null && no instanceof TextButton)
+                    ((TextButton) no).setText(bundle.format("no"));
+            }
         }
     }
 

@@ -6,11 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import ru.mitrakov.self.rush.Localizable;
+
 /**
  * Created by mitrakov on 27.03.2017
  */
 
-public abstract class DialogFeat extends Dialog {
+public abstract class DialogFeat extends Dialog implements Localizable {
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 

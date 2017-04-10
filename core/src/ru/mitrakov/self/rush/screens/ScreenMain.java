@@ -26,11 +26,10 @@ import ru.mitrakov.self.rush.dialogs.*;
 /**
  * Created by mitrakov on 03.03.2017
  */
-public class ScreenMain extends ScreenAdapter {
+public class ScreenMain extends LocalizableScreen {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
-    private final I18NBundle i18n;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
@@ -46,14 +45,16 @@ public class ScreenMain extends ScreenAdapter {
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
     private final Table tableFriendsControl = new Table();
-    private final Dialog moreCrystalsDialog;
-    private final Dialog incomingDialog;
-    private final Dialog settingsDialog;
-    private final Dialog aboutDialog;
+    private final DialogPromocode promocodeDialog;
+    private final DialogFeat moreCrystalsDialog;
+    private final DialogFeat incomingDialog;
+    private final DialogFeat settingsDialog;
+    private final DialogFeat aboutDialog;
     private final DialogBuyAbilities buyAbilitiesDialog;
     private final DialogInfo infoDialog;
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
+    private final DialogQuestion question;
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
     private final DialogConnect connectingDialog;
@@ -64,23 +65,23 @@ public class ScreenMain extends ScreenAdapter {
     private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextField txtEnemyName;
     private final TextField txtFriendName;
-    private final Button btnInviteByName;
-    private final Button btnInviteRandom;
-    private final Button btnInviteLatest;
-    private final Button btnInviteByNameOk;
-    private final Button btnInviteByNameCancel;
+    private final TextButton btnInviteByName;
+    private final TextButton btnInviteRandom;
+    private final TextButton btnInviteLatest;
+    private final TextButton btnInviteByNameOk;
+    private final TextButton btnInviteByNameCancel;
     private final Button btnSettings;
     private final Button btnAbout;
-    private final Button btnInfo;
-    private final Button btnRating;
-    private final Button btnHistory;
-    private final Button btnFriends;
-    private final Button btnBuyAbilities;
-    private final Button btnGeneralRating;
-    private final Button btnWeeklyRating;
-    private final Button btnAddFriend;
-    private final Button btnAddFriendOk;
-    private final Button btnAddFriendCancel;
+    private final TextButton btnInfo;
+    private final TextButton btnRating;
+    private final TextButton btnHistory;
+    private final TextButton btnFriends;
+    private final TextButton btnBuyAbilities;
+    private final TextButton btnGeneralRating;
+    private final TextButton btnWeeklyRating;
+    private final TextButton btnAddFriend;
+    private final TextButton btnAddFriendOk;
+    private final TextButton btnAddFriendCancel;
     private final LinkedLabel lblMore;
     private final Label lblName;
     private final Label lblCrystalsHeader;
@@ -98,6 +99,7 @@ public class ScreenMain extends ScreenAdapter {
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
+    private I18NBundle i18n;
     private long generalRatingTime = 0;
     private long weeklyRatingTime = 0;
     private long inviteTime = 0;
@@ -123,17 +125,16 @@ public class ScreenMain extends ScreenAdapter {
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         assert regionSettings != null && regionAbout != null;
 
-        Dialog promocodeDialog = new DialogPromocode(model, skin, "default", i18n);
-        DialogQuestion question = new DialogQuestion(i18n.format("dialog.question"), skin, "default", i18n);
-
+        promocodeDialog = new DialogPromocode(model, skin, "default", i18n);
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage, i18n);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
-        settingsDialog = new DialogSettings(model, skin, "default", audioManager, i18n);
+        settingsDialog = new DialogSettings(game, model, skin, "default", audioManager, i18n);
         aboutDialog = new DialogAbout(skin, "default", i18n);
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
         infoDialog = new DialogInfo("Information", skin, "default", i18n);
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage, i18n);
+        question = new DialogQuestion(i18n.format("dialog.question"), skin, "default", i18n);
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, question, stage, audioManager, i18n);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default", i18n);
         connectingDialog = new DialogConnect(skin, "default", stage, i18n);
@@ -382,6 +383,51 @@ public class ScreenMain extends ScreenAdapter {
         super.dispose();
     }
 
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+
+        promocodeDialog.onLocaleChanged(bundle);
+        question.onLocaleChanged(bundle);
+        moreCrystalsDialog.onLocaleChanged(bundle);
+        incomingDialog.onLocaleChanged(bundle);
+        settingsDialog.onLocaleChanged(bundle);
+        aboutDialog.onLocaleChanged(bundle);
+        buyAbilitiesDialog.onLocaleChanged(bundle);
+        infoDialog.onLocaleChanged(bundle);
+        dialupDialog.onLocaleChanged(bundle);
+        inviteDialog.onLocaleChanged(bundle);
+        friendsDialog.onLocaleChanged(bundle);
+        promocodeDoneDialog.onLocaleChanged(bundle);
+        connectingDialog.onLocaleChanged(bundle);
+
+        question.getTitleLabel().setText(bundle.format("dialog.question"));
+        btnInviteByName.setText(bundle.format("opponent.find"));
+        btnInviteRandom.setText(bundle.format("opponent.random"));
+        btnInviteLatest.setText(bundle.format("opponent.latest"));
+        btnInviteByNameOk.setText(bundle.format("ok"));
+        btnInviteByNameCancel.setText(bundle.format("cancel"));
+        btnInfo.setText(bundle.format("info.header"));
+        btnRating.setText(bundle.format("rating.header"));
+        btnHistory.setText(bundle.format("history.header"));
+        btnFriends.setText(bundle.format("friends.header"));
+        btnBuyAbilities.setText(bundle.format("abilities.buy"));
+        btnGeneralRating.setText(bundle.format("rating.general"));
+        btnWeeklyRating.setText(bundle.format("rating.weekly"));
+        btnAddFriend.setText(bundle.format("friends.add"));
+        btnAddFriendOk.setText(bundle.format("ok"));
+        btnAddFriendCancel.setText(bundle.format("cancel"));
+        lblMore.setText(bundle.format("dialog.crystals.start"), bundle.format("dialog.crystals.link"), "");
+        lblCrystalsHeader.setText(bundle.format("info.crystals"));
+        lblAbilities.setText(bundle.format("info.abilities"));
+        lblRatingName.setText(bundle.format("rating.name"));
+        lblRatingWins.setText(bundle.format("rating.wins"));
+        lblRatingLosses.setText(bundle.format("rating.losses"));
+        lblRatingScoreDiff.setText(bundle.format("rating.score.diff"));
+        lblRatingDots.setText(bundle.format("rating.dots"));
+    }
+
     private void loadTextures(AudioManager audioManager) {
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
@@ -390,6 +436,7 @@ public class ScreenMain extends ScreenAdapter {
                     addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
+                            assert i18n != null;
                             Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
                             if (minutes != null) {
                                 long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
@@ -598,20 +645,21 @@ public class ScreenMain extends ScreenAdapter {
     }
 
     private void updateStopCall() {
+        assert i18n != null;
         if (stopCallRejectedTime != model.stopCallRejectedTime) {
             stopCallRejectedTime = model.stopCallRejectedTime;
             dialupDialog.hide();
-            infoDialog.setText(String.format(i18n.format("stopcall.rejected"), model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.rejected", model.enemy)).show(stage);
         }
         if (stopCallMissedTime != model.stopCallMissedTime) {
             stopCallMissedTime = model.stopCallMissedTime;
             incomingDialog.hide();
-            infoDialog.setText(String.format(i18n.format("stopcall.missed"), model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.missed", model.enemy)).show(stage);
         }
         if (stopCallExpiredTime != model.stopCallExpiredTime) {
             stopCallExpiredTime = model.stopCallExpiredTime;
             dialupDialog.hide();
-            infoDialog.setText(String.format(i18n.format("stopcall.expired"), model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
         }
     }
 }

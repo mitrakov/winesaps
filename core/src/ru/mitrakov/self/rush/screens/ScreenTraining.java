@@ -19,11 +19,10 @@ import ru.mitrakov.self.rush.model.object.*;
  * Created by mitrakov on 01.03.2017
  */
 
-public class ScreenTraining extends ScreenAdapter {
+public class ScreenTraining extends LocalizableScreen {
     private final Model model;
     private final RushClient game;
     private final PsObject psObject;
-    private final I18NBundle i18n;
     private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
@@ -31,7 +30,7 @@ public class ScreenTraining extends ScreenAdapter {
     private final Table table = new Table();
     private final Gui gui;
     private final ImageButton btnThing;
-    private final Button btnSkip;
+    private final TextButton btnSkip;
     private final DialogFinished finishedDialog;
     private final DialogTraining trainingDialog;
 
@@ -42,6 +41,7 @@ public class ScreenTraining extends ScreenAdapter {
     private CellObject thing = null;
     private boolean started = false;
     private boolean finished = false;
+    private I18NBundle i18n;
 
     public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin,
                           AudioManager audioManager, I18NBundle i18n) {
@@ -78,7 +78,7 @@ public class ScreenTraining extends ScreenAdapter {
         }};
 
         initComponents(skin);
-        addContent();
+        addContent(i18n);
     }
 
     @Override
@@ -126,6 +126,16 @@ public class ScreenTraining extends ScreenAdapter {
         super.dispose();
     }
 
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+
+        btnSkip.setText(bundle.format("train.skip"));
+        finishedDialog.onLocaleChanged(bundle);
+        addContent(bundle);
+    }
+
     private void loadTextures() {
         for (Class clazz : new Class[]{CellObject.class, Umbrella.class}) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
@@ -158,10 +168,10 @@ public class ScreenTraining extends ScreenAdapter {
         }
     }
 
-    private void addContent() {
+    private void addContent(I18NBundle i18n) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
         final TextureAtlas atlas = atlasTraining;
-        trainingDialog
+        trainingDialog.clearMessages()
                 .addMessage(atlas.findRegion("msg1"), i18n.format("train.msg1.text"), i18n.format("train.msg1.action"))
                 .addMessage(atlas.findRegion("msg2"), i18n.format("train.msg2.text"), i18n.format("train.msg2.action"))
                 .addMessage(atlas.findRegion("msg3"), i18n.format("train.msg3.text"), i18n.format("train.msg3.action"))
@@ -192,6 +202,7 @@ public class ScreenTraining extends ScreenAdapter {
     }
 
     private void checkFinished() {
+        assert i18n != null;
         if (!finished && model.roundFinishedTime > 0) {
             finished = true;
             model.newbie = false;

@@ -14,6 +14,7 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 public class DialogPromocode extends DialogFeat {
     private final Model model;
     private final TextField field;
+    private final Label label;
 
     public DialogPromocode(final Model model, Skin skin, String windowStyleName, I18NBundle i18n) {
         super(i18n.format("dialog.promocode.header"), skin, windowStyleName);
@@ -23,7 +24,7 @@ public class DialogPromocode extends DialogFeat {
         Table table = getContentTable();
         assert table != null;
         table.pad(20);
-        table.add(new Label(i18n.format("dialog.promocode.text"), skin, "default"));
+        table.add(label = new Label(i18n.format("dialog.promocode.text"), skin, "default"));
         table.row().space(10);
         table.add(field = new TextField("", skin, "default") {{
             setAlignment(Align.center);
@@ -42,5 +43,23 @@ public class DialogPromocode extends DialogFeat {
     public Dialog show(Stage stage) {
         field.setText(model.promocode);
         return super.show(stage);
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+
+        label.setText(bundle.format("dialog.promocode.text"));
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.promocode.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 1) {
+                Actor actor = buttons.first();
+                if (actor != null && actor instanceof TextButton)
+                    ((TextButton) actor).setText(bundle.format("ok"));
+            }
+        }
     }
 }

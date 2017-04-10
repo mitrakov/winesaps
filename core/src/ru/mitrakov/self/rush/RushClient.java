@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.screens.*;
 import ru.mitrakov.self.rush.model.Model;
 
-public class RushClient extends Game {
+public class RushClient extends Game implements Localizable {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
 
@@ -19,10 +19,12 @@ public class RushClient extends Game {
     private final PsObject psObject; // may be NULL
     private /*final*/ Skin skin;
     private /*final*/ AudioManager audioManager;
-    private /*final*/ Screen screenLogin;
-    private /*final*/ Screen screenTraining;
-    private /*final*/ Screen screenMain;
-    private /*final*/ Screen screenBattle;
+    private /*final*/ LocalizableScreen screenLogin;
+    private /*final*/ LocalizableScreen screenTraining;
+    private /*final*/ LocalizableScreen screenMain;
+    private /*final*/ LocalizableScreen screenBattle;
+    private /*final*/ I18NBundle i18nEn;
+    private /*final*/ I18NBundle i18nRu;
 
     public RushClient(PsObject psObject) {
         this.psObject = psObject;
@@ -57,13 +59,16 @@ public class RushClient extends Game {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
         model.signIn(); // try to sign in using stored credentials
-        I18NBundle i18n = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), Locale.getDefault());
+
+        i18nEn = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("en"));
+        i18nRu = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("ru"));
+
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
-        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager, i18n);
-        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager, i18n);
-        screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18n);
-        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18n);
+        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager, i18nEn);
+        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager, i18nEn);
+        screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18nEn);
+        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18nEn);
         setScreen(screenLogin);
 
         // catch Android buttons
@@ -92,6 +97,14 @@ public class RushClient extends Game {
         screenBattle.dispose();
     }
 
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        screenLogin.onLocaleChanged(bundle);
+        screenTraining.onLocaleChanged(bundle);
+        screenMain.onLocaleChanged(bundle);
+        screenBattle.onLocaleChanged(bundle);
+    }
+
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
@@ -106,5 +119,9 @@ public class RushClient extends Game {
 
     public void setLoginScreen() {
         setScreen(screenLogin);
+    }
+
+    public void updateLocale() {
+        onLocaleChanged(model.languageEn ? i18nEn : i18nRu);
     }
 }

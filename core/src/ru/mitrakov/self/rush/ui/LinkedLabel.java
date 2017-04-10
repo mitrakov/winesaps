@@ -10,17 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
  * Created by mitrakov on 13.03.2017
  */
-
 public class LinkedLabel extends Table {
 
+    private final Label lblBefore;
+    private final Label lblLink;
+    private final Label lblAfter;
+
     public LinkedLabel(String txtBefore, String txtLink, String txtAfter, Skin skin, String style, final Runnable f) {
+        assert txtBefore != null && txtLink != null && txtAfter != null;
+
         ObjectMap<String, BitmapFont> fonts = skin.getAll(BitmapFont.class);
         String font = fonts.containsKey("default-font") ? "default-font" : fonts.containsKey("font") ? "font"
                 : fonts.keys().next();
 
-        if (txtBefore != null && txtBefore.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
-            add(new Label(txtBefore, skin, style));
-        Label lblLink = new Label(txtLink, skin, font, Color.BLUE);
+        lblBefore = new Label(txtBefore, skin, style);
+        lblLink = new Label(txtLink, skin, font, Color.BLUE);
+        lblAfter = new Label(txtAfter, skin, style);
+
+        if (txtBefore.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
+            add(lblBefore);
         lblLink.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -29,7 +37,14 @@ public class LinkedLabel extends Table {
             }
         });
         add(lblLink);
-        if (txtAfter != null && txtAfter.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
-            add(new Label(txtAfter, skin, style));
+        if (txtAfter.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
+            add(lblAfter);
+    }
+
+    public void setText(String txtBefore, String txtLink, String txtAfter) {
+        assert txtBefore != null && txtLink != null && txtAfter != null;
+        lblBefore.setText(txtBefore);
+        lblLink.setText(txtLink);
+        lblAfter.setText(txtAfter);
     }
 }

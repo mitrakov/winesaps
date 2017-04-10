@@ -19,7 +19,7 @@ import ru.mitrakov.self.rush.dialogs.DialogConnect;
  * Created by mitrakov on 01.03.2017
  */
 
-public class ScreenLogin extends ScreenAdapter {
+public class ScreenLogin extends LocalizableScreen {
     private final RushClient game;
     private final Model model;
     private final PsObject psObject;
@@ -31,11 +31,11 @@ public class ScreenLogin extends ScreenAdapter {
     private final TextField txtPassword;
     private final TextField txtEmail;
     private final TextField txtPromocode;
-    private final Button btnSignIn;
-    private final Button btnSignUp;
-    private final Button btnBack;
-    private final Button btnOkSignIn;
-    private final Button btnOkSignUp;
+    private final TextButton btnSignIn;
+    private final TextButton btnSignUp;
+    private final TextButton btnBack;
+    private final TextButton btnOkSignIn;
+    private final TextButton btnOkSignUp;
     private final CheckBox chkPromocode;
     private final Label lblName;
     private final Label lblPassword;
@@ -193,6 +193,22 @@ public class ScreenLogin extends ScreenAdapter {
         stage.dispose();
         atlasMenu.dispose(); // disposing an atlas also disposes all its internal textures
         super.dispose();
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+
+        btnSignIn.setText(bundle.format("sign.in"));
+        btnSignUp.setText(bundle.format("sign.up"));
+        btnBack.setText(bundle.format("back"));
+        btnOkSignIn.setText(bundle.format("ok"));
+        btnOkSignUp.setText(bundle.format("ok"));
+        chkPromocode.setText(bundle.format("sign.promocode"));
+        lblName.setText(bundle.format("sign.name"));
+        lblPassword.setText(bundle.format("sign.password"));
+        lblEmail.setText(bundle.format("sign.email"));
+        connectingDialog.onLocaleChanged(bundle);
     }
 
     private void setStartDialog() {

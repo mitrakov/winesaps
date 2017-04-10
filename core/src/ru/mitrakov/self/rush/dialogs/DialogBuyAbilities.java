@@ -20,6 +20,7 @@ public class DialogBuyAbilities extends DialogFeat {
     private final Label lblPicture;
     private final Label lblCrystals;
     private final Label lblCurAbility;
+    private final Label lblTotalCrystals;
     private final List<Product> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
@@ -29,6 +30,7 @@ public class DialogBuyAbilities extends DialogFeat {
         this.model = model;
 
         productsList = new List<Product>(skin, "default");
+        lblTotalCrystals = new Label(i18n.format("dialog.abilities.total"), skin, "default");
         lblCrystals = new Label("", skin, "default");
         lblPicture = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
@@ -36,7 +38,7 @@ public class DialogBuyAbilities extends DialogFeat {
         button(i18n.format("buy"), true);
         button(i18n.format("close"));
 
-        init(getContentTable(), loadTextures(audioManager), skin, i18n);
+        init(getContentTable(), loadTextures(audioManager), skin);
     }
 
     @Override
@@ -75,10 +77,32 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
-    private void init(Table table, final Array<Actor> abilities, Skin skin, I18NBundle i18n) {
-        assert table != null && skin != null && i18n != null;
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
 
-        table.add(new Label(i18n.format("dialog.abilities.total"), skin, "default"));
+        lblTotalCrystals.setText(bundle.format("dialog.abilities.total"));
+
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.abilities.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 2) {
+                Actor buy = buttons.first();
+                if (buy != null && buy instanceof TextButton)
+                    ((TextButton) buy).setText(bundle.format("buy"));
+                Actor close = buttons.get(1);
+                if (close != null && close instanceof TextButton)
+                    ((TextButton) close).setText(bundle.format("close"));
+            }
+        }
+    }
+
+    private void init(Table table, final Array<Actor> abilities, Skin skin) {
+        assert table != null && skin != null;
+
+        table.add(lblTotalCrystals);
         table.add(lblCrystals);
         table.row();
         table.add(new Table() {{

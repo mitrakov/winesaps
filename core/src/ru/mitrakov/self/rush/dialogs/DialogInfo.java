@@ -1,7 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
@@ -19,6 +20,21 @@ public class DialogInfo extends DialogFeat {
         getContentTable().pad(20).add(lblMessage); // here getContentTable != null
 
         button(i18n.format("ok"));
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 1) {
+                Actor actor = buttons.first();
+                if (actor != null && actor instanceof TextButton)
+                    ((TextButton) actor).setText(bundle.format("ok"));
+            }
+        }
     }
 
     public Dialog setText(String text) {

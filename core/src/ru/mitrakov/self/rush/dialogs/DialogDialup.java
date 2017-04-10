@@ -1,8 +1,9 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.ui.DialogFeat;
@@ -13,8 +14,8 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 
 public class DialogDialup extends DialogFeat {
     private final Model model;
-    private final I18NBundle i18n;
     private final Label lblMessage;
+    private I18NBundle i18n;
 
     public DialogDialup(Model model, Skin skin, String windowStyleName, I18NBundle i18n) {
         super(i18n.format("dialog.dialup.header"), skin, windowStyleName);
@@ -25,17 +26,35 @@ public class DialogDialup extends DialogFeat {
         lblMessage = new Label("", skin, "default");
         getContentTable().pad(20).add(lblMessage); // here getContentTable != null
 
-        button("Cancel");
+        button(i18n.format("cancel"));
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        lblMessage.setText(String.format(i18n.format("dialog.dialup.text"), model.enemy));
+        lblMessage.setText(String.format(i18n.format("dialog.dialup.text"), model.enemy)); //i18n!=NULL (assert omitted)
         super.draw(batch, parentAlpha);
     }
 
     @Override
     protected void result(Object object) {
         model.cancelCall();
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.dialup.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 1) {
+                Actor actor = buttons.first();
+                if (actor != null && actor instanceof TextButton)
+                    ((TextButton) actor).setText(bundle.format("cancel"));
+            }
+        }
     }
 }

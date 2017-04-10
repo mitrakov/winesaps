@@ -2,8 +2,9 @@ package ru.mitrakov.self.rush.dialogs;
 
 import java.util.Locale;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.RushClient;
 import ru.mitrakov.self.rush.ui.DialogFeat;
@@ -15,6 +16,7 @@ public class DialogFinished extends DialogFeat {
     private final RushClient game;
     private final Label lblMessage1;
     private final Label lblMessage2;
+    private final Label lblTotalScore;
     private final Label lblScore;
 
     private boolean quitOnResult = false;
@@ -25,16 +27,34 @@ public class DialogFinished extends DialogFeat {
         this.game = game;
         lblMessage1 = new Label("", skin, "default");
         lblMessage2 = new Label("", skin, "default");
+        lblTotalScore = new Label(i18n.format("dialog.finished.total.score"), skin, "default");
         lblScore = new Label("", skin, "default");
 
-        init(getContentTable(), skin, i18n);
-        button("OK");
+        init(getContentTable());
+        button(i18n.format("ok"));
     }
 
     @Override
     protected void result(Object object) {
-        if (quitOnResult) {
+        if (quitOnResult)
             game.setNextScreen();
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+
+        lblTotalScore.setText(bundle.format("dialog.finished.total.score"));
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.finished.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 1) {
+                Actor actor = buttons.first();
+                if (actor != null && actor instanceof TextButton)
+                    ((TextButton) actor).setText(bundle.format("ok"));
+            }
         }
     }
 
@@ -55,15 +75,15 @@ public class DialogFinished extends DialogFeat {
         return this;
     }
 
-    private void init(Table table, Skin skin, I18NBundle i18n) {
-        assert table != null && i18n != null;
+    private void init(Table table) {
+        assert table != null;
         table.pad(30);
         table.row().space(10);
         table.add(lblMessage1);
         table.row().space(10);
         table.add(lblMessage2);
         table.row().space(10);
-        table.add(new Label(i18n.format("dialog.finished.total.score"), skin, "default"));
+        table.add(lblTotalScore);
         table.row().space(10);
         table.add(lblScore);
     }
