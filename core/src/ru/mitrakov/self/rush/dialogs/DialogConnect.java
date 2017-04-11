@@ -2,7 +2,7 @@ package ru.mitrakov.self.rush.dialogs;
 
 import static java.lang.Math.*;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -21,7 +21,8 @@ public class DialogConnect extends Window implements Localizable {
 
         // add widgets
         pad(20);
-        add(label = new Label("", skin, "default"));
+        add(label = new Label("", skin, "default")).width(200);
+        label.setAlignment(Align.center);
 
         // set up
         setModal(true);
