@@ -23,18 +23,18 @@ public class DialogIncoming extends DialogFeat {
     private I18NBundle i18n;
 
     public DialogIncoming(Model model, Skin skin, String windowStyleName, AudioManager audioManager, I18NBundle i18n) {
-        super(i18n.format("dialog.incoming.header"), skin, windowStyleName);
-        assert model != null && audioManager != null;
+        super("", skin, windowStyleName);
+        assert model != null && audioManager != null && i18n != null;
         this.model = model;
         this.audioManager = audioManager;
         this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox(i18n.format("dialog.friends.add"), skin, "default"); // not checked by default
+        chkAddToFriends = new CheckBox("", skin, "default"); // not checked by default
 
-        button(i18n.format("dialog.incoming.accept"), Result.Accept);
-        button(i18n.format("dialog.incoming.reject"), Result.Reject);
-        button(i18n.format("dialog.incoming.ignore"), Result.Ignore);
+        button("Accept", Result.Accept); // text will be replaced in onLocaleChanged()
+        button("Reject", Result.Reject); // text will be replaced in onLocaleChanged()
+        button("Ignore", Result.Ignore); // text will be replaced in onLocaleChanged()
 
         Table table = getContentTable();
 

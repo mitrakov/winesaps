@@ -16,23 +16,23 @@ public class DialogAbout extends DialogFeat {
     private final Label lblSupport;
     private final Label lblWebSite;
 
-    public DialogAbout(Skin skin, String windowStyleName, I18NBundle i18n) {
-        super(i18n.format("dialog.about.header"), skin, windowStyleName);
+    public DialogAbout(Skin skin, String windowStyleName) {
+        super("", skin, windowStyleName);
 
         Table table = getContentTable();
         assert table != null;
 
         table.pad(30);
-        table.add(lblOverview = new Label(i18n.format("dialog.about.overview"), skin, "default"));
+        table.add(lblOverview = new Label("", skin, "default"));
         table.row().space(20);
-        table.add(lblCreated = new Label(i18n.format("dialog.about.created"), skin, "default"));
+        table.add(lblCreated = new Label("", skin, "default"));
         table.row();
-        table.add(lblSupport = new Label(i18n.format("dialog.about.support"), skin, "default")).left();
+        table.add(lblSupport = new Label("", skin, "default")).left();
         table.row();
-        table.add(lblWebSite = new Label(i18n.format("dialog.about.web"), skin, "default")).left();
+        table.add(lblWebSite = new Label("", skin, "default")).left();
         table.row();
 
-        button(i18n.format("close"));
+        button("Close"); // text will be replaced in onLocaleChanged()
     }
 
     @Override

@@ -14,15 +14,15 @@ public class DialogQuestion extends DialogFeat {
     private final Label lblMessage;
     private Runnable action;
 
-    public DialogQuestion(String title, Skin skin, String windowStyleName, I18NBundle i18n) {
+    public DialogQuestion(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
-        assert i18n != null;
 
         lblMessage = new Label("", skin, "default");
-        getContentTable().pad(20).add(lblMessage); // here getContentTable != null
+        lblMessage.setAlignment(Align.center);
+        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
 
-        button(i18n.format("yes"), true);
-        button(i18n.format("no"));
+        button("Yes", true); // text will be replaced in onLocaleChanged()
+        button("No");        // text will be replaced in onLocaleChanged()
     }
 
     @Override

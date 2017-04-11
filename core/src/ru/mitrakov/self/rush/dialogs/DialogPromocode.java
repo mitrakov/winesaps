@@ -16,15 +16,15 @@ public class DialogPromocode extends DialogFeat {
     private final TextField field;
     private final Label label;
 
-    public DialogPromocode(final Model model, Skin skin, String windowStyleName, I18NBundle i18n) {
-        super(i18n.format("dialog.promocode.header"), skin, windowStyleName);
+    public DialogPromocode(final Model model, Skin skin, String windowStyleName) {
+        super("", skin, windowStyleName);
         assert model != null;
         this.model = model;
 
         Table table = getContentTable();
         assert table != null;
         table.pad(20);
-        table.add(label = new Label(i18n.format("dialog.promocode.text"), skin, "default"));
+        table.add(label = new Label("", skin, "default"));
         table.row().space(10);
         table.add(field = new TextField("", skin, "default") {{
             setAlignment(Align.center);
@@ -36,7 +36,7 @@ public class DialogPromocode extends DialogFeat {
             });
         }});
 
-        button(i18n.format("ok"));
+        button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override

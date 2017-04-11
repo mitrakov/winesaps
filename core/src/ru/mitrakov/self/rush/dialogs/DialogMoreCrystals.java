@@ -22,28 +22,25 @@ public class DialogMoreCrystals extends DialogFeat {
     private final Label lblWay4;
     private final LinkedLabel lblText4;
 
-    public DialogMoreCrystals(Skin skin, String style, final Dialog promoDialog, final Stage stage, I18NBundle i18n) {
-        super(i18n.format("dialog.crystals.header"), skin, style);
+    public DialogMoreCrystals(Skin skin, String style, final Dialog promoDialog, final Stage stage) {
+        super("", skin, style);
         assert promoDialog != null && stage != null;
 
-        lblOverview = new Label(i18n.format("dialog.crystals.overview"), skin, "default");
-        lblWay1 = new Label(i18n.format("dialog.crystals.way1"), skin, "default");
-        lblText1 = new Label(i18n.format("dialog.crystals.text1"), skin, "default");
-        lblWay2 = new Label(i18n.format("dialog.crystals.way2"), skin, "default");
-        lblText2 = new LinkedLabel(i18n.format("dialog.crystals.text2.start"),
-                i18n.format("dialog.crystals.text2.link"), i18n.format("dialog.crystals.text2.end"), skin, "default",
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        promoDialog.show(stage);
-                    }
-                });
-        lblText2extra = new Label(i18n.format("dialog.crystals.text2.extra"), skin, "default");
-        lblWay3 = new Label(i18n.format("dialog.crystals.way3"), skin, "default");
-        lblText3 = new Label(i18n.format("dialog.crystals.text3"), skin, "default");
-        lblWay4 = new Label(i18n.format("dialog.crystals.way4"), skin, "default");
-        lblText4 = new LinkedLabel(i18n.format("dialog.crystals.text4.start"),
-                i18n.format("dialog.crystals.text4.link"), "", skin, "default", new Runnable() {
+        lblOverview = new Label("", skin, "default");
+        lblWay1 = new Label("", skin, "default");
+        lblText1 = new Label("", skin, "default");
+        lblWay2 = new Label("", skin, "default");
+        lblText2 = new LinkedLabel("", "", "", skin, "default", new Runnable() {
+            @Override
+            public void run() {
+                promoDialog.show(stage);
+            }
+        });
+        lblText2extra = new Label("", skin, "default");
+        lblWay3 = new Label("", skin, "default");
+        lblText3 = new Label("", skin, "default");
+        lblWay4 = new Label("", skin, "default");
+        lblText4 = new LinkedLabel("", "", "", skin, "default", new Runnable() {
             @Override
             public void run() {
                 System.out.println("Hey-Hey!");
@@ -51,8 +48,7 @@ public class DialogMoreCrystals extends DialogFeat {
         });
 
         init(getContentTable());
-
-        button(i18n.format("close"));
+        button("Close"); // text will be replaced in onLocaleChanged()
     }
 
     @Override

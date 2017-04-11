@@ -12,23 +12,25 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 
 public class DialogPromocodeDone extends DialogFeat {
     private final Label lblMessage;
-    private I18NBundle i18n;
+    private String name = "";
+    private boolean inviter;
+    private int crystals;
 
-    public DialogPromocodeDone(Skin skin, String windowStyleName, I18NBundle i18n) {
-        super(i18n.format("dialog.promocode.done.header"), skin, windowStyleName);
-        this.i18n = i18n;
+    public DialogPromocodeDone(Skin skin, String windowStyleName) {
+        super("", skin, windowStyleName);
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center, Align.center);
-        getContentTable().pad(20).add(lblMessage); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
 
-        button(i18n.format("ok"));
+        button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-        this.i18n = bundle;
+
+        setArguments(name, inviter, crystals, bundle);
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.promocode.done.header"));
@@ -43,8 +45,11 @@ public class DialogPromocodeDone extends DialogFeat {
         }
     }
 
-    public Dialog setArguments(String name, boolean inviter, int crystals) {
+    public Dialog setArguments(String name, boolean inviter, int crystals, I18NBundle i18n) {
         assert name != null && i18n != null;
+        this.name = name;
+        this.inviter = inviter;
+        this.crystals = crystals;
         String s1 = i18n.format("dialog.promocode.done.inviter", name, crystals);
         String s2 = i18n.format("dialog.promocode.done.winner", name, crystals);
         lblMessage.setText(inviter ? s1 : s2);

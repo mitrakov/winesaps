@@ -21,17 +21,17 @@ public class DialogFinished extends DialogFeat {
 
     private boolean quitOnResult = false;
 
-    public DialogFinished(RushClient game, Skin skin, String windowStyleName, I18NBundle i18n) {
-        super(i18n.format("dialog.finished.header"), skin, windowStyleName);
+    public DialogFinished(RushClient game, Skin skin, String windowStyleName) {
+        super("", skin, windowStyleName);
         assert game != null;
         this.game = game;
         lblMessage1 = new Label("", skin, "default");
         lblMessage2 = new Label("", skin, "default");
-        lblTotalScore = new Label(i18n.format("dialog.finished.total.score"), skin, "default");
+        lblTotalScore = new Label("", skin, "default");
         lblScore = new Label("", skin, "default");
 
         init(getContentTable());
-        button(i18n.format("ok"));
+        button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override

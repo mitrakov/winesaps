@@ -13,26 +13,28 @@ import ru.mitrakov.self.rush.AudioManager;
  * Created by mitrakov on 05.03.2017
  */
 public class DialogFriends extends DialogFeat {
+    private final Model model;
     private final TextButton btnInvite;
     private final TextButton btnRemove;
+    private final DialogQuestion yesNoDialog;
+    private final DialogInvite invDialog;
 
-    private I18NBundle i18n;
     private String name = "";
 
-    public DialogFriends(final Model model, Skin skin, String style, final DialogInvite invDialog,
-                         final DialogQuestion yesNoDialog, final Stage stage, AudioManager audioManager,
-                         I18NBundle i18nb) {
+    public DialogFriends(Model model, Skin skin, String style, final DialogInvite invDialog,
+                         final DialogQuestion yesNoDialog, final Stage stage, AudioManager audioManager) {
         super("", skin, style);
         assert model != null && invDialog != null && yesNoDialog != null && stage != null && audioManager != null;
-        assert i18nb != null;
-        i18n = i18nb;
+        this.model = model;
+        this.yesNoDialog = yesNoDialog;
+        this.invDialog = invDialog;
 
         btnInvite = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     hide();
-                    invDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
+                    invDialog.show(stage);
                 }
             });
         }};
@@ -40,14 +42,8 @@ public class DialogFriends extends DialogFeat {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    assert i18n != null;
                     hide();
-                    yesNoDialog.setText(i18n.format("dialog.friends.remove.text", name)).setRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            model.removeFriend(name);
-                        }
-                    }).show(stage);
+                    yesNoDialog.show(stage);
                 }
             });
         }};
@@ -59,16 +55,14 @@ public class DialogFriends extends DialogFeat {
         table.add(btnRemove).width(200);
 
         padTop(0);
-        button(i18n.format("close"));
+        button("Close"); // text will be replaced in onLocaleChanged()
     }
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-        this.i18n = bundle;
 
-        btnInvite.setText(bundle.format("dialog.friends.invite", name));
-        btnRemove.setText(bundle.format("dialog.friends.remove", name));
+        setFriend(name, bundle);
 
         if (getButtonTable() != null) {
             Array<Actor> buttons = getButtonTable().getChildren();
@@ -81,11 +75,18 @@ public class DialogFriends extends DialogFeat {
         }
     }
 
-    public Dialog setFriend(String name) {
+    public Dialog setFriend(final String name, I18NBundle i18n) {
         assert name != null && i18n != null;
         this.name = name;
         btnInvite.setText(i18n.format("dialog.friends.invite", name));
         btnRemove.setText(i18n.format("dialog.friends.remove", name));
+        invDialog.setArguments(DialogInvite.InviteType.ByName, name);
+        yesNoDialog.setText(i18n.format("dialog.friends.remove.text", name)).setRunnable(new Runnable() {
+            @Override
+            public void run() {
+                model.removeFriend(name);
+            }
+        });
         return this;
     }
 }

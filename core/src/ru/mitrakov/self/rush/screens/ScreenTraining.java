@@ -33,17 +33,15 @@ public class ScreenTraining extends LocalizableScreen {
     private CellObject thing = null;
     private boolean started = false;
     private boolean finished = false;
-    private I18NBundle i18n;
 
     public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin,
-                          AudioManager audioManager, I18NBundle i18n) {
+                          AudioManager audioManager) {
         super(game, model, psObject);
-        assert skin != null && audioManager != null && i18n != null;
-        this.i18n = i18n;
+        assert skin != null && audioManager != null;
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default", i18n);
+        finishedDialog = new DialogFinished(game, skin, "default");
         trainingDialog = new DialogTraining(skin, "default");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
@@ -53,7 +51,7 @@ public class ScreenTraining extends LocalizableScreen {
                 }
             });
         }};
-        btnSkip = new TextButtonFeat(i18n.format("train.skip"), skin, "default", audioManager) {{
+        btnSkip = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -65,7 +63,6 @@ public class ScreenTraining extends LocalizableScreen {
         }};
 
         initComponents(skin);
-        addContent(i18n);
     }
 
     @Override
@@ -101,9 +98,9 @@ public class ScreenTraining extends LocalizableScreen {
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-        this.i18n = bundle;
 
         btnSkip.setText(bundle.format("train.skip"));
+        finishedDialog.setText(bundle.format("train.msgX.text"), bundle.format("train.msgX.action"));
         finishedDialog.onLocaleChanged(bundle);
         addContent(bundle);
     }
@@ -174,14 +171,12 @@ public class ScreenTraining extends LocalizableScreen {
     }
 
     private void checkFinished() {
-        assert i18n != null;
         if (!finished && model.roundFinishedTime > 0) {
             finished = true;
             model.newbie = false;
             model.stopBattle();
             trainingDialog.remove();
-            finishedDialog.setText(i18n.format("train.msgX.text"), i18n.format("train.msgX.action")).setScore(1, 0)
-                    .setQuitOnResult(true).show(stage);
+            finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
         }
     }
 }

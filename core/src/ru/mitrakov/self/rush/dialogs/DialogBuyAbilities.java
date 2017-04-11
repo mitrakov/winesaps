@@ -24,19 +24,19 @@ public class DialogBuyAbilities extends DialogFeat {
     private final List<Product> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
-    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
-        super(i18n.format("dialog.abilities.header"), skin, style);
+    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager) {
+        super("", skin, style);
         assert model != null && audioManager != null;
         this.model = model;
 
         productsList = new List<Product>(skin, "default");
-        lblTotalCrystals = new Label(i18n.format("dialog.abilities.total"), skin, "default");
+        lblTotalCrystals = new Label("", skin, "default");
         lblCrystals = new Label("", skin, "default");
         lblPicture = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
 
-        button(i18n.format("buy"), true);
-        button(i18n.format("close"));
+        button("Buy", true); // text will be replaced in onLocaleChanged()
+        button("Close");     // text will be replaced in onLocaleChanged()
 
         init(getContentTable(), loadTextures(audioManager), skin);
     }

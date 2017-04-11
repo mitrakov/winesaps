@@ -25,18 +25,18 @@ public class DialogInvite extends DialogFeat {
     private I18NBundle i18n;
 
     public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage, I18NBundle i18n) {
-        super(i18n.format("dialog.invite.header"), skin, windowStyleName);
-        assert model != null && dialup != null && stage != null;
+        super("", skin, windowStyleName);
+        assert model != null && dialup != null && stage != null && i18n != null;
         this.model = model;
         this.dialup = dialup;
         this.stage = stage;
         this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox(i18n.format("dialog.friends.add"), skin, "default"); // not checked by default
+        chkAddToFriends = new CheckBox("", skin, "default"); // not checked by default
 
-        button(i18n.format("ok"), true);
-        button(i18n.format("cancel"));
+        button("OK", true); // text will be replaced in onLocaleChanged()
+        button("Cancel");   // text will be replaced in onLocaleChanged()
     }
 
     @Override

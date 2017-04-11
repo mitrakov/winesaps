@@ -24,9 +24,8 @@ public class DialogSettings extends DialogFeat {
     private final Label lblNotify;
     private final Label lblSignOut;
 
-    public DialogSettings(RushClient game, final Model model, Skin skin, String styleName, AudioManager audioManager,
-                          I18NBundle i18n) {
-        super(i18n.format("dialog.settings.header"), skin, styleName);
+    public DialogSettings(RushClient game, final Model model, Skin skin, String styleName, AudioManager audioManager) {
+        super("", skin, styleName);
         assert game != null && model != null && audioManager != null;
         this.game = game;
         this.model = model;
@@ -36,11 +35,11 @@ public class DialogSettings extends DialogFeat {
         String style = map.containsKey("radio") ? "radio" : map.containsKey("default-radio") ? "default-radio"
                 : map.keys().next();
 
-        btnEng = new CheckBox(i18n.format("dialog.settings.lang.english"), skin, style);
-        btnRus = new CheckBox(i18n.format("dialog.settings.lang.russian"), skin, style);
-        btnNotifyYes = new CheckBox(i18n.format("dialog.settings.notify.yes"), skin, style);
-        btnNotifyNo = new CheckBox(i18n.format("dialog.settings.notify.no"), skin, style);
-        btnSignOut = new TextButtonFeat(i18n.format("dialog.settings.sign.out"), skin, "default", audioManager) {{
+        btnEng = new CheckBox("", skin, style);
+        btnRus = new CheckBox("", skin, style);
+        btnNotifyYes = new CheckBox("", skin, style);
+        btnNotifyNo = new CheckBox("", skin, style);
+        btnSignOut = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -49,11 +48,11 @@ public class DialogSettings extends DialogFeat {
                 }
             });
         }};
-        lblLang = new Label(i18n.format("dialog.settings.lang.header"), skin, "default");
-        lblNotify = new Label(i18n.format("dialog.settings.notify.header"), skin, "default");
-        lblSignOut = new Label(i18n.format("dialog.settings.sign.out"), skin, "default");
+        lblLang = new Label("", skin, "default");
+        lblNotify = new Label("", skin, "default");
+        lblSignOut = new Label("", skin, "default");
 
-        button(i18n.format("close"));
+        button("Close"); // text will be replaced in onLocaleChanged()
         init(getContentTable(), game);
     }
 

@@ -15,13 +15,13 @@ public class DialogConnect extends Window implements Localizable {
 
     private final Label label;
 
-    public DialogConnect(Skin skin, String windowStyleName, Stage stage, I18NBundle i18n) {
+    public DialogConnect(Skin skin, String windowStyleName, Stage stage) {
         super("", skin, windowStyleName);
-        assert stage != null && i18n != null;
+        assert stage != null;
 
         // add widgets
         pad(20);
-        add(label = new Label(i18n.format("dialog.connecting"), skin, "default"));
+        add(label = new Label("", skin, "default"));
 
         // set up
         setModal(true);

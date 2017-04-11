@@ -52,8 +52,8 @@ public class ScreenBattle extends LocalizableScreen {
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default", i18n);
-        connectingDialog = new DialogConnect(skin, "default", stage, i18n);
+        finishedDialog = new DialogFinished(game, skin, "default");
+        connectingDialog = new DialogConnect(skin, "default", stage);
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
         abilityButtonsScroll = new ScrollPane(abilityButtons);

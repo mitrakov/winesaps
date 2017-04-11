@@ -12,14 +12,14 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 public class DialogInfo extends DialogFeat {
     private final Label lblMessage;
 
-    public DialogInfo(String title, Skin skin, String windowStyleName, I18NBundle i18n) {
+    public DialogInfo(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
-        assert i18n != null;
 
         lblMessage = new Label("", skin, "default");
-        getContentTable().pad(20).add(lblMessage); // here getContentTable != null
+        lblMessage.setAlignment(Align.center);
+        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
 
-        button(i18n.format("ok"));
+        button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override

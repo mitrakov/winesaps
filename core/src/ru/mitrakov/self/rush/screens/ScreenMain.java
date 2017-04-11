@@ -46,7 +46,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogInfo infoDialog;
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
-    private final DialogQuestion question;
+    private final DialogQuestion questionDialog;
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
     private final DialogConnect connectingDialog;
@@ -103,36 +103,37 @@ public class ScreenMain extends LocalizableScreen {
     private long promocodeDoneTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                      I18NBundle i18n) {
+                      I18NBundle i18nArg) {
         super(game, model, psObject);
-        assert skin != null && audioManager != null && i18n != null;
-        this.i18n = i18n;
+        assert skin != null && audioManager != null && i18nArg != null;
+        i18n = i18nArg;
 
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         assert regionSettings != null && regionAbout != null;
 
-        promocodeDialog = new DialogPromocode(model, skin, "default", i18n);
-        moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage, i18n);
+        promocodeDialog = new DialogPromocode(model, skin, "default");
+        moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
-        settingsDialog = new DialogSettings(game, model, skin, "default", audioManager, i18n);
-        aboutDialog = new DialogAbout(skin, "default", i18n);
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
-        infoDialog = new DialogInfo("Information", skin, "default", i18n);
+        settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
+        aboutDialog = new DialogAbout(skin, "default");
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager);
+        infoDialog = new DialogInfo("", skin, "default");
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage, i18n);
-        question = new DialogQuestion(i18n.format("dialog.question"), skin, "default", i18n);
-        friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, question, stage, audioManager, i18n);
-        promocodeDoneDialog = new DialogPromocodeDone(skin, "default", i18n);
-        connectingDialog = new DialogConnect(skin, "default", stage, i18n);
+        questionDialog = new DialogQuestion("", skin, "default");
+        friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
+        promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
+        connectingDialog = new DialogConnect(skin, "default", stage);
         lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
             addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    assert i18n != null;
                     String friend = lstFriends.getSelected();
                     if (friend != null)
-                        friendsDialog.setFriend(friend).show(stage);
+                        friendsDialog.setFriend(friend, i18n).show(stage);
                 }
             });
         }};
@@ -141,7 +142,7 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
         txtEnemyName = new TextField("", skin, "default");
         txtFriendName = new TextField("", skin, "default");
-        btnInviteByName = new TextButtonFeat(i18n.format("opponent.find"), skin, "default", audioManager) {{
+        btnInviteByName = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -149,7 +150,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteRandom = new TextButtonFeat(i18n.format("opponent.random"), skin, "default", audioManager) {{
+        btnInviteRandom = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -157,7 +158,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteLatest = new TextButtonFeat(i18n.format("opponent.latest"), skin, "default", audioManager) {{
+        btnInviteLatest = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -165,7 +166,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameOk = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
+        btnInviteByNameOk = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -177,7 +178,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameCancel = new TextButtonFeat(i18n.format("cancel"), skin, "default", audioManager) {{
+        btnInviteByNameCancel = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -201,7 +202,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInfo = new TextButtonFeat(i18n.format("info.header"), skin, "default", audioManager) {{
+        btnInfo = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -209,7 +210,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnRating = new TextButtonFeat(i18n.format("rating.header"), skin, "default", audioManager) {{
+        btnRating = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -217,7 +218,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnHistory = new TextButtonFeat(i18n.format("history.header"), skin, "default", audioManager) {{
+        btnHistory = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -225,7 +226,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnFriends = new TextButtonFeat(i18n.format("friends.header"), skin, "default", audioManager) {{
+        btnFriends = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -233,7 +234,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnBuyAbilities = new TextButtonFeat(i18n.format("abilities.buy"), skin, "default", audioManager) {{
+        btnBuyAbilities = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -241,7 +242,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnGeneralRating = new TextButtonFeat(i18n.format("rating.general"), skin, "default", audioManager) {{
+        btnGeneralRating = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -249,7 +250,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnWeeklyRating = new TextButtonFeat(i18n.format("rating.weekly"), skin, "default", audioManager) {{
+        btnWeeklyRating = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -257,7 +258,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriend = new TextButtonFeat(i18n.format("friends.add"), skin, "default", audioManager) {{
+        btnAddFriend = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -265,7 +266,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriendOk = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
+        btnAddFriendOk = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -274,7 +275,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriendCancel = new TextButtonFeat(i18n.format("cancel"), skin, "default", audioManager) {{
+        btnAddFriendCancel = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -282,23 +283,22 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        lblMore = new LinkedLabel(i18n.format("dialog.crystals.start"), i18n.format("dialog.crystals.link"), "", skin,
-                "default", new Runnable() {
+        lblMore = new LinkedLabel("", "", "", skin, "default", new Runnable() {
             @Override
             public void run() {
                 moreCrystalsDialog.show(stage);
             }
         });
         lblName = new Label("", skin, "default");
-        lblCrystalsHeader = new Label(i18n.format("info.crystals"), skin, "default");
+        lblCrystalsHeader = new Label("", skin, "default");
         lblCrystalsData = new Label("", skin, "default");
-        lblAbilities = new Label(i18n.format("info.abilities"), skin, "default");
+        lblAbilities = new Label("", skin, "default");
         lblAbilityExpireTime = new Label("", skin, "default");
-        lblRatingName = new Label(i18n.format("rating.name"), skin, "default");
-        lblRatingWins = new Label(i18n.format("rating.wins"), skin, "default");
-        lblRatingLosses = new Label(i18n.format("rating.losses"), skin, "default");
-        lblRatingScoreDiff = new Label(i18n.format("rating.score.diff"), skin, "default");
-        lblRatingDots = new Label(i18n.format("rating.dots"), skin, "default");
+        lblRatingName = new Label("", skin, "default");
+        lblRatingWins = new Label("", skin, "default");
+        lblRatingLosses = new Label("", skin, "default");
+        lblRatingScoreDiff = new Label("", skin, "default");
+        lblRatingDots = new Label("", skin, "default");
 
         loadTextures(audioManager);
         initTables(skin);
@@ -364,7 +364,7 @@ public class ScreenMain extends LocalizableScreen {
         this.i18n = bundle;
 
         promocodeDialog.onLocaleChanged(bundle);
-        question.onLocaleChanged(bundle);
+        questionDialog.onLocaleChanged(bundle);
         moreCrystalsDialog.onLocaleChanged(bundle);
         incomingDialog.onLocaleChanged(bundle);
         settingsDialog.onLocaleChanged(bundle);
@@ -377,7 +377,11 @@ public class ScreenMain extends LocalizableScreen {
         promocodeDoneDialog.onLocaleChanged(bundle);
         connectingDialog.onLocaleChanged(bundle);
 
-        question.getTitleLabel().setText(bundle.format("dialog.question"));
+        if (infoDialog.getTitleLabel() != null)
+            infoDialog.getTitleLabel().setText(bundle.format("dialog.info"));
+        if (questionDialog.getTitleLabel() != null)
+            questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
+
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnInviteRandom.setText(bundle.format("opponent.random"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
@@ -615,7 +619,7 @@ public class ScreenMain extends LocalizableScreen {
         if (promocodeDoneTime != model.promocodeDoneTime) {
             promocodeDoneTime = model.promocodeDoneTime;
             promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
-                    model.promocodeDoneCrystals).show(stage);
+                    model.promocodeDoneCrystals, i18n).show(stage);
         }
     }
 

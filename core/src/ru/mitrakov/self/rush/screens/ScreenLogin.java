@@ -42,10 +42,9 @@ public class ScreenLogin extends LocalizableScreen {
     private CurDialog curDialog = CurDialog.Start;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                       I18NBundle i18n) {
+    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
         super(game, model, psObject);
-        assert skin != null && audioManager != null && i18n != null;
+        assert skin != null && audioManager != null;
 
         TextureRegion regionValid = atlasMenu.findRegion("valid");
         TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
@@ -67,7 +66,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        btnSignIn = new TextButtonFeat(i18n.format("sign.in"), skin, "default", audioManager) {{
+        btnSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -75,7 +74,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        btnSignUp = new TextButtonFeat(i18n.format("sign.up"), skin, "default", audioManager) {{
+        btnSignUp = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -83,7 +82,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        btnBack = new TextButtonFeat(i18n.format("back"), skin, "default", audioManager) {{
+        btnBack = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -91,7 +90,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        btnOkSignIn = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
+        btnOkSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -99,7 +98,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        btnOkSignUp = new TextButtonFeat(i18n.format("ok"), skin, "default", audioManager) {{
+        btnOkSignUp = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -107,7 +106,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        chkPromocode = new CheckBox(i18n.format("sign.promocode"), skin, "default") {{
+        chkPromocode = new CheckBox("", skin, "default") {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -115,11 +114,11 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        lblName = new Label(i18n.format("sign.name"), skin, "default");
-        lblPassword = new Label(i18n.format("sign.password"), skin, "default");
-        lblEmail = new Label(i18n.format("sign.email"), skin, "default");
+        lblName = new Label("", skin, "default");
+        lblPassword = new Label("", skin, "default");
+        lblEmail = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
-        connectingDialog = new DialogConnect(skin, "default", stage, i18n);
+        connectingDialog = new DialogConnect(skin, "default", stage);
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {

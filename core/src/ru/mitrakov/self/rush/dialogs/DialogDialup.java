@@ -18,20 +18,21 @@ public class DialogDialup extends DialogFeat {
     private I18NBundle i18n;
 
     public DialogDialup(Model model, Skin skin, String windowStyleName, I18NBundle i18n) {
-        super(i18n.format("dialog.dialup.header"), skin, windowStyleName);
-        assert model != null;
+        super("", skin, windowStyleName);
+        assert model != null && i18n != null;
         this.model = model;
         this.i18n = i18n;
 
         lblMessage = new Label("", skin, "default");
-        getContentTable().pad(20).add(lblMessage); // here getContentTable != null
+        lblMessage.setAlignment(Align.center);
+        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
 
-        button(i18n.format("cancel"));
+        button("Cancel"); // text will be replaced in onLocaleChanged()
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        lblMessage.setText(String.format(i18n.format("dialog.dialup.text"), model.enemy)); //i18n!=NULL (assert omitted)
+        lblMessage.setText(i18n.format("dialog.dialup.text", model.enemy)); // here i18n != NULL (assert omitted)
         super.draw(batch, parentAlpha);
     }
 
