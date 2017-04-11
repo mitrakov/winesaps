@@ -26,7 +26,7 @@ public class DialogBuyAbilities extends DialogFeat {
 
     public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
         super(i18n.format("dialog.abilities.header"), skin, style);
-        assert model != null; // audioManager may be NULL
+        assert model != null && audioManager != null;
         this.model = model;
 
         productsList = new List<Product>(skin, "default");

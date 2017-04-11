@@ -5,10 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ru.mitrakov.self.rush.RushClient;
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.AudioManager;
 
 /**
  * Created by mitrakov on 05.03.2017
@@ -28,7 +27,7 @@ public class DialogSettings extends DialogFeat {
     public DialogSettings(RushClient game, final Model model, Skin skin, String styleName, AudioManager audioManager,
                           I18NBundle i18n) {
         super(i18n.format("dialog.settings.header"), skin, styleName);
-        assert game != null && model != null; // audioManager may be NULL
+        assert game != null && model != null && audioManager != null;
         this.game = game;
         this.model = model;
 

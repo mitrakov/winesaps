@@ -4,14 +4,12 @@ import java.util.*;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
@@ -27,14 +25,8 @@ import ru.mitrakov.self.rush.dialogs.*;
  * Created by mitrakov on 03.03.2017
  */
 public class ScreenMain extends LocalizableScreen {
-    private final RushClient game;
-    private final Model model;
-    private final PsObject psObject;
-    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-
-    private final Table tableMain = new Table();
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
     private final Table tableLeftInvite = new Table();
@@ -112,14 +104,9 @@ public class ScreenMain extends LocalizableScreen {
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18n) {
-        assert game != null && model != null && skin != null && i18n != null; // psObject, audioManager may be NULL
-        this.game = game;
-        this.model = model;
-        this.psObject = psObject; // may be NULL
+        super(game, model, psObject);
+        assert skin != null && audioManager != null && i18n != null;
         this.i18n = i18n;
-
-        tableMain.setFillParent(true);
-        stage.addActor(tableMain);
 
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
         TextureRegion regionAbout = atlasMenu.findRegion("about");
@@ -321,10 +308,7 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(.25f, .77f, .81f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        stage.draw();
+        super.render(delta);
 
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
@@ -347,23 +331,15 @@ public class ScreenMain extends LocalizableScreen {
             game.setNextScreen();
         }
 
-        // checking BACK and MENU buttons on Android
-        if (psObject != null) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
-                psObject.hide();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.MENU))
+        // checking MENU button on Android
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MENU))
+            if (psObject != null)
                 settingsDialog.show(stage);
-        }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        super.show();
 
         // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. during battle)
         // be careful! it usually concerns dialogs (to avoid their showing) so not all timestamps should be updated here
@@ -376,7 +352,6 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void dispose() {
-        stage.dispose();
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
         atlasMenu.dispose();
         buyAbilitiesDialog.dispose();
@@ -456,8 +431,8 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void initTables(Skin skin) {
-        tableMain.add(tableLeft).pad(20).fill();
-        tableMain.add(tableRight).pad(20).expand().fill();
+        table.add(tableLeft).pad(20).fill();
+        table.add(tableRight).pad(20).expand().fill();
 
         tableLeft.add(tableLeftInvite).expand().fill();
         tableLeft.row();

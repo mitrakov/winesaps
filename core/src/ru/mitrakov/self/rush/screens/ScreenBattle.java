@@ -4,13 +4,11 @@ import java.util.Locale;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
@@ -23,14 +21,9 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 public class ScreenBattle extends LocalizableScreen {
-    private final Model model;
-    private final PsObject psObject;
     private final AudioManager audioManager;
-    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
-
-    private final Table table = new Table();
     private final Gui gui;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
@@ -52,14 +45,10 @@ public class ScreenBattle extends LocalizableScreen {
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
-        assert game != null && model != null && skin != null && i18n != null; // psObject may be NULL
-        this.model = model;
-        this.psObject = psObject; // may be NULL
-        this.audioManager = audioManager; // may be NULL
+        super(game, model, psObject);
+        assert skin != null && audioManager != null && i18n != null;
+        this.audioManager = audioManager;
         this.i18n = i18n;
-
-        table.setFillParent(true);
-        stage.addActor(table);
 
         loadTextures();
         gui = new Gui(model);
@@ -87,11 +76,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     @Override
     public void render(float delta) {
-        // redraw all
-        Gdx.gl.glClearColor(.35f, .87f, .91f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        stage.draw();
+        super.render(delta);
 
         connectingDialog.setVisible(!model.connected);
 
@@ -111,21 +96,11 @@ public class ScreenBattle extends LocalizableScreen {
         checkLives();
         checkThing();
         checkEnemyThing();
-
-        // checking BACK and MENU buttons on Android
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
-            if (psObject != null)
-                psObject.hide();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        super.show();
         audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
 
         // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. in Training)
@@ -136,7 +111,6 @@ public class ScreenBattle extends LocalizableScreen {
 
     @Override
     public void dispose() {
-        stage.dispose();
         atlasThing.dispose();   // disposing an atlas also disposes all its internal textures
         atlasAbility.dispose();
         gui.dispose();

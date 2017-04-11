@@ -12,12 +12,12 @@ import ru.mitrakov.self.rush.AudioManager;
 public class TextButtonFeat extends TextButton {
     protected TextButtonFeat(String text, Skin skin, String styleName, final AudioManager audioManager) {
         super(text, skin, styleName);
+        assert audioManager != null;
 
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (audioManager != null)
-                    audioManager.sound("click");
+                audioManager.sound("click");
             }
         });
     }

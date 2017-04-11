@@ -12,12 +12,12 @@ import ru.mitrakov.self.rush.AudioManager;
 public class ImageButtonFeat extends ImageButton {
     protected ImageButtonFeat(Drawable drawable, final AudioManager audioManager) {
         super(drawable);
+        assert audioManager != null;
 
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (audioManager != null)
-                    audioManager.sound("click");
+                audioManager.sound("click");
             }
         });
     }

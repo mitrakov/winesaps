@@ -23,7 +23,8 @@ public class DialogFriends extends DialogFeat {
                          final DialogQuestion yesNoDialog, final Stage stage, AudioManager audioManager,
                          I18NBundle i18nb) {
         super("", skin, style);
-        assert model != null && invDialog != null && yesNoDialog != null && stage != null && i18nb != null;
+        assert model != null && invDialog != null && yesNoDialog != null && stage != null && audioManager != null;
+        assert i18nb != null;
         i18n = i18nb;
 
         btnInvite = new TextButtonFeat("", skin, "default", audioManager) {{

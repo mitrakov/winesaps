@@ -34,12 +34,6 @@ public class Gui extends Actor {
             this.y = y;
             super.touchDragged(event, x, y, pointer);
         }
-
-        @Override
-        public boolean keyDown(InputEvent event, int keycode) {
-            System.out.println("Code = " + keycode);
-            return super.keyDown(event, keycode);
-        }
     }
 
     private final class AnimInfo {

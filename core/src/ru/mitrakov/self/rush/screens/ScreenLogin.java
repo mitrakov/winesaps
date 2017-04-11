@@ -3,11 +3,9 @@ package ru.mitrakov.self.rush.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.*;
@@ -20,13 +18,7 @@ import ru.mitrakov.self.rush.dialogs.DialogConnect;
  */
 
 public class ScreenLogin extends LocalizableScreen {
-    private final RushClient game;
-    private final Model model;
-    private final PsObject psObject;
-    private final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-
-    private final Table table = new Table();
     private final TextField txtLogin;
     private final TextField txtPassword;
     private final TextField txtEmail;
@@ -52,13 +44,8 @@ public class ScreenLogin extends LocalizableScreen {
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                        I18NBundle i18n) {
-        assert game != null && model != null && skin != null && i18n != null; // psObject, audioManager may be NULL
-        this.game = game;
-        this.model = model;
-        this.psObject = psObject; // may be NULL
-
-        table.setFillParent(true);
-        stage.addActor(table);
+        super(game, model, psObject);
+        assert skin != null && audioManager != null && i18n != null;
 
         TextureRegion regionValid = atlasMenu.findRegion("valid");
         TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
@@ -159,38 +146,22 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(.25f, .77f, .81f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        stage.draw();
+        super.render(delta);
 
         if (model.authorized)
             game.setNextScreen();
-
         connectingDialog.setVisible(!model.connected);
-
         imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
-
-        // checking BACK and MENU buttons on Android
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
-            if (psObject != null)
-                psObject.hide();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        super.show();
         setStartDialog();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
         atlasMenu.dispose(); // disposing an atlas also disposes all its internal textures
         super.dispose();
     }
