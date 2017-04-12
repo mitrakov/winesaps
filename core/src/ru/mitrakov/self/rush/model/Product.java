@@ -1,26 +1,19 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.Locale;
-
 /**
  * Created by mitrakov on 06.03.2017
  */
-
+@SuppressWarnings("WeakerAccess")
 public /*case*/ class Product {
-    final Model.Ability ability;
-    final int days;
-    private final int crystals;
+    public final Model.Ability ability;
+    public final int days;
+    public final int crystals;
 
     Product(Model.Ability ability, int days, int crystals) {
         assert ability != null;
         this.ability = ability;
         this.days = days;
         this.crystals = crystals;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(Locale.getDefault(), "%d day(s) (%d)", days, crystals);
     }
 
     // GENERATED CODE

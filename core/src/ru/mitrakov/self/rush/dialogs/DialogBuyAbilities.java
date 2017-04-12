@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -14,7 +16,6 @@ import ru.mitrakov.self.rush.AudioManager;
 /**
  * Created by mitrakov on 05.03.2017
  */
-
 public class DialogBuyAbilities extends DialogFeat {
     private final Model model;
     private final Label lblPicture;
@@ -24,10 +25,13 @@ public class DialogBuyAbilities extends DialogFeat {
     private final List<Product> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
-    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager) {
+    private I18NBundle i18n;
+
+    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
         super("", skin, style);
-        assert model != null && audioManager != null;
+        assert model != null && audioManager != null && i18n != null;
         this.model = model;
+        this.i18n = i18n;
 
         productsList = new List<Product>(skin, "default");
         lblTotalCrystals = new Label("", skin, "default");
@@ -80,6 +84,7 @@ public class DialogBuyAbilities extends DialogFeat {
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
+        this.i18n = bundle;
 
         lblTotalCrystals.setText(bundle.format("dialog.abilities.total"));
 
@@ -119,11 +124,18 @@ public class DialogBuyAbilities extends DialogFeat {
     }
 
     private synchronized void rebuildContent(Model.Ability ability) {
+        assert i18n != null;
+
         lblCrystals.setText(String.valueOf(model.crystals));
         lblPicture.setText("picture " + ability);
         lblCurAbility.setText(ability.name());
 
-        Array<Product> items = new Array<Product>(model.getProductsByAbility(ability).toArray(new Product[0]));
+        // updating products for a chosen ability
+        Collection<Product> products = model.getProductsByAbility(ability);
+        Array<String> items = new Array<String>(products.size());
+        for (Product product : products) {
+            items.add(i18n.format("product", product.days, product.crystals));
+        }
         productsList.setItems(items);
     }
 }
