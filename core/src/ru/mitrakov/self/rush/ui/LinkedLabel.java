@@ -24,11 +24,10 @@ public class LinkedLabel extends Table {
                 : fonts.keys().next();
 
         lblBefore = new Label(txtBefore, skin, style);
-        lblLink = new Label(txtLink, skin, font, Color.BLUE);
+        lblLink = new Label(txtLink, skin, font, Color.CYAN);
         lblAfter = new Label(txtAfter, skin, style);
 
-        if (txtBefore.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
-            add(lblBefore);
+        add(lblBefore);
         lblLink.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -37,8 +36,7 @@ public class LinkedLabel extends Table {
             }
         });
         add(lblLink);
-        if (txtAfter.length() > 0) // don't use 'isEmpty()': it requires Android API level 9
-            add(lblAfter);
+        add(lblAfter);
     }
 
     public void setText(String txtBefore, String txtLink, String txtAfter) {
