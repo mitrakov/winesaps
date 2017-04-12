@@ -6,18 +6,18 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.ui.TextButtonFeat;
 import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
  * Created by mitrakov on 01.03.2017
  */
-
 public class ScreenLogin extends LocalizableScreen {
+
+    private final Table tableMain = new Table();
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final TextField txtLogin;
     private final TextField txtPassword;
@@ -33,6 +33,8 @@ public class ScreenLogin extends LocalizableScreen {
     private final Label lblPassword;
     private final Label lblEmail;
     private final Image imgValid;
+    private final Drawable textureEng;
+    private final Drawable textureRus;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
     private final DialogConnect connectingDialog;
@@ -46,9 +48,13 @@ public class ScreenLogin extends LocalizableScreen {
         super(game, model, psObject);
         assert skin != null && audioManager != null;
 
+        TextureRegion regionEng = atlasMenu.findRegion("eng");
+        TextureRegion regionRus = atlasMenu.findRegion("rus");
         TextureRegion regionValid = atlasMenu.findRegion("valid");
         TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
-        assert regionValid != null && regionInvalid != null;
+        assert regionValid != null && regionInvalid != null && regionEng != null && regionRus != null;
+        textureEng = new TextureRegionDrawable(regionEng);
+        textureRus = new TextureRegionDrawable(regionRus);
         textureValid = new TextureRegionDrawable(regionValid);
         textureInvalid = new TextureRegionDrawable(regionInvalid);
 
@@ -120,6 +126,11 @@ public class ScreenLogin extends LocalizableScreen {
         imgValid = new Image(textureInvalid);
         connectingDialog = new DialogConnect(skin, "default", stage);
 
+        // set up layout
+        table.add(createLangTable(audioManager)).right();
+        table.row();
+        table.add(tableMain).expand();
+
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {
             @Override
@@ -181,31 +192,55 @@ public class ScreenLogin extends LocalizableScreen {
         connectingDialog.onLocaleChanged(bundle);
     }
 
+    private Actor createLangTable(AudioManager audioManager) {
+        assert audioManager != null;
+        Table tableLang = new Table().padRight(20);
+        tableLang.add(new ImageButtonFeat(textureEng, audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.languageEn = true;
+                    game.updateLocale();
+                }
+            });
+        }}).spaceRight(20);
+        tableLang.add(new ImageButtonFeat(textureRus, audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.languageEn = false;
+                    game.updateLocale();
+                }
+            });
+        }}).spaceRight(20);
+        return tableLang;
+    }
+
     private void setStartDialog() {
         curDialog = CurDialog.Start;
         chkPromocode.setChecked(false);              // clear checking
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
 
-        table.clear();
-        table.add(btnSignIn).width(300).height(80).space(30);
-        table.row();
-        table.add(btnSignUp).width(300).height(80);
+        tableMain.clear();
+        tableMain.add(btnSignIn).width(300).height(80).space(30);
+        tableMain.row();
+        tableMain.add(btnSignUp).width(300).height(80);
     }
 
     private void setSignInDialog() {
         curDialog = CurDialog.SignIn;
         Actor focused = stage.getKeyboardFocus();
 
-        table.clear();
-        table.row().space(20);
-        table.add(lblName).align(Align.left);
-        table.add(txtLogin);
-        table.row().space(20);
-        table.add(lblPassword).align(Align.left);
-        table.add(txtPassword);
-        table.row().spaceTop(30);
-        table.add(btnBack).width(100).height(40);
-        table.add(btnOkSignIn).width(100).height(40);
+        tableMain.clear();
+        tableMain.row().space(20);
+        tableMain.add(lblName).align(Align.left);
+        tableMain.add(txtLogin);
+        tableMain.row().space(20);
+        tableMain.add(lblPassword).align(Align.left);
+        tableMain.add(txtPassword);
+        tableMain.row().spaceTop(30);
+        tableMain.add(btnBack).width(100).height(40);
+        tableMain.add(btnOkSignIn).width(100).height(40);
         if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
@@ -215,32 +250,33 @@ public class ScreenLogin extends LocalizableScreen {
         curDialog = CurDialog.SignUp;
         Actor focused = stage.getKeyboardFocus();
 
-        table.clear();
-        table.row().space(20);
-        table.add(lblName).align(Align.left);
-        table.add(txtLogin);
-        table.row().space(20);
-        table.add(lblPassword).align(Align.left);
-        table.add(txtPassword);
-        table.row().space(20);
-        table.add(lblEmail).align(Align.left);
-        table.add(txtEmail);
-        table.row().space(20);
-        table.add(chkPromocode);
-        if (havePromocode) {
-            table.add(txtPromocode);
-            table.add(imgValid).spaceLeft(20);
-        }
-        table.row().spaceTop(30);
-        table.add(btnBack).width(100).height(40);
-        table.add(btnOkSignUp).width(100).height(40);
+        txtPromocode.setVisible(havePromocode);
+        imgValid.setVisible(havePromocode);
+
+        tableMain.clear();
+        tableMain.row().space(20);
+        tableMain.add(lblName).align(Align.left);
+        tableMain.add(txtLogin);
+        tableMain.row().space(20);
+        tableMain.add(lblPassword).align(Align.left);
+        tableMain.add(txtPassword);
+        tableMain.row().space(20);
+        tableMain.add(lblEmail).align(Align.left);
+        tableMain.add(txtEmail);
+        tableMain.row().space(20);
+        tableMain.add(chkPromocode);
+        tableMain.add(txtPromocode);
+        tableMain.add(imgValid).spaceLeft(20);
+        tableMain.row().spaceTop(30);
+        tableMain.add(btnBack).width(100).height(40);
+        tableMain.add(btnOkSignUp).width(100).height(40);
         if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
     }
 
     private void shiftUp() {
-        table.row().spaceTop(200);
-        table.add(new Image());
+        tableMain.row().spaceTop(200);
+        tableMain.add(new Image());  // 'blank' image to fill space taken by on-screen keyboard
     }
 }
