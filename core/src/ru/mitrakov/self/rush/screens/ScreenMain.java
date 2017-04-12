@@ -405,6 +405,8 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingLosses.setText(bundle.format("rating.losses"));
         lblRatingScoreDiff.setText(bundle.format("rating.score.diff"));
         lblRatingDots.setText(bundle.format("rating.dots"));
+
+        rebuildRightTable(CurDisplayMode.Info); // forward user to the main tab (to avoid artifacts, e.g. in History)
     }
 
     private void loadTextures(AudioManager audioManager) {
@@ -534,7 +536,7 @@ public class ScreenMain extends LocalizableScreen {
                 model.getRating(Model.RatingType.General); // we should requery rating each time we choose the tab,
                 break;                                     // because it might be updated on the server
             case History:
-                lstHistory.setItems(model.history.toArray(new String[0]));
+                lstHistory.setItems(getHistory());
                 tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
                 break;
             case Friends:
@@ -641,5 +643,15 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
         }
+    }
+
+    private Array<String> getHistory() {
+        assert i18n != null;
+
+        Array<String> items = new Array<String>(model.history.size());
+        for (HistoryItem it : model.history) {
+            items.add(i18n.format("history.item", it.date, it.win ? 1 : 0, it.name1, it.name2, it.score1, it.score2));
+        }
+        return items;
     }
 }

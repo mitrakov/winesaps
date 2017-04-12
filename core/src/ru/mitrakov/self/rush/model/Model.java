@@ -3,7 +3,6 @@ package ru.mitrakov.self.rush.model;
 import java.util.*;
 import java.security.*;
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
@@ -43,6 +42,10 @@ public class Model {
         void write(String filename, String s);
 
         String read(String filename);
+
+        Object deserialize(String filename);
+
+        void serialize(String filename, Object obj);
     }
 
     /**
@@ -139,7 +142,7 @@ public class Model {
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
-    public final Collection<String> history = new ConcurrentLinkedQueue<String>();
+    public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
 
@@ -563,11 +566,11 @@ public class Model {
         abilityExpireTime = System.currentTimeMillis();
 
         // now we know valid user name => read the history from a local storage
-        if (fileReader != null) {
-            String strHistory = fileReader.read(String.format("%s%s", HISTORY_PREFIX, name));
-            if (strHistory != null) {
-                history.clear();
-                Collections.addAll(history, strHistory.split("\n"));
+        if (fileReader != null && history.isEmpty()) {
+            Object lst = fileReader.deserialize(String.format("%s%s", HISTORY_PREFIX, name));
+            if (lst != null && lst instanceof Collection) {
+                //noinspection unchecked
+                history.addAll((Collection) lst);
             }
         }
 
@@ -758,27 +761,20 @@ public class Model {
         // updating history
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training Level
             // building a history item
-            String s = String.format(Locale.getDefault(), "%s    %s    %s-%s = %d-%d",
-                    DateFormat.getInstance().format(new Date()), winner ? "WIN " : "LOSS", aggressor ? name : enemy,
-                    aggressor ? enemy : name, totalScore1, totalScore2); // no need to ternary totalScore
+            HistoryItem item = new HistoryItem(new Date(), winner, aggressor ? name : enemy, aggressor ? enemy : name,
+                    totalScore1, totalScore2);
 
             // prepend the item into the current history (and delete old items if necessary)
-            List<String> lst = new LinkedList<String>(history);
-            lst.add(0, s);
+            List<HistoryItem> lst = new LinkedList<HistoryItem>(history);
+            lst.add(0, item);
             while (lst.size() > HISTORY_MAX)
                 lst.remove(HISTORY_MAX);
             history.clear();
             history.addAll(lst);
 
             // store the current history in the local storage
-            if (fileReader != null) {
-                StringBuilder builder = new StringBuilder(lst.size()); // in Java 8 may be replaced with a StringJoiner
-                for (String x : lst) {
-                    builder.append(x).append('\n');
-                }
-                // writing
-                fileReader.write(String.format("%s%s", HISTORY_PREFIX, name), builder.toString());
-            }
+            if (fileReader != null)
+                fileReader.serialize(String.format("%s%s", HISTORY_PREFIX, name), lst);
         }
 
         // reset reference to a field

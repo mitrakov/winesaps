@@ -1,10 +1,12 @@
 package ru.mitrakov.self.rush.model;
 
+import java.io.Serializable;
+
 /**
  * Created by mitrakov on 06.03.2017
  */
 @SuppressWarnings("WeakerAccess")
-public /*case*/ class Product {
+public final /*case*/ class Product implements Serializable {
     public final Model.Ability ability;
     public final int days;
     public final int crystals;
