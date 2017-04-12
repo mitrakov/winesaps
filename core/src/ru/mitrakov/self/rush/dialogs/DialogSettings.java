@@ -1,8 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ru.mitrakov.self.rush.*;
@@ -57,6 +57,17 @@ public class DialogSettings extends DialogFeat {
     }
 
     @Override
+    public Dialog show(Stage stage) {
+        // 'setChecked()' must be called here (not in constructor), because parameters might be changed outside
+        btnEng.setChecked(model.languageEn);
+        btnRus.setChecked(!model.languageEn);
+        btnNotifyYes.setChecked(model.notifyNewBattles);
+        btnNotifyNo.setChecked(!model.notifyNewBattles);
+
+        return super.show(stage);
+    }
+
+    @Override
     protected void result(Object object) {
         model.saveSettings();
         game.updateLocale();
@@ -99,14 +110,12 @@ public class DialogSettings extends DialogFeat {
                 model.languageEn = true;
             }
         });
-        btnEng.setChecked(model.languageEn);
         btnRus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.languageEn = false;
             }
         });
-        btnRus.setChecked(!model.languageEn);
         new ButtonGroup<Button>(btnEng, btnRus);
 
         // ....
@@ -116,14 +125,12 @@ public class DialogSettings extends DialogFeat {
                 model.notifyNewBattles = true;
             }
         });
-        btnNotifyYes.setChecked(model.notifyNewBattles);
         btnNotifyNo.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.notifyNewBattles = false;
             }
         });
-        btnNotifyNo.setChecked(!model.notifyNewBattles);
         new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
 
         // ....
