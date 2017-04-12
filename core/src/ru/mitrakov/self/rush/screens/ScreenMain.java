@@ -482,7 +482,7 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void rebuildLeftTable(boolean showInputName) {
-        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "invite enemy by name")
         tableLeftInvite.clear();
 
         // ...
@@ -549,6 +549,7 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void rebuildFriends(boolean showInputName) {
+        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "add friend")
         tableFriendsControl.clear();
 
         if (showInputName) {
