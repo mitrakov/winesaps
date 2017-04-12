@@ -487,20 +487,20 @@ public class ScreenMain extends LocalizableScreen {
 
         // ...
         if (showInputName) {
-            tableLeftInvite.add(txtEnemyName).colspan(2).width(140).height(50);
+            tableLeftInvite.add(txtEnemyName).colspan(2).width(145).height(50);
             tableLeftInvite.row().space(20);
             tableLeftInvite.add(btnInviteByNameOk).width(60).height(40);
-            tableLeftInvite.add(btnInviteByNameCancel).width(80).height(40);
+            tableLeftInvite.add(btnInviteByNameCancel).width(85).height(40);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteRandom).colspan(2).width(160).height(80);
+            tableLeftInvite.add(btnInviteRandom).colspan(2).width(165).height(80);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteLatest).colspan(2).width(160).height(80);
+            tableLeftInvite.add(btnInviteLatest).colspan(2).width(165).height(80);
         } else {
-            tableLeftInvite.add(btnInviteByName).width(160).height(80);
+            tableLeftInvite.add(btnInviteByName).width(165).height(80);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteRandom).width(160).height(80);
+            tableLeftInvite.add(btnInviteRandom).width(165).height(80);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteLatest).width(160).height(80);
+            tableLeftInvite.add(btnInviteLatest).width(165).height(80);
         }
 
         tableLeftToolbar.add(btnSettings).spaceRight(30);

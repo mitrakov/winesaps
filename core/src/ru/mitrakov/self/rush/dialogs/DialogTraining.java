@@ -44,7 +44,7 @@ public class DialogTraining extends Window {
     public DialogTraining show(Stage stage) {
         assert stage != null;
         setWidth(stage.getWidth() / 2);
-        setHeight(stage.getHeight() / 2 + 20);
+        setHeight(stage.getHeight() * 3 / 4);
         setPosition(stage.getWidth() - getWidth() - 5, stage.getHeight() - getHeight() - 5);
         stage.addActor(this);
         return this;
@@ -75,7 +75,7 @@ public class DialogTraining extends Window {
         add(imgMessage);
         row().space(5);
         add(lblMessage1);
-        row().spaceTop(10);
+        row().spaceTop(30);
         add(lblMessage2);
     }
 }
