@@ -59,6 +59,8 @@ public class Model {
         CHECK_PROMOCODE, PROMOCODE_DONE
     }
 
+    public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
+
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
      */
@@ -96,6 +98,7 @@ public class Model {
     public volatile String enemy = "";
     public volatile String promocode = "";
     public volatile String promocodeDoneName = "";
+    public volatile Character character = Character.None;
     public volatile boolean connected = true;
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
@@ -545,6 +548,12 @@ public class Model {
         }
         promocode = bld.toString();
         i++;
+
+        // parse character
+        Character[] characters = Character.values();
+        int ch = data[i++];
+        if (0 <= ch && ch < characters.length)
+            character = characters[ch];
 
         // parse crystals
         if (i + 3 < data.length)

@@ -1,10 +1,12 @@
 package ru.mitrakov.self.rush.model;
 
+import java.io.Serializable;
+
 /**
  * Created by mitrakov on 06.03.2017
  */
-
-public /*case*/ class RatingItem {
+@SuppressWarnings("WeakerAccess")
+public final /*case*/ class RatingItem implements Serializable {
     public final String name;
     public final int victories;
     public final int defeats;

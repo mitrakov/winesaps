@@ -21,6 +21,15 @@ public final /*case*/ class Product implements Serializable {
     // GENERATED CODE
 
     @Override
+    public String toString() {
+        return "Product{" +
+                "ability=" + ability +
+                ", days=" + days +
+                ", crystals=" + crystals +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

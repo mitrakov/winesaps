@@ -28,6 +28,18 @@ public final /*case*/ class HistoryItem implements Serializable {
     // GENERATED CODE
 
     @Override
+    public String toString() {
+        return "HistoryItem{" +
+                "date=" + date +
+                ", win=" + win +
+                ", name1='" + name1 + '\'' +
+                ", name2='" + name2 + '\'' +
+                ", score1=" + score1 +
+                ", score2=" + score2 +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
