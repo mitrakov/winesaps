@@ -235,13 +235,15 @@ class Parser implements IHandler {
     }
 
     private void roundInfo(Cmd cmd, int[] data) {
-        if (data.length > 4) {
+        if (data.length > 6) {
             int number = data[0];
             int timeSec = data[1];
             boolean aggressor = data[2] != 0;
-            int myLives = data[3];
-            int enemyLives = data[4];
-            model.setRoundInfo(number, timeSec, aggressor, myLives, enemyLives);
+            int character1 = data[3];
+            int character2 = data[4];
+            int myLives = data[5];
+            int enemyLives = data[6];
+            model.setRoundInfo(number, timeSec, aggressor, character1, character2, myLives, enemyLives);
         } else if (data.length == 1) {
             inspectError(cmd, data[0]);
         } else throw new IllegalArgumentException("Incorrect round info format");

@@ -1,6 +1,6 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.Queue;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import ru.mitrakov.self.rush.model.object.*;
 
@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.model.object.*;
 public class Cell {
     // ....
     public CellObject bottom; // may be NULL
-    public Queue<CellObject> objects = new ConcurrentLinkedQueue<CellObject>(); // ....!!!
+    public Collection<CellObject> objects = new ConcurrentLinkedQueue<CellObject>(); // ....!!!
 
     private Cell() {
     }

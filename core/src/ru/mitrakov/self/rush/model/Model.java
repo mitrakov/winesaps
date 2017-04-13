@@ -53,9 +53,9 @@ public class Model {
      */
     public enum Cmd {
         UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
-        RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, RESERVED_0E, RESERVED_0F, FULL_STATE, ABILITY_LIST, MOVE_LEFT,
-        MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED, THING_TAKEN,
-        OBJECT_APPENDED, FINISHED, GIVE_UP, ROUND_INFO, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
+        RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, CHANGE_CHARACTER, RESERVED_0F, FULL_STATE, ABILITY_LIST,
+        MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED,
+        THING_TAKEN, OBJECT_APPENDED, FINISHED, GIVE_UP, ROUND_INFO, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
         CHECK_PROMOCODE, PROMOCODE_DONE
     }
 
@@ -99,6 +99,8 @@ public class Model {
     public volatile String promocode = "";
     public volatile String promocodeDoneName = "";
     public volatile Character character = Character.None;
+    public volatile Character character1 = Character.None;
+    public volatile Character character2 = Character.None;
     public volatile boolean connected = true;
     public volatile boolean authorized = false;
     public volatile boolean roundWinner = false;
@@ -704,9 +706,17 @@ public class Model {
         promocodeDoneTime = System.currentTimeMillis();
     }
 
-    public void setRoundInfo(int number, int timeSec, boolean aggressor, int myLives, int enemyLives) {
+    public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
+                             int enemyLives) {
         curThing = enemyThing = curActor = null;
         score1 = score2 = 0;
+
+        Character[] characters = Character.values();
+        if (0 <= character1 && character1 < characters.length)
+            this.character1 = characters[character1];
+        if (0 <= character2 && character2 < characters.length)
+            this.character2 = characters[character2];
+
         this.myLives = myLives;
         this.enemyLives = enemyLives;
         roundNumber = number;
