@@ -5,91 +5,119 @@ filter: Nearest,Nearest
 repeat: none
 RopeLine
   rotate: false
-  xy: 0, 9
+  xy: 0, 39
   size: 10, 85
   orig: 10, 85
   offset: 0, 0
   index: -1
 Water
   rotate: false
-  xy: 12, 21
+  xy: 12, 51
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
 Block
   rotate: false
-  xy: 28, 22
+  xy: 28, 52
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 LadderBottom
   rotate: false
-  xy: 44, 39
+  xy: 44, 69
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 LadderTop
   rotate: false
-  xy: 76, 39
+  xy: 76, 69
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 OpenedUmbrella
   rotate: false
-  xy: 108, 39
+  xy: 108, 69
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 Wolf
   rotate: false
-  xy: 140, 49
+  xy: 140, 79
   size: 30, 45
   orig: 30, 45
   offset: 0, 0
   index: -1
 Waterfall
   rotate: false
-  xy: 172, 24
+  xy: 172, 54
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe
   rotate: false
-  xy: 172, 24
+  xy: 172, 54
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Mine
   rotate: false
-  xy: 189, 68
+  xy: 189, 98
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Umbrella
   rotate: false
-  xy: 189, 40
+  xy: 189, 70
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Apple
   rotate: false
+  xy: 217, 96
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Carrot
+  rotate: false
   xy: 217, 66
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Meat
+  rotate: false
+  xy: 0, 9
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Mushroom
+  rotate: false
+  xy: 44, 39
+  size: 22, 28
+  orig: 22, 28
+  offset: 0, 0
+  index: -1
+Nut
+  rotate: false
+  xy: 68, 39
   size: 22, 28
   orig: 22, 28
   offset: 0, 0
   index: -1
 Pear
   rotate: false
-  xy: 217, 36
+  xy: 92, 39
   size: 22, 28
   orig: 22, 28
   offset: 0, 0

@@ -97,9 +97,10 @@ public class Gui extends Actor {
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
         Class[] downClasses = new Class[]{Block.class, Dias.class, Water.class};
-        Class[] upClasses = new Class[]{Entry1.class, Entry2.class, Apple.class, Pear.class,
-                Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Stair.class,
-                Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class, WaterfallSafe.class};
+        Class[] upClasses = new Class[]{Entry1.class, Entry2.class, Apple.class, Pear.class, Meat.class, Carrot.class,
+                Nut.class, Mushroom.class, Block.class, LadderTop.class, LadderBottom.class, RopeLine.class,
+                Water.class, Stair.class, Mine.class, Umbrella.class, OpenedUmbrella.class, Waterfall.class,
+                WaterfallSafe.class};
         Class[] animClasses = new Class[]{Actor1.class, Actor2.class, Wolf.class};
         for (Class clazz : downClasses) {
             TextureRegion texture = atlasDown.findRegion(clazz.getSimpleName());
