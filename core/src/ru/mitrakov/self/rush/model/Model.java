@@ -361,6 +361,14 @@ public class Model {
         }
     }
 
+    public void changeCharacter(Character character) {
+        if (character != Character.None) {
+            if (connected && sender != null) {
+                sender.send(CHANGE_CHARACTER, character.ordinal());
+            }
+        }
+    }
+
     /**
      * Sends FRIEND_LIST command to the server
      */

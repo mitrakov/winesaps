@@ -10,7 +10,7 @@ import ru.mitrakov.self.rush.AudioManager;
  * Created by mitrakov on 27.03.2017
  */
 public class ImageButtonFeat extends ImageButton {
-    protected ImageButtonFeat(Drawable drawable, final AudioManager audioManager) {
+    public ImageButtonFeat(Drawable drawable, final AudioManager audioManager) {
         super(drawable);
         assert audioManager != null;
 

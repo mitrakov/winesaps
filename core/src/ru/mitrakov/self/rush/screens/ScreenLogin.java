@@ -45,8 +45,7 @@ public class ScreenLogin extends LocalizableScreen {
     private boolean shiftedByKeyboard = false;
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
-        super(game, model, psObject);
-        assert skin != null && audioManager != null;
+        super(game, model, psObject, skin, audioManager);
 
         TextureRegion regionEng = atlasMenu.findRegion("eng");
         TextureRegion regionRus = atlasMenu.findRegion("rus");

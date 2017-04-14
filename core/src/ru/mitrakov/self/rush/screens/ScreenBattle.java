@@ -21,7 +21,6 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 public class ScreenBattle extends LocalizableScreen {
-    private final AudioManager audioManager;
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final Gui gui;
@@ -45,9 +44,8 @@ public class ScreenBattle extends LocalizableScreen {
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
-        super(game, model, psObject);
-        assert skin != null && audioManager != null && i18n != null;
-        this.audioManager = audioManager;
+        super(game, model, psObject, skin, audioManager);
+        assert i18n != null;
         this.i18n = i18n;
 
         loadTextures();

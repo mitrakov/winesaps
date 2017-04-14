@@ -20,6 +20,7 @@ public class RushClient extends Game implements Localizable {
     private /*final*/ Skin skin;
     private /*final*/ AudioManager audioManager;
     private /*final*/ LocalizableScreen screenLogin;
+    private /*final*/ LocalizableScreen screenCharacter;
     private /*final*/ LocalizableScreen screenTraining;
     private /*final*/ LocalizableScreen screenMain;
     private /*final*/ LocalizableScreen screenBattle;
@@ -66,6 +67,7 @@ public class RushClient extends Game implements Localizable {
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
         screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager);
+        screenCharacter = new ScreenCharacter(this, model, psObject, skin, audioManager);
         screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager);
         screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18nEn);
         screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18nEn);
@@ -95,6 +97,7 @@ public class RushClient extends Game implements Localizable {
         skin.dispose();
         audioManager.dispose();
         screenLogin.dispose();
+        screenCharacter.dispose();
         screenTraining.dispose();
         screenMain.dispose();
         screenBattle.dispose();
@@ -103,6 +106,7 @@ public class RushClient extends Game implements Localizable {
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         screenLogin.onLocaleChanged(bundle);
+        screenCharacter.onLocaleChanged(bundle);
         screenTraining.onLocaleChanged(bundle);
         screenMain.onLocaleChanged(bundle);
         screenBattle.onLocaleChanged(bundle);
@@ -111,6 +115,8 @@ public class RushClient extends Game implements Localizable {
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
+            setScreen(screenCharacter);
+        else if (screen == screenCharacter)
             setScreen(screenTraining);
         else if (screen == screenTraining)
             setScreen(screenMain);

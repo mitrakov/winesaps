@@ -104,8 +104,8 @@ public class ScreenMain extends LocalizableScreen {
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
-        super(game, model, psObject);
-        assert skin != null && audioManager != null && i18nArg != null;
+        super(game, model, psObject, skin, audioManager);
+        assert i18nArg != null;
         i18n = i18nArg;
 
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
@@ -300,8 +300,8 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingScoreDiff = new Label("", skin, "default");
         lblRatingDots = new Label("", skin, "default");
 
-        loadTextures(audioManager);
-        initTables(skin);
+        loadTextures();
+        initTables();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
     }
@@ -409,7 +409,7 @@ public class ScreenMain extends LocalizableScreen {
         rebuildRightTable(CurDisplayMode.Info); // forward user to the main tab (to avoid artifacts, e.g. in History)
     }
 
-    private void loadTextures(AudioManager audioManager) {
+    private void loadTextures() {
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
@@ -436,7 +436,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void initTables(Skin skin) {
+    private void initTables() {
         table.add(tableLeft).pad(20).fill();
         table.add(tableRight).pad(20).expand().fill();
 

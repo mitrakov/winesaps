@@ -18,6 +18,7 @@ import ru.mitrakov.self.rush.model.object.*;
  */
 
 public class ScreenTraining extends LocalizableScreen {
+
     private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final Gui gui;
@@ -34,10 +35,8 @@ public class ScreenTraining extends LocalizableScreen {
     private boolean started = false;
     private boolean finished = false;
 
-    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin,
-                          AudioManager audioManager) {
-        super(game, model, psObject);
-        assert skin != null && audioManager != null;
+    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
+        super(game, model, psObject, skin, manager);
 
         loadTextures();
         gui = new Gui(model);
@@ -62,7 +61,7 @@ public class ScreenTraining extends LocalizableScreen {
             });
         }};
 
-        initComponents(skin);
+        initComponents();
     }
 
     @Override
@@ -113,7 +112,7 @@ public class ScreenTraining extends LocalizableScreen {
         }
     }
 
-    private void initComponents(Skin skin) {
+    private void initComponents() {
         // building table
         table.add(gui).colspan(2);
         table.row();
