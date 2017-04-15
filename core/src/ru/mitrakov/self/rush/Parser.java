@@ -13,8 +13,8 @@ import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
  */
 
 class Parser implements IHandler {
-    private static final int ERR_USER_NOT_FOUND = 105;
-    private static final int ERR_INCORRECT_TOKEN = 106;
+    private static final int ERR_USER_NOT_FOUND = 245;
+    private static final int ERR_INCORRECT_TOKEN = 246;
 
     private final Model model;
     private final PsObject psObject;
