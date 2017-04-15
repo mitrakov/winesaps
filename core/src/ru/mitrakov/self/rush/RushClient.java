@@ -30,8 +30,6 @@ public class RushClient extends Game implements Localizable {
     public RushClient(PsObject psObject) {
         this.psObject = psObject;
         try {
-            ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // turn the asserts on
-
             // start Network in a separate thread (requirement of Android)
             Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
                 @Override

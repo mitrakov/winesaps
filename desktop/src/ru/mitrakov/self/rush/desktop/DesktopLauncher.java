@@ -13,6 +13,7 @@ import ru.mitrakov.self.rush.*;
 
 public class DesktopLauncher extends JFrame {
     public static void main(String[] arg) {
+        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // turn the asserts on (Desktop only)
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
