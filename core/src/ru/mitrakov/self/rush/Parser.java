@@ -13,6 +13,7 @@ import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
  */
 
 class Parser implements IHandler {
+    private static final int ERR_BATTLE_NOT_FOUND = 73;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
 
@@ -105,6 +106,9 @@ class Parser implements IHandler {
                         promocodeDone(cmd, copyOfRange(data, 1, data.length));
                         break;
                     default:
+                        if (data.length > 1)
+                            inspectError(cmd, data[1]);
+                        else throw new IllegalArgumentException("Unhandled command code");
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
         } else throw new IllegalArgumentException("Empty data");
@@ -390,11 +394,17 @@ class Parser implements IHandler {
     }
 
     private void inspectError(Cmd cmd, int code) {
-        if (code == ERR_USER_NOT_FOUND || code == ERR_INCORRECT_TOKEN) {
-            model.signIn();
-        } else {
-            String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);
-            throw new IllegalArgumentException(s);
+        switch (code) {
+            case ERR_USER_NOT_FOUND:   // incorrect sid, server was restarted, etc.
+            case ERR_INCORRECT_TOKEN:  // client was restarted, trying to use the other client, etc.
+                model.signIn();
+                break;
+            case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
+                model.gameFinished(false);
+                break;
+            default:
+                String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);
+                throw new IllegalArgumentException(s);
         }
     }
 }

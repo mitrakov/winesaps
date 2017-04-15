@@ -738,15 +738,16 @@ public class Model {
     }
 
     public synchronized void appendObject(int number, int id, int xy) {
-        assert field != null; // 'field' may be NULL! ensure method is synchronized
-        field.appendObject(number, id, xy);
-        if (id == AGGRESSOR_ID || id == DEFENDER_ID)
-            curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
+        if (field != null) { // "synchronized" needed
+            field.appendObject(number, id, xy);
+            if (id == AGGRESSOR_ID || id == DEFENDER_ID)
+                curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
+        }
     }
 
     public synchronized void setXy(int number, int xy) {
-        assert field != null; // 'field' may be NULL! ensure method is synchronized
-        field.setXy(number, xy);
+        if (field != null) // "synchronized" needed
+            field.setXy(number, xy);
     }
 
     public void setScore(int score1, int score2) {
@@ -805,7 +806,7 @@ public class Model {
         }
 
         // reset reference to a field
-        field = null;
+        field = null; // "synchronized" needed
         gameFinishedTime = System.currentTimeMillis();
     }
 

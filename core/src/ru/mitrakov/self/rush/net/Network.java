@@ -9,8 +9,9 @@ import static ru.mitrakov.self.rush.net.Utils.*;
 /**
  * Created by mitrakov on 23.02.2017
  */
-
 public class Network extends Thread implements IHandler {
+    public static boolean TMP_NO_CONNECTION = false; // REMOVE ME IN A FUTURE
+
     private static final int BUF_SIZ = 1024;
     private static final int HEADER_SIZ = 7;
     private static final int RECONNECT_MSEC = 15000;
@@ -61,6 +62,7 @@ public class Network extends Thread implements IHandler {
             try {
                 DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
                 socket.receive(datagram);
+                if (TMP_NO_CONNECTION) continue;
                 System.out.println("Recv: " + Arrays.toString(toInt(datagram.getData(), datagram.getLength())));
                 if (protocol != null)
                     protocol.onReceived(toInt(datagram.getData(), datagram.getLength()));
@@ -90,6 +92,8 @@ public class Network extends Thread implements IHandler {
     }
 
     public void send(int[] data) throws IOException {
+        if (TMP_NO_CONNECTION) return;
+
         // concatenate a header and data
         int[] msg = new int[data.length + HEADER_SIZ];
         msg[0] = sid / 256;

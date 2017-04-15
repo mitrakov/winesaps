@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.net.Network;
 
 /**
  * Created by mitrakov on 27.02.2017
@@ -57,6 +58,10 @@ class InputController {
             else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_8)) model.useAbility(7);
             else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9)) model.useAbility(8);
             else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) model.useAbility(9);
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+                Network.TMP_NO_CONNECTION = !Network.TMP_NO_CONNECTION;
+                System.out.println("TMP_NO_CONNECTION = " + Network.TMP_NO_CONNECTION);
+            }
         }
     }
 
