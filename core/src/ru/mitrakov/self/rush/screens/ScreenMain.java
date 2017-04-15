@@ -137,8 +137,12 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        lstHistoryScroll = new ScrollPane(lstHistory, skin, "default");
-        lstFriendsScroll = new ScrollPane(lstFriends, skin, "default");
+        lstHistoryScroll = new ScrollPane(lstHistory, skin, "default") {{
+            setupFadeScrollBars(0, 0);
+        }};
+        lstFriendsScroll = new ScrollPane(lstFriends, skin, "default") {{
+            setupFadeScrollBars(0, 0);
+        }};
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
         txtEnemyName = new TextField("", skin, "default");
         txtFriendName = new TextField("", skin, "default");
