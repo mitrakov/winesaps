@@ -17,12 +17,28 @@ import ru.mitrakov.self.rush.AudioManager;
  * Created by mitrakov on 05.03.2017
  */
 public class DialogBuyAbilities extends DialogFeat {
+
+    static private class Item {
+        Product product;
+        String text;
+
+        Item(Product p, String s) {
+            this.product = p;
+            this.text = s;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
     private final Model model;
     private final Label lblPicture;
     private final Label lblCrystals;
     private final Label lblCurAbility;
     private final Label lblTotalCrystals;
-    private final List<Product> productsList;
+    private final List<Item> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
 
     private I18NBundle i18n;
@@ -33,7 +49,7 @@ public class DialogBuyAbilities extends DialogFeat {
         this.model = model;
         this.i18n = i18n;
 
-        productsList = new List<Product>(skin, "default");
+        productsList = new List<Item>(skin, "default");
         lblTotalCrystals = new Label("", skin, "default");
         lblCrystals = new Label("", skin, "default");
         lblPicture = new Label("", skin, "default");
@@ -54,7 +70,7 @@ public class DialogBuyAbilities extends DialogFeat {
     @Override
     protected void result(Object object) {
         if (object != null && productsList.getSelected() != null) // "Buy" is pressed
-            model.buyProduct(productsList.getSelected());
+            model.buyProduct(productsList.getSelected().product);
     }
 
     public void dispose() {
@@ -132,10 +148,10 @@ public class DialogBuyAbilities extends DialogFeat {
 
         // updating products for a chosen ability
         Collection<Product> products = model.getProductsByAbility(ability);
-        Array<String> items = new Array<String>(products.size());
+        Array<Item> items = new Array<Item>(products.size());
         for (Product product : products) {
-            items.add(i18n.format("product", product.days, product.crystals));
+            items.add(new Item(product, i18n.format("product", product.days, product.crystals)));
         }
-        productsList.setItems(items);
+        productsList.setItems(items); // in Java 8 may be replaced with lambda
     }
 }
