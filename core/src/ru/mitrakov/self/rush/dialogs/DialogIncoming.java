@@ -53,7 +53,7 @@ public class DialogIncoming extends DialogFeat {
 
     @Override
     protected void result(Object object) {
-        assert object != null && object instanceof Result;
+        assert object instanceof Result; // stackoverflow.com/questions/2950319
         switch ((Result) object) {
             case Accept:
                 model.accept();
@@ -87,13 +87,13 @@ public class DialogIncoming extends DialogFeat {
             assert buttons != null;
             if (buttons.size == 3) {
                 Actor accept = buttons.first();
-                if (accept != null && accept instanceof TextButton)
+                if (accept instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) accept).setText(bundle.format("dialog.incoming.accept"));
                 Actor reject = buttons.get(1);
-                if (reject != null && reject instanceof TextButton)
+                if (reject instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) reject).setText(bundle.format("dialog.incoming.reject"));
                 Actor ignore = buttons.get(2);
-                if (ignore != null && ignore instanceof TextButton)
+                if (ignore instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) ignore).setText(bundle.format("dialog.incoming.ignore"));
             }
         }

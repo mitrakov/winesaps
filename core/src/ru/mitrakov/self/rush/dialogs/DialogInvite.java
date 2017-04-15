@@ -81,10 +81,10 @@ public class DialogInvite extends DialogFeat {
             assert buttons != null;
             if (buttons.size == 2) {
                 Actor ok = buttons.first();
-                if (ok != null && ok instanceof TextButton)
+                if (ok instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) ok).setText(bundle.format("ok"));
                 Actor cancel = buttons.get(1);
-                if (cancel != null && cancel instanceof TextButton)
+                if (cancel instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) cancel).setText(bundle.format("cancel"));
             }
         }

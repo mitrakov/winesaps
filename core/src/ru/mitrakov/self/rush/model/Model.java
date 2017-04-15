@@ -587,7 +587,7 @@ public class Model {
         // now we know valid user name => read the history from a local storage
         if (fileReader != null && history.isEmpty()) {
             Object lst = fileReader.deserialize(String.format("%s%s", HISTORY_PREFIX, name));
-            if (lst != null && lst instanceof Collection) {
+            if (lst instanceof Collection) { // stackoverflow.com/questions/2950319
                 //noinspection unchecked
                 history.addAll((Collection) lst);
             }

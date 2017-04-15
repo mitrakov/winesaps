@@ -74,7 +74,7 @@ public class DialogMoreCrystals extends DialogFeat {
             assert buttons != null;
             if (buttons.size == 1) {
                 Actor actor = buttons.first();
-                if (actor != null && actor instanceof TextButton)
+                if (actor instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) actor).setText(bundle.format("close"));
             }
         }

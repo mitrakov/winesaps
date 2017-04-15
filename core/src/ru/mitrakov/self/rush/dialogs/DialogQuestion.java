@@ -42,10 +42,10 @@ public class DialogQuestion extends DialogFeat {
             assert buttons != null;
             if (buttons.size == 2) {
                 Actor yes = buttons.first();
-                if (yes != null && yes instanceof TextButton)
+                if (yes instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) yes).setText(bundle.format("yes"));
                 Actor no = buttons.get(1);
-                if (no != null && no instanceof TextButton)
+                if (no instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) no).setText(bundle.format("no"));
             }
         }

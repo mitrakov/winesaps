@@ -111,10 +111,10 @@ public class DialogBuyAbilities extends DialogFeat {
             assert buttons != null;
             if (buttons.size == 2) {
                 Actor buy = buttons.first();
-                if (buy != null && buy instanceof TextButton)
+                if (buy instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) buy).setText(bundle.format("buy"));
                 Actor close = buttons.get(1);
-                if (close != null && close instanceof TextButton)
+                if (close instanceof TextButton) // stackoverflow.com/questions/2950319
                     ((TextButton) close).setText(bundle.format("close"));
             }
         }

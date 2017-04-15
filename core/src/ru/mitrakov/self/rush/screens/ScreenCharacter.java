@@ -96,7 +96,7 @@ public class ScreenCharacter extends LocalizableScreen {
                     for (TextButton btn : checkboxes) {
                         if (btn.isChecked()) {
                             Object obj = btn.getUserObject();
-                            if (obj instanceof Model.Character) {
+                            if (obj instanceof Model.Character) { // stackoverflow.com/questions/2950319
                                 model.changeCharacter((Model.Character) obj);
                                 game.setNextScreen();
                             }
