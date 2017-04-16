@@ -544,7 +544,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.add(lblCrystalsData);
                 tableRightContent.row().expand();
                 tableRightContent.add(lblAbilities);
-                tableRightContent.add(tableRightContentAbilitiesScroll).pad(15);
+                tableRightContent.add(tableRightContentAbilitiesScroll).fill().pad(10);
                 tableRightContent.row().expandX();
                 tableRightContent.add();
                 tableRightContent.add(lblAbilityExpireTime);
