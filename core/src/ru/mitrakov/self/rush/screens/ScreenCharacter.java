@@ -44,6 +44,7 @@ public class ScreenCharacter extends LocalizableScreen {
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
+        super.onLocaleChanged(bundle);
         assert bundle != null;
 
         for (TextButton btn : checkboxes) {

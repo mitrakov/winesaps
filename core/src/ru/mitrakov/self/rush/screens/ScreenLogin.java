@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -37,7 +36,6 @@ public class ScreenLogin extends LocalizableScreen {
     private final Drawable textureRus;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
-    private final DialogConnect connectingDialog;
 
     private enum CurDialog {Start, SignIn, SignUp}
 
@@ -123,7 +121,6 @@ public class ScreenLogin extends LocalizableScreen {
         lblPassword = new Label("", skin, "default");
         lblEmail = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
-        connectingDialog = new DialogConnect(skin, "default", stage);
 
         // set up layout
         table.add(createLangTable(audioManager)).right();
@@ -159,7 +156,6 @@ public class ScreenLogin extends LocalizableScreen {
 
         if (model.authorized)
             game.setNextScreen();
-        connectingDialog.setVisible(!model.connected);
         imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
     }
 
@@ -177,6 +173,7 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
+        super.onLocaleChanged(bundle);
         assert bundle != null;
 
         btnSignIn.setText(bundle.format("sign.in"));
@@ -188,7 +185,6 @@ public class ScreenLogin extends LocalizableScreen {
         lblName.setText(bundle.format("sign.name"));
         lblPassword.setText(bundle.format("sign.password"));
         lblEmail.setText(bundle.format("sign.email"));
-        connectingDialog.onLocaleChanged(bundle);
     }
 
     private Actor createLangTable(AudioManager audioManager) {

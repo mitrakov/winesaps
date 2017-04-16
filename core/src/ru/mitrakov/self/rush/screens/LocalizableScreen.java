@@ -2,12 +2,14 @@ package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
  * Created by mitrakov on 11.04.2017
@@ -21,6 +23,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final AudioManager audioManager;
     protected final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     protected final Table table = new Table();
+    protected final DialogConnect connectingDialog;
 
     LocalizableScreen(RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
         assert game != null && model != null && skin != null && audioManager != null; // psObject may be NULL
@@ -32,6 +35,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
         table.setFillParent(true);
         stage.addActor(table);
+        connectingDialog = new DialogConnect(skin, "default", stage); // must be AFTER "stage.addActor(table)" to popup
     }
 
     @Override
@@ -41,6 +45,9 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
+        // check connecting
+        connectingDialog.setVisible(!model.connected);
 
         // checking BACK button on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -61,5 +68,10 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        connectingDialog.onLocaleChanged(bundle);
     }
 }

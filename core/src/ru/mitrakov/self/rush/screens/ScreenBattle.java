@@ -30,7 +30,6 @@ public class ScreenBattle extends LocalizableScreen {
     private final ScrollPane abilityButtonsScroll;
     private final ImageButton btnThing;
     private final DialogFinished finishedDialog;
-    private final DialogConnect connectingDialog;
     private final DialogInfo infoDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
@@ -54,7 +53,6 @@ public class ScreenBattle extends LocalizableScreen {
         loadTextures();
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
-        connectingDialog = new DialogConnect(skin, "default", stage);
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
@@ -79,8 +77,6 @@ public class ScreenBattle extends LocalizableScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-
-        connectingDialog.setVisible(!model.connected);
 
         // updating the thing
         Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
@@ -122,11 +118,11 @@ public class ScreenBattle extends LocalizableScreen {
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
+        super.onLocaleChanged(bundle);
         assert bundle != null;
         this.i18n = bundle;
 
         finishedDialog.onLocaleChanged(bundle);
-        connectingDialog.onLocaleChanged(bundle);
         infoDialog.onLocaleChanged(bundle);
 
         infoDialog.setText(bundle.format("battle.out.of.sync.text"));

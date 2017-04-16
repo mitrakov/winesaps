@@ -49,7 +49,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogQuestion questionDialog;
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
-    private final DialogConnect connectingDialog;
+
     private final DialogQuestion giveupDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
@@ -127,7 +127,6 @@ public class ScreenMain extends LocalizableScreen {
         questionDialog = new DialogQuestion("", skin, "default");
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
-        connectingDialog = new DialogConnect(skin, "default", stage);
         giveupDialog = new DialogQuestion("", skin, "default") {{
             setRunnable(new Runnable() {
                 @Override
@@ -328,8 +327,6 @@ public class ScreenMain extends LocalizableScreen {
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
-        connectingDialog.setVisible(!model.connected);
-
         // checks
         checkInvite();
         checkRatings();
@@ -380,6 +377,7 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
+        super.onLocaleChanged(bundle);
         assert bundle != null;
         this.i18n = bundle;
 
@@ -395,7 +393,6 @@ public class ScreenMain extends LocalizableScreen {
         inviteDialog.onLocaleChanged(bundle);
         friendsDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
-        connectingDialog.onLocaleChanged(bundle);
         giveupDialog.onLocaleChanged(bundle);
 
         if (infoDialog.getTitleLabel() != null)

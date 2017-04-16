@@ -96,6 +96,7 @@ public class ScreenTraining extends LocalizableScreen {
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
+        super.onLocaleChanged(bundle);
         assert bundle != null;
 
         btnSkip.setText(bundle.format("train.skip"));
