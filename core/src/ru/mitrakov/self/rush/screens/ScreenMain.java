@@ -318,8 +318,7 @@ public class ScreenMain extends LocalizableScreen {
 
         loadTextures();
         initTables();
-        rebuildLeftTable(false);
-        rebuildRightTable(CurDisplayMode.Info);
+        // rebuilding tables moved to 'show()'
     }
 
     @Override
@@ -357,6 +356,8 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
+        rebuildLeftTable(false);
+        rebuildRightTable(CurDisplayMode.Info);
 
         // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. during battle)
         // be careful! it usually concerns dialogs (to avoid their showing) so not all timestamps should be updated here
