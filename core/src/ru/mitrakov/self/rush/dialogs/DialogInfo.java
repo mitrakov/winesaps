@@ -17,7 +17,7 @@ public class DialogInfo extends DialogFeat {
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center);
-        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).width(400); // here getContentTable != null
 
         button("OK"); // text will be replaced in onLocaleChanged()
     }

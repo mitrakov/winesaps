@@ -50,6 +50,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
     private final DialogConnect connectingDialog;
+    private final DialogQuestion giveupDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
@@ -101,6 +102,7 @@ public class ScreenMain extends LocalizableScreen {
     private long friendsListTime = 0;
     private long abilityExpireTime = 0;
     private long promocodeDoneTime = 0;
+    private long userIsBusyTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -125,6 +127,15 @@ public class ScreenMain extends LocalizableScreen {
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
         connectingDialog = new DialogConnect(skin, "default", stage);
+        giveupDialog = new DialogQuestion("", skin, "default") {{
+            setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    model.stopBattle();
+                }
+            });
+        }};
+
         lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
             addListener(new ClickListener() {
@@ -325,6 +336,7 @@ public class ScreenMain extends LocalizableScreen {
         updateFriends();
         updateStopCall();
         updateAbilities();
+        updateUserIsBusy();
         updatePromocodeDone();
 
         // changing screens
@@ -352,6 +364,7 @@ public class ScreenMain extends LocalizableScreen {
         stopCallMissedTime = model.stopCallMissedTime;
         stopCallExpiredTime = model.stopCallExpiredTime;
         promocodeDoneTime = model.promocodeDoneTime;
+        userIsBusyTime = model.userIsBusyTime;
     }
 
     @Override
@@ -380,12 +393,16 @@ public class ScreenMain extends LocalizableScreen {
         friendsDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
         connectingDialog.onLocaleChanged(bundle);
+        giveupDialog.onLocaleChanged(bundle);
 
         if (infoDialog.getTitleLabel() != null)
             infoDialog.getTitleLabel().setText(bundle.format("dialog.info"));
         if (questionDialog.getTitleLabel() != null)
             questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
+        if (giveupDialog.getTitleLabel() != null)
+            giveupDialog.getTitleLabel().setText(bundle.format("error"));
 
+        giveupDialog.setText(bundle.format("dialog.giveup.text"));
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnInviteRandom.setText(bundle.format("opponent.random"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
@@ -646,6 +663,14 @@ public class ScreenMain extends LocalizableScreen {
             stopCallExpiredTime = model.stopCallExpiredTime;
             dialupDialog.hide();
             infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
+        }
+    }
+
+    private void updateUserIsBusy() {
+        if (userIsBusyTime != model.userIsBusyTime) {
+            userIsBusyTime = model.userIsBusyTime;
+            dialupDialog.hide();
+            giveupDialog.show(stage);
         }
     }
 

@@ -11,8 +11,8 @@ import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
 /**
  * Created by mitrakov on 23.02.2017
  */
-
 class Parser implements IHandler {
+    private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_BATTLE_NOT_FOUND = 73;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
@@ -395,6 +395,11 @@ class Parser implements IHandler {
 
     private void inspectError(Cmd cmd, int code) {
         switch (code) {
+            case 0: // no error
+                break;
+            case ERR_AGGRESSOR_BUSY:
+                model.setUserIsBusy();
+                break;
             case ERR_USER_NOT_FOUND:   // incorrect sid, server was restarted, etc.
             case ERR_INCORRECT_TOKEN:  // client was restarted, trying to use the other client, etc.
                 model.signIn();

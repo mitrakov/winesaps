@@ -134,6 +134,7 @@ public class Model {
     public volatile long gameFinishedTime = 0;
     public volatile long friendsListTime = 0;
     public volatile long promocodeDoneTime = 0;
+    public volatile long userIsBusyTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -818,6 +819,10 @@ public class Model {
             if (0 <= id && id < array.length)
                 abilities.add(array[id]);
         }
+    }
+
+    public void setUserIsBusy() {
+        userIsBusyTime = System.currentTimeMillis();
     }
 }
 
