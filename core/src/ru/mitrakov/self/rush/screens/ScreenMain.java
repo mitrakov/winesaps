@@ -330,14 +330,14 @@ public class ScreenMain extends LocalizableScreen {
 
         connectingDialog.setVisible(!model.connected);
 
-        // updating internal state
-        updateInvite();
-        updateRatings();
-        updateFriends();
-        updateStopCall();
-        updateUserBusy();
-        updateAbilities();
-        updatePromocodeDone();
+        // checks
+        checkInvite();
+        checkRatings();
+        checkFriends();
+        checkStopCall();
+        checkUserBusy();
+        checkAbilities();
+        checkPromocodeDone();
 
         // changing screens
         if (!model.authorized)
@@ -588,7 +588,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateAbilities() {
+    private void checkAbilities() {
         if (abilityExpireTime != model.abilityExpireTime) {
             abilityExpireTime = model.abilityExpireTime;
             tableRightContentAbilities.clear();
@@ -601,7 +601,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateRatings() {
+    private void checkRatings() {
         if (generalRatingTime != model.generalRatingTime) {
             generalRatingTime = model.generalRatingTime;
             updateRating(Model.RatingType.General);
@@ -628,21 +628,21 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateFriends() {
+    private void checkFriends() {
         if (friendsListTime != model.friendsListTime) {
             friendsListTime = model.friendsListTime;
             lstFriends.setItems(model.friends.toArray(new String[0]));
         }
     }
 
-    private void updateInvite() {
+    private void checkInvite() {
         if (inviteTime != model.inviteTime) {
             inviteTime = model.inviteTime;
             incomingDialog.show(stage);
         }
     }
 
-    private void updatePromocodeDone() {
+    private void checkPromocodeDone() {
         if (promocodeDoneTime != model.promocodeDoneTime) {
             promocodeDoneTime = model.promocodeDoneTime;
             promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
@@ -650,7 +650,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateStopCall() {
+    private void checkStopCall() {
         assert i18n != null;
         if (stopCallRejectedTime != model.stopCallRejectedTime) {
             stopCallRejectedTime = model.stopCallRejectedTime;
@@ -669,7 +669,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateUserBusy() {
+    private void checkUserBusy() {
         if (aggressorBusyTime != model.aggressorBusyTime) {
             aggressorBusyTime = model.aggressorBusyTime;
             dialupDialog.hide();
