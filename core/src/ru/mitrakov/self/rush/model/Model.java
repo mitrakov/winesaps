@@ -134,7 +134,8 @@ public class Model {
     public volatile long gameFinishedTime = 0;
     public volatile long friendsListTime = 0;
     public volatile long promocodeDoneTime = 0;
-    public volatile long userIsBusyTime = 0;
+    public volatile long aggressorBusyTime = 0;
+    public volatile long defenderBusyTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -821,8 +822,10 @@ public class Model {
         }
     }
 
-    public void setUserIsBusy() {
-        userIsBusyTime = System.currentTimeMillis();
+    public void setUserBusy(boolean aggressor) {
+        if (aggressor)
+            aggressorBusyTime = System.currentTimeMillis();
+        else defenderBusyTime = System.currentTimeMillis();
     }
 }
 

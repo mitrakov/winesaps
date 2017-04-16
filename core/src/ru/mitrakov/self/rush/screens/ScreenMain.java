@@ -102,7 +102,8 @@ public class ScreenMain extends LocalizableScreen {
     private long friendsListTime = 0;
     private long abilityExpireTime = 0;
     private long promocodeDoneTime = 0;
-    private long userIsBusyTime = 0;
+    private long aggressorBusyTime = 0;
+    private long defenderBusyTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -335,8 +336,8 @@ public class ScreenMain extends LocalizableScreen {
         updateRatings();
         updateFriends();
         updateStopCall();
+        updateUserBusy();
         updateAbilities();
-        updateUserIsBusy();
         updatePromocodeDone();
 
         // changing screens
@@ -364,7 +365,8 @@ public class ScreenMain extends LocalizableScreen {
         stopCallMissedTime = model.stopCallMissedTime;
         stopCallExpiredTime = model.stopCallExpiredTime;
         promocodeDoneTime = model.promocodeDoneTime;
-        userIsBusyTime = model.userIsBusyTime;
+        aggressorBusyTime = model.aggressorBusyTime;
+        defenderBusyTime = model.defenderBusyTime;
     }
 
     @Override
@@ -666,11 +668,16 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateUserIsBusy() {
-        if (userIsBusyTime != model.userIsBusyTime) {
-            userIsBusyTime = model.userIsBusyTime;
+    private void updateUserBusy() {
+        if (aggressorBusyTime != model.aggressorBusyTime) {
+            aggressorBusyTime = model.aggressorBusyTime;
             dialupDialog.hide();
             giveupDialog.show(stage);
+        }
+        if (defenderBusyTime != model.defenderBusyTime) {
+            defenderBusyTime = model.defenderBusyTime;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.busy")).show(stage);
         }
     }
 
