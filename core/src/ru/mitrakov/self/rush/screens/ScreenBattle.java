@@ -31,14 +31,17 @@ public class ScreenBattle extends LocalizableScreen {
     private final ImageButton btnThing;
     private final DialogFinished finishedDialog;
     private final DialogConnect connectingDialog;
+    private final DialogInfo infoDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
 
-    private long roundFinishedTime = 0;
-    private long gameFinishedTime = 0;
     private int scores = 0;
     private int lives = 0;
+    private long roundFinishedTime = 0;
+    private long gameFinishedTime = 0;
+    private boolean connected = true;
+    private boolean outOfSync = false;
     private CellObject curThing, enemyThing;
     private I18NBundle i18n;
 
@@ -52,6 +55,7 @@ public class ScreenBattle extends LocalizableScreen {
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
         connectingDialog = new DialogConnect(skin, "default", stage);
+        infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "default");
         lblTime = new Label("", skin, "default");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
@@ -85,7 +89,7 @@ public class ScreenBattle extends LocalizableScreen {
         // updating labels
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
         lblScore.setText(i18n.format("battle.score", model.score1, model.score2)); // i18n != NULL (assert omitted)
-        lblTime.setText(String.valueOf(t >= 0 ? t : 0));
+        lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
 
         // checking
         checkAbilities();
@@ -93,6 +97,7 @@ public class ScreenBattle extends LocalizableScreen {
         checkRoundFinished(); // this must be before 'checkLives()' but after 'checkScore()' (to play sounds correctly)
         checkLives();
         checkThing();
+        checkConnected();
         checkEnemyThing();
     }
 
@@ -119,8 +124,14 @@ public class ScreenBattle extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
         this.i18n = bundle;
+
         finishedDialog.onLocaleChanged(bundle);
         connectingDialog.onLocaleChanged(bundle);
+        infoDialog.onLocaleChanged(bundle);
+
+        infoDialog.setText(bundle.format("battle.out.of.sync.text"));
+        if (infoDialog.getTitleLabel() != null)
+            infoDialog.getTitleLabel().setText(bundle.format("dialog.warning"));
     }
 
     private void loadTextures() {
@@ -166,6 +177,7 @@ public class ScreenBattle extends LocalizableScreen {
         lives = model.myLives + model.enemyLives;
         curThing = model.curThing;
         enemyThing = model.enemyThing;
+        outOfSync = false;
     }
 
     private void checkAbilities() {
@@ -193,8 +205,8 @@ public class ScreenBattle extends LocalizableScreen {
             reset();
             String header = i18n.format("battle.finish");
             String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
-            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true)
-                    .show(stage);
+            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
+            finishedDialog.show(stage);
             audioManager.music("theme");
         }
     }
@@ -228,6 +240,16 @@ public class ScreenBattle extends LocalizableScreen {
                 audioManager.sound(enemyThing.getClass().getSimpleName());
             else audioManager.sound("thing");
             enemyThing = model.enemyThing;
+        }
+    }
+
+    private void checkConnected() {
+        if (connected != model.connected) {
+            if (!connected && model.connected) {
+                outOfSync = true;
+                infoDialog.show(stage);
+            } else outOfSync = false;
+            connected = model.connected;
         }
     }
 }
