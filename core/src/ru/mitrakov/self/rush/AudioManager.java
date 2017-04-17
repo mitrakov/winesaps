@@ -11,6 +11,8 @@ import com.badlogic.gdx.files.FileHandle;
 @SuppressWarnings("WeakerAccess")
 public class AudioManager {
     private final ObjectMap<String, Sound> sounds = new ObjectMap<String, Sound>(10);
+
+    private boolean muted = false;
     private Music curMusic;
     private String curMusicName = "";
 
@@ -24,7 +26,7 @@ public class AudioManager {
 
     public void music(String name) {
         assert name != null;
-        if (!curMusicName.equals(name)) {
+        if (!muted && !curMusicName.equals(name)) {
             if (curMusic != null)
                 curMusic.dispose();
             curMusic = Gdx.audio.newMusic(Gdx.files.internal(String.format("tune/%s.mp3", name)));
@@ -37,9 +39,10 @@ public class AudioManager {
         }
     }
 
-    public void pauseMusic(boolean pause) {
+    public void mute(boolean value) {
+        muted = value;
         if (curMusic != null) {
-            if (pause)
+            if (muted)
                 curMusic.pause();
             else curMusic.play();
         }
@@ -47,9 +50,11 @@ public class AudioManager {
 
     public void sound(String name) {
         assert name != null;
-        if (sounds.containsKey(name))
-            sounds.get(name).play();
-        else throw new RuntimeException(String.format("Sound %s not found", name));
+        if (!muted) {
+            if (sounds.containsKey(name))
+                sounds.get(name).play();
+            else throw new RuntimeException(String.format("Sound %s not found", name));
+        }
     }
 
     public void dispose() {

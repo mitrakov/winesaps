@@ -174,7 +174,7 @@ class Parser implements IHandler {
                 name.append((char) data[i]);
             }
             model.attacked(sid, name.toString());
-            if (psObject != null)
+            if (psObject != null && model.notifyNewBattles)
                 psObject.activate();
         } else if (data.length == 1) {
             inspectError(cmd, data[0]);

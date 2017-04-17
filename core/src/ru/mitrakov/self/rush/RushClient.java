@@ -80,7 +80,7 @@ public class RushClient extends Game implements Localizable {
             psObject.setVisibleListener(new PsObject.VisibleListener() {
                 @Override
                 public void onVisibleChanged(boolean visible) {
-                    audioManager.pauseMusic(!visible);
+                    audioManager.mute(!visible);
                 }
             });
         }
