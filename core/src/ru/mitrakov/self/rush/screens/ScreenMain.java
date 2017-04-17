@@ -50,7 +50,6 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
 
-    private final DialogQuestion giveupDialog;
     private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
@@ -131,14 +130,6 @@ public class ScreenMain extends LocalizableScreen {
         questionDialog = new DialogQuestion("", skin, "default");
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
-        giveupDialog = new DialogQuestion("", skin, "default") {{
-            setRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    model.stopBattle();
-                }
-            });
-        }};
 
         lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
@@ -401,16 +392,12 @@ public class ScreenMain extends LocalizableScreen {
         inviteDialog.onLocaleChanged(bundle);
         friendsDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
-        giveupDialog.onLocaleChanged(bundle);
 
         if (infoDialog.getTitleLabel() != null)
             infoDialog.getTitleLabel().setText(bundle.format("dialog.info"));
         if (questionDialog.getTitleLabel() != null)
             questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
-        if (giveupDialog.getTitleLabel() != null)
-            giveupDialog.getTitleLabel().setText(bundle.format("error"));
 
-        giveupDialog.setText(bundle.format("dialog.giveup.text"));
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnInviteRandom.setText(bundle.format("opponent.random"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
@@ -683,7 +670,7 @@ public class ScreenMain extends LocalizableScreen {
         if (aggressorBusyTime != model.aggressorBusyTime) {
             aggressorBusyTime = model.aggressorBusyTime;
             dialupDialog.hide();
-            giveupDialog.show(stage);
+            infoDialog.setText(i18n.format("dialog.info.aggressor.busy")).show(stage);
         }
         if (defenderBusyTime != model.defenderBusyTime) {
             defenderBusyTime = model.defenderBusyTime;
