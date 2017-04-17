@@ -136,6 +136,9 @@ public class Model {
     public volatile long promocodeDoneTime = 0;
     public volatile long aggressorBusyTime = 0;
     public volatile long defenderBusyTime = 0;
+    public volatile long enemyNotFoundTime = 0;
+    public volatile long noFreeUsersTime = 0;
+    public volatile long attackYourselfTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -826,6 +829,18 @@ public class Model {
         if (aggressor)
             aggressorBusyTime = System.currentTimeMillis();
         else defenderBusyTime = System.currentTimeMillis();
+    }
+
+    public void setEnemyNotFound() {
+        enemyNotFoundTime = System.currentTimeMillis();
+    }
+
+    public void setNoFreeUsers() {
+        noFreeUsersTime = System.currentTimeMillis();
+    }
+
+    public void setAttackYourself() {
+        attackYourselfTime = System.currentTimeMillis();
     }
 }
 

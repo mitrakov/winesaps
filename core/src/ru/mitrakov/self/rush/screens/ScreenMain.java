@@ -104,6 +104,9 @@ public class ScreenMain extends LocalizableScreen {
     private long promocodeDoneTime = 0;
     private long aggressorBusyTime = 0;
     private long defenderBusyTime = 0;
+    private long enemyNotFoundTime = 0;
+    private long noFreeUsersTime = 0;
+    private long attackYourselfTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -332,8 +335,8 @@ public class ScreenMain extends LocalizableScreen {
         checkRatings();
         checkFriends();
         checkStopCall();
-        checkUserBusy();
         checkAbilities();
+        checkAttackErrors();
         checkPromocodeDone();
 
         // changing screens
@@ -365,6 +368,9 @@ public class ScreenMain extends LocalizableScreen {
         promocodeDoneTime = model.promocodeDoneTime;
         aggressorBusyTime = model.aggressorBusyTime;
         defenderBusyTime = model.defenderBusyTime;
+        enemyNotFoundTime = model.enemyNotFoundTime;
+        noFreeUsersTime = model.noFreeUsersTime;
+        attackYourselfTime = model.attackYourselfTime;
     }
 
     @Override
@@ -666,7 +672,8 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void checkUserBusy() {
+    private void checkAttackErrors() {
+        assert i18n != null;
         if (aggressorBusyTime != model.aggressorBusyTime) {
             aggressorBusyTime = model.aggressorBusyTime;
             dialupDialog.hide();
@@ -676,6 +683,21 @@ public class ScreenMain extends LocalizableScreen {
             defenderBusyTime = model.defenderBusyTime;
             dialupDialog.hide();
             infoDialog.setText(i18n.format("dialog.info.busy")).show(stage);
+        }
+        if (enemyNotFoundTime != model.enemyNotFoundTime) {
+            enemyNotFoundTime = model.enemyNotFoundTime;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
+        }
+        if (noFreeUsersTime != model.noFreeUsersTime) {
+            noFreeUsersTime = model.noFreeUsersTime;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.no.free.users")).show(stage);
+        }
+        if (attackYourselfTime != model.attackYourselfTime) {
+            attackYourselfTime = model.attackYourselfTime;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
         }
     }
 

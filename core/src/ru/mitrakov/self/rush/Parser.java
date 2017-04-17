@@ -12,11 +12,14 @@ import static ru.mitrakov.self.rush.net.Utils.copyOfRange;
  * Created by mitrakov on 23.02.2017
  */
 class Parser implements IHandler {
+    private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
     private static final int ERR_BATTLE_NOT_FOUND = 73;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
+    private static final int ERR_ENEMY_NOT_FOUND = 247;
+    private static final int ERR_NO_FREE_USERS = 248;
 
     private final Model model;
     private final PsObject psObject;
@@ -398,18 +401,27 @@ class Parser implements IHandler {
         switch (code) {
             case 0: // no error
                 break;
+            case ERR_ATTACK_YOURSELF:
+                model.setAttackYourself();
+                break;
             case ERR_AGGRESSOR_BUSY:
                 model.setUserBusy(true);
                 break;
             case ERR_DEFENDER_BUSY:
                 model.setUserBusy(false);
                 break;
+            case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
+                model.gameFinished(false);
+                break;
             case ERR_USER_NOT_FOUND:   // incorrect sid, server was restarted, etc.
             case ERR_INCORRECT_TOKEN:  // client was restarted, trying to use the other client, etc.
                 model.signIn();
                 break;
-            case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
-                model.gameFinished(false);
+            case ERR_ENEMY_NOT_FOUND:
+                model.setEnemyNotFound();
+                break;
+            case ERR_NO_FREE_USERS:
+                model.setNoFreeUsers();
                 break;
             default:
                 String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);
