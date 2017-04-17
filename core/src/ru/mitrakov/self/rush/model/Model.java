@@ -139,6 +139,7 @@ public class Model {
     public volatile long enemyNotFoundTime = 0;
     public volatile long noFreeUsersTime = 0;
     public volatile long attackYourselfTime = 0;
+    public volatile long addFriendErrorTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -841,6 +842,10 @@ public class Model {
 
     public void setAttackYourself() {
         attackYourselfTime = System.currentTimeMillis();
+    }
+
+    public void setAddFriendError() {
+        addFriendErrorTime = System.currentTimeMillis();
     }
 }
 

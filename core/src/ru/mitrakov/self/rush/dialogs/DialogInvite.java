@@ -95,7 +95,7 @@ public class DialogInvite extends DialogFeat {
         this.type = type;
         this.name = name;
         chkAddToFriends.setChecked(!model.friends.contains(name));
-        chkAddToFriends.setVisible(!model.friends.contains(name));
+        chkAddToFriends.setVisible(!model.friends.contains(name) && !name.equals(model.name));
         return this;
     }
 

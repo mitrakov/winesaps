@@ -107,6 +107,7 @@ public class ScreenMain extends LocalizableScreen {
     private long enemyNotFoundTime = 0;
     private long noFreeUsersTime = 0;
     private long attackYourselfTime = 0;
+    private long addFriendErrorTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -332,11 +333,11 @@ public class ScreenMain extends LocalizableScreen {
 
         // checks
         checkInvite();
+        checkErrors();
         checkRatings();
         checkFriends();
         checkStopCall();
         checkAbilities();
-        checkAttackErrors();
         checkPromocodeDone();
 
         // changing screens
@@ -371,6 +372,7 @@ public class ScreenMain extends LocalizableScreen {
         enemyNotFoundTime = model.enemyNotFoundTime;
         noFreeUsersTime = model.noFreeUsersTime;
         attackYourselfTime = model.attackYourselfTime;
+        addFriendErrorTime = model.addFriendErrorTime;
     }
 
     @Override
@@ -672,8 +674,12 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void checkAttackErrors() {
+    private void checkErrors() {
         assert i18n != null;
+        if (addFriendErrorTime != model.addFriendErrorTime) {
+            addFriendErrorTime = model.addFriendErrorTime;
+            infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
+        }
         if (aggressorBusyTime != model.aggressorBusyTime) {
             aggressorBusyTime = model.aggressorBusyTime;
             dialupDialog.hide();
