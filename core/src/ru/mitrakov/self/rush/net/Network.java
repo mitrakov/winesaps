@@ -76,11 +76,15 @@ public class Network extends Thread implements IHandler {
     @Override
     public void onReceived(int[] data) {
         if (data.length > HEADER_SIZ) try {
+            int inSid = data[0] * 256 + data[1];
+            long inToken = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
             if (sid * token == 0) {
-                sid = data[0] * 256 + data[1];
-                token = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+                sid = inSid;
+                token = inToken;
             }
-            handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
+            if (sid == inSid && token == inToken)
+                handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
+            else throw new IllegalAccessException("Incorrect sid/token pair");
         } catch (Exception e) {
             errorHandler.uncaughtException(this, e); // we MUST handle all exceptions to get Protocol working
         }
