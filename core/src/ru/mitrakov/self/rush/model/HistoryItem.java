@@ -17,7 +17,7 @@ public final /*case*/ class HistoryItem implements Serializable {
 
     public HistoryItem(Date date, boolean win, String name1, String name2, int score1, int score2) {
         assert date != null && name1 != null && name2 != null;
-        this.date = date;
+        this.date = new Date(date.getTime()); // recommended by FindBugs
         this.win = win;
         this.name1 = name1;
         this.name2 = name2;

@@ -1,9 +1,10 @@
-package ru.mitrakov.self.rush.net;
+package ru.mitrakov.self.rush.utils;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by mitrakov on 29.03.2017
  */
-
 public class Utils {
     public static int[] copyOfRange(int[] original, int from, int to) {
         // copied from java.util.Arrays
@@ -38,5 +39,25 @@ public class Utils {
         System.arraycopy(original, 0, copy, 0, original.length);
         System.arraycopy(elements, 0, copy, original.length, elements.length);
         return copy;
+    }
+
+    public static byte[] getBytes(String s) {
+        // @mitrakov: don't use s.getBytes() without charsets: it's a bad practice (by FindBugs)
+        // @mitrakov: don't use Charset class: it requires API Level 9
+        try {
+            return s.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return new byte[0];
+        }
+    }
+
+    public static String newString(byte[] bytes) {
+        // @mitrakov: don't use new String(bytes) without charsets: it's a bad practice (by FindBugs)
+        // @mitrakov: don't use Charset class: it requires API Level 9
+        try {
+            return new String(bytes, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 }

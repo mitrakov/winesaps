@@ -5,13 +5,12 @@ import java.util.*;
 import java.io.IOException;
 
 import static java.lang.Math.max;
-import static ru.mitrakov.self.rush.net.Utils.*;
+import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.net.Protocol.*;
 
 /**
  * Created by mitrakov on 03.04.2017
  */
-
 class Sender {
 
     private final DatagramSocket socket;
@@ -22,7 +21,7 @@ class Sender {
     private final Timer timer;
 
     private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0;
-    boolean connected = false;
+    volatile boolean connected = false; // volatile needed (by FindBugs)
 
     Sender(DatagramSocket socket, InetAddress addr, int port, IProtocol protocol) {
         assert socket != null && addr != null && 0 < port && port < 65536 && protocol != null;

@@ -7,6 +7,7 @@ import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
 
+import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
 /**
@@ -79,7 +80,7 @@ public class Model {
     public String md5(String s) {
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
-            byte[] bytes = MessageDigest.getInstance("md5").digest(s.getBytes());
+            byte[] bytes = MessageDigest.getInstance("md5").digest(getBytes(s));
             return String.format("%X", new BigInteger(1, bytes)).toLowerCase();
         } catch (NoSuchAlgorithmException ignored) {
             return "";
@@ -272,7 +273,7 @@ public class Model {
         assert name != null && hash != null;
         if (name.length() > 0 && hash.length() > 0 && connected && sender != null) { // don't use method 'isEmpty()'
             sender.reset();
-            sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash).getBytes()); // \1 = Local auth
+            sender.send(SIGN_IN, getBytes(String.format("\1%s\0%s", name, hash))); // \1 = Local auth
         }
     }
 
@@ -286,7 +287,7 @@ public class Model {
         if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash).getBytes()); // \1 = Local auth
+            sender.send(SIGN_IN, getBytes(String.format("\1%s\0%s", login, hash))); // \1 = Local auth
         }
     }
 
@@ -301,7 +302,7 @@ public class Model {
         if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode).getBytes());
+            sender.send(SIGN_UP, getBytes(String.format("%s\0%s\0%s\0%s", login, hash, email, promocode)));
         }
     }
 
@@ -321,7 +322,7 @@ public class Model {
      */
     public void invite(String victim) {
         if (connected && sender != null) {
-            sender.send(ATTACK, String.format("\0%s", victim).getBytes());
+            sender.send(ATTACK, getBytes(String.format("\0%s", victim)));
         }
     }
 
@@ -391,7 +392,7 @@ public class Model {
      */
     public void addFriend(String name) {
         if (connected && sender != null) {
-            sender.send(ADD_FRIEND, name.getBytes());
+            sender.send(ADD_FRIEND, getBytes(name));
         }
     }
 
@@ -402,7 +403,7 @@ public class Model {
      */
     public void removeFriend(String name) {
         if (connected && sender != null) {
-            sender.send(REMOVE_FRIEND, name.getBytes());
+            sender.send(REMOVE_FRIEND, getBytes(name));
         }
     }
 
@@ -411,7 +412,8 @@ public class Model {
      *
      * @param type - type of rating (General, Weekly, etc.)
      */
-    public void getRating(RatingType type) {
+    public synchronized void getRating(RatingType type) {
+        // @mitrakov: synchronized added because setter is also synchronized (by FindBugs)
         assert type != null;
         if (connected && sender != null) {
             sender.send(RATING, type.ordinal());
@@ -421,7 +423,7 @@ public class Model {
     public void checkPromocode(String promocode) {
         assert promocode != null;
         if (connected && sender != null && promocode.length() >= PROMOCODE_LEN) {
-            sender.send(CHECK_PROMOCODE, promocode.getBytes());
+            sender.send(CHECK_PROMOCODE, getBytes(promocode));
         }
     }
 
@@ -640,7 +642,7 @@ public class Model {
             bytes[i] = (byte) data[i];
         }
         friends.clear();
-        String s = new String(bytes);
+        String s = newString(bytes);
         if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
             Collections.addAll(friends, s.split("\0"));
         friendsListTime = System.currentTimeMillis();
@@ -672,7 +674,7 @@ public class Model {
     public synchronized void setRating(RatingType type, int[] data) {
         assert type != null && data != null;
         Collection<RatingItem> rating = type == RatingType.General ? generalRating : weeklyRating;
-        rating.clear();
+        rating.clear(); // synchronized required
 
         int i = 0;
         while (i < data.length) {
@@ -720,8 +722,8 @@ public class Model {
         promocodeDoneTime = System.currentTimeMillis();
     }
 
-    public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
-                             int enemyLives) {
+    public synchronized void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2,
+                                          int myLives, int enemyLives) {
         curThing = enemyThing = curActor = null;
         score1 = score2 = 0;
 
@@ -735,7 +737,7 @@ public class Model {
         this.enemyLives = enemyLives;
         roundNumber = number;
         roundLengthSec = timeSec;
-        this.aggressor = aggressor;
+        this.aggressor = aggressor; // synchronized needed (by FindBugs: see IS2_INCONSISTENT_SYNC)
         roundStartTime = System.currentTimeMillis();
     }
 

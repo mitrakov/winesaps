@@ -4,7 +4,7 @@ import java.net.*;
 import java.util.*;
 import java.io.IOException;
 
-import static ru.mitrakov.self.rush.net.Utils.*;
+import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -28,7 +28,8 @@ public class Network extends Thread implements IHandler {
     private long token = 0;
     private IProtocol protocol;
 
-    public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port) throws IOException {
+    public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port)
+            throws SocketException {
         assert handler != null && eHandler != null && addr != null && 0 < port && port < 65536;
         this.handler = handler;
         this.errorHandler = eHandler;

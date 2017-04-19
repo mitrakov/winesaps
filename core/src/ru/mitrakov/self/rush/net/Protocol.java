@@ -3,7 +3,7 @@ package ru.mitrakov.self.rush.net;
 import java.net.*;
 import java.io.IOException;
 
-import static ru.mitrakov.self.rush.net.Utils.*;
+import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Created by mitrakov on 31.03.2017
@@ -48,7 +48,7 @@ public class Protocol implements IProtocol {
     private final Receiver receiver;
     private final IHandler handler;
 
-    public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) throws IOException {
+    public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) {
         assert socket != null && addr != null && handler != null && 0 < port && port < 65536;
         this.handler = handler;
         sender = new Sender(socket, addr, port, this);

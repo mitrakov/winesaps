@@ -26,17 +26,24 @@ class FileReader implements Model.IFileReader {
 
     @Override
     public Object deserialize(String filename) {
-        try {
-            return new ObjectInputStream(Gdx.files.local(filename).read()).readObject();
-        } catch (Exception e) {
+        try { // since API Level 19 may be replaced with try-with-resources
+            ObjectInputStream s = new ObjectInputStream(Gdx.files.local(filename).read());
+            Object res = s.readObject();
+            s.close(); // found by FindBugs
+            return res;
+        } catch (IOException e) {
+            return null;
+        } catch (ClassNotFoundException e) { // since Java 7 may be replaced with multi-catch
             return null;
         }
     }
 
     @Override
     public void serialize(String filename, Object obj) {
-        try {
-            new ObjectOutputStream(Gdx.files.local(filename).write(false)).writeObject(obj);
+        try { // since API Level 19 may be replaced with try-with-resources
+            ObjectOutputStream s = new ObjectOutputStream(Gdx.files.local(filename).write(false));
+            s.writeObject(obj);
+            s.close(); // found by FindBugs
         } catch (IOException e) {
             e.printStackTrace();
         }

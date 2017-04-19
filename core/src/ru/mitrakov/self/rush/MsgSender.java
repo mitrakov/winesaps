@@ -2,7 +2,7 @@ package ru.mitrakov.self.rush;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
-import static ru.mitrakov.self.rush.net.Utils.*;
+import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Created by mitrakov on 27.02.2017

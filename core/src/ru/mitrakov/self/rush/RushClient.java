@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush;
 
+import java.net.*;
 import java.util.Locale;
-import java.net.InetAddress;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.I18NBundle;
@@ -17,6 +17,7 @@ public class RushClient extends Game implements Localizable {
 
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
+    private /*final*/ Network network;
     private /*final*/ Skin skin;
     private /*final*/ AudioManager audioManager;
     private /*final*/ LocalizableScreen screenLogin;
@@ -39,22 +40,25 @@ public class RushClient extends Game implements Localizable {
             };
             InetAddress address = InetAddress.getByName("192.168.1.2");
             int port = 33996;
-            Network network = new Network(new Parser(model, psObject), errorHandler, address, port);
+            network = new Network(new Parser(model, psObject), errorHandler, address, port);
             network.setProtocol(new Protocol(network.getSocket(), address, port, network));
-            network.start();
 
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
             model.connected = false; // it's true by default because no Protocols provided, but now we have SwUDP
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
             e.printStackTrace();
-            System.exit(0);
+        } catch (SocketException e) { // in Java 7 may be replaced with Multi-catch
+            e.printStackTrace();
         }
     }
 
     @Override
     public void create() {
+        // network is a Thread so starting in a constructor is a bad practice (by FindBugs)
+        network.start();
+
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
         model.signIn(); // try to sign in using stored credentials

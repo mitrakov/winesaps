@@ -15,6 +15,7 @@ import ru.mitrakov.self.rush.AudioManager;
 
 /**
  * Created by mitrakov on 05.03.2017
+ * Class is NOT thread-safe
  */
 public class DialogBuyAbilities extends DialogFeat {
 
@@ -139,7 +140,7 @@ public class DialogBuyAbilities extends DialogFeat {
         table.add(productsList).height(100).colspan(2);
     }
 
-    private synchronized void rebuildContent(Model.Ability ability) {
+    private void rebuildContent(Model.Ability ability) {
         assert i18n != null;
 
         lblCrystals.setText(String.valueOf(model.crystals));

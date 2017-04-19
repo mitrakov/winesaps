@@ -11,7 +11,6 @@ import ru.mitrakov.self.rush.net.Network;
 /**
  * Created by mitrakov on 27.02.2017
  */
-
 class InputController {
     private final Model model;
     private long time = 0;

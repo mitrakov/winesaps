@@ -32,7 +32,8 @@ public class DesktopLauncher extends JFrame {
         registerInstance();
         try {
             Thread.sleep(200); // see note below
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
 
         // create platform specific object
         final PsObject obj = new PsObject() {
@@ -88,8 +89,9 @@ public class DesktopLauncher extends JFrame {
                     // so we notify the first instance about this (causing it to restart) and shutdown itself
                     try {
                         new Socket("127.0.0.1", PORT).close();
-                        System.exit(0);
-                    } catch (IOException ignore) {}
+                        System.exit(0); // it's OK! Please add FindBugs exception: SuppressFBWarnings("DM_EXIT")
+                    } catch (IOException ignore) {
+                    }
                 }
             }
         });

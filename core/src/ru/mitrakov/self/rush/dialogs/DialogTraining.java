@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 
 public class DialogTraining extends Window {
-    private final class Item {
+    static private final class Item {
         Drawable image;
         String text1;
         String text2;
