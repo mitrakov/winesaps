@@ -107,6 +107,7 @@ public class ScreenMain extends LocalizableScreen {
     private long noFreeUsersTime = 0;
     private long attackYourselfTime = 0;
     private long addFriendErrorTime = 0;
+    private long noCrystalsTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -364,6 +365,7 @@ public class ScreenMain extends LocalizableScreen {
         noFreeUsersTime = model.noFreeUsersTime;
         attackYourselfTime = model.attackYourselfTime;
         addFriendErrorTime = model.addFriendErrorTime;
+        noCrystalsTime = model.noCrystalsTime;
     }
 
     @Override
@@ -666,6 +668,10 @@ public class ScreenMain extends LocalizableScreen {
         if (addFriendErrorTime != model.addFriendErrorTime) {
             addFriendErrorTime = model.addFriendErrorTime;
             infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
+        }
+        if (noCrystalsTime != model.noCrystalsTime) {
+            noCrystalsTime = model.noCrystalsTime;
+            infoDialog.setText(i18n.format("dialog.info.no.crystals")).show(stage);
         }
         if (aggressorBusyTime != model.aggressorBusyTime) {
             aggressorBusyTime = model.aggressorBusyTime;

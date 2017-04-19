@@ -141,6 +141,7 @@ public class Model {
     public volatile long noFreeUsersTime = 0;
     public volatile long attackYourselfTime = 0;
     public volatile long addFriendErrorTime = 0;
+    public volatile long noCrystalsTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -848,6 +849,10 @@ public class Model {
 
     public void setAddFriendError() {
         addFriendErrorTime = System.currentTimeMillis();
+    }
+
+    public void setNoCrystals() {
+        noCrystalsTime = System.currentTimeMillis();
     }
 }
 

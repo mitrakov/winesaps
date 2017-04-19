@@ -16,6 +16,7 @@ class Parser implements IHandler {
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
     private static final int ERR_BATTLE_NOT_FOUND = 73;
+    private static final int ERR_NO_CRYSTALS = 215;
     private static final int ERR_ADD_FRIEND = 223;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
@@ -413,6 +414,9 @@ class Parser implements IHandler {
                 break;
             case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
                 model.gameFinished(false);
+                break;
+            case ERR_NO_CRYSTALS:
+                model.setNoCrystals();
                 break;
             case ERR_ADD_FRIEND:
                 model.setAddFriendError();
