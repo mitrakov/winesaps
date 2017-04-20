@@ -142,8 +142,10 @@ public class Model {
     public volatile long attackYourselfTime = 0;
     public volatile long addFriendErrorTime = 0;
     public volatile long noCrystalsTime = 0;
-    public volatile long incorrectLoginTime = 0;
-    public volatile long incorrectPasswordTime = 0;
+    public volatile long incorrectCredentialsTime = 0;
+    public volatile long incorrectNameTime = 0;
+    public volatile long incorrectEmailTime = 0;
+    public volatile long duplicateNameTime = 0;
     public volatile long signUpErrorTime = 0;
 
     // ==================================================
@@ -303,7 +305,8 @@ public class Model {
      * @param email    - email address
      */
     public void signUp(String login, String password, String email, String promocode) {
-        if (connected && sender != null) {
+        assert login != null && password != null && email != null && promocode != null;
+        if (connected && sender != null && password.length() >= 4) {
             hash = md5(password);
             sender.reset();
             sender.send(SIGN_UP, getBytes(String.format("%s\0%s\0%s\0%s", login, hash, email, promocode)));
@@ -858,12 +861,20 @@ public class Model {
         noCrystalsTime = System.currentTimeMillis();
     }
 
-    public void setIncorrectLogin() {
-        incorrectLoginTime = System.currentTimeMillis();
+    public void setIncorrectCredentials() {
+        incorrectCredentialsTime = System.currentTimeMillis();
     }
 
-    public void setIncorrectPassword() {
-        incorrectPasswordTime = System.currentTimeMillis();
+    public void setIncorrectName() {
+        incorrectNameTime = System.currentTimeMillis();
+    }
+
+    public void setIncorrectEmail() {
+        incorrectEmailTime = System.currentTimeMillis();
+    }
+
+    public void setDuplicateName() {
+        duplicateNameTime = System.currentTimeMillis();
     }
 
     public void setSignUpError() {

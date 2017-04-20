@@ -44,15 +44,17 @@ public class ScreenLogin extends LocalizableScreen {
     private CurDialog curDialog = CurDialog.Start;
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
-    private long incorrectLoginTime = 0;
-    private long incorrectPasswordTime = 0;
+    private long incorrectCredentialsTime = 0;
+    private long incorrectNameTime = 0;
+    private long incorrectEmailTime = 0;
+    private long duplicateNameTime = 0;
     private long signUpErrorTime = 0;
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                       I18NBundle i18n) {
+                       I18NBundle i18nb) {
         super(game, model, psObject, skin, audioManager);
-        assert i18n != null;
-        this.i18n = i18n;
+        assert i18nb != null;
+        i18n = i18nb;
 
         TextureRegion regionEng = atlasMenu.findRegion("eng");
         TextureRegion regionRus = atlasMenu.findRegion("rus");
@@ -114,7 +116,11 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.signUp(txtLogin.getText(), txtPassword.getText(), txtEmail.getText(), txtPromocode.getText());
+                    assert i18n != null;
+                    String password = txtPassword.getText();
+                    if (password.length() >= 4)
+                        model.signUp(txtLogin.getText(), password, txtEmail.getText(), txtPromocode.getText());
+                    else infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
                 }
             });
         }};
@@ -177,8 +183,10 @@ public class ScreenLogin extends LocalizableScreen {
         setStartDialog();
 
         // updating dialogs time (see comment to ScreenMain.show())
-        incorrectLoginTime = model.incorrectLoginTime;
-        incorrectPasswordTime = model.incorrectPasswordTime;
+        incorrectCredentialsTime = model.incorrectCredentialsTime;
+        incorrectNameTime = model.incorrectNameTime;
+        incorrectEmailTime = model.incorrectEmailTime;
+        duplicateNameTime = model.duplicateNameTime;
         signUpErrorTime = model.signUpErrorTime;
     }
 
@@ -295,17 +303,25 @@ public class ScreenLogin extends LocalizableScreen {
 
     private void checkErrors() {
         assert i18n != null;
-        if (incorrectLoginTime != model.incorrectLoginTime) {
-            incorrectLoginTime = model.incorrectLoginTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+        if (incorrectCredentialsTime != model.incorrectCredentialsTime) {
+            incorrectCredentialsTime = model.incorrectCredentialsTime;
+            infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
         }
-        if (incorrectPasswordTime != model.incorrectPasswordTime) {
-            incorrectPasswordTime = model.incorrectPasswordTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+        if (incorrectNameTime != model.incorrectNameTime) {
+            incorrectNameTime = model.incorrectNameTime;
+            infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
+        }
+        if (incorrectEmailTime != model.incorrectEmailTime) {
+            incorrectEmailTime = model.incorrectEmailTime;
+            infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
+        }
+        if (duplicateNameTime != model.duplicateNameTime) {
+            duplicateNameTime = model.duplicateNameTime;
+            infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
         }
         if (signUpErrorTime != model.signUpErrorTime) {
             signUpErrorTime = model.signUpErrorTime;
-            infoDialog.setText(i18n.format("dialog.info.signup.error")).show(stage);
+            infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
         }
     }
 }

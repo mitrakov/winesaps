@@ -12,19 +12,22 @@ import static ru.mitrakov.self.rush.utils.Utils.copyOfRange;
  * Created by mitrakov on 23.02.2017
  */
 class Parser implements IHandler {
-    private static final int ERR_INCORRECT_PASSWORD = 31;
+    private static final int ERR_SIGNIN_INCORRECT_PASSWORD = 31;
     private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
     private static final int ERR_BATTLE_NOT_FOUND = 73;
     private static final int ERR_SIGN_UP = 201;
-    private static final int ERR_INCORRECT_LOGIN = 204;
+    private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
     private static final int ERR_NO_CRYSTALS = 215;
     private static final int ERR_ADD_FRIEND = 223;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
     private static final int ERR_ENEMY_NOT_FOUND = 247;
     private static final int ERR_NO_FREE_USERS = 248;
+    private static final int ERR_INCORRECT_NAME = 249;
+    private static final int ERR_INCORRECT_EMAIL = 251;
+    private static final int ERR_DUPLICATE_NAME = 252;
 
     private final Model model;
     private final PsObject psObject;
@@ -406,8 +409,8 @@ class Parser implements IHandler {
         switch (code) {
             case 0: // no error
                 break;
-            case ERR_INCORRECT_PASSWORD:
-                model.setIncorrectPassword();
+            case ERR_SIGNIN_INCORRECT_PASSWORD:
+                model.setIncorrectCredentials();
                 break;
             case ERR_ATTACK_YOURSELF:
                 model.setAttackYourself();
@@ -424,8 +427,8 @@ class Parser implements IHandler {
             case ERR_SIGN_UP:
                 model.setSignUpError();
                 break;
-            case ERR_INCORRECT_LOGIN:
-                model.setIncorrectLogin();
+            case ERR_SIGNIN_INCORRECT_LOGIN:
+                model.setIncorrectCredentials();
                 break;
             case ERR_NO_CRYSTALS:
                 model.setNoCrystals();
@@ -442,6 +445,15 @@ class Parser implements IHandler {
                 break;
             case ERR_NO_FREE_USERS:
                 model.setNoFreeUsers();
+                break;
+            case ERR_INCORRECT_NAME:
+                model.setIncorrectName();
+                break;
+            case ERR_INCORRECT_EMAIL:
+                model.setIncorrectEmail();
+                break;
+            case ERR_DUPLICATE_NAME:
+                model.setDuplicateName();
                 break;
             default:
                 String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);
