@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.dialogs.DialogInfo;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -28,6 +29,7 @@ public class ScreenLogin extends LocalizableScreen {
     private final TextButton btnOkSignIn;
     private final TextButton btnOkSignUp;
     private final CheckBox chkPromocode;
+    private final DialogInfo infoDialog;
     private final Label lblName;
     private final Label lblPassword;
     private final Label lblEmail;
@@ -40,10 +42,16 @@ public class ScreenLogin extends LocalizableScreen {
     private enum CurDialog {Start, SignIn, SignUp}
 
     private CurDialog curDialog = CurDialog.Start;
+    private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
+    private long incorrectLoginTime = 0;
+    private long incorrectPasswordTime = 0;
 
-    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+                       I18NBundle i18n) {
         super(game, model, psObject, skin, audioManager);
+        assert i18n != null;
+        this.i18n = i18n;
 
         TextureRegion regionEng = atlasMenu.findRegion("eng");
         TextureRegion regionRus = atlasMenu.findRegion("rus");
@@ -117,6 +125,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
+        infoDialog = new DialogInfo("", skin, "default");
         lblName = new Label("", skin, "default");
         lblPassword = new Label("", skin, "default");
         lblEmail = new Label("", skin, "default");
@@ -154,6 +163,8 @@ public class ScreenLogin extends LocalizableScreen {
     public void render(float delta) {
         super.render(delta);
 
+        checkErrors();
+
         if (model.authorized)
             game.setNextScreen();
         imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
@@ -163,6 +174,8 @@ public class ScreenLogin extends LocalizableScreen {
     public void show() {
         super.show();
         setStartDialog();
+        incorrectLoginTime = model.incorrectLoginTime; // see comment to ScreenMain.show()
+        incorrectPasswordTime = model.incorrectPasswordTime;
     }
 
     @Override
@@ -175,6 +188,7 @@ public class ScreenLogin extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
+        this.i18n = bundle;
 
         btnSignIn.setText(bundle.format("sign.in"));
         btnSignUp.setText(bundle.format("sign.up"));
@@ -273,5 +287,17 @@ public class ScreenLogin extends LocalizableScreen {
     private void shiftUp() {
         tableMain.row().spaceTop(200);
         tableMain.add(new Image());  // 'blank' image to fill space taken by on-screen keyboard
+    }
+
+    private void checkErrors() {
+        assert i18n != null;
+        if (incorrectLoginTime != model.incorrectLoginTime) {
+            incorrectLoginTime = model.incorrectLoginTime;
+            infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+        }
+        if (incorrectPasswordTime != model.incorrectPasswordTime) {
+            incorrectPasswordTime = model.incorrectPasswordTime;
+            infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+        }
     }
 }

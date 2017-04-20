@@ -12,10 +12,12 @@ import static ru.mitrakov.self.rush.utils.Utils.copyOfRange;
  * Created by mitrakov on 23.02.2017
  */
 class Parser implements IHandler {
+    private static final int ERR_INCORRECT_PASSWORD = 31;
     private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
     private static final int ERR_BATTLE_NOT_FOUND = 73;
+    private static final int ERR_INCORRECT_LOGIN = 204;
     private static final int ERR_NO_CRYSTALS = 215;
     private static final int ERR_ADD_FRIEND = 223;
     private static final int ERR_USER_NOT_FOUND = 245;
@@ -403,6 +405,9 @@ class Parser implements IHandler {
         switch (code) {
             case 0: // no error
                 break;
+            case ERR_INCORRECT_PASSWORD:
+                model.setIncorrectPassword();
+                break;
             case ERR_ATTACK_YOURSELF:
                 model.setAttackYourself();
                 break;
@@ -414,6 +419,9 @@ class Parser implements IHandler {
                 break;
             case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
                 model.gameFinished(false);
+                break;
+            case ERR_INCORRECT_LOGIN:
+                model.setIncorrectLogin();
                 break;
             case ERR_NO_CRYSTALS:
                 model.setNoCrystals();

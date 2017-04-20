@@ -68,7 +68,7 @@ public class RushClient extends Game implements Localizable {
 
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
-        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager);
+        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager, i18nEn);
         screenCharacter = new ScreenCharacter(this, model, psObject, skin, audioManager);
         screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager);
         screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18nEn);
