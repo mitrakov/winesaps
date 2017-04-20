@@ -30,6 +30,7 @@ public class DialogIncoming extends DialogFeat {
         this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
+        lblQuestion.setAlignment(Align.center, Align.center);
         chkAddToFriends = new CheckBox("", skin, "default"); // not checked by default
 
         button("Accept", Result.Accept); // text will be replaced in onLocaleChanged()
@@ -38,8 +39,8 @@ public class DialogIncoming extends DialogFeat {
 
         Table table = getContentTable();
 
-        table.add(lblQuestion);
-        table.row().space(30);
+        table.pad(10).add(lblQuestion).width(300);
+        table.row().space(20);
         table.add(chkAddToFriends);
     }
 

@@ -305,23 +305,28 @@ public class ScreenLogin extends LocalizableScreen {
         assert i18n != null;
         if (incorrectCredentialsTime != model.incorrectCredentialsTime) {
             incorrectCredentialsTime = model.incorrectCredentialsTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
+            if (curDialog == CurDialog.SignIn)
+                infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
         }
         if (incorrectNameTime != model.incorrectNameTime) {
             incorrectNameTime = model.incorrectNameTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
+            if (curDialog == CurDialog.SignUp)
+                infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
         }
         if (incorrectEmailTime != model.incorrectEmailTime) {
             incorrectEmailTime = model.incorrectEmailTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
+            if (curDialog == CurDialog.SignUp)
+                infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
         }
         if (duplicateNameTime != model.duplicateNameTime) {
             duplicateNameTime = model.duplicateNameTime;
-            infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
+            if (curDialog == CurDialog.SignUp)
+                infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
         }
         if (signUpErrorTime != model.signUpErrorTime) {
             signUpErrorTime = model.signUpErrorTime;
-            infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
+            if (curDialog == CurDialog.SignUp)
+                infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
         }
     }
 }
