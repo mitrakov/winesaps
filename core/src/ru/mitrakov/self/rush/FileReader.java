@@ -31,9 +31,9 @@ class FileReader implements Model.IFileReader {
             Object res = s.readObject();
             s.close(); // found by FindBugs
             return res;
-        } catch (IOException e) {
+        } catch (RuntimeException e) { // recommended to split Catch clause by FindBugs
             return null;
-        } catch (ClassNotFoundException e) { // since Java 7 may be replaced with multi-catch
+        } catch (Exception e) {
             return null;
         }
     }
@@ -44,7 +44,7 @@ class FileReader implements Model.IFileReader {
             ObjectOutputStream s = new ObjectOutputStream(Gdx.files.local(filename).write(false));
             s.writeObject(obj);
             s.close(); // found by FindBugs
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -46,6 +46,7 @@ public class ScreenLogin extends LocalizableScreen {
     private boolean shiftedByKeyboard = false;
     private long incorrectLoginTime = 0;
     private long incorrectPasswordTime = 0;
+    private long signUpErrorTime = 0;
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                        I18NBundle i18n) {
@@ -174,8 +175,11 @@ public class ScreenLogin extends LocalizableScreen {
     public void show() {
         super.show();
         setStartDialog();
-        incorrectLoginTime = model.incorrectLoginTime; // see comment to ScreenMain.show()
+
+        // updating dialogs time (see comment to ScreenMain.show())
+        incorrectLoginTime = model.incorrectLoginTime;
         incorrectPasswordTime = model.incorrectPasswordTime;
+        signUpErrorTime = model.signUpErrorTime;
     }
 
     @Override
@@ -298,6 +302,10 @@ public class ScreenLogin extends LocalizableScreen {
         if (incorrectPasswordTime != model.incorrectPasswordTime) {
             incorrectPasswordTime = model.incorrectPasswordTime;
             infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+        }
+        if (signUpErrorTime != model.signUpErrorTime) {
+            signUpErrorTime = model.signUpErrorTime;
+            infoDialog.setText(i18n.format("dialog.info.signup.error")).show(stage);
         }
     }
 }

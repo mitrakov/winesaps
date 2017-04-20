@@ -144,6 +144,7 @@ public class Model {
     public volatile long noCrystalsTime = 0;
     public volatile long incorrectLoginTime = 0;
     public volatile long incorrectPasswordTime = 0;
+    public volatile long signUpErrorTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -863,6 +864,10 @@ public class Model {
 
     public void setIncorrectPassword() {
         incorrectPasswordTime = System.currentTimeMillis();
+    }
+
+    public void setSignUpError() {
+        signUpErrorTime = System.currentTimeMillis();
     }
 }
 
