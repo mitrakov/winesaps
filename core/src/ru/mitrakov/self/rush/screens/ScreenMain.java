@@ -390,10 +390,10 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
-        if (event instanceof EventBus.GeneralRatingUpdatedEvent)
-            updateRating(Model.RatingType.General);
-        if (event instanceof EventBus.WeeklyRatingUpdatedEvent)
-            updateRating(Model.RatingType.Weekly);
+        if (event instanceof EventBus.RatingUpdatedEvent) {
+            EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
+            updateRating(ev.items);
+        }
         if (event instanceof EventBus.FriendListUpdatedEvent)
             lstFriends.setItems(model.friends.toArray(new String[0]));
         if (event instanceof EventBus.AbilitiesUpdatedEvent)
@@ -597,12 +597,11 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateRating(Model.RatingType type) {
+    private void updateRating(Collection<RatingItem> items) {
         for (Label label : ratingLabels) {
             label.setText("");
         }
 
-        Collection<RatingItem> items = type == Model.RatingType.General ? model.generalRating : model.weeklyRating;
         int i = 0;
         for (RatingItem item : items) {
             if (i + 3 < ratingLabels.size) {

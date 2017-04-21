@@ -132,8 +132,6 @@ public class Model {
 
     public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>();
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
-    public final Collection<RatingItem> generalRating = new ConcurrentLinkedQueue<RatingItem>();
-    public final Collection<RatingItem> weeklyRating = new ConcurrentLinkedQueue<RatingItem>();
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
@@ -401,8 +399,7 @@ public class Model {
      *
      * @param type - type of rating (General, Weekly, etc.)
      */
-    public synchronized void getRating(RatingType type) {
-        // @mitrakov: synchronized added because setter is also synchronized (by FindBugs)
+    public void getRating(RatingType type) {
         assert type != null;
         if (connected && sender != null) {
             sender.send(RATING, type.ordinal());
@@ -664,10 +661,9 @@ public class Model {
         }
     }
 
-    public synchronized void setRating(RatingType type, int[] data) {
+    public void setRating(RatingType type, int[] data) {
         assert type != null && data != null;
-        Collection<RatingItem> rating = type == RatingType.General ? generalRating : weeklyRating;
-        rating.clear(); // synchronized required
+        Collection<RatingItem> rating = new LinkedList<RatingItem>();
 
         int i = 0;
         while (i < data.length) {
@@ -696,9 +692,7 @@ public class Model {
             rating.add(new RatingItem(name.toString(), wins, losses, score_diff));
         }
 
-        bus.raise(type == RatingType.General
-                ? new EventBus.GeneralRatingUpdatedEvent()
-                : new EventBus.WeeklyRatingUpdatedEvent());
+        bus.raise(new EventBus.RatingUpdatedEvent(type, rating));
     }
 
     public void setPromocodeValid(boolean valid) {

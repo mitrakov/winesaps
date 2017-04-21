@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class EventBus {
     public static abstract class Event {}
 
-    public static final class GeneralRatingUpdatedEvent extends Event {}
-    public static final class WeeklyRatingUpdatedEvent extends Event {}
     public static final class FriendListUpdatedEvent extends Event {}
     public static final class AbilitiesUpdatedEvent extends Event {}
     public static final class InviteEvent extends Event {}
@@ -30,8 +28,16 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class RatingUpdatedEvent extends Event {
+        final Model.RatingType type;
+        public final Collection<RatingItem> items;
+        RatingUpdatedEvent(Model.RatingType type, Collection<RatingItem> items) {
+            this.type = type;
+            this.items = items;
+        }
+    }
     public static final class RoundFinishedEvent extends Event {
-        public boolean winner;
+        public final boolean winner;
         RoundFinishedEvent(boolean winner) {
             this.winner = winner;
         }
@@ -43,9 +49,9 @@ public class EventBus {
         }
     }
     public static final class PromocodeDoneEvent extends Event {
-        public String name;
-        public boolean inviter;
-        public int crystals;
+        public final String name;
+        public final boolean inviter;
+        public final int crystals;
         PromocodeDoneEvent(String name, boolean inviter, int crystals) {
             this.name = name;
             this.inviter = inviter;
