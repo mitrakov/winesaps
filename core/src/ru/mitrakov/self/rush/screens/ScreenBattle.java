@@ -89,13 +89,13 @@ public class ScreenBattle extends LocalizableScreen {
         lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
 
         // checking
-        checkAbilities();
         checkScore();
-        checkRoundFinished(); // this must be before 'checkLives()' but after 'checkScore()' (to play sounds correctly)
         checkLives();
+        checkRoundFinished(); // this must be after 'checkLives()' and 'checkScore()' to play sounds correctly
         checkThing();
-        checkConnected();
         checkEnemyThing();
+        checkAbilities();
+        checkConnected();
     }
 
     @Override
@@ -196,7 +196,8 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound("round");
             reset();
             String msg = model.roundWinner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
-            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).show(stage);
+            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(false);
+            finishedDialog.show(stage);
             audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
         }
         if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
@@ -230,9 +231,11 @@ public class ScreenBattle extends LocalizableScreen {
     }
 
     private void checkLives() {
-        if (lives != model.myLives + model.enemyLives) {
-            lives = model.myLives + model.enemyLives;
-            audioManager.sound("die");
+        int newLives = model.myLives + model.enemyLives;
+        if (lives != newLives) {
+            if (newLives < lives) // someone died
+                audioManager.sound("die");
+            lives = newLives;
         }
     }
 
