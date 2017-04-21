@@ -422,7 +422,7 @@ class Parser implements IHandler {
                 model.setUserBusy(false);
                 break;
             case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
-                model.gameFinished(false);
+                model.setBattleNotFound();
                 break;
             case ERR_SIGN_UP:
                 model.setSignUpError();

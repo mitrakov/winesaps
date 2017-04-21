@@ -19,7 +19,6 @@ import ru.mitrakov.self.rush.model.object.*;
 /**
  * Created by mitrakov on 01.03.2017
  */
-
 public class ScreenBattle extends LocalizableScreen {
     private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
@@ -37,12 +36,14 @@ public class ScreenBattle extends LocalizableScreen {
 
     private int scores = 0;
     private int lives = 0;
-    private long roundFinishedTime = 0;
-    private long gameFinishedTime = 0;
     private boolean connected = true;
     private boolean outOfSync = false;
     private CellObject curThing, enemyThing;
     private I18NBundle i18n;
+
+    private long roundFinishedTime = 0;
+    private long gameFinishedTime = 0;
+    private long battleNotFoundTime = 0;
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
@@ -100,11 +101,13 @@ public class ScreenBattle extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
+        gui.setMovesAllowed(true); // enable moves (in case they possibly were disabled before)
         audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
 
         // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. in Training)
         roundFinishedTime = model.roundFinishedTime;
         gameFinishedTime = model.gameFinishedTime;
+        battleNotFoundTime = model.battleNotFoundTime;
         reset();
     }
 
@@ -174,6 +177,7 @@ public class ScreenBattle extends LocalizableScreen {
         curThing = model.curThing;
         enemyThing = model.enemyThing;
         outOfSync = false;
+        infoDialog.hide();
     }
 
     private void checkAbilities() {
@@ -197,12 +201,23 @@ public class ScreenBattle extends LocalizableScreen {
         }
         if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
             gameFinishedTime = model.gameFinishedTime;
+            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
             reset();
             String header = i18n.format("battle.finish");
             String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
             finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
             finishedDialog.show(stage);
+            audioManager.music("theme");
+        }
+        if (battleNotFoundTime != model.battleNotFoundTime) {
+            battleNotFoundTime = model.battleNotFoundTime;
+            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+            //audioManager.sound("..."); find appropriate sound!
+            reset();
+            String header = i18n.format("battle.out.of.sync");
+            String msg = i18n.format("battle.out.of.sync.exit");
+            finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
             audioManager.music("theme");
         }
     }

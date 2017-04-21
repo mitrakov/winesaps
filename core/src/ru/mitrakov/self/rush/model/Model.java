@@ -147,6 +147,7 @@ public class Model {
     public volatile long incorrectEmailTime = 0;
     public volatile long duplicateNameTime = 0;
     public volatile long signUpErrorTime = 0;
+    public volatile long battleNotFoundTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -879,6 +880,11 @@ public class Model {
 
     public void setSignUpError() {
         signUpErrorTime = System.currentTimeMillis();
+    }
+
+    public void setBattleNotFound() {
+        battleNotFoundTime = System.currentTimeMillis();
+        field = null; // reset reference to a field
     }
 }
 
