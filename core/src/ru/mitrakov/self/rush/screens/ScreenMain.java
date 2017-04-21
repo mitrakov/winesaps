@@ -400,9 +400,10 @@ public class ScreenMain extends LocalizableScreen {
             updateAbilities();
         if (event instanceof EventBus.InviteEvent)
             incomingDialog.show(stage);
-        if (event instanceof EventBus.PromocodeDoneEvent)
-            promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
-                    model.promocodeDoneCrystals, i18n).show(stage);
+        if (event instanceof EventBus.PromocodeDoneEvent) {
+            EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
+            promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
+        }
         if (event instanceof EventBus.StopCallRejectedEvent) {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("stopcall.rejected", model.enemy)).show(stage);

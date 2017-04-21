@@ -17,9 +17,6 @@ public class EventBus {
     public static final class StopCallRejectedEvent extends Event {}
     public static final class StopCallMissedEvent extends Event {}
     public static final class StopCallExpiredEvent extends Event {}
-    public static final class RoundFinishedEvent extends Event {}
-    public static final class GameFinishedEvent extends Event {}
-    public static final class PromocodeDoneEvent extends Event {}
     public static final class AggressorBusyEvent extends Event {}
     public static final class DefenderBusyEvent extends Event {}
     public static final class EnemyNotFoundEvent extends Event {}
@@ -33,6 +30,28 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class RoundFinishedEvent extends Event {
+        public boolean winner;
+        RoundFinishedEvent(boolean winner) {
+            this.winner = winner;
+        }
+    }
+    public static final class GameFinishedEvent extends Event {
+        public boolean winner;
+        GameFinishedEvent(boolean winner) {
+            this.winner = winner;
+        }
+    }
+    public static final class PromocodeDoneEvent extends Event {
+        public String name;
+        public boolean inviter;
+        public int crystals;
+        PromocodeDoneEvent(String name, boolean inviter, int crystals) {
+            this.name = name;
+            this.inviter = inviter;
+            this.crystals = crystals;
+        }
+    }
 
     public interface Listener {
         void OnEvent(Event event);

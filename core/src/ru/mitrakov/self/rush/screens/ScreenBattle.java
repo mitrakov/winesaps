@@ -126,18 +126,20 @@ public class ScreenBattle extends LocalizableScreen {
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
         if (event instanceof EventBus.RoundFinishedEvent) {
+            EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
             audioManager.sound("round");
             reset();
-            String msg = model.roundWinner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
+            String msg = ev.winner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
             finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(false);
             finishedDialog.show(stage);
         }
         if (event instanceof EventBus.GameFinishedEvent) {
+            EventBus.GameFinishedEvent ev = (EventBus.GameFinishedEvent) event;
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
             reset();
             String header = i18n.format("battle.finish");
-            String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
+            String msg = ev.winner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
             finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
             finishedDialog.show(stage);
             audioManager.music("theme");

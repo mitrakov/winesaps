@@ -98,15 +98,12 @@ public class Model {
     public volatile String hash = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
-    public volatile String promocodeDoneName = "";
     public volatile Character character = Character.None;
     public volatile Character character1 = Character.None;
     public volatile Character character2 = Character.None;
     public volatile boolean connected = true;
     public volatile boolean authorized = false;
-    public volatile boolean roundWinner = false;
     public volatile boolean promocodeValid = false;
-    public volatile boolean promocodeDoneInviter = false;
     public volatile boolean newbie = true;
     public volatile int crystals = 0;
     public volatile int score1 = 0;
@@ -115,7 +112,6 @@ public class Model {
     public volatile int totalScore2 = 0;
     public volatile int myLives = 2;
     public volatile int enemyLives = 2;
-    public volatile int promocodeDoneCrystals = 0;
     public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
     public volatile Field field;
@@ -711,10 +707,7 @@ public class Model {
 
     public void setPromocodeDone(String name, boolean inviter, int crystals) {
         assert name != null;
-        promocodeDoneName = name;
-        promocodeDoneInviter = inviter;
-        promocodeDoneCrystals = crystals;
-        bus.raise(new EventBus.PromocodeDoneEvent());
+        bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, crystals));
     }
 
     public synchronized void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2,
@@ -784,8 +777,7 @@ public class Model {
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
         this.totalScore1 = totalScore1;
         this.totalScore2 = totalScore2;
-        roundWinner = winner;
-        bus.raise(new EventBus.RoundFinishedEvent());
+        bus.raise(new EventBus.RoundFinishedEvent(winner));
     }
 
     public synchronized void gameFinished(boolean winner) {
@@ -810,7 +802,7 @@ public class Model {
 
         // reset reference to a field
         field = null; // "synchronized" needed
-        bus.raise(new EventBus.GameFinishedEvent());
+        bus.raise(new EventBus.GameFinishedEvent(winner));
     }
 
     public synchronized void setAbilities(int[] ids) {
