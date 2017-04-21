@@ -25,6 +25,8 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Table table = new Table();
     protected final DialogConnect connectingDialog;
 
+    private boolean connected;
+
     LocalizableScreen(RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
         assert game != null && model != null && skin != null && audioManager != null; // psObject may be NULL
         this.game = game;
@@ -32,10 +34,10 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         this.psObject = psObject;
         this.skin = skin;
         this.audioManager = audioManager;
+        connectingDialog = new DialogConnect(skin, "default");
 
         table.setFillParent(true);
         stage.addActor(table);
-        connectingDialog = new DialogConnect(skin, "default", stage); // must be AFTER "stage.addActor(table)" to popup
     }
 
     @Override
@@ -47,7 +49,12 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         stage.draw();
 
         // check connecting
-        connectingDialog.setVisible(!model.connected);
+        if (connected != model.connected) {
+            if (connected && !model.connected)
+                connectingDialog.show(stage);
+            else connectingDialog.remove();
+            connected = model.connected;
+        }
 
         // checking BACK button on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
@@ -62,6 +69,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     @Override
     public void show() {
+        connected = model.connected;
         Gdx.input.setInputProcessor(stage);
     }
 

@@ -537,8 +537,11 @@ public class Model {
 
     public void setConnected(boolean value) {
         connected = value;
-        if (connected && !authorized)
-            signIn(); // try to sign in using stored credentials
+        if (connected && sender != null) {
+            if (authorized)
+                sender.send(USER_INFO); // possibly the server has been restarted: see note#4 below
+            else signIn();              // not authorized: try to sign in using stored credentials
+        }
     }
 
     public void setAuthorized(boolean value) {
@@ -889,3 +892,11 @@ public class Model {
 }
 
 // note#2 (@mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8
+//
+// note#4 (@mitrakov, 2017-04-21): suppose the server has been suddenly restarted; a user may request smth (e.g. Random
+// Opponent); server won't respond and the "Connecting" dialog will be shown; then after re-connecting a user may retry
+// its request (Random Opponent), but the server will return "NO_USER_FOUND" so that a client will need to re-sign in.
+// it means that the request will also fail; to resolve this problem here we send a fake request (e.g. USER_INFO)
+// intentionally to obtain "NO_USER_FOUND" and afterwards re-sign in.
+// Someone may ask "what if send SIGN_IN right away?" It's a mistake because client might just been re-connected
+// without the server being restarted, so that requesting SIGN_IN would be erroneous
