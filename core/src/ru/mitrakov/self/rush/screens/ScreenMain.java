@@ -324,6 +324,7 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
+        updateAbilities();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
     }
