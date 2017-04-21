@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.DialogInfo;
 
 /**
@@ -44,11 +44,6 @@ public class ScreenLogin extends LocalizableScreen {
     private CurDialog curDialog = CurDialog.Start;
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
-    private long incorrectCredentialsTime = 0;
-    private long incorrectNameTime = 0;
-    private long incorrectEmailTime = 0;
-    private long duplicateNameTime = 0;
-    private long signUpErrorTime = 0;
 
     public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                        I18NBundle i18nb) {
@@ -169,9 +164,6 @@ public class ScreenLogin extends LocalizableScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-
-        checkErrors();
-
         if (model.authorized)
             game.setNextScreen();
         imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
@@ -181,13 +173,6 @@ public class ScreenLogin extends LocalizableScreen {
     public void show() {
         super.show();
         setStartDialog();
-
-        // updating dialogs time (see comment to ScreenMain.show())
-        incorrectCredentialsTime = model.incorrectCredentialsTime;
-        incorrectNameTime = model.incorrectNameTime;
-        incorrectEmailTime = model.incorrectEmailTime;
-        duplicateNameTime = model.duplicateNameTime;
-        signUpErrorTime = model.signUpErrorTime;
     }
 
     @Override
@@ -211,6 +196,21 @@ public class ScreenLogin extends LocalizableScreen {
         lblName.setText(bundle.format("sign.name"));
         lblPassword.setText(bundle.format("sign.password"));
         lblEmail.setText(bundle.format("sign.email"));
+    }
+
+    @Override
+    public void handleEvent(EventBus.Event event) {
+        assert i18n != null;
+        if (event instanceof EventBus.IncorrectCredentialsEvent)
+            infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
+        if (event instanceof EventBus.IncorrectNameEvent)
+            infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
+        if (event instanceof EventBus.IncorrectEmailEvent)
+            infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
+        if (event instanceof EventBus.DuplicateNameEvent)
+            infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
+        if (event instanceof EventBus.SignUpErrorEvent)
+            infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
     }
 
     private Actor createLangTable(AudioManager audioManager) {
@@ -299,34 +299,5 @@ public class ScreenLogin extends LocalizableScreen {
     private void shiftUp() {
         tableMain.row().spaceTop(200);
         tableMain.add(new Image());  // 'blank' image to fill space taken by on-screen keyboard
-    }
-
-    private void checkErrors() {
-        assert i18n != null;
-        if (incorrectCredentialsTime != model.incorrectCredentialsTime) {
-            incorrectCredentialsTime = model.incorrectCredentialsTime;
-            if (curDialog == CurDialog.SignIn)
-                infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
-        }
-        if (incorrectNameTime != model.incorrectNameTime) {
-            incorrectNameTime = model.incorrectNameTime;
-            if (curDialog == CurDialog.SignUp)
-                infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
-        }
-        if (incorrectEmailTime != model.incorrectEmailTime) {
-            incorrectEmailTime = model.incorrectEmailTime;
-            if (curDialog == CurDialog.SignUp)
-                infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
-        }
-        if (duplicateNameTime != model.duplicateNameTime) {
-            duplicateNameTime = model.duplicateNameTime;
-            if (curDialog == CurDialog.SignUp)
-                infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
-        }
-        if (signUpErrorTime != model.signUpErrorTime) {
-            signUpErrorTime = model.signUpErrorTime;
-            if (curDialog == CurDialog.SignUp)
-                infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
-        }
     }
 }

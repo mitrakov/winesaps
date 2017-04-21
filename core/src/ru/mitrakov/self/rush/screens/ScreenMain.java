@@ -92,22 +92,6 @@ public class ScreenMain extends LocalizableScreen {
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
     private I18NBundle i18n;
-    private long generalRatingTime = 0;
-    private long weeklyRatingTime = 0;
-    private long inviteTime = 0;
-    private long stopCallRejectedTime = 0;
-    private long stopCallMissedTime = 0;
-    private long stopCallExpiredTime = 0;
-    private long friendsListTime = 0;
-    private long abilityExpireTime = 0;
-    private long promocodeDoneTime = 0;
-    private long aggressorBusyTime = 0;
-    private long defenderBusyTime = 0;
-    private long enemyNotFoundTime = 0;
-    private long noFreeUsersTime = 0;
-    private long attackYourselfTime = 0;
-    private long addFriendErrorTime = 0;
-    private long noCrystalsTime = 0;
 
     public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
@@ -323,15 +307,6 @@ public class ScreenMain extends LocalizableScreen {
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
-        // checks
-        checkInvite();
-        checkErrors();
-        checkRatings();
-        checkFriends();
-        checkStopCall();
-        checkAbilities();
-        checkPromocodeDone();
-
         // changing screens
         if (!model.authorized)
             game.setLoginScreen();
@@ -351,21 +326,6 @@ public class ScreenMain extends LocalizableScreen {
         super.show();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
-
-        // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. during battle)
-        // be careful! it usually concerns dialogs (to avoid their showing) so not all timestamps should be updated here
-        inviteTime = model.inviteTime;
-        stopCallRejectedTime = model.stopCallRejectedTime;
-        stopCallMissedTime = model.stopCallMissedTime;
-        stopCallExpiredTime = model.stopCallExpiredTime;
-        promocodeDoneTime = model.promocodeDoneTime;
-        aggressorBusyTime = model.aggressorBusyTime;
-        defenderBusyTime = model.defenderBusyTime;
-        enemyNotFoundTime = model.enemyNotFoundTime;
-        noFreeUsersTime = model.noFreeUsersTime;
-        attackYourselfTime = model.attackYourselfTime;
-        addFriendErrorTime = model.addFriendErrorTime;
-        noCrystalsTime = model.noCrystalsTime;
     }
 
     @Override
@@ -425,6 +385,60 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingDots.setText(bundle.format("rating.dots"));
 
         rebuildRightTable(CurDisplayMode.Info); // forward user to the main tab (to avoid artifacts, e.g. in History)
+    }
+
+    @Override
+    public void handleEvent(EventBus.Event event) {
+        assert i18n != null;
+        if (event instanceof EventBus.GeneralRatingUpdatedEvent)
+            updateRating(Model.RatingType.General);
+        if (event instanceof EventBus.WeeklyRatingUpdatedEvent)
+            updateRating(Model.RatingType.Weekly);
+        if (event instanceof EventBus.FriendListUpdatedEvent)
+            lstFriends.setItems(model.friends.toArray(new String[0]));
+        if (event instanceof EventBus.AbilitiesUpdatedEvent)
+            updateAbilities();
+        if (event instanceof EventBus.InviteEvent)
+            incomingDialog.show(stage);
+        if (event instanceof EventBus.PromocodeDoneEvent)
+            promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
+                    model.promocodeDoneCrystals, i18n).show(stage);
+        if (event instanceof EventBus.StopCallRejectedEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.rejected", model.enemy)).show(stage);
+        }
+        if (event instanceof EventBus.StopCallMissedEvent) {
+            incomingDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.missed", model.enemy)).show(stage);
+        }
+        if (event instanceof EventBus.StopCallExpiredEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
+        }
+        if (event instanceof EventBus.AddFriendErrorEvent)
+            infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
+        if (event instanceof EventBus.NoCrystalsEvent)
+            infoDialog.setText(i18n.format("dialog.info.no.crystals")).show(stage);
+        if (event instanceof EventBus.AggressorBusyEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.aggressor.busy")).show(stage);
+        }
+        if (event instanceof EventBus.DefenderBusyEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.busy")).show(stage);
+        }
+        if (event instanceof EventBus.EnemyNotFoundEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
+        }
+        if (event instanceof EventBus.NoFreeUsersEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.no.free.users")).show(stage);
+        }
+        if (event instanceof EventBus.AttackedYourselfEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
+        }
     }
 
     private void loadTextures() {
@@ -582,29 +596,6 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void checkAbilities() {
-        if (abilityExpireTime != model.abilityExpireTime) {
-            abilityExpireTime = model.abilityExpireTime;
-            tableRightContentAbilities.clear();
-            // we sort abilities (via TreeSet), because since 2017.04.03 'model.abilityExpireMap' is not SkipListMap
-            for (Model.Ability ability : new TreeSet<Model.Ability>(model.abilityExpireMap.keySet())) {
-                Button btn = abilities.get(ability);
-                if (btn != null)
-                    tableRightContentAbilities.add(btn).space(10);
-            }
-        }
-    }
-
-    private void checkRatings() {
-        if (generalRatingTime != model.generalRatingTime) {
-            generalRatingTime = model.generalRatingTime;
-            updateRating(Model.RatingType.General);
-        } else if (weeklyRatingTime != model.weeklyRatingTime) {
-            weeklyRatingTime = model.weeklyRatingTime;
-            updateRating(Model.RatingType.Weekly);
-        }
-    }
-
     private void updateRating(Model.RatingType type) {
         for (Label label : ratingLabels) {
             label.setText("");
@@ -622,81 +613,13 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void checkFriends() {
-        if (friendsListTime != model.friendsListTime) {
-            friendsListTime = model.friendsListTime;
-            lstFriends.setItems(model.friends.toArray(new String[0]));
-        }
-    }
-
-    private void checkInvite() {
-        if (inviteTime != model.inviteTime) {
-            inviteTime = model.inviteTime;
-            incomingDialog.show(stage);
-        }
-    }
-
-    private void checkPromocodeDone() {
-        if (promocodeDoneTime != model.promocodeDoneTime) {
-            promocodeDoneTime = model.promocodeDoneTime;
-            promocodeDoneDialog.setArguments(model.promocodeDoneName, model.promocodeDoneInviter,
-                    model.promocodeDoneCrystals, i18n).show(stage);
-        }
-    }
-
-    private void checkStopCall() {
-        assert i18n != null;
-        if (stopCallRejectedTime != model.stopCallRejectedTime) {
-            stopCallRejectedTime = model.stopCallRejectedTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.rejected", model.enemy)).show(stage);
-        }
-        if (stopCallMissedTime != model.stopCallMissedTime) {
-            stopCallMissedTime = model.stopCallMissedTime;
-            incomingDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.missed", model.enemy)).show(stage);
-        }
-        if (stopCallExpiredTime != model.stopCallExpiredTime) {
-            stopCallExpiredTime = model.stopCallExpiredTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
-        }
-    }
-
-    private void checkErrors() {
-        assert i18n != null;
-        if (addFriendErrorTime != model.addFriendErrorTime) {
-            addFriendErrorTime = model.addFriendErrorTime;
-            infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
-        }
-        if (noCrystalsTime != model.noCrystalsTime) {
-            noCrystalsTime = model.noCrystalsTime;
-            infoDialog.setText(i18n.format("dialog.info.no.crystals")).show(stage);
-        }
-        if (aggressorBusyTime != model.aggressorBusyTime) {
-            aggressorBusyTime = model.aggressorBusyTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.aggressor.busy")).show(stage);
-        }
-        if (defenderBusyTime != model.defenderBusyTime) {
-            defenderBusyTime = model.defenderBusyTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.busy")).show(stage);
-        }
-        if (enemyNotFoundTime != model.enemyNotFoundTime) {
-            enemyNotFoundTime = model.enemyNotFoundTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
-        }
-        if (noFreeUsersTime != model.noFreeUsersTime) {
-            noFreeUsersTime = model.noFreeUsersTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.no.free.users")).show(stage);
-        }
-        if (attackYourselfTime != model.attackYourselfTime) {
-            attackYourselfTime = model.attackYourselfTime;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
+    private void updateAbilities() {
+        tableRightContentAbilities.clear();
+        // we sort abilities (via TreeSet), because since 2017.04.03 'model.abilityExpireMap' is not SkipListMap
+        for (Model.Ability ability : new TreeSet<Model.Ability>(model.abilityExpireMap.keySet())) {
+            Button btn = abilities.get(ability);
+            if (btn != null)
+                tableRightContentAbilities.add(btn).space(10);
         }
     }
 

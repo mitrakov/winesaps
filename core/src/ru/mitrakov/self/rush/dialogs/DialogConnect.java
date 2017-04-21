@@ -39,7 +39,7 @@ public class DialogConnect extends Window implements Localizable {
         assert stage != null;
         for (Actor actor : stage.getActors()) {
             if (actor instanceof Window)
-                actor.remove(); // Attention! Is it safe for iterator?
+                actor.remove(); // CHECK! Is it safe for iterator?
         }
         setPosition(round((stage.getWidth() - getWidth()) / 2), round((stage.getHeight() - getHeight()) / 2));
         stage.addActor(this);

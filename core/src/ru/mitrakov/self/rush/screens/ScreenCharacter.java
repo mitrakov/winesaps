@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -54,6 +54,10 @@ public class ScreenCharacter extends LocalizableScreen {
             }
         }
         btnNext.setText(bundle.format("next"));
+    }
+
+    @Override
+    public void handleEvent(EventBus.Event event) {
     }
 
     private Array<Actor> init() {

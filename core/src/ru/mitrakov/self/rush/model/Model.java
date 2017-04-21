@@ -124,30 +124,7 @@ public class Model {
     public volatile CellObject enemyThing;
 
     public volatile long abilityExpireTime = 0;
-    public volatile long generalRatingTime = 0;
-    public volatile long weeklyRatingTime = 0;
-    public volatile long inviteTime = 0;
-    public volatile long stopCallRejectedTime = 0;
-    public volatile long stopCallMissedTime = 0;
-    public volatile long stopCallExpiredTime = 0;
     public volatile long roundStartTime = 0;
-    public volatile long roundFinishedTime = 0;
-    public volatile long gameFinishedTime = 0;
-    public volatile long friendsListTime = 0;
-    public volatile long promocodeDoneTime = 0;
-    public volatile long aggressorBusyTime = 0;
-    public volatile long defenderBusyTime = 0;
-    public volatile long enemyNotFoundTime = 0;
-    public volatile long noFreeUsersTime = 0;
-    public volatile long attackYourselfTime = 0;
-    public volatile long addFriendErrorTime = 0;
-    public volatile long noCrystalsTime = 0;
-    public volatile long incorrectCredentialsTime = 0;
-    public volatile long incorrectNameTime = 0;
-    public volatile long incorrectEmailTime = 0;
-    public volatile long duplicateNameTime = 0;
-    public volatile long signUpErrorTime = 0;
-    public volatile long battleNotFoundTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -164,6 +141,14 @@ public class Model {
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
+
+    // ===========================
+    // === PUBLIC FINAL FIELDS ===
+    // ===========================
+    //
+    // ==================================================
+
+    public final EventBus bus = new EventBus();
 
     // ================
     // === SETTINGS ===
@@ -602,6 +587,7 @@ public class Model {
             }
         }
         abilityExpireTime = System.currentTimeMillis();
+        bus.raise(new EventBus.AbilitiesUpdatedEvent());
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null && history.isEmpty()) {
@@ -625,25 +611,25 @@ public class Model {
         assert aggressorName != null;
         enemySid = sid;
         enemy = aggressorName;
-        inviteTime = System.currentTimeMillis();
+        bus.raise(new EventBus.InviteEvent());
     }
 
     public void stopCallRejected(String coward) {
         assert coward != null;
         enemy = coward;
-        stopCallRejectedTime = System.currentTimeMillis();
+        bus.raise(new EventBus.StopCallRejectedEvent());
     }
 
     public void stopCallMissed(String aggressorName) {
         assert aggressorName != null;
         enemy = aggressorName;
-        stopCallMissedTime = System.currentTimeMillis();
+        bus.raise(new EventBus.StopCallMissedEvent());
     }
 
     public void stopCallExpired(String defenderName) {
         assert defenderName != null;
         enemy = defenderName;
-        stopCallExpiredTime = System.currentTimeMillis();
+        bus.raise(new EventBus.StopCallExpiredEvent());
     }
 
     public synchronized void setFriendList(int[] data) {
@@ -656,17 +642,17 @@ public class Model {
         String s = newString(bytes);
         if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
             Collections.addAll(friends, s.split("\0"));
-        friendsListTime = System.currentTimeMillis();
+        bus.raise(new EventBus.FriendListUpdatedEvent());
     }
 
     public void friendAdded(String name) {
         friends.add(name);
-        friendsListTime = System.currentTimeMillis();
+        bus.raise(new EventBus.FriendListUpdatedEvent());
     }
 
     public void friendRemoved(String name) {
         friends.remove(name);
-        friendsListTime = System.currentTimeMillis();
+        bus.raise(new EventBus.FriendListUpdatedEvent());
     }
 
     public synchronized void setRangeOfProducts(final int[] data) {
@@ -714,11 +700,9 @@ public class Model {
             rating.add(new RatingItem(name.toString(), wins, losses, score_diff));
         }
 
-        // update current rating time to make the 'subscribers' update their states
-        if (type == RatingType.General)
-            generalRatingTime = System.currentTimeMillis();
-        else if (type == RatingType.Weekly)
-            weeklyRatingTime = System.currentTimeMillis();
+        bus.raise(type == RatingType.General
+                ? new EventBus.GeneralRatingUpdatedEvent()
+                : new EventBus.WeeklyRatingUpdatedEvent());
     }
 
     public void setPromocodeValid(boolean valid) {
@@ -730,7 +714,7 @@ public class Model {
         promocodeDoneName = name;
         promocodeDoneInviter = inviter;
         promocodeDoneCrystals = crystals;
-        promocodeDoneTime = System.currentTimeMillis();
+        bus.raise(new EventBus.PromocodeDoneEvent());
     }
 
     public synchronized void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2,
@@ -801,7 +785,7 @@ public class Model {
         this.totalScore1 = totalScore1;
         this.totalScore2 = totalScore2;
         roundWinner = winner;
-        roundFinishedTime = System.currentTimeMillis();
+        bus.raise(new EventBus.RoundFinishedEvent());
     }
 
     public synchronized void gameFinished(boolean winner) {
@@ -826,7 +810,7 @@ public class Model {
 
         // reset reference to a field
         field = null; // "synchronized" needed
-        gameFinishedTime = System.currentTimeMillis();
+        bus.raise(new EventBus.GameFinishedEvent());
     }
 
     public synchronized void setAbilities(int[] ids) {
@@ -840,53 +824,51 @@ public class Model {
     }
 
     public void setUserBusy(boolean aggressor) {
-        if (aggressor)
-            aggressorBusyTime = System.currentTimeMillis();
-        else defenderBusyTime = System.currentTimeMillis();
+        bus.raise(aggressor ? new EventBus.AggressorBusyEvent() : new EventBus.DefenderBusyEvent());
     }
 
     public void setEnemyNotFound() {
-        enemyNotFoundTime = System.currentTimeMillis();
+        bus.raise(new EventBus.EnemyNotFoundEvent());
     }
 
     public void setNoFreeUsers() {
-        noFreeUsersTime = System.currentTimeMillis();
+        bus.raise(new EventBus.NoFreeUsersEvent());
     }
 
     public void setAttackYourself() {
-        attackYourselfTime = System.currentTimeMillis();
+        bus.raise(new EventBus.AttackedYourselfEvent());
     }
 
     public void setAddFriendError() {
-        addFriendErrorTime = System.currentTimeMillis();
+        bus.raise(new EventBus.AddFriendErrorEvent());
     }
 
     public void setNoCrystals() {
-        noCrystalsTime = System.currentTimeMillis();
+        bus.raise(new EventBus.NoCrystalsEvent());
     }
 
     public void setIncorrectCredentials() {
-        incorrectCredentialsTime = System.currentTimeMillis();
+        bus.raise(new EventBus.IncorrectCredentialsEvent());
     }
 
     public void setIncorrectName() {
-        incorrectNameTime = System.currentTimeMillis();
+        bus.raise(new EventBus.IncorrectNameEvent());
     }
 
     public void setIncorrectEmail() {
-        incorrectEmailTime = System.currentTimeMillis();
+        bus.raise(new EventBus.IncorrectEmailEvent());
     }
 
     public void setDuplicateName() {
-        duplicateNameTime = System.currentTimeMillis();
+        bus.raise(new EventBus.DuplicateNameEvent());
     }
 
     public void setSignUpError() {
-        signUpErrorTime = System.currentTimeMillis();
+        bus.raise(new EventBus.SignUpErrorEvent());
     }
 
     public void setBattleNotFound() {
-        battleNotFoundTime = System.currentTimeMillis();
+        bus.raise(new EventBus.BattleNotFoundEvent());
         field = null; // reset reference to a field
     }
 }

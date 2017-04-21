@@ -9,14 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.*;
-import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
 
 /**
  * Created by mitrakov on 01.03.2017
  */
-
 public class ScreenTraining extends LocalizableScreen {
 
     private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
@@ -33,7 +32,6 @@ public class ScreenTraining extends LocalizableScreen {
     private int score = 0;
     private CellObject thing = null;
     private boolean started = false;
-    private boolean finished = false;
 
     public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
         super(game, model, psObject, skin, manager);
@@ -75,7 +73,6 @@ public class ScreenTraining extends LocalizableScreen {
         // checking
         checkStarted();
         checkNextMessage();
-        checkFinished();
     }
 
     @Override
@@ -103,6 +100,18 @@ public class ScreenTraining extends LocalizableScreen {
         finishedDialog.setText(bundle.format("train.msgX.text"), bundle.format("train.msgX.action"));
         finishedDialog.onLocaleChanged(bundle);
         addContent(bundle);
+    }
+
+    @Override
+    public void handleEvent(EventBus.Event event) {
+        if (event instanceof EventBus.RoundFinishedEvent) {
+            if (model.newbie) { // to avoid collisions with BattleScreen
+                model.newbie = false;
+                model.stopBattle();
+                trainingDialog.remove();
+                finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
+            }
+        }
     }
 
     private void loadTextures() {
@@ -167,16 +176,6 @@ public class ScreenTraining extends LocalizableScreen {
             thing = model.curThing;
             trainingDialog.next();
             gui.setMovesAllowed(thing == null); // forbid moving to make a user use the umbrella (see note#1)
-        }
-    }
-
-    private void checkFinished() {
-        if (!finished && model.roundFinishedTime > 0) {
-            finished = true;
-            model.newbie = false;
-            model.stopBattle();
-            trainingDialog.remove();
-            finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
         }
     }
 }

@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.*;
-import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.model.object.*;
 
 /**
@@ -40,10 +40,6 @@ public class ScreenBattle extends LocalizableScreen {
     private boolean outOfSync = false;
     private CellObject curThing, enemyThing;
     private I18NBundle i18n;
-
-    private long roundFinishedTime = 0;
-    private long gameFinishedTime = 0;
-    private long battleNotFoundTime = 0;
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
@@ -91,7 +87,6 @@ public class ScreenBattle extends LocalizableScreen {
         // checking
         checkScore();
         checkLives();
-        checkRoundFinished(); // this must be after 'checkLives()' and 'checkScore()' to play sounds correctly
         checkThing();
         checkEnemyThing();
         checkAbilities();
@@ -102,12 +97,6 @@ public class ScreenBattle extends LocalizableScreen {
     public void show() {
         super.show();
         gui.setMovesAllowed(true); // enable moves (in case they possibly were disabled before)
-        audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
-
-        // we should update our timestamps because some model's timestamps may be changed off-stage (e.g. in Training)
-        roundFinishedTime = model.roundFinishedTime;
-        gameFinishedTime = model.gameFinishedTime;
-        battleNotFoundTime = model.battleNotFoundTime;
         reset();
     }
 
@@ -131,6 +120,37 @@ public class ScreenBattle extends LocalizableScreen {
         infoDialog.setText(bundle.format("battle.out.of.sync.text"));
         if (infoDialog.getTitleLabel() != null)
             infoDialog.getTitleLabel().setText(bundle.format("dialog.warning"));
+    }
+
+    @Override
+    public void handleEvent(EventBus.Event event) {
+        assert i18n != null;
+        if (event instanceof EventBus.RoundFinishedEvent) {
+            audioManager.sound("round");
+            reset();
+            String msg = model.roundWinner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
+            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(false);
+            finishedDialog.show(stage);
+        }
+        if (event instanceof EventBus.GameFinishedEvent) {
+            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+            audioManager.sound("game");
+            reset();
+            String header = i18n.format("battle.finish");
+            String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
+            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
+            finishedDialog.show(stage);
+            audioManager.music("theme");
+        }
+        if (event instanceof EventBus.BattleNotFoundEvent) {
+            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+            //audioManager.sound("..."); find appropriate sound!
+            reset();
+            String header = i18n.format("battle.out.of.sync");
+            String msg = i18n.format("battle.out.of.sync.exit");
+            finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
+            audioManager.music("theme");
+        }
     }
 
     private void loadTextures() {
@@ -178,6 +198,7 @@ public class ScreenBattle extends LocalizableScreen {
         enemyThing = model.enemyThing;
         outOfSync = false;
         infoDialog.hide();
+        audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
     }
 
     private void checkAbilities() {
@@ -186,40 +207,6 @@ public class ScreenBattle extends LocalizableScreen {
             for (Model.Ability ability : model.abilities) {
                 abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
             }
-        }
-    }
-
-    private void checkRoundFinished() {
-        // i18n != NULL (assert omitted because it's called from within render() method)
-        if (roundFinishedTime != model.roundFinishedTime) {
-            roundFinishedTime = model.roundFinishedTime;
-            audioManager.sound("round");
-            reset();
-            String msg = model.roundWinner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
-            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(false);
-            finishedDialog.show(stage);
-            audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
-        }
-        if (gameFinishedTime != model.gameFinishedTime) { // don't use 'elseif' here because both events are possible
-            gameFinishedTime = model.gameFinishedTime;
-            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
-            audioManager.sound("game");
-            reset();
-            String header = i18n.format("battle.finish");
-            String msg = model.roundWinner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
-            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
-            finishedDialog.show(stage);
-            audioManager.music("theme");
-        }
-        if (battleNotFoundTime != model.battleNotFoundTime) {
-            battleNotFoundTime = model.battleNotFoundTime;
-            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
-            //audioManager.sound("..."); find appropriate sound!
-            reset();
-            String header = i18n.format("battle.out.of.sync");
-            String msg = i18n.format("battle.out.of.sync.exit");
-            finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
-            audioManager.music("theme");
         }
     }
 

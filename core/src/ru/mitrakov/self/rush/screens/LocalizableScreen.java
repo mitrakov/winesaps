@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.DialogConnect;
 
 /**
@@ -38,6 +38,19 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
         table.setFillParent(true);
         stage.addActor(table);
+
+        // adding event bus listener (subclasses must implement handleEvent() method)
+        model.bus.addListener(new EventBus.Listener() {
+            @Override
+            public void OnEvent(final EventBus.Event event) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleEvent(event);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -82,4 +95,6 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     public void onLocaleChanged(I18NBundle bundle) {
         connectingDialog.onLocaleChanged(bundle);
     }
+
+    public abstract void handleEvent(EventBus.Event event);
 }
