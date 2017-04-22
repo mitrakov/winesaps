@@ -186,8 +186,8 @@ public class Model {
         new Timer("Ping timer", true).schedule(new TimerTask() {
             @Override
             public void run() {
-                if (connected && authorized && sender != null)
-                    sender.send(USER_INFO);
+                if (authorized)
+                    getUserInfo();
             }
         }, PING_PERIOD_MSEC, PING_PERIOD_MSEC);
     }
@@ -307,6 +307,12 @@ public class Model {
     public void signOut() {
         if (connected && sender != null) {
             sender.send(SIGN_OUT);
+        }
+    }
+
+    public void getUserInfo() {
+        if (connected && sender != null) {
+            sender.send(USER_INFO);
         }
     }
 
@@ -523,10 +529,10 @@ public class Model {
 
     public void setConnected(boolean value) {
         connected = value;
-        if (connected && sender != null) {
+        if (connected) {
             if (authorized)
-                sender.send(USER_INFO); // possibly the server has been restarted: see note#4 below
-            else signIn();              // not authorized: try to sign in using stored credentials
+                getUserInfo(); // connected, but already authorized? possibly the server has been restarted: see note#4
+            else signIn();     // connected and not authorized: try to sign in using stored credentials
         }
     }
 
@@ -534,7 +540,6 @@ public class Model {
         authorized = value;
         if (connected && sender != null) {
             if (authorized) {
-                sender.send(USER_INFO);
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
@@ -588,7 +593,9 @@ public class Model {
             }
         }
         abilityExpireTime = System.currentTimeMillis();
-        bus.raise(new EventBus.AbilitiesUpdatedEvent());
+        // fire the event (we use TreeSet to implicitly sort the key set; of course we may use ConcurrentSkipListMap
+        // for "abilityExpireMap", but it's not supported by API Level 8, so we use ConcurrentHashMap)
+        bus.raise(new EventBus.AbilitiesUpdatedEvent(new TreeSet<Ability>(abilityExpireMap.keySet())));
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null && history.isEmpty()) {

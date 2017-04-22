@@ -1,7 +1,5 @@
 package ru.mitrakov.self.rush.screens;
 
-import java.util.*;
-
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -324,7 +322,7 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
-        updateAbilities();
+        model.getUserInfo();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
     }
@@ -411,8 +409,10 @@ public class ScreenMain extends LocalizableScreen {
             items.removeValue(ev.name, false);
             lstFriends.setItems(items.toArray()); // toArray() is NEEDED! otherwise setItems() misbehaves
         }
-        if (event instanceof EventBus.AbilitiesUpdatedEvent)
-            updateAbilities();
+        if (event instanceof EventBus.AbilitiesUpdatedEvent) {
+            EventBus.AbilitiesUpdatedEvent ev = (EventBus.AbilitiesUpdatedEvent) event;
+            updateAbilities(ev.items);
+        }
         if (event instanceof EventBus.InviteEvent) {
             EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
             incomingDialog.setArguments(ev.enemy, ev.enemySid).show(stage);
@@ -633,10 +633,9 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateAbilities() {
+    private void updateAbilities(Iterable<Model.Ability> abilityList) {
         tableRightContentAbilities.clear();
-        // we sort abilities (via TreeSet), because since 2017.04.03 'model.abilityExpireMap' is not SkipListMap
-        for (Model.Ability ability : new TreeSet<Model.Ability>(model.abilityExpireMap.keySet())) {
+        for (Model.Ability ability : abilityList) {
             Button btn = abilities.get(ability);
             if (btn != null)
                 tableRightContentAbilities.add(btn).space(10);
