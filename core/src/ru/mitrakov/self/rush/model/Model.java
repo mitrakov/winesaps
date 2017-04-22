@@ -176,6 +176,7 @@ public class Model {
     // === USUAL PRIVATE FIELDS ===
     // ============================
 
+    private final Object locker = new Object();
     private ISender sender;
     private IFileReader fileReader;
     private String hash = "";
@@ -549,7 +550,7 @@ public class Model {
         }
     }
 
-    public synchronized void setUserInfo(int[] data) {
+    public void setUserInfo(int[] data) {
         assert data != null;
         int i = 0;
 
@@ -582,14 +583,16 @@ public class Model {
 
         // parse abilities
         Ability[] array = Ability.values();
-        abilityExpireMap.clear();
-        int abilitiesCnt = data[i++];
-        for (int j = 0; j < abilitiesCnt; j++, i += 3) {
-            if (i + 2 < data.length) {
-                int id = data[i];
-                int minutes = data[i + 1] * 256 + data[i + 2];
-                if (0 <= id && id < array.length)
-                    abilityExpireMap.put(array[id], minutes);
+        synchronized (locker) {
+            abilityExpireMap.clear();
+            int abilitiesCnt = data[i++];
+            for (int j = 0; j < abilitiesCnt; j++, i += 3) {
+                if (i + 2 < data.length) {
+                    int id = data[i];
+                    int minutes = data[i + 1] * 256 + data[i + 2];
+                    if (0 <= id && id < array.length)
+                        abilityExpireMap.put(array[id], minutes);
+                }
             }
         }
         abilityExpireTime = System.currentTimeMillis();
@@ -631,16 +634,18 @@ public class Model {
         bus.raise(new EventBus.StopCallExpiredEvent(defenderName));
     }
 
-    public synchronized void setFriendList(int[] data) {
+    public void setFriendList(int[] data) {
         assert data != null;
         byte[] bytes = new byte[data.length];
         for (int i = 0; i < data.length; i++) {
             bytes[i] = (byte) data[i];
         }
-        friends.clear();
-        String s = newString(bytes);
-        if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
-            Collections.addAll(friends, s.split("\0"));
+        synchronized (locker) {
+            friends.clear();
+            String s = newString(bytes);
+            if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
+                Collections.addAll(friends, s.split("\0"));
+        }
         bus.raise(new EventBus.FriendListUpdatedEvent(friends));
     }
 
@@ -654,16 +659,18 @@ public class Model {
         bus.raise(new EventBus.FriendRemovedEvent(name));
     }
 
-    public synchronized void setRangeOfProducts(final int[] data) {
+    public void setRangeOfProducts(final int[] data) {
         assert data != null;
         Ability[] abs = Ability.values();
-        products.clear();
-        for (int i = 0; i + 2 < data.length; i += 3) {
-            int id = data[i];
-            int days = data[i + 1];
-            int cost = data[i + 2];
-            if (0 <= id && id < abs.length)
-                products.add(new Product(abs[id], days, cost));
+        synchronized (locker) {
+            products.clear();
+            for (int i = 0; i + 2 < data.length; i += 3) {
+                int id = data[i];
+                int days = data[i + 1];
+                int cost = data[i + 2];
+                if (0 <= id && id < abs.length)
+                    products.add(new Product(abs[id], days, cost));
+            }
         }
     }
 
@@ -710,8 +717,8 @@ public class Model {
         bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, crystals));
     }
 
-    public synchronized void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2,
-                                          int myLives, int enemyLives) {
+    public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
+                             int enemyLives) {
         curThing = enemyThing = curActor = null;
         score1 = score2 = 0;
 
@@ -725,7 +732,7 @@ public class Model {
         this.enemyLives = enemyLives;
         roundNumber = number;
         roundLengthSec = timeSec;
-        this.aggressor = aggressor; // synchronized needed (by FindBugs: see IS2_INCONSISTENT_SYNC)
+        this.aggressor = aggressor;
         roundStartTime = System.currentTimeMillis();
     }
 
@@ -733,16 +740,24 @@ public class Model {
         field = new Field(fieldData);
     }
 
-    public synchronized void appendObject(int number, int id, int xy) {
-        if (field != null) { // "synchronized" needed
+    public void appendObject(int number, int id, int xy) {
+        Field field;
+        synchronized (locker) {
+            field = this.field;
+        }
+        if (field != null) {
             field.appendObject(number, id, xy);
             if (id == AGGRESSOR_ID || id == DEFENDER_ID)
                 curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
         }
     }
 
-    public synchronized void setXy(int number, int xy) {
-        if (field != null) // "synchronized" needed
+    public void setXy(int number, int xy) {
+        Field field;
+        synchronized (locker) {
+            field = this.field;
+        }
+        if (field != null)
             field.setXy(number, xy);
     }
 
@@ -780,7 +795,7 @@ public class Model {
         bus.raise(new EventBus.RoundFinishedEvent(winner));
     }
 
-    public synchronized void gameFinished(boolean winner) {
+    public void gameFinished(boolean winner) {
         // updating history
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training Level
             // building a history item
@@ -801,17 +816,19 @@ public class Model {
         }
 
         // reset reference to a field
-        field = null; // "synchronized" needed
+        field = null;
         bus.raise(new EventBus.GameFinishedEvent(winner));
     }
 
-    public synchronized void setAbilities(int[] ids) {
+    public void setAbilities(int[] ids) {
         assert ids != null;
-        abilities.clear();
-        Ability[] array = Ability.values();
-        for (int id : ids) {
-            if (0 <= id && id < array.length)
-                abilities.add(array[id]);
+        synchronized (locker) {
+            abilities.clear();
+            Ability[] array = Ability.values();
+            for (int id : ids) {
+                if (0 <= id && id < array.length)
+                    abilities.add(array[id]);
+            }
         }
     }
 
