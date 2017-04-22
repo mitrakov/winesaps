@@ -20,6 +20,8 @@ public class DialogIncoming extends DialogFeat {
     private final CheckBox chkAddToFriends;
     private final AudioManager audioManager;
 
+    private String enemy = "";
+    private int enemySid = 0;
     private I18NBundle i18n;
 
     public DialogIncoming(Model model, Skin skin, String windowStyleName, AudioManager audioManager, I18NBundle i18n) {
@@ -47,8 +49,8 @@ public class DialogIncoming extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         audioManager.music("call");
-        chkAddToFriends.setVisible(!model.friends.contains(model.enemy));
-        lblQuestion.setText(i18n.format("dialog.incoming.text", model.enemy)); // i18n != NULL (assert omitted)
+        chkAddToFriends.setVisible(!model.friends.contains(enemy));
+        lblQuestion.setText(i18n.format("dialog.incoming.text", enemy)); // i18n != NULL (assert omitted)
         return super.show(stage);
     }
 
@@ -57,12 +59,12 @@ public class DialogIncoming extends DialogFeat {
         assert object instanceof Result; // stackoverflow.com/questions/2950319
         switch ((Result) object) {
             case Accept:
-                model.accept();
+                model.accept(enemySid);
                 if (chkAddToFriends.isChecked())
-                    model.addFriend(model.enemy);
+                    model.addFriend(enemy);
                 break;
             case Reject:
-                model.reject();
+                model.reject(enemySid);
                 break;
             default:
         }
@@ -98,5 +100,11 @@ public class DialogIncoming extends DialogFeat {
                     ((TextButton) ignore).setText(bundle.format("dialog.incoming.ignore"));
             }
         }
+    }
+
+    public Dialog setArguments(String enemy, int enemySid) {
+        this.enemy = enemy;
+        this.enemySid = enemySid;
+        return this;
     }
 }

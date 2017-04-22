@@ -23,6 +23,10 @@ public class Model {
      */
     public static final int RATINGS_COUNT = 10;
 
+    // ===========================
+    // === PUBLIC INTERFACES ===
+    // ===========================
+
     /**
      * interface to send commands to the server
      */
@@ -48,6 +52,10 @@ public class Model {
 
         void serialize(String filename, Object obj);
     }
+
+    // ===========================
+    // === PUBLIC ENUMERATIONS ===
+    // ===========================
 
     /**
      * server-specific commands; for more details see docs to the protocol
@@ -77,7 +85,11 @@ public class Model {
         General, Weekly
     }
 
-    public String md5(String s) {
+    // =============================
+    // === PUBLIC STATIC METHODS ===
+    // =============================
+
+    public static String md5(String s) {
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
             byte[] bytes = MessageDigest.getInstance("md5").digest(getBytes(s));
@@ -95,7 +107,6 @@ public class Model {
     // ==============================
 
     public volatile String name = "";
-    public volatile String hash = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
     public volatile Character character = Character.None;
@@ -114,13 +125,12 @@ public class Model {
     public volatile int enemyLives = 2;
     public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
+    public volatile long abilityExpireTime = 0;
+    public volatile long roundStartTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
     public volatile CellObject curThing;
     public volatile CellObject enemyThing;
-
-    public volatile long abilityExpireTime = 0;
-    public volatile long roundStartTime = 0;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -139,8 +149,6 @@ public class Model {
     // ===========================
     // === PUBLIC FINAL FIELDS ===
     // ===========================
-    //
-    // ==================================================
 
     public final EventBus bus = new EventBus();
 
@@ -170,7 +178,7 @@ public class Model {
 
     private ISender sender;
     private IFileReader fileReader;
-    private int enemySid = 0;
+    private String hash = "";
     private boolean aggressor = true;
 
     public Model() {
@@ -334,7 +342,7 @@ public class Model {
     /**
      * Sends ACCEPT command to the server (in response to INVITE)
      */
-    public void accept() {
+    public void accept(int enemySid) {
         if (connected && sender != null) {
             sender.send(ACCEPT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
@@ -343,7 +351,7 @@ public class Model {
     /**
      * Sends REJECT command to the server (in response to INVITE)
      */
-    public void reject() {
+    public void reject(int enemySid) {
         if (connected && sender != null) {
             sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
         }
@@ -596,33 +604,24 @@ public class Model {
     }
 
     public void setVictim(String victimName) {
-        assert victimName != null;
         enemy = victimName;
     }
 
     public void attacked(int sid, String aggressorName) {
-        assert aggressorName != null;
-        enemySid = sid;
         enemy = aggressorName;
-        bus.raise(new EventBus.InviteEvent());
+        bus.raise(new EventBus.InviteEvent(aggressorName, sid));
     }
 
     public void stopCallRejected(String coward) {
-        assert coward != null;
-        enemy = coward;
-        bus.raise(new EventBus.StopCallRejectedEvent());
+        bus.raise(new EventBus.StopCallRejectedEvent(coward));
     }
 
     public void stopCallMissed(String aggressorName) {
-        assert aggressorName != null;
-        enemy = aggressorName;
-        bus.raise(new EventBus.StopCallMissedEvent());
+        bus.raise(new EventBus.StopCallMissedEvent(aggressorName));
     }
 
     public void stopCallExpired(String defenderName) {
-        assert defenderName != null;
-        enemy = defenderName;
-        bus.raise(new EventBus.StopCallExpiredEvent());
+        bus.raise(new EventBus.StopCallExpiredEvent(defenderName));
     }
 
     public synchronized void setFriendList(int[] data) {

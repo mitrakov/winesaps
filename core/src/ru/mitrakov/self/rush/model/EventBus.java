@@ -11,10 +11,6 @@ public class EventBus {
 
     public static final class FriendListUpdatedEvent extends Event {}
     public static final class AbilitiesUpdatedEvent extends Event {}
-    public static final class InviteEvent extends Event {}
-    public static final class StopCallRejectedEvent extends Event {}
-    public static final class StopCallMissedEvent extends Event {}
-    public static final class StopCallExpiredEvent extends Event {}
     public static final class AggressorBusyEvent extends Event {}
     public static final class DefenderBusyEvent extends Event {}
     public static final class EnemyNotFoundEvent extends Event {}
@@ -28,6 +24,32 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class InviteEvent extends Event {
+        public final String enemy;
+        public final int enemySid;
+        InviteEvent(String enemy, int enemySid) {
+            this.enemy = enemy;
+            this.enemySid = enemySid;
+        }
+    }
+    public static final class StopCallRejectedEvent extends Event {
+        public final String cowardName;
+        StopCallRejectedEvent(String cowardName) {
+            this.cowardName = cowardName;
+        }
+    }
+    public static final class StopCallMissedEvent extends Event {
+        public final String aggressorName;
+        StopCallMissedEvent(String aggressorName) {
+            this.aggressorName = aggressorName;
+        }
+    }
+    public static final class StopCallExpiredEvent extends Event {
+        public final String defenderName;
+        StopCallExpiredEvent(String defenderName) {
+            this.defenderName = defenderName;
+        }
+    }
     public static final class RatingUpdatedEvent extends Event {
         final Model.RatingType type;
         public final Collection<RatingItem> items;

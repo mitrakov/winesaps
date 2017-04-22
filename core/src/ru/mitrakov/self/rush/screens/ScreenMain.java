@@ -39,7 +39,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableFriendsControl = new Table();
     private final DialogPromocode promocodeDialog;
     private final DialogFeat moreCrystalsDialog;
-    private final DialogFeat incomingDialog;
+    private final DialogIncoming incomingDialog;
     private final DialogFeat settingsDialog;
     private final DialogFeat aboutDialog;
     private final DialogBuyAbilities buyAbilitiesDialog;
@@ -399,23 +399,28 @@ public class ScreenMain extends LocalizableScreen {
             lstFriends.setItems(model.friends.toArray(new String[0]));
         if (event instanceof EventBus.AbilitiesUpdatedEvent)
             updateAbilities();
-        if (event instanceof EventBus.InviteEvent)
-            incomingDialog.show(stage);
+        if (event instanceof EventBus.InviteEvent) {
+            EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
+            incomingDialog.setArguments(ev.enemy, ev.enemySid).show(stage);
+        }
         if (event instanceof EventBus.PromocodeDoneEvent) {
             EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
             promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
         }
         if (event instanceof EventBus.StopCallRejectedEvent) {
+            EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.rejected", model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
         }
         if (event instanceof EventBus.StopCallMissedEvent) {
+            EventBus.StopCallMissedEvent ev = (EventBus.StopCallMissedEvent) event;
             incomingDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.missed", model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
         }
         if (event instanceof EventBus.StopCallExpiredEvent) {
+            EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.expired", model.enemy)).show(stage);
+            infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
         }
         if (event instanceof EventBus.AddFriendErrorEvent)
             infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
