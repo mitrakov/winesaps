@@ -617,7 +617,7 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
-    private void updateRating(Collection<RatingItem> items) {
+    private void updateRating(Iterable<RatingItem> items) {
         for (Label label : ratingLabels) {
             label.setText("");
         }

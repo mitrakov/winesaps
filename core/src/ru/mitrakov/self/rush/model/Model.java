@@ -249,7 +249,7 @@ public class Model {
      * @return collection of available products by the given ability (e.g. Snorkel for 1 day, 3 days, 7 days)
      */
     public Collection<Product> getProductsByAbility(Ability ability) {
-        List<Product> res = new LinkedList<Product>();
+        Collection<Product> res = new LinkedList<Product>();
         for (Product product : products) {   // in Java 8 may be replaced with lambda
             if (product.ability == ability)
                 res.add(product);

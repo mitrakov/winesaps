@@ -69,8 +69,8 @@ public class EventBus {
     }
     public static final class RatingUpdatedEvent extends Event {
         final Model.RatingType type;
-        public final Collection<RatingItem> items;
-        RatingUpdatedEvent(Model.RatingType type, Collection<RatingItem> items) {
+        public final Iterable<RatingItem> items;
+        RatingUpdatedEvent(Model.RatingType type, Iterable<RatingItem> items) {
             this.type = type;
             this.items = items;
         }
