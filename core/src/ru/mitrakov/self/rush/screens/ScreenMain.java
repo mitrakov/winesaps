@@ -395,8 +395,22 @@ public class ScreenMain extends LocalizableScreen {
             EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
             updateRating(ev.items);
         }
-        if (event instanceof EventBus.FriendListUpdatedEvent)
-            lstFriends.setItems(model.friends.toArray(new String[0]));
+        if (event instanceof EventBus.FriendListUpdatedEvent) {
+            EventBus.FriendListUpdatedEvent ev = (EventBus.FriendListUpdatedEvent) event;
+            lstFriends.setItems(ev.items.toArray(new String[0]));
+        }
+        if (event instanceof EventBus.FriendAddedEvent) {
+            EventBus.FriendAddedEvent ev = (EventBus.FriendAddedEvent) event;
+            Array<String> items = lstFriends.getItems();
+            items.add(ev.name);
+            lstFriends.setItems(items.toArray()); // toArray() is NEEDED! otherwise setItems() misbehaves
+        }
+        if (event instanceof EventBus.FriendRemovedEvent) {
+            EventBus.FriendRemovedEvent ev = (EventBus.FriendRemovedEvent) event;
+            Array<String> items = lstFriends.getItems();
+            items.removeValue(ev.name, false);
+            lstFriends.setItems(items.toArray()); // toArray() is NEEDED! otherwise setItems() misbehaves
+        }
         if (event instanceof EventBus.AbilitiesUpdatedEvent)
             updateAbilities();
         if (event instanceof EventBus.InviteEvent) {

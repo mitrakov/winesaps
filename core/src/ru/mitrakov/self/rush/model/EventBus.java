@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class EventBus {
     public static abstract class Event {}
 
-    public static final class FriendListUpdatedEvent extends Event {}
     public static final class AbilitiesUpdatedEvent extends Event {}
     public static final class AggressorBusyEvent extends Event {}
     public static final class DefenderBusyEvent extends Event {}
@@ -24,6 +23,24 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class FriendListUpdatedEvent extends Event {
+        public final Collection<String> items;
+        FriendListUpdatedEvent(Collection<String> items) {
+            this.items = items;
+        }
+    }
+    public static final class FriendAddedEvent extends Event {
+        public final String name;
+        FriendAddedEvent(String name) {
+            this.name = name;
+        }
+    }
+    public static final class FriendRemovedEvent extends Event {
+        public final String name;
+        FriendRemovedEvent(String name) {
+            this.name = name;
+        }
+    }
     public static final class InviteEvent extends Event {
         public final String enemy;
         public final int enemySid;

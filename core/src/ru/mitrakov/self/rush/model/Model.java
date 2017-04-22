@@ -634,17 +634,17 @@ public class Model {
         String s = newString(bytes);
         if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
             Collections.addAll(friends, s.split("\0"));
-        bus.raise(new EventBus.FriendListUpdatedEvent());
+        bus.raise(new EventBus.FriendListUpdatedEvent(friends));
     }
 
     public void friendAdded(String name) {
         friends.add(name);
-        bus.raise(new EventBus.FriendListUpdatedEvent());
+        bus.raise(new EventBus.FriendAddedEvent(name));
     }
 
     public void friendRemoved(String name) {
         friends.remove(name);
-        bus.raise(new EventBus.FriendListUpdatedEvent());
+        bus.raise(new EventBus.FriendRemovedEvent(name));
     }
 
     public synchronized void setRangeOfProducts(final int[] data) {
