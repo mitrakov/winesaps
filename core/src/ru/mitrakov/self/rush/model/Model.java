@@ -737,7 +737,11 @@ public class Model {
     }
 
     public void setNewField(int[] fieldData) {
-        field = new Field(fieldData);
+        Field field; // for multithreaded safety
+        this.field = field = new Field(fieldData);
+        // assign curActor (be careful! if "fieldData" doesn't contain actors, curActor will become NULL! it may be
+        // assigned later in appendObject() method)
+        curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
     }
 
     public void appendObject(int number, int id, int xy) {
@@ -750,6 +754,10 @@ public class Model {
             if (id == AGGRESSOR_ID || id == DEFENDER_ID)
                 curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
         }
+    }
+
+    public void setStylePack(int pack) {
+        System.out.println("Pack = " + pack);
     }
 
     public void setXy(int number, int xy) {

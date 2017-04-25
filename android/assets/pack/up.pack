@@ -5,126 +5,126 @@ filter: Nearest,Nearest
 repeat: none
 RopeLine
   rotate: false
-  xy: 0, 39
+  xy: 1, 10
   size: 10, 85
   orig: 10, 85
   offset: 0, 0
   index: -1
 Water
   rotate: false
-  xy: 12, 51
+  xy: 13, 22
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
 Block
   rotate: false
-  xy: 28, 52
+  xy: 29, 23
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 LadderBottom
   rotate: false
-  xy: 44, 69
+  xy: 45, 40
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 LadderTop
   rotate: false
-  xy: 76, 69
+  xy: 77, 40
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 OpenedUmbrella
   rotate: false
-  xy: 108, 69
+  xy: 109, 40
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 Wolf
   rotate: false
-  xy: 140, 79
+  xy: 141, 50
   size: 30, 45
   orig: 30, 45
   offset: 0, 0
   index: -1
 Waterfall
   rotate: false
-  xy: 172, 54
+  xy: 173, 25
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe
   rotate: false
-  xy: 172, 54
+  xy: 173, 25
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Mine
   rotate: false
-  xy: 189, 98
+  xy: 190, 69
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 Umbrella
   rotate: false
-  xy: 189, 70
+  xy: 190, 41
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
-Apple
+Nut
   rotate: false
-  xy: 217, 96
+  xy: 218, 67
   size: 22, 28
   orig: 22, 28
+  offset: 0, 0
+  index: -1
+Apple
+  rotate: false
+  xy: 218, 41
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 Carrot
   rotate: false
-  xy: 217, 66
-  size: 22, 28
-  orig: 22, 28
+  xy: 45, 14
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 Meat
   rotate: false
-  xy: 0, 9
-  size: 22, 28
-  orig: 22, 28
+  xy: 71, 14
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 Mushroom
   rotate: false
-  xy: 44, 39
-  size: 22, 28
-  orig: 22, 28
-  offset: 0, 0
-  index: -1
-Nut
-  rotate: false
-  xy: 68, 39
-  size: 22, 28
-  orig: 22, 28
+  xy: 97, 14
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 Pear
   rotate: false
-  xy: 92, 39
-  size: 22, 28
-  orig: 22, 28
+  xy: 123, 14
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 Stair
   rotate: false
-  xy: 0, 0
+  xy: 1, 1
   size: 7, 7
   orig: 7, 7
   offset: 0, 0

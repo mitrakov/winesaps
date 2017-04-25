@@ -281,18 +281,34 @@ class Parser implements IHandler {
     private void fullState(Cmd cmd, int[] state) {
         int n = Field.HEIGHT * Field.WIDTH;
         if (state.length >= n) {
+            // field
             int field[] = copyOfRange(state, 0, n);
-            int tail[] = copyOfRange(state, n, state.length);
-
             model.setNewField(field);
-            if (tail.length % 3 == 0) {
-                for (int i = 0; i < tail.length; i += 3) {
-                    int number = tail[i];
-                    int id = tail[i + 1];
-                    int xy = tail[i + 2];
-                    model.appendObject(number, id, xy);
+
+            // scanning additional sections
+            for (int j = n; j + 1 < state.length; j += 2) {
+                int sectionCode = state[j];
+                int sectionLen = state[j + 1];
+                switch (sectionCode) {
+                    case 1: // parse additional level objects
+                        int objects[] = copyOfRange(state, j + 2, j + 2 + sectionLen);
+                        for (int i = 0; i < objects.length; i += 3) {
+                            int number = objects[i];
+                            int id = objects[i + 1];
+                            int xy = objects[i + 2];
+                            model.appendObject(number, id, xy);
+                        }
+                        break;
+                    case 2: // parse style pack
+                        if (sectionLen == 1 && j + 2 < state.length) {
+                            int pack = state[j + 2];
+                            model.setStylePack(pack);
+                        } else throw new IllegalArgumentException("Incorrect style pack");
+                        break;
+                    default: // don't throw exceptions, just skip
                 }
-            } else throw new IllegalArgumentException("Incorrect tail data format");
+                j += sectionLen;
+            }
         } else if (state.length == 1) {
             inspectError(cmd, state[0]);
         } else throw new IllegalArgumentException("Incorrect field size");

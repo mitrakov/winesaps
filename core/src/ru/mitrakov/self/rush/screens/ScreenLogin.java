@@ -215,7 +215,7 @@ public class ScreenLogin extends LocalizableScreen {
 
     private Actor createLangTable(AudioManager audioManager) {
         assert audioManager != null;
-        Table tableLang = new Table().padRight(20);
+        Table tableLang = new Table().padRight(10).padTop(10);
         tableLang.add(new ImageButtonFeat(textureEng, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -224,7 +224,7 @@ public class ScreenLogin extends LocalizableScreen {
                     game.updateLocale();
                 }
             });
-        }}).spaceRight(20);
+        }}).spaceRight(10);
         tableLang.add(new ImageButtonFeat(textureRus, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -233,7 +233,7 @@ public class ScreenLogin extends LocalizableScreen {
                     game.updateLocale();
                 }
             });
-        }}).spaceRight(20);
+        }}).spaceRight(10);
         return tableLang;
     }
 

@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.model.object.CellObject;
 public class Field {
     public static final int WIDTH = 51;
     public static final int HEIGHT = 5;
-    public static final int FAKE_CELL = WIDTH * HEIGHT;
+    private static final int FAKE_CELL = WIDTH * HEIGHT;
 
     interface NextNumber {
         int next();
