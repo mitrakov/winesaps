@@ -5,6 +5,7 @@ import static java.lang.Math.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -16,7 +17,6 @@ import ru.mitrakov.self.rush.model.object.*;
 /**
  * Created by mitrakov on 23.02.2017
  */
-
 public class Gui extends Actor {
     static private class MyClickListener extends ClickListener {
         float x, y = 0;
@@ -66,6 +66,7 @@ public class Gui extends Actor {
     private final TextureAtlas atlasHedgehog = new TextureAtlas(Gdx.files.internal("pack/hedgehog.pack"));
     private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
     private final TextureAtlas atlasCat = new TextureAtlas(Gdx.files.internal("pack/cat.pack"));
+    private final Texture background = new Texture(Gdx.files.internal("back/back0.jpg"));
     private final ObjectMap<Class, TextureRegion> texturesDown = new ObjectMap<Class, TextureRegion>(3);
     private final ObjectMap<Class, TextureRegion> texturesUp = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
@@ -150,6 +151,8 @@ public class Gui extends Actor {
         float dt = Gdx.graphics.getDeltaTime();
         float dx = SPEED_X * dt, dy = SPEED_Y * dt;
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
+
+        batch.draw(background, 0, 0);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
@@ -245,6 +248,7 @@ public class Gui extends Actor {
         atlasHedgehog.dispose();
         atlasSquirrel.dispose();
         atlasCat.dispose();
+        background.dispose();
     }
 
     private float getBottomWidth(Cell cell) {
