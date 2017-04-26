@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.ui;
 
 import static java.lang.Math.*;
+import static ru.mitrakov.self.rush.model.Model.STYLES_COUNT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
@@ -67,19 +68,11 @@ public class Gui extends Actor {
     private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
     private final TextureAtlas atlasCat = new TextureAtlas(Gdx.files.internal("pack/cat.pack"));
     private final Texture background = new Texture(Gdx.files.internal("back/back0.jpg"));
-    private final ObjectMap<Class, TextureRegion> texturesDown = new ObjectMap<Class, TextureRegion>(3);
-    private final ObjectMap<Class, TextureRegion> texturesUp = new ObjectMap<Class, TextureRegion>(20);
+    private final ObjectMap<String, TextureRegion> texturesDown = new ObjectMap<String, TextureRegion>(3);
+    private final ObjectMap<String, TextureRegion> texturesStatic = new ObjectMap<String, TextureRegion>(20);
+    private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
+    private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
-    private final ObjectSet<Class> setStatic = new ObjectSet<Class>() {{
-        addAll(Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class, Stair.class, Mine.class,
-                Umbrella.class, Waterfall.class, WaterfallSafe.class);
-    }};
-    private final ObjectSet<Class> setFood = new ObjectSet<Class>() {{
-        addAll(Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class);
-    }};
-    private final ObjectSet<Class> setUmbrella = new ObjectSet<Class>(1) {{
-        add(OpenedUmbrella.class);
-    }};
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -107,22 +100,39 @@ public class Gui extends Actor {
         setWidth(RushClient.WIDTH);
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
-        ObjectSet<Class> upClasses = new ObjectSet<Class>() {{
-            addAll(setStatic);
-            addAll(setFood);
-            addAll(setUmbrella);
-        }};
-
+        // down textures (block, dias, water), each with 4 styles
         for (Class clazz : new Class[]{Block.class, Dias.class, Water.class}) {
-            TextureRegion texture = atlasDown.findRegion(clazz.getSimpleName());
-            if (texture != null)
-                texturesDown.put(clazz, texture);
+            for (int i = 0; i < STYLES_COUNT; i++) {
+                String key = clazz.getSimpleName() + i;
+                TextureRegion texture = atlasDown.findRegion(key);
+                if (texture != null)
+                    texturesDown.put(key, texture);
+            }
         }
-        for (Class clazz : upClasses) {
+        // static up textures, each with 4 styles
+        for (Class clazz : new Class[]{Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class,
+                Stair.class, Waterfall.class, WaterfallSafe.class}) {
+            for (int i = 0; i < STYLES_COUNT; i++) {
+                String key = clazz.getSimpleName() + i;
+                TextureRegion texture = atlasUp.findRegion(key);
+                if (texture != null)
+                    texturesStatic.put(key, texture);
+            }
+        }
+        // collectible textures
+        for (Class clazz : new Class[]{Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
+                Mine.class, Umbrella.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
-                texturesUp.put(clazz, texture);
+                texturesCollectible.put(clazz, texture);
         }
+        // overlay
+        for (Class clazz : new Class[]{OpenedUmbrella.class}) {
+            TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
+            if (texture != null)
+                texturesOverlay.put(clazz, texture);
+        }
+        // animations
         for (Class clazz : new Class[]{Actor1.class, Actor2.class, Wolf.class}) {
             ObjectMap<Model.Character, Animation<TextureRegion>> animations =
                     new ObjectMap<Model.Character, Animation<TextureRegion>>(4);
@@ -156,13 +166,14 @@ public class Gui extends Actor {
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
-            // draw 1-st layer (bottom (block/water/dias))
+            // draw 1-st layer (bottom (block/water/dias) with one of 4 styles)
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                     if (cell.bottom != null) {
-                        if (texturesDown.containsKey(cell.bottom.getClass())) {
-                            TextureRegion texture = texturesDown.get(cell.bottom.getClass()); // here texture != null
+                        String key = cell.bottom.getClass().getSimpleName() + model.stylePack;
+                        if (texturesDown.containsKey(key)) {
+                            TextureRegion texture = texturesDown.get(key); // here texture != null
                             float x = convertXFromModelToScreen(i);
                             float y = convertYFromModelToScreen(j);
                             batch.draw(texture, x, y);
@@ -171,9 +182,9 @@ public class Gui extends Actor {
                 }
             }
             // draw 2-nd layer (static objects)
-            drawObjects(field, batch, setStatic);
-            // draw 3-rd layer (food)
-            drawObjects(field, batch, setFood);
+            drawObjects(field, batch, texturesStatic, model.stylePack);
+            // draw 3-rd layer (collectible objects)
+            drawObjects(field, batch, texturesCollectible, -1);
             // draw 4-th layer (animated characters)
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
@@ -231,8 +242,8 @@ public class Gui extends Actor {
                     }
                 }
             }
-            // draw 5-th layer (opened umbrella)
-            drawObjects(field, batch, setUmbrella);
+            // draw 5-th layer (all overlaying objects like openedUmbrella)
+            drawObjects(field, batch, texturesOverlay, -1);
             // draw 6-th layer here...
         }
     }
@@ -255,8 +266,9 @@ public class Gui extends Actor {
         // cell != null (assert omitted because it's called inside 'render()')
         float bottomWidth = CELL_SIZ_W;
         if (cell.bottom != null) {
-            if (texturesDown.containsKey(cell.bottom.getClass())) {
-                bottomWidth = texturesDown.get(cell.bottom.getClass()).getRegionWidth(); // texture != null
+            String key = cell.bottom.getClass().getSimpleName() + model.stylePack;
+            if (texturesDown.containsKey(key)) {
+                bottomWidth = texturesDown.get(key).getRegionWidth(); // texture != null
             }
         }
         return bottomWidth;
@@ -266,8 +278,9 @@ public class Gui extends Actor {
         // cell != null (assert omitted because it's called inside 'render()')
         float bottomHeight = 0;
         if (cell.bottom != null) {
-            if (texturesDown.containsKey(cell.bottom.getClass())) {
-                bottomHeight = texturesDown.get(cell.bottom.getClass()).getRegionHeight(); // texture != null
+            String key = cell.bottom.getClass().getSimpleName() + model.stylePack;
+            if (texturesDown.containsKey(key)) {
+                bottomHeight = texturesDown.get(key).getRegionHeight(); // texture != null
             }
         }
         return bottomHeight;
@@ -282,20 +295,20 @@ public class Gui extends Actor {
         return false;
     }
 
-    private void drawObjects(Field field, Batch batch, ObjectSet<Class> filter) {
+    @SuppressWarnings("unchecked")
+    private <T> void drawObjects(Field field, Batch batch, ObjectMap<T, TextureRegion> map, int style) {
         assert field != null;
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                 for (CellObject obj : cell.objects) {
-                    if (filter.contains(obj.getClass())) {
-                        if (texturesUp.containsKey(obj.getClass())) {
-                            TextureRegion texture = texturesUp.get(obj.getClass()); // here texture != null
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
-                        }
+                    String key = obj.getClass().getSimpleName() + model.stylePack;
+                    TextureRegion texture = map.get((T) (style >= 0 ? key : obj.getClass()));
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
                     }
                 }
             }

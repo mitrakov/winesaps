@@ -3,21 +3,21 @@ down.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Dias
+Dias2
   rotate: false
   xy: 2, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
-Block
+Block2
   rotate: false
   xy: 18, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-Water
+Water2
   rotate: false
   xy: 18, 2
   size: 14, 12

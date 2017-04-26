@@ -22,6 +22,7 @@ public class Model {
      * size of the rating list (defined by server)
      */
     public static final int RATINGS_COUNT = 10;
+    public static final int STYLES_COUNT = 4;
 
     // ===========================
     // === PUBLIC INTERFACES ===
@@ -125,6 +126,7 @@ public class Model {
     public volatile int enemyLives = 2;
     public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
+    public volatile int stylePack = 0;
     public volatile long abilityExpireTime = 0;
     public volatile long roundStartTime = 0;
     public volatile Field field;
@@ -757,7 +759,7 @@ public class Model {
     }
 
     public void setStylePack(int pack) {
-        System.out.println("Pack = " + pack);
+        stylePack = pack;
     }
 
     public void setXy(int number, int xy) {
