@@ -111,7 +111,7 @@ public class Gui extends Actor {
         }
         // static up textures, each with 4 styles
         for (Class clazz : new Class[]{Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class,
-                Stair.class, Waterfall.class, WaterfallSafe.class}) {
+                Stair.class, Waterfall.class, WaterfallSafe.class, DecorationStatic.class, DecorationWarning.class}) {
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
                 TextureRegion texture = atlasUp.findRegion(key);

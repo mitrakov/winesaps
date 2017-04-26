@@ -2,6 +2,7 @@ package ru.mitrakov.self.rush.model;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import ru.mitrakov.self.rush.model.object.*;
 
 /**
@@ -88,6 +89,14 @@ public class Cell {
                 return new Waterfall(xy);
             case 0x19:
                 return new WaterfallSafe(xy);
+            /*case 0x1A: only for server
+              case 0x1B: only for server */
+            case 0x1C:
+                return new DecorationStatic(xy);
+            case 0x1D:
+                return new DecorationDynamic(xy);
+            case 0x1E:
+                return new DecorationWarning(xy);
             default:
                 return null;
         }
