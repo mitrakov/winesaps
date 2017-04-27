@@ -3,6 +3,8 @@ package ru.mitrakov.self.rush.ui;
 import static java.lang.Math.*;
 import static ru.mitrakov.self.rush.model.Model.STYLES_COUNT;
 
+import java.util.Locale;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -67,7 +69,7 @@ public class Gui extends Actor {
     private final TextureAtlas atlasHedgehog = new TextureAtlas(Gdx.files.internal("pack/hedgehog.pack"));
     private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
     private final TextureAtlas atlasCat = new TextureAtlas(Gdx.files.internal("pack/cat.pack"));
-    private final Texture background = new Texture(Gdx.files.internal("back/back0.jpg"));
+    private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
     private final ObjectMap<String, TextureRegion> texturesDown = new ObjectMap<String, TextureRegion>(3);
     private final ObjectMap<String, TextureRegion> texturesStatic = new ObjectMap<String, TextureRegion>(20);
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
@@ -154,6 +156,10 @@ public class Gui extends Actor {
 
             texturesAnim.put(clazz, new AnimInfo(animations, clazz != Actor2.class));
         }
+        // backgrounds
+        for (int i = 0; i < STYLES_COUNT; i++) {
+            backgrounds.add(new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/back%d.jpg", i))));
+        }
     }
 
     @Override
@@ -162,7 +168,7 @@ public class Gui extends Actor {
         float dx = SPEED_X * dt, dy = SPEED_Y * dt;
         controller.checkInput(listener.getPressedButton(), listener.x, listener.y);
 
-        batch.draw(background, 0, 0);
+        batch.draw(backgrounds.get(model.stylePack), 0, 0);
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
@@ -259,7 +265,8 @@ public class Gui extends Actor {
         atlasHedgehog.dispose();
         atlasSquirrel.dispose();
         atlasCat.dispose();
-        background.dispose();
+        for (Texture texture : backgrounds)
+            texture.dispose();
     }
 
     private float getBottomWidth(Cell cell) {

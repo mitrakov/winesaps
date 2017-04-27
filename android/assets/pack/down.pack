@@ -12,78 +12,78 @@ Dias0
   index: -1
 Dias1
   rotate: false
-  xy: 2, 2
+  xy: 18, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Dias2
   rotate: false
-  xy: 2, 2
+  xy: 34, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Dias3
   rotate: false
-  xy: 2, 2
+  xy: 50, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Block0
   rotate: false
-  xy: 18, 16
+  xy: 66, 16
   size: 14, 14
   orig: 14, 14
-  offset: 0, 0
-  index: -1
-Block1
-  rotate: false
-  xy: 18, 16
-  size: 14, 14
-  orig: 14, 14
-  offset: 0, 0
-  index: -1
-Block2
-  rotate: false
-  xy: 18, 16
-  size: 14, 14
-  orig: 14, 14
-  offset: 0, 0
-  index: -1
-Block3
-  rotate: false
-  xy: 18, 16
-  size: 14, 14
-  orig: 14, 14
-  offset: 0, 0
-  index: -1
-Water0
-  rotate: false
-  xy: 18, 2
-  size: 14, 12
-  orig: 14, 12
   offset: 0, 0
   index: -1
 Water1
   rotate: false
-  xy: 18, 2
+  xy: 66, 2
   size: 14, 12
   orig: 14, 12
   offset: 0, 0
   index: -1
 Water2
   rotate: false
-  xy: 18, 2
+  xy: 66, 2
   size: 14, 12
   orig: 14, 12
   offset: 0, 0
   index: -1
 Water3
   rotate: false
-  xy: 18, 2
+  xy: 66, 2
   size: 14, 12
   orig: 14, 12
+  offset: 0, 0
+  index: -1
+Block1
+  rotate: false
+  xy: 82, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Block2
+  rotate: false
+  xy: 98, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Block3
+  rotate: false
+  xy: 114, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Water0
+  rotate: false
+  xy: 130, 16
+  size: 14, 14
+  orig: 14, 14
   offset: 0, 0
   index: -1

@@ -31,13 +31,6 @@ RopeLine3
   orig: 11, 85
   offset: 0, 0
   index: -1
-LadderBottom0
-  rotate: false
-  xy: 15, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
 LadderBottom1
   rotate: false
   xy: 15, 71
@@ -55,13 +48,6 @@ LadderBottom2
 LadderBottom3
   rotate: false
   xy: 15, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderTop0
-  rotate: false
-  xy: 57, 71
   size: 40, 55
   orig: 40, 55
   offset: 0, 0
@@ -87,214 +73,228 @@ LadderTop3
   orig: 40, 55
   offset: 0, 0
   index: -1
-DecorationStatic0
+LadderBottom0
   rotate: false
   xy: 99, 71
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+LadderTop0
+  rotate: false
+  xy: 136, 71
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+DecorationStatic0
+  rotate: false
+  xy: 173, 71
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 DecorationStatic1
   rotate: false
-  xy: 99, 71
+  xy: 173, 71
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 DecorationStatic2
   rotate: false
-  xy: 99, 71
+  xy: 173, 71
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 DecorationStatic3
   rotate: false
-  xy: 99, 71
+  xy: 173, 71
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 OpenedUmbrella
   rotate: false
-  xy: 131, 71
+  xy: 205, 71
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 Wolf
   rotate: false
-  xy: 163, 81
+  xy: 237, 81
   size: 30, 45
   orig: 30, 45
   offset: 0, 0
   index: -1
 Waterfall0
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Waterfall1
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Waterfall2
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Waterfall3
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe0
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe1
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe2
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 WaterfallSafe3
   rotate: false
-  xy: 195, 56
+  xy: 269, 56
   size: 15, 70
   orig: 15, 70
   offset: 0, 0
   index: -1
 Block0
   rotate: false
-  xy: 212, 54
+  xy: 286, 54
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block1
   rotate: false
-  xy: 212, 54
+  xy: 302, 54
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block2
   rotate: false
-  xy: 212, 54
+  xy: 318, 54
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block3
   rotate: false
-  xy: 212, 54
+  xy: 334, 54
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Water0
   rotate: false
-  xy: 228, 53
-  size: 14, 73
-  orig: 14, 73
+  xy: 350, 54
+  size: 14, 72
+  orig: 14, 72
   offset: 0, 0
   index: -1
 Water1
   rotate: false
-  xy: 228, 53
+  xy: 366, 53
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
 Water2
   rotate: false
-  xy: 228, 53
+  xy: 366, 53
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
 Water3
   rotate: false
-  xy: 228, 53
+  xy: 366, 53
   size: 14, 73
   orig: 14, 73
   offset: 0, 0
   index: -1
-Apple
+Mine
   rotate: false
   xy: 15, 41
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+Umbrella
+  rotate: false
+  xy: 2, 11
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+Apple
+  rotate: false
+  xy: 382, 98
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Carrot
   rotate: false
-  xy: 2, 11
+  xy: 45, 41
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Meat
   rotate: false
-  xy: 41, 41
+  xy: 32, 11
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
-Mine
-  rotate: false
-  xy: 28, 13
-  size: 26, 26
-  orig: 26, 26
-  offset: 0, 0
-  index: -1
 Mushroom
   rotate: false
-  xy: 67, 41
+  xy: 382, 68
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Nut
   rotate: false
-  xy: 93, 41
+  xy: 408, 98
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Pear
   rotate: false
-  xy: 119, 41
+  xy: 71, 41
   size: 24, 28
   orig: 24, 28
-  offset: 0, 0
-  index: -1
-Umbrella
-  rotate: false
-  xy: 56, 13
-  size: 26, 26
-  orig: 26, 26
   offset: 0, 0
   index: -1
 Stair0

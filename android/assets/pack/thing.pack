@@ -3,23 +3,23 @@ thing.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Mine
+CellObject
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
-CellObject
+Mine
   rotate: false
-  xy: 52, 0
+  xy: 54, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 Umbrella
   rotate: false
-  xy: 104, 0
+  xy: 106, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
