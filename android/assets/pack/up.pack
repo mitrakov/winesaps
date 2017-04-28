@@ -3,325 +3,325 @@ up.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-RopeLine0
-  rotate: false
-  xy: 2, 41
-  size: 11, 85
-  orig: 11, 85
-  offset: 0, 0
-  index: -1
-RopeLine1
-  rotate: false
-  xy: 2, 41
-  size: 11, 85
-  orig: 11, 85
-  offset: 0, 0
-  index: -1
-RopeLine2
-  rotate: false
-  xy: 2, 41
-  size: 11, 85
-  orig: 11, 85
-  offset: 0, 0
-  index: -1
-RopeLine3
-  rotate: false
-  xy: 2, 41
-  size: 11, 85
-  orig: 11, 85
-  offset: 0, 0
-  index: -1
-LadderBottom1
-  rotate: false
-  xy: 15, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderBottom2
-  rotate: false
-  xy: 15, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderBottom3
-  rotate: false
-  xy: 15, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderTop1
-  rotate: false
-  xy: 57, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderTop2
-  rotate: false
-  xy: 57, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderTop3
-  rotate: false
-  xy: 57, 71
-  size: 40, 55
-  orig: 40, 55
-  offset: 0, 0
-  index: -1
-LadderBottom0
-  rotate: false
-  xy: 99, 71
-  size: 35, 55
-  orig: 35, 55
-  offset: 0, 0
-  index: -1
-LadderTop0
-  rotate: false
-  xy: 136, 71
-  size: 35, 55
-  orig: 35, 55
-  offset: 0, 0
-  index: -1
-DecorationStatic0
-  rotate: false
-  xy: 173, 71
-  size: 30, 55
-  orig: 30, 55
-  offset: 0, 0
-  index: -1
-DecorationStatic1
-  rotate: false
-  xy: 173, 71
-  size: 30, 55
-  orig: 30, 55
-  offset: 0, 0
-  index: -1
-DecorationStatic2
-  rotate: false
-  xy: 173, 71
-  size: 30, 55
-  orig: 30, 55
-  offset: 0, 0
-  index: -1
 DecorationStatic3
   rotate: false
-  xy: 173, 71
-  size: 30, 55
-  orig: 30, 55
-  offset: 0, 0
-  index: -1
-OpenedUmbrella
-  rotate: false
-  xy: 205, 71
-  size: 30, 55
-  orig: 30, 55
+  xy: 2, 54
+  size: 85, 72
+  orig: 85, 72
   offset: 0, 0
   index: -1
 Wolf
   rotate: false
-  xy: 237, 81
+  xy: 2, 7
   size: 30, 45
   orig: 30, 45
   offset: 0, 0
   index: -1
-Waterfall0
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-Waterfall1
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-Waterfall2
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-Waterfall3
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-WaterfallSafe0
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-WaterfallSafe1
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-WaterfallSafe2
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-WaterfallSafe3
-  rotate: false
-  xy: 269, 56
-  size: 15, 70
-  orig: 15, 70
-  offset: 0, 0
-  index: -1
-Block0
-  rotate: false
-  xy: 286, 54
-  size: 14, 72
-  orig: 14, 72
-  offset: 0, 0
-  index: -1
-Block1
-  rotate: false
-  xy: 302, 54
-  size: 14, 72
-  orig: 14, 72
-  offset: 0, 0
-  index: -1
-Block2
-  rotate: false
-  xy: 318, 54
-  size: 14, 72
-  orig: 14, 72
-  offset: 0, 0
-  index: -1
-Block3
-  rotate: false
-  xy: 334, 54
-  size: 14, 72
-  orig: 14, 72
-  offset: 0, 0
-  index: -1
-Water0
-  rotate: false
-  xy: 350, 54
-  size: 14, 72
-  orig: 14, 72
-  offset: 0, 0
-  index: -1
-Water1
-  rotate: false
-  xy: 366, 53
-  size: 14, 73
-  orig: 14, 73
-  offset: 0, 0
-  index: -1
-Water2
-  rotate: false
-  xy: 366, 53
-  size: 14, 73
-  orig: 14, 73
-  offset: 0, 0
-  index: -1
-Water3
-  rotate: false
-  xy: 366, 53
-  size: 14, 73
-  orig: 14, 73
-  offset: 0, 0
-  index: -1
 Mine
   rotate: false
-  xy: 15, 41
+  xy: 34, 24
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
-Umbrella
+DecorationStatic0
   rotate: false
-  xy: 2, 11
-  size: 28, 28
-  orig: 28, 28
-  offset: 0, 0
-  index: -1
-Apple
-  rotate: false
-  xy: 382, 98
-  size: 24, 28
-  orig: 24, 28
-  offset: 0, 0
-  index: -1
-Carrot
-  rotate: false
-  xy: 45, 41
-  size: 24, 28
-  orig: 24, 28
-  offset: 0, 0
-  index: -1
-Meat
-  rotate: false
-  xy: 32, 11
-  size: 24, 28
-  orig: 24, 28
-  offset: 0, 0
-  index: -1
-Mushroom
-  rotate: false
-  xy: 382, 68
-  size: 24, 28
-  orig: 24, 28
-  offset: 0, 0
-  index: -1
-Nut
-  rotate: false
-  xy: 408, 98
-  size: 24, 28
-  orig: 24, 28
-  offset: 0, 0
-  index: -1
-Pear
-  rotate: false
-  xy: 71, 41
-  size: 24, 28
-  orig: 24, 28
+  xy: 34, 2
+  size: 26, 20
+  orig: 26, 20
   offset: 0, 0
   index: -1
 Stair0
   rotate: false
-  xy: 2, 2
+  xy: 62, 15
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 Stair1
   rotate: false
-  xy: 2, 2
+  xy: 62, 6
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
+Umbrella
+  rotate: false
+  xy: 64, 24
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
 Stair2
   rotate: false
-  xy: 2, 2
+  xy: 71, 15
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 Stair3
   rotate: false
-  xy: 2, 2
+  xy: 71, 6
   size: 7, 7
   orig: 7, 7
+  offset: 0, 0
+  index: -1
+DecorationStatic1
+  rotate: false
+  xy: 89, 54
+  size: 53, 72
+  orig: 53, 72
+  offset: 0, 0
+  index: -1
+Apple
+  rotate: false
+  xy: 94, 24
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+Carrot
+  rotate: false
+  xy: 120, 24
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+LadderBottom1
+  rotate: false
+  xy: 144, 71
+  size: 42, 55
+  orig: 42, 55
+  offset: 0, 0
+  index: -1
+LadderTop1
+  rotate: false
+  xy: 146, 14
+  size: 42, 55
+  orig: 42, 55
+  offset: 0, 0
+  index: -1
+LadderBottom2
+  rotate: false
+  xy: 188, 71
+  size: 40, 55
+  orig: 40, 55
+  offset: 0, 0
+  index: -1
+LadderTop2
+  rotate: false
+  xy: 190, 14
+  size: 40, 55
+  orig: 40, 55
+  offset: 0, 0
+  index: -1
+LadderBottom0
+  rotate: false
+  xy: 230, 71
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+LadderBottom3
+  rotate: false
+  xy: 232, 14
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+LadderTop0
+  rotate: false
+  xy: 267, 71
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+LadderTop3
+  rotate: false
+  xy: 269, 14
+  size: 35, 55
+  orig: 35, 55
+  offset: 0, 0
+  index: -1
+DecorationStatic2
+  rotate: false
+  xy: 304, 71
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+OpenedUmbrella
+  rotate: false
+  xy: 306, 14
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+Meat
+  rotate: false
+  xy: 336, 98
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+Waterfall0
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+Waterfall1
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+Waterfall2
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+Waterfall3
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+WaterfallSafe0
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+WaterfallSafe1
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+WaterfallSafe2
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+WaterfallSafe3
+  rotate: false
+  xy: 338, 26
+  size: 15, 70
+  orig: 15, 70
+  offset: 0, 0
+  index: -1
+Water1
+  rotate: false
+  xy: 355, 23
+  size: 14, 73
+  orig: 14, 73
+  offset: 0, 0
+  index: -1
+Water2
+  rotate: false
+  xy: 355, 23
+  size: 14, 73
+  orig: 14, 73
+  offset: 0, 0
+  index: -1
+Water3
+  rotate: false
+  xy: 355, 23
+  size: 14, 73
+  orig: 14, 73
+  offset: 0, 0
+  index: -1
+Mushroom
+  rotate: false
+  xy: 362, 98
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+Block0
+  rotate: false
+  xy: 371, 24
+  size: 14, 72
+  orig: 14, 72
+  offset: 0, 0
+  index: -1
+Block1
+  rotate: false
+  xy: 387, 24
+  size: 14, 72
+  orig: 14, 72
+  offset: 0, 0
+  index: -1
+Nut
+  rotate: false
+  xy: 388, 98
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+Block2
+  rotate: false
+  xy: 403, 24
+  size: 14, 72
+  orig: 14, 72
+  offset: 0, 0
+  index: -1
+Pear
+  rotate: false
+  xy: 414, 98
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+Block3
+  rotate: false
+  xy: 419, 24
+  size: 14, 72
+  orig: 14, 72
+  offset: 0, 0
+  index: -1
+Water0
+  rotate: false
+  xy: 435, 24
+  size: 14, 72
+  orig: 14, 72
+  offset: 0, 0
+  index: -1
+RopeLine0
+  rotate: false
+  xy: 451, 41
+  size: 11, 85
+  orig: 11, 85
+  offset: 0, 0
+  index: -1
+RopeLine1
+  rotate: false
+  xy: 451, 41
+  size: 11, 85
+  orig: 11, 85
+  offset: 0, 0
+  index: -1
+RopeLine2
+  rotate: false
+  xy: 451, 41
+  size: 11, 85
+  orig: 11, 85
+  offset: 0, 0
+  index: -1
+RopeLine3
+  rotate: false
+  xy: 451, 41
+  size: 11, 85
+  orig: 11, 85
   offset: 0, 0
   index: -1

@@ -190,7 +190,7 @@ public class ScreenBattle extends LocalizableScreen {
         table.add();
         table.add();
         table.row();
-        table.add(btnThing).align(Align.left);
+        table.add(btnThing).align(Align.left).padLeft(2);
         table.add(abilityButtonsScroll).colspan(2);
         table.add(lblScore);
         table.add(lblTime);
