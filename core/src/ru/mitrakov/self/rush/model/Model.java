@@ -760,6 +760,7 @@ public class Model {
 
     public void setStylePack(int pack) {
         stylePack = pack;
+        bus.raise(new EventBus.StyleChangedEvent(pack));
     }
 
     public void setXy(int number, int xy) {

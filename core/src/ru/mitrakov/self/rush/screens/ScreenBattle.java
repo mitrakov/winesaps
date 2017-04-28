@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -153,6 +152,10 @@ public class ScreenBattle extends LocalizableScreen {
             finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
             audioManager.music("theme");
         }
+        if (event instanceof EventBus.StyleChangedEvent) {
+            EventBus.StyleChangedEvent ev = (EventBus.StyleChangedEvent) event;
+            audioManager.music(String.format(Locale.getDefault(), "battle%d", ev.stylePack));
+        }
     }
 
     private void loadTextures() {
@@ -200,7 +203,6 @@ public class ScreenBattle extends LocalizableScreen {
         enemyThing = model.enemyThing;
         outOfSync = false;
         infoDialog.hide();
-        audioManager.music(String.format(Locale.getDefault(), "battle%d", MathUtils.random(1, 4)));
     }
 
     private void checkAbilities() {

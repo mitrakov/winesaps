@@ -102,6 +102,17 @@ public class EventBus {
             this.crystals = crystals;
         }
     }
+    public static final class StyleChangedEvent extends Event {
+        public final int stylePack;
+        StyleChangedEvent(int stylePack) {
+            this.stylePack = stylePack;
+        }
+    }
+
+
+    // =====================================
+    // =====================================
+
 
     public interface Listener {
         void OnEvent(Event event);
