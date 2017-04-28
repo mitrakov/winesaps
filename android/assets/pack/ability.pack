@@ -5,21 +5,21 @@ filter: Nearest,Nearest
 repeat: none
 Sapper
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
 Shoes
   rotate: false
-  xy: 47, 0
+  xy: 49, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
 Snorkel
   rotate: false
-  xy: 94, 0
+  xy: 96, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
