@@ -38,27 +38,6 @@ Block0
   orig: 14, 14
   offset: 0, 0
   index: -1
-Water1
-  rotate: false
-  xy: 66, 2
-  size: 14, 12
-  orig: 14, 12
-  offset: 0, 0
-  index: -1
-Water2
-  rotate: false
-  xy: 66, 2
-  size: 14, 12
-  orig: 14, 12
-  offset: 0, 0
-  index: -1
-Water3
-  rotate: false
-  xy: 66, 2
-  size: 14, 12
-  orig: 14, 12
-  offset: 0, 0
-  index: -1
 Block1
   rotate: false
   xy: 82, 16
@@ -83,6 +62,27 @@ Block3
 Water0
   rotate: false
   xy: 130, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Water1
+  rotate: false
+  xy: 146, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Water2
+  rotate: false
+  xy: 162, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Water3
+  rotate: false
+  xy: 178, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0

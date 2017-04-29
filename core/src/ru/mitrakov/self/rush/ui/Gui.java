@@ -176,14 +176,19 @@ public class Gui extends Actor {
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
-                    if (cell.bottom != null) {
-                        String key = cell.bottom.getClass().getSimpleName() + model.stylePack;
-                        if (texturesDown.containsKey(key)) {
-                            TextureRegion texture = texturesDown.get(key); // here texture != null
-                            float x = convertXFromModelToScreen(i);
-                            float y = convertYFromModelToScreen(j);
-                            batch.draw(texture, x, y);
-                        }
+                    String key = "";
+                    if (cell.bottom != null)
+                        key = cell.bottom.getClass().getSimpleName() + model.stylePack; // e.g. "Water3"
+                    else { // case: long RopeLine
+                        Cell cellBelow = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
+                        if (ropeExists(cell) && ropeExists(cellBelow))
+                            key = Block.class.getSimpleName() + model.stylePack; // e.g. "Block3"
+                    }
+                    if (texturesDown.containsKey(key)) {
+                        TextureRegion texture = texturesDown.get(key); // texture != NULL (assert omitted)
+                        float x = convertXFromModelToScreen(i);
+                        float y = convertYFromModelToScreen(j);
+                        batch.draw(texture, x, y);
                     }
                 }
             }
@@ -283,7 +288,7 @@ public class Gui extends Actor {
 
     private float getBottomHeight(Cell cell) {
         // cell != null (assert omitted because it's called inside 'render()')
-        float bottomHeight = 0;
+        float bottomHeight = CELL_SIZ_W;
         if (cell.bottom != null) {
             String key = cell.bottom.getClass().getSimpleName() + model.stylePack;
             if (texturesDown.containsKey(key)) {
@@ -294,10 +299,21 @@ public class Gui extends Actor {
     }
 
     private boolean ladderExists(Cell cell) {
-        // cell != null (assert omitted because it's called inside 'render()')
-        for (CellObject obj : cell.objects) { // in Java 8 may be replaced with lambda
-            if (obj instanceof LadderBottom || obj instanceof LadderTop)
-                return true;
+        if (cell != null) {
+            for (CellObject obj : cell.objects) { // in Java 8 may be replaced with lambda
+                if (obj instanceof LadderBottom || obj instanceof LadderTop)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean ropeExists(Cell cell) {
+        if (cell != null) {
+            for (CellObject obj : cell.objects) { // in Java 8 may be replaced with lambda
+                if (obj instanceof RopeLine)
+                    return true;
+            }
         }
         return false;
     }
