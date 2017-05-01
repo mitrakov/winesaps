@@ -5,6 +5,7 @@ import java.util.*;
 import java.io.IOException;
 
 import static java.lang.Math.max;
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.net.Protocol.*;
 
@@ -56,7 +57,7 @@ class Sender {
         }
         int[] data = new int[]{0xFD, id}; // FD = fake data
         buffer[id] = new Item(data);
-        System.out.println("Send: " + Arrays.toString(data));
+        log("Send: " + Arrays.toString(data));
         socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
     }
 
@@ -65,7 +66,7 @@ class Sender {
             id = next(id);
             int[] data = append(msg, id);
             buffer[id] = new Item(data, totalTicks);
-            System.out.println("Send: " + Arrays.toString(data));
+            log("Send: " + Arrays.toString(data));
             socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
         } else throw new ConnectException("Not connected");
     }
@@ -111,7 +112,7 @@ class Sender {
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
                     int[] msg = buffer[i].msg;
-                    System.out.println("Send^ " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
+                    log("Sendd " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
                             buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
                             (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);
                     buffer[i].startRtt = totalTicks;

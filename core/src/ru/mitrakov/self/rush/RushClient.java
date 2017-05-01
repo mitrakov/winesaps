@@ -56,12 +56,11 @@ public class RushClient extends Game implements Localizable {
 
     @Override
     public void create() {
-        // network is a Thread so starting in a constructor is a bad practice (by FindBugs)
-        network.start();
-
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
-        model.signIn(); // try to sign in using stored credentials
+
+        // network is a Thread so starting in a constructor is a bad practice (by FindBugs)
+        network.start(); // recommended to start after model.loadSettings()
 
         i18nEn = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("en"));
         i18nRu = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("ru"));

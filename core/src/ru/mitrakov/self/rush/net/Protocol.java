@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush.net;
 import java.net.*;
 import java.io.IOException;
 
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
@@ -75,18 +76,18 @@ public class Protocol implements IProtocol {
 
     @Override
     public void onSenderConnected() throws IOException {
-        System.out.println("Sender connected!");
+        log("Sender connected!");
     }
 
     @Override
     public void onReceiverConnected() throws IOException {
-        System.out.println("Receiver connected!");
+        log("Receiver connected!");
         handler.onChanged(true);
     }
 
     @Override
     public void connectionFailed() throws IOException {
-        System.out.println("Connection failed!");
+        log("Connection failed!");
         handler.onChanged(false);
     }
 

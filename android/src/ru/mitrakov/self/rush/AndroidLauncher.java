@@ -40,7 +40,6 @@ public class AndroidLauncher extends AndroidApplication {
                 public void onLayoutChange(View v, int left, int top, int right, int bot, int a, int b, int c, int d) {
                     Rect rect = new Rect();
                     v.getWindowVisibleDisplayFrame(rect);
-                    System.out.println("New Size: " + rect.width() + "; " + rect.height());
                     obj.raiseRatioChanged(1f * rect.width() / rect.height());
                 }
             });

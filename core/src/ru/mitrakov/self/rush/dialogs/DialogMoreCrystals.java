@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import ru.mitrakov.self.rush.ui.*;
 
 /**
@@ -43,7 +44,7 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText4 = new LinkedLabel("", "", "", skin, "default", new Runnable() {
             @Override
             public void run() {
-                System.out.println("Hey-Hey!");
+                log("Hey-Hey!");
             }
         });
 

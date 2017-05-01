@@ -9,10 +9,15 @@ import ru.mitrakov.self.rush.model.Model;
 /**
  * Created by mitrakov on 07.03.2017
  */
-class FileReader implements Model.IFileReader {
+public class FileReader implements Model.IFileReader {
     @Override
     public void write(String filename, String s) {
         Gdx.files.local(filename).writeString(s, false);
+    }
+
+    @Override
+    public void append(String filename, String s) {
+        Gdx.files.external(filename).writeString(s + "\n", true);
     }
 
     @Override

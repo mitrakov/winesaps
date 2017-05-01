@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.*;
 import java.io.IOException;
 
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
@@ -64,7 +65,7 @@ public class Network extends Thread implements IHandler {
                 DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
                 socket.receive(datagram);
                 if (TMP_NO_CONNECTION) continue;
-                System.out.println("Recv: " + Arrays.toString(toInt(datagram.getData(), datagram.getLength())));
+                log("Recv: " + Arrays.toString(toInt(datagram.getData(), datagram.getLength())));
                 if (protocol != null)
                     protocol.onReceived(toInt(datagram.getData(), datagram.getLength()));
                 else onReceived(toInt(datagram.getData(), datagram.getLength()));

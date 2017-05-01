@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush.net;
 import java.net.*;
 import java.io.IOException;
 
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.net.Protocol.*;
 
 /**
@@ -30,7 +31,7 @@ class Receiver {
 
     void onMsg(int id, int[] msg) throws IOException {
         if (id == SYN) {
-            System.out.println("Ack : [" + id + "]");
+            log("Ack : [" + id + "]");
             socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, addr, port));
             for (int j = 0; j < buffer.length; j++) {
                 buffer[j] = null;
@@ -39,7 +40,7 @@ class Receiver {
             connected = true;
             protocol.onReceiverConnected();
         } else if (connected) {
-            System.out.println("Ack : [" + id + "]");
+            log("Ack : [" + id + "]");
             socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, addr, port));
             if (id == expected) {
                 handler.onReceived(msg);

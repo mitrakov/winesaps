@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
-
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
@@ -46,6 +46,7 @@ public class Model {
      */
     public interface IFileReader {
         void write(String filename, String s);
+        void append(String filename, String s);
 
         String read(String filename);
 
@@ -90,11 +91,14 @@ public class Model {
     // === PUBLIC STATIC METHODS ===
     // =============================
 
-    public static String md5(String s) {
+    public static synchronized String md5(String s) {
+        log("calculating md5 for: " + s);
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
             byte[] bytes = MessageDigest.getInstance("md5").digest(getBytes(s));
-            return String.format("%X", new BigInteger(1, bytes)).toLowerCase();
+            String res = String.format("%032x", new BigInteger(1, bytes)); // use "%032x" instead of "%32x"!
+            log("md5 = " + res);
+            return res;
         } catch (NoSuchAlgorithmException ignored) {
             return "";
         }
@@ -531,12 +535,13 @@ public class Model {
     // ===============================
 
     public void setConnected(boolean value) {
-        connected = value;
-        if (connected) {
+        if (!connected && value) { // if changed "not_connected" -> "connected"
+            connected = true;
             if (authorized)
                 getUserInfo(); // connected, but already authorized? possibly the server has been restarted: see note#4
             else signIn();     // connected and not authorized: try to sign in using stored credentials
         }
+        connected = value;
     }
 
     public void setAuthorized(boolean value) {
