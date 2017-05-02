@@ -17,7 +17,23 @@ public class AudioManager {
     private String curMusicName = "";
 
     public AudioManager(String defaultMusic) {
-        for (FileHandle handle : Gdx.files.internal("wav").list()) {
+        // @mitrakov (2017-05-02) The way:
+        // FileHandle[] wavs = Gdx.files.internal("wav").list();
+        // doesn't work when get packed to a FAT Jar (https://github.com/libgdx/libgdx/issues/1375)
+        // This is my own question on StackOverflow: stackoverflow.com/questions/43742762
+        // so the best way is to enumerate them manually
+        FileHandle[] wavs = new FileHandle[] {
+                Gdx.files.internal("wav/ability.wav"),
+                Gdx.files.internal("wav/click.wav"),
+                Gdx.files.internal("wav/die.wav"),
+                Gdx.files.internal("wav/food.wav"),
+                Gdx.files.internal("wav/game.wav"),
+                Gdx.files.internal("wav/Mine.wav"),
+                Gdx.files.internal("wav/round.wav"),
+                Gdx.files.internal("wav/thing.wav"),
+                Gdx.files.internal("wav/Umbrella.wav"),
+        };
+        for (FileHandle handle : wavs) {
             sounds.put(handle.nameWithoutExtension(), Gdx.audio.newSound(handle));
         }
         if (defaultMusic != null)

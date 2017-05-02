@@ -38,7 +38,7 @@ public class RushClient extends Game implements Localizable {
                     e.printStackTrace();
                 }
             };
-            InetAddress address = InetAddress.getByName("192.168.1.2");
+            InetAddress address = InetAddress.getByName("winesaps.ru");
             int port = 33996;
             network = new Network(new Parser(model, psObject), errorHandler, address, port);
             network.setProtocol(new Protocol(network.getSocket(), address, port, network));
