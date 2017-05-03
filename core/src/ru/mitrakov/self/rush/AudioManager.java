@@ -3,7 +3,6 @@ package ru.mitrakov.self.rush;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Created by mitrakov on 06.04.2017
@@ -17,25 +16,6 @@ public class AudioManager {
     private String curMusicName = "";
 
     public AudioManager(String defaultMusic) {
-        // @mitrakov (2017-05-02) The way:
-        // FileHandle[] wavs = Gdx.files.internal("wav").list();
-        // doesn't work when get packed to a FAT Jar (https://github.com/libgdx/libgdx/issues/1375)
-        // This is my own question on StackOverflow: stackoverflow.com/questions/43742762
-        // so the best way is to enumerate them manually
-        FileHandle[] wavs = new FileHandle[] {
-                Gdx.files.internal("wav/ability.wav"),
-                Gdx.files.internal("wav/click.wav"),
-                Gdx.files.internal("wav/die.wav"),
-                Gdx.files.internal("wav/food.wav"),
-                Gdx.files.internal("wav/game.wav"),
-                Gdx.files.internal("wav/Mine.wav"),
-                Gdx.files.internal("wav/round.wav"),
-                Gdx.files.internal("wav/thing.wav"),
-                Gdx.files.internal("wav/Umbrella.wav"),
-        };
-        for (FileHandle handle : wavs) {
-            sounds.put(handle.nameWithoutExtension(), Gdx.audio.newSound(handle));
-        }
         if (defaultMusic != null)
             music(defaultMusic);
     }
@@ -55,21 +35,26 @@ public class AudioManager {
         }
     }
 
+    public void sound(String name) {
+        // see note#5 below
+        assert name != null;
+        if (!muted) {
+            if (sounds.containsKey(name))
+                sounds.get(name).play();
+            else {
+                Sound sound = Gdx.audio.newSound(Gdx.files.internal(String.format("wav/%s.wav", name)));
+                sounds.put(name, sound);
+                sound.play(.7f);
+            }
+        }
+    }
+
     public void mute(boolean value) {
         muted = value;
         if (curMusic != null) {
             if (muted)
                 curMusic.pause();
             else curMusic.play();
-        }
-    }
-
-    public void sound(String name) {
-        assert name != null;
-        if (!muted) {
-            if (sounds.containsKey(name))
-                sounds.get(name).play();
-            else throw new RuntimeException(String.format("Sound %s not found", name));
         }
     }
 
@@ -81,3 +66,14 @@ public class AudioManager {
         }
     }
 }
+
+// note#5 (@mitrakov, 2017-05-03): firstly for sounds I used a map of pre-loaded resources:
+//   for (FileHandle handle : Gdx.files.internal("wav").list()) {
+//       sounds.put(handle.nameWithoutExtension(), Gdx.audio.newSound(handle));
+//   }
+// it works properly on Android, and on Desktop if assets are extracted to working directory.
+// ... but this way doesn't work with FAT jars od Desktop! (list() returns an empty array)
+// proof1: https://github.com/libgdx/libgdx/issues/1375
+// proof2: https://github.com/libgdx/libgdx/wiki/File-handling#user-content-listing-and-checking-properties-of-files
+// my question on StackOverflow: http://stackoverflow.com/questions/43742762
+// so don't use list() on internal files in LibGdx
