@@ -5,42 +5,42 @@ filter: Nearest,Nearest
 repeat: none
 eng
   rotate: false
-  xy: 1, 1
+  xy: 2, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 rus
   rotate: false
-  xy: 51, 1
+  xy: 52, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 about
   rotate: false
-  xy: 101, 1
+  xy: 102, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 invalid
   rotate: false
-  xy: 135, 1
+  xy: 136, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 settings
   rotate: false
-  xy: 169, 1
+  xy: 170, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 valid
   rotate: false
-  xy: 203, 1
+  xy: 204, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

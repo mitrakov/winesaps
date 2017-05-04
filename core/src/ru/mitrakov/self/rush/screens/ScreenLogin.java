@@ -252,16 +252,19 @@ public class ScreenLogin extends LocalizableScreen {
         curDialog = CurDialog.SignIn;
         Actor focused = stage.getKeyboardFocus();
 
+        Table buttons = new Table();
+        buttons.add(btnBack).width(100).height(40).space(20);
+        buttons.add(btnOkSignIn).width(100).height(40).space(20);
+
         tableMain.clear();
         tableMain.row().space(20);
         tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin);
+        tableMain.add(txtLogin).width(280);
         tableMain.row().space(20);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword);
+        tableMain.add(txtPassword).width(280);
         tableMain.row().spaceTop(30);
-        tableMain.add(btnBack).width(100).height(40);
-        tableMain.add(btnOkSignIn).width(100).height(40);
+        tableMain.add(buttons).colspan(2);
         if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
@@ -274,23 +277,26 @@ public class ScreenLogin extends LocalizableScreen {
         txtPromocode.setVisible(havePromocode);
         imgValid.setVisible(havePromocode);
 
+        Table buttons = new Table();
+        buttons.add(btnBack).width(100).height(40).space(20);
+        buttons.add(btnOkSignUp).width(100).height(40).space(20);
+
         tableMain.clear();
         tableMain.row().space(20);
         tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin);
+        tableMain.add(txtLogin).width(280);
         tableMain.row().space(20);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword);
+        tableMain.add(txtPassword).width(280);
         tableMain.row().space(20);
         tableMain.add(lblEmail).align(Align.left);
-        tableMain.add(txtEmail);
+        tableMain.add(txtEmail).width(280);
         tableMain.row().space(20);
         tableMain.add(chkPromocode);
-        tableMain.add(txtPromocode);
+        tableMain.add(txtPromocode).width(280);
         tableMain.add(imgValid).spaceLeft(20);
         tableMain.row().spaceTop(30);
-        tableMain.add(btnBack).width(100).height(40);
-        tableMain.add(btnOkSignUp).width(100).height(40);
+        tableMain.add(buttons).colspan(2);
         if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
