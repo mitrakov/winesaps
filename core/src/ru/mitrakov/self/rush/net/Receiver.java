@@ -4,7 +4,7 @@ import java.net.*;
 import java.io.IOException;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
-import static ru.mitrakov.self.rush.net.Protocol.*;
+import static ru.mitrakov.self.rush.net.SwUDP.*;
 
 /**
  * Created by mitrakov on 03.04.2017

@@ -41,7 +41,7 @@ public class RushClient extends Game implements Localizable {
             String host = "winesaps.ru";
             int port = 33996;
             network = new Network(new Parser(model, psObject), errorHandler, host, port);
-            network.setProtocol(new Protocol(network.getSocket(), host, port, network));
+            network.setProtocol(new SwUDP(network.getSocket(), host, port, network));
 
             // set up model
             model.setSender(new MsgSender(network, errorHandler));

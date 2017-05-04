@@ -88,7 +88,7 @@ public final class Network extends Thread implements IHandler {
                 handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
             else throw new IllegalAccessException("Incorrect sid/token pair");
         } catch (Exception e) {
-            errorHandler.uncaughtException(this, e); // we MUST handle all exceptions to get Protocol working
+            errorHandler.uncaughtException(this, e); // we MUST handle all exceptions to get SwUDP working
         }
     }
 

@@ -9,7 +9,7 @@ import static ru.mitrakov.self.rush.utils.Utils.*;
 /**
  * Created by mitrakov on 31.03.2017
  */
-public class Protocol implements IProtocol {
+public class SwUDP implements IProtocol {
     final static int N = 256;
     final static int SYN = 0;
     final static int MAX_ATTEMPTS = 12;
@@ -51,7 +51,7 @@ public class Protocol implements IProtocol {
     private final Receiver receiver;
     private final IHandler handler;
 
-    public Protocol(DatagramSocket socket, String host, int port, IHandler handler) {
+    public SwUDP(DatagramSocket socket, String host, int port, IHandler handler) {
         assert socket != null && host != null && handler != null && 0 < port && port < 65536;
         this.handler = handler;
         sender = new Sender(socket, host, port, this);
