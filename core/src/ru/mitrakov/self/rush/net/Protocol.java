@@ -14,9 +14,11 @@ public class Protocol implements IProtocol {
     final static int SYN = 0;
     final static int MAX_ATTEMPTS = 12;
     final static int PERIOD = 10;
-    final static int DEFAULT_SRTT = 2;
+    final static int MIN_SRTT = 2;
+    final static int DEFAULT_SRTT = 4;
+    final static int MAX_SRTT = 12;
     final static float RC = .8f;
-    final static int AC = 3;
+    final static float AC = 2.5f;
 
     static class Item {
         boolean ack = false;
