@@ -10,7 +10,7 @@ import static ru.mitrakov.self.rush.utils.Utils.*;
 /**
  * Created by mitrakov on 23.02.2017
  */
-public class Network extends Thread implements IHandler {
+public final class Network extends Thread implements IHandler {
     public static boolean TMP_NO_CONNECTION = false; // REMOVE ME IN A FUTURE
 
     private static final int BUF_SIZ = 1024;
@@ -22,19 +22,19 @@ public class Network extends Thread implements IHandler {
     private final DatagramSocket socket = new DatagramSocket();
     private final IHandler handler;
     private final UncaughtExceptionHandler errorHandler;
-    private final InetAddress addr;
+    private final String host;
     private final int port;
 
     private int sid = 0;
     private long token = 0;
     private IProtocol protocol;
 
-    public Network(IHandler handler, UncaughtExceptionHandler eHandler, InetAddress addr, int port)
+    public Network(IHandler handler, UncaughtExceptionHandler eHandler, String host, int port)
             throws SocketException {
-        assert handler != null && eHandler != null && addr != null && 0 < port && port < 65536;
+        assert handler != null && eHandler != null && host != null && 0 < port && port < 65536;
         this.handler = handler;
         this.errorHandler = eHandler;
-        this.addr = addr;
+        this.host = host;
         this.port = port;
 
         setDaemon(true);
@@ -114,7 +114,7 @@ public class Network extends Thread implements IHandler {
         // sending
         if (protocol != null)
             protocol.send(msg);
-        else socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
+        else socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, InetAddress.getByName(host), port));
     }
 
     public void reset() {

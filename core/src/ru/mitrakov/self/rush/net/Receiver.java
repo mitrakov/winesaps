@@ -11,7 +11,7 @@ import static ru.mitrakov.self.rush.net.Protocol.*;
  */
 class Receiver {
     private final DatagramSocket socket;
-    private final InetAddress addr;
+    private final String host;
     private final int port;
     private final IHandler handler;
     private final IProtocol protocol;
@@ -20,10 +20,10 @@ class Receiver {
     private int expected = 0;
     boolean connected = false;
 
-    Receiver(DatagramSocket socket, InetAddress addr, int port, IHandler handler, IProtocol protocol) {
-        assert socket != null && addr != null && 0 < port && port < 65536 && handler != null && protocol != null;
+    Receiver(DatagramSocket socket, String host, int port, IHandler handler, IProtocol protocol) {
+        assert socket != null && host != null && 0 < port && port < 65536 && handler != null && protocol != null;
         this.socket = socket;
-        this.addr = addr;
+        this.host = host;
         this.port = port;
         this.handler = handler;
         this.protocol = protocol;
@@ -32,7 +32,7 @@ class Receiver {
     void onMsg(int id, int[] msg) throws IOException {
         if (id == SYN) {
             log("Ack : [" + id + "]");
-            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, addr, port));
+            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, InetAddress.getByName(host), port));
             for (int j = 0; j < buffer.length; j++) {
                 buffer[j] = null;
             }
@@ -41,7 +41,7 @@ class Receiver {
             protocol.onReceiverConnected();
         } else if (connected) {
             log("Ack : [" + id + "]");
-            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, addr, port));
+            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, InetAddress.getByName(host), port));
             if (id == expected) {
                 handler.onReceived(msg);
                 expected = next(id);

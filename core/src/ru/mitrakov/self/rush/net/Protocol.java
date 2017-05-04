@@ -49,11 +49,11 @@ public class Protocol implements IProtocol {
     private final Receiver receiver;
     private final IHandler handler;
 
-    public Protocol(DatagramSocket socket, InetAddress addr, int port, IHandler handler) {
-        assert socket != null && addr != null && handler != null && 0 < port && port < 65536;
+    public Protocol(DatagramSocket socket, String host, int port, IHandler handler) {
+        assert socket != null && host != null && handler != null && 0 < port && port < 65536;
         this.handler = handler;
-        sender = new Sender(socket, addr, port, this);
-        receiver = new Receiver(socket, addr, port, handler, this);
+        sender = new Sender(socket, host, port, this);
+        receiver = new Receiver(socket, host, port, handler, this);
     }
 
     @Override

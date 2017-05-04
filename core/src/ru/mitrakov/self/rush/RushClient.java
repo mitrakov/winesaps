@@ -38,18 +38,16 @@ public class RushClient extends Game implements Localizable {
                     e.printStackTrace();
                 }
             };
-            InetAddress address = InetAddress.getByName("winesaps.ru");
+            String host = "winesaps.ru";
             int port = 33996;
-            network = new Network(new Parser(model, psObject), errorHandler, address, port);
-            network.setProtocol(new Protocol(network.getSocket(), address, port, network));
+            network = new Network(new Parser(model, psObject), errorHandler, host, port);
+            network.setProtocol(new Protocol(network.getSocket(), host, port, network));
 
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
             model.connected = false; // it's true by default because no Protocols provided, but now we have SwUDP
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (SocketException e) { // in Java 7 may be replaced with Multi-catch
+        } catch (SocketException e) {
             e.printStackTrace();
         }
     }

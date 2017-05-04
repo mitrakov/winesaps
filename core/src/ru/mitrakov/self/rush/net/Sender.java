@@ -15,7 +15,7 @@ import static ru.mitrakov.self.rush.net.Protocol.*;
 class Sender {
 
     private final DatagramSocket socket;
-    private final InetAddress addr;
+    private final String host;
     private final int port;
     private final IProtocol protocol;
     private final Item[] buffer = new Item[N];
@@ -24,10 +24,10 @@ class Sender {
     private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
-    Sender(DatagramSocket socket, InetAddress addr, int port, IProtocol protocol) {
-        assert socket != null && addr != null && 0 < port && port < 65536 && protocol != null;
+    Sender(DatagramSocket socket, String host, int port, IProtocol protocol) {
+        assert socket != null && host != null && 0 < port && port < 65536 && protocol != null;
         this.socket = socket;
-        this.addr = addr;
+        this.host = host;
         this.port = port;
         this.protocol = protocol;
 
@@ -58,7 +58,7 @@ class Sender {
         int[] data = new int[]{0xFD, id}; // FD = fake data
         buffer[id] = new Item(data);
         log("Send: " + Arrays.toString(data));
-        socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
+        socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
     }
 
     synchronized void send(int[] msg) throws IOException {
@@ -67,7 +67,7 @@ class Sender {
             int[] data = append(msg, id);
             buffer[id] = new Item(data, totalTicks);
             log("Send: " + Arrays.toString(data));
-            socket.send(new DatagramPacket(toByte(data, data.length), data.length, addr, port));
+            socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
         } else throw new ConnectException("Not connected");
     }
 
@@ -116,6 +116,7 @@ class Sender {
                             buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
                             (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);
                     buffer[i].startRtt = totalTicks;
+                    InetAddress addr = InetAddress.getByName(host);
                     socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
                 }
             }

@@ -50,7 +50,10 @@ public class DesktopLauncher extends JFrame {
         container.setPreferredSize(new Dimension(config.width, config.height));
         setResizable(false); // this must be BEFORE pack()!
         pack();
-        setIconImage(new ImageIcon("icon.png").getImage()); // if icon not found => let it crash
+        setTitle("Winesaps");
+        URL url = getClass().getResource("icon.png"); // to get resource inside a FAT jar
+        ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
+        setIconImage(icon.getImage());
         setVisible(true);
         setLocationRelativeTo(null);
         addComponentListener(new ComponentAdapter() {
