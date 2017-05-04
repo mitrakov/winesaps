@@ -52,7 +52,7 @@ public class Gui extends Actor {
         }
     }
 
-    static final int TOUCH_DELAY = 250;
+    static final int TOUCH_DELAY = 200;
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
     private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
