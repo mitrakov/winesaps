@@ -1,4 +1,9 @@
 android {
+    signingConfigs {
+        config {
+            keyAlias 'mitrakov'
+        }
+    }
     buildToolsVersion "25.0.2"
     compileSdkVersion 25
     sourceSets {
@@ -21,6 +26,12 @@ android {
         applicationId "ru.mitrakov.self.rush"
         minSdkVersion 8
         targetSdkVersion 25
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.config
+            archivesBaseName = 'winesaps'
+        }
     }
 }
 
