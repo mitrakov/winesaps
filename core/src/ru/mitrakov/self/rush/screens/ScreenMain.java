@@ -26,7 +26,8 @@ public class ScreenMain extends LocalizableScreen {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final Table tableLeft = new Table();
-    private final Table tableRight = new Table();
+    private final Table tableRight;
+    private final Table tableLeftHeader = new Table();
     private final Table tableLeftInvite = new Table();
     private final Table tableLeftToolbar = new Table();
     private final Table tableRightHeader = new Table();
@@ -276,6 +277,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
+        tableRight = new Table(skin);
         lblMore = new LinkedLabel("", "", "", skin, "default", new Runnable() {
             @Override
             public void run() {
@@ -490,22 +492,24 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void initTables() {
-        table.add(tableLeft).pad(20).fill();
-        table.add(tableRight).pad(20).expand().fill();
+        table.add(tableLeft).pad(4).width(222).fill();
+        table.add(tableRight).pad(4).expand().fill();
 
+        tableLeft.add(tableLeftHeader).height(90).fill();
+        tableLeft.row();
         tableLeft.add(tableLeftInvite).expand().fill();
         tableLeft.row();
-        tableLeft.add(tableLeftToolbar);
+        tableLeft.add(tableLeftToolbar).height(64).fill();
 
-        tableRight.add(tableRightHeader);
+        tableRight.setBackground("panel-maroon");
+        tableRight.add(tableRightHeader).padTop(16).height(55).fill();
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
 
-        tableRightHeader.row().width(90).space(20);
-        tableRightHeader.add(btnInfo);
-        tableRightHeader.add(btnRating);
-        tableRightHeader.add(btnHistory);
-        tableRightHeader.add(btnFriends);
+        tableRightHeader.add(btnInfo)   .width(140).expand().fill();
+        tableRightHeader.add(btnRating) .width(140).expand().fill();
+        tableRightHeader.add(btnHistory).width(140).expand().fill();
+        tableRightHeader.add(btnFriends).width(140).expand().fill();
 
         tableRightContentRatingBtns.row().spaceLeft(30);
         tableRightContentRatingBtns.add(btnGeneralRating);
@@ -547,15 +551,15 @@ public class ScreenMain extends LocalizableScreen {
             tableLeftInvite.add(btnInviteByNameOk).width(60).height(40);
             tableLeftInvite.add(btnInviteByNameCancel).width(85).height(40);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteRandom).colspan(2).width(165).height(80);
+            tableLeftInvite.add(btnInviteRandom).colspan(2).width(190).height(73);
             tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteLatest).colspan(2).width(165).height(80);
+            tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(73);
         } else {
-            tableLeftInvite.add(btnInviteByName).width(165).height(80);
-            tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteRandom).width(165).height(80);
-            tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteLatest).width(165).height(80);
+            tableLeftInvite.add(btnInviteByName).width(190).height(73).spaceTop(16);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnInviteRandom).width(190).height(73).spaceTop(16);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnInviteLatest).width(190).height(73).spaceTop(16);
         }
 
         tableLeftToolbar.add(btnSettings).spaceRight(30);
@@ -567,20 +571,22 @@ public class ScreenMain extends LocalizableScreen {
 
         switch (mode) {
             case Info:
-                tableRightContent.add(lblName).colspan(2).expand();
-                tableRightContent.row().expand();
+                tableRightContent.add(lblName).colspan(2).height(72);
+                tableRightContent.row();
                 tableRightContent.add(lblCrystalsHeader);
                 tableRightContent.add(lblCrystalsData);
-                tableRightContent.row().expand();
+                tableRightContent.row().spaceTop(16);
                 tableRightContent.add(lblAbilities);
-                tableRightContent.add(tableRightContentAbilitiesScroll).fill().pad(10);
-                tableRightContent.row().expandX();
-                tableRightContent.add();
+                tableRightContent.add(tableRightContentAbilitiesScroll).pad(4).expandX().fill();
+                tableRightContent.row();
+                tableRightContent.add().width(217);
                 tableRightContent.add(lblAbilityExpireTime);
-                tableRightContent.row().expand();
-                tableRightContent.add(btnBuyAbilities).colspan(2);
-                tableRightContent.row().expand();
-                tableRightContent.add(lblMore).colspan(2);
+                tableRightContent.row();
+                tableRightContent.add().expandY();
+                tableRightContent.row();
+                tableRightContent.add(btnBuyAbilities).colspan(2).width(217).height(50);
+                tableRightContent.row();
+                tableRightContent.add(lblMore).colspan(2).height(53);
                 break;
             case Rating:
                 tableRightContent.add(tableRightContentRatingBtns).pad(15);
