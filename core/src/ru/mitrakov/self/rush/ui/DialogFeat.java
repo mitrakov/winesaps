@@ -16,6 +16,9 @@ public abstract class DialogFeat extends Dialog implements Localizable {
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 
+        // set up button styles
+        getButtonTable().defaults().width(120).height(46);
+
         // add 'close-on-esc' feature
         addListener(new InputListener() {
             @Override

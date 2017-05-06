@@ -3,6 +3,9 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font: {
 		file: default_rus.fnt
 	}
+	font-black: {
+		file: black_rus.fnt
+	}
 	font-shortcut: {
 		file: default_rus.fnt
 	}
@@ -278,7 +281,10 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-	default: {
+    default: {
+		font: font-black
+	}
+	default_old: {
 		font: font
 		fontColor: orange
 	}
@@ -454,9 +460,6 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
     default: {
 		font: font
-		fontColor: white
-		downFontColor: orange
-		checkedFontColor: orange
 		disabledFontColor: gray
 		up: menu-button-dark-maroon
 		down: menu-button-maroon
@@ -671,7 +674,12 @@ com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-	default: {
+    default: {
+		background: window-maroon
+		titleFont: font
+		stageBackground: bleached-peach
+	}
+	default_old: {
 		background: window-orange
 		titleFont: font
 		titleFontColor: white
