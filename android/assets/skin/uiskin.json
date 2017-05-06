@@ -26,6 +26,12 @@ com.badlogic.gdx.graphics.Color: {
 		b: 1
 		a: 1
 	}
+	black: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
 	dark_gray: {
 		r: 0.3019608
 		g: 0.3019608
@@ -125,7 +131,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-	default: {
+    default: {
+		checkboxOn: check-box
+		checkboxOff: check-box-off
+		font: font-black
+		overFontColor: maroon
+	}
+	default_old: {
 		checkboxOn: check-box
 		checkboxOff: check-box-off
 		font: font
@@ -149,8 +161,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	radio: {
 		checkboxOn: radio-button
 		checkboxOff: radio-button-off
-		font: font
-		fontColor: orange
+		font: font-black
 		overFontColor: maroon
 	}
 }
@@ -582,7 +593,19 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-	default: {
+    default: {
+		font: font-black
+		fontColor: black
+		disabledFontColor: dark_gray
+		background: textfield
+		focusedBackground: textfield
+		disabledBackground: textfield-disabled
+		cursor: maroon
+		selection: dim-orange
+		messageFont: font
+		messageFontColor: bleached_peach
+	}
+	default_old: {
 		font: font
 		fontColor: maroon
 		disabledFontColor: dark_gray
