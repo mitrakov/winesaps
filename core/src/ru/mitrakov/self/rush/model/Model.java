@@ -23,6 +23,7 @@ public class Model {
      */
     public static final int RATINGS_COUNT = 10;
     public static final int STYLES_COUNT = 4;
+    public static final int HISTORY_MAX = 32;
 
     // ===========================
     // === PUBLIC INTERFACES ===
@@ -173,7 +174,6 @@ public class Model {
     private static final int DEFENDER_ID = 2;
     private static final int PING_PERIOD_MSEC = 60000;
     private static final int SKILL_OFFSET = 0x20;
-    private static final int HISTORY_MAX = 32;
     private static final int PROMOCODE_LEN = 5;
     private static final String SETTINGS_FILE = "settings";
     private static final String HISTORY_PREFIX = "history/";

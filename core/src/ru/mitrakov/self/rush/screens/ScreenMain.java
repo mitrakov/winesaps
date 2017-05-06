@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import java.text.*;
+import java.util.Locale;
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import ru.mitrakov.self.rush.*;
@@ -26,6 +29,7 @@ public class ScreenMain extends LocalizableScreen {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final TextureAtlas atlasIcons = new TextureAtlas(Gdx.files.internal("pack/icons.pack"));
+
     private final Table tableLeft = new Table();
     private final Table tableRight;
     private final Table tableLeftHeader = new Table();
@@ -37,6 +41,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableRightContentAbilities = new Table();
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
+    private final Table tableRightContentHistory = new Table();
     private final Table tableFriendsControl = new Table();
     private final DialogPromocode promocodeDialog;
     private final DialogFeat moreCrystalsDialog;
@@ -51,7 +56,6 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
 
-    private final List<String> lstHistory;
     private final List<String> lstFriends;
     private final ScrollPane lstHistoryScroll;
     private final ScrollPane lstFriendsScroll;
@@ -88,8 +92,12 @@ public class ScreenMain extends LocalizableScreen {
     private final Label lblRatingDots;
     private final Image imgCharacter;
 
+    private final Drawable drawableWin;
+    private final Drawable drawableLoss;
+
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
+    private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
@@ -105,7 +113,10 @@ public class ScreenMain extends LocalizableScreen {
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         TextureRegion regionOk = atlasMenu.findRegion("valid");
         TextureRegion regionCancel = atlasMenu.findRegion("invalid");
-        assert regionSettings != null && regionAbout != null;
+        assert regionSettings != null && regionAbout != null && regionOk != null && regionCancel != null;
+
+        drawableWin = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
+        drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
 
         promocodeDialog = new DialogPromocode(model, skin, "default");
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage);
@@ -120,7 +131,6 @@ public class ScreenMain extends LocalizableScreen {
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
 
-        lstHistory = new List<String>(skin, "default");
         lstFriends = new List<String>(skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -132,7 +142,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        lstHistoryScroll = new ScrollPane(lstHistory, skin, "default") {{
+        lstHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
             setupFadeScrollBars(0, 0);
         }};
         lstFriendsScroll = new ScrollPane(lstFriends, skin, "default") {{
@@ -515,8 +525,8 @@ public class ScreenMain extends LocalizableScreen {
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
 
-        tableRightHeader.add(btnInfo)   .width(138).expand().fill();
-        tableRightHeader.add(btnRating) .width(138).expand().fill();
+        tableRightHeader.add(btnInfo).width(138).expand().fill();
+        tableRightHeader.add(btnRating).width(138).expand().fill();
         tableRightHeader.add(btnHistory).width(138).expand().fill();
         tableRightHeader.add(btnFriends).width(138).expand().fill();
 
@@ -533,6 +543,7 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRating.add(lblRatingLosses);
         tableRightContentRating.add(lblRatingScoreDiff);
 
+        // === Ratings ===
         final int RATING_COLUMNS = 4;
         tableRightContentRating.row();
         tableRightContentRating.add(new Image(skin, "splitpane")).colspan(RATING_COLUMNS).width(351).height(2);
@@ -552,6 +563,24 @@ public class ScreenMain extends LocalizableScreen {
             Label label = new Label("", skin, "small");
             tableRightContentRating.add(label);
             ratingLabels.add(label);
+        }
+
+        // === History ===
+        for (int i = 0; i < Model.HISTORY_MAX; i++) {
+            Table table = new Table();
+            table.add(new Label("", skin, "small") {{
+                setAlignment(Align.center);
+            }});
+            table.add(new Image(atlasIcons.findRegion("Cat64")));
+            table.add(new Label("", skin, "default"));
+            table.add(new Label(" - ", skin, "default"));
+            table.add(new Image(atlasIcons.findRegion("Squirrel64")));
+            table.add(new Label("", skin, "default"));
+            table.add(new Label("", skin, "title"));
+            table.add(new Image());
+
+            tableRightContentHistory.row();
+            tableRightContentHistory.add(table);
         }
     }
 
@@ -611,7 +640,7 @@ public class ScreenMain extends LocalizableScreen {
                 model.getRating(Model.RatingType.General); // we should requery rating each time we choose the tab,
                 break;                                     // because it might be updated on the server
             case History:
-                lstHistory.setItems(getHistory());
+                updateHistory();
                 tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
                 break;
             case Friends:
@@ -655,6 +684,43 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    private void updateHistory() {
+        Array<Actor> rows = tableRightContentHistory.getChildren();
+        assert rows != null;
+        int i = 0;
+        for (HistoryItem it : model.history) {
+            if (i < rows.size) {
+                Actor actor = rows.get(i);
+                if (actor instanceof Table) {
+                    Table table = (Table) actor;
+                    Array<Actor> cells = table.getChildren();
+                    assert cells != null && cells.size == 8;
+                    Label lblDate = (Label) cells.get(0);
+                    Image imgChar1 = (Image) cells.get(1);
+                    Label lblName1 = (Label) cells.get(2);
+                    // cells.get(3) is a dash (" - ");
+                    Image imgChar2 = (Image) cells.get(4);
+                    Label lblName2 = (Label) cells.get(5);
+                    Label lblScore = (Label) cells.get(6);
+                    Image imgWin = (Image) cells.get(7);
+
+                    lblDate.setText(dateFmt.format(it.date));
+                    lblName1.setText(it.name1);
+                    lblName2.setText(it.name2);
+                    lblScore.setText(String.format(Locale.getDefault(), "%d-%d", it.score1, it.score2));
+                    imgWin.setDrawable(it.win ? drawableWin : drawableLoss);
+                }
+            }
+            i++;
+        }
+        // clear other tables
+        for (int j = i; j < rows.size; j++) {
+            Actor actor = rows.get(i);
+            assert actor != null;
+            actor.clear();
+        }
+    }
+
     private void updateAbilities(Iterable<Model.Ability> abilityList) {
         tableRightContentAbilities.clear();
         for (Model.Ability ability : abilityList) {
@@ -662,15 +728,5 @@ public class ScreenMain extends LocalizableScreen {
             if (btn != null)
                 tableRightContentAbilities.add(btn).space(10);
         }
-    }
-
-    private Array<String> getHistory() {
-        assert i18n != null;
-
-        Array<String> items = new Array<String>(model.history.size());
-        for (HistoryItem it : model.history) {
-            items.add(i18n.format("history.item", it.date, it.win ? 1 : 0, it.name1, it.name2, it.score1, it.score2));
-        }
-        return items;
     }
 }

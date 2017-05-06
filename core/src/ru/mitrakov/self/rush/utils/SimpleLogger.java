@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.utils;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -14,7 +15,7 @@ import ru.mitrakov.self.rush.model.Model;
  */
 public class SimpleLogger {
     private final static Model.IFileReader fileReader = new FileReader();
-    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+    private final static Format sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
 
     public static synchronized void log(String s) {
         String w = String.format("%s: %s", sdf.format(new Date()), s);
