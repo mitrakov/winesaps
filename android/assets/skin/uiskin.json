@@ -363,7 +363,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-	default: {
+	default_old: {
 		background: dim-orange
 		hScroll: scrollbar
 		hScrollKnob: scrollbar-knob
@@ -377,7 +377,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		vScroll: scrollbar-android-vertical
 		vScrollKnob: scrollbar-android-vertical-knob
 	}
-	no-bg: {
+	default: {
 		hScroll: scrollbar
 		hScrollKnob: scrollbar-knob
 		vScroll: scrollbar-vertical

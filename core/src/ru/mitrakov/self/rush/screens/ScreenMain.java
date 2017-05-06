@@ -57,7 +57,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogPromocodeDone promocodeDoneDialog;
 
     private final List<String> lstFriends;
-    private final ScrollPane lstHistoryScroll;
+    private final ScrollPane tableHistoryScroll;
     private final ScrollPane lstFriendsScroll;
     private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextField txtEnemyName;
@@ -96,6 +96,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Drawable drawableLoss;
 
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
+    private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
     private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
@@ -142,7 +143,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        lstHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
+        tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
             setupFadeScrollBars(0, 0);
         }};
         lstFriendsScroll = new ScrollPane(lstFriends, skin, "default") {{
@@ -508,6 +509,11 @@ public class ScreenMain extends LocalizableScreen {
                 abilities.put(ability, imageButton);
             }
         }
+        for (Model.Character character : Model.Character.values()) {
+            TextureRegion region = atlasIcons.findRegion(String.format("%s48", character));
+            if (region != null)
+                characters.put(character, new TextureRegionDrawable(region));
+        }
     }
 
     private void initTables() {
@@ -567,20 +573,17 @@ public class ScreenMain extends LocalizableScreen {
 
         // === History ===
         for (int i = 0; i < Model.HISTORY_MAX; i++) {
-            Table table = new Table();
-            table.add(new Label("", skin, "small") {{
+            tableRightContentHistory.row().spaceLeft(10).spaceTop(5);
+            tableRightContentHistory.add(new Label("", skin, "small") {{
                 setAlignment(Align.center);
             }});
-            table.add(new Image(atlasIcons.findRegion("Cat64")));
-            table.add(new Label("", skin, "default"));
-            table.add(new Label(" - ", skin, "default"));
-            table.add(new Image(atlasIcons.findRegion("Squirrel64")));
-            table.add(new Label("", skin, "default"));
-            table.add(new Label("", skin, "title"));
-            table.add(new Image());
-
-            tableRightContentHistory.row();
-            tableRightContentHistory.add(table);
+            tableRightContentHistory.add(new Image());
+            tableRightContentHistory.add(new Label("", skin, "small")).width(88).maxWidth(88).spaceLeft(5);
+            tableRightContentHistory.add(new Label("", skin, "title"));
+            tableRightContentHistory.add(new Image());
+            tableRightContentHistory.add(new Label("", skin, "small")).width(88).maxWidth(88).spaceLeft(5);
+            tableRightContentHistory.add(new Label("", skin, "title"));
+            tableRightContentHistory.add(new Image());
         }
     }
 
@@ -618,6 +621,8 @@ public class ScreenMain extends LocalizableScreen {
             case Info:
                 tableRightContent.add(tableRightContentName).colspan(2).height(72);
                 tableRightContent.row();
+                tableRightContent.add().expandY();
+                tableRightContent.row();
                 tableRightContent.add(lblCrystalsHeader);
                 tableRightContent.add(lblCrystalsData);
                 tableRightContent.row().spaceTop(16);
@@ -641,7 +646,7 @@ public class ScreenMain extends LocalizableScreen {
                 break;                                     // because it might be updated on the server
             case History:
                 updateHistory();
-                tableRightContent.add(lstHistoryScroll).fill(.9f, .9f).expand();
+                tableRightContent.add(tableHistoryScroll).padTop(4).fill().expand();
                 break;
             case Friends:
                 tableRightContent.add(tableFriendsControl).pad(15);
@@ -685,39 +690,30 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void updateHistory() {
-        Array<Actor> rows = tableRightContentHistory.getChildren();
-        assert rows != null;
+        Array<Actor> cells = tableRightContentHistory.getChildren();
+        assert cells != null;
         int i = 0;
         for (HistoryItem it : model.history) {
-            if (i < rows.size) {
-                Actor actor = rows.get(i);
-                if (actor instanceof Table) {
-                    Table table = (Table) actor;
-                    Array<Actor> cells = table.getChildren();
-                    assert cells != null && cells.size == 8;
-                    Label lblDate = (Label) cells.get(0);
-                    Image imgChar1 = (Image) cells.get(1);
-                    Label lblName1 = (Label) cells.get(2);
-                    // cells.get(3) is a dash (" - ");
-                    Image imgChar2 = (Image) cells.get(4);
-                    Label lblName2 = (Label) cells.get(5);
-                    Label lblScore = (Label) cells.get(6);
-                    Image imgWin = (Image) cells.get(7);
+            if (8*i+7 < cells.size) {
+                Label lblDate = (Label) cells.get(8*i);
+                Image imgChar1 = (Image) cells.get(8*i+1);
+                Label lblName1 = (Label) cells.get(8*i+2);
+                Label lblVs = (Label) cells.get(8*i+3);
+                Image imgChar2 = (Image) cells.get(8*i+4);
+                Label lblName2 = (Label) cells.get(8*i+5);
+                Label lblScore = (Label) cells.get(8*i+6);
+                Image imgWin = (Image) cells.get(8*i+7);
 
-                    lblDate.setText(dateFmt.format(it.date));
-                    lblName1.setText(it.name1);
-                    lblName2.setText(it.name2);
-                    lblScore.setText(String.format(Locale.getDefault(), "%d-%d", it.score1, it.score2));
-                    imgWin.setDrawable(it.win ? drawableWin : drawableLoss);
-                }
+                lblDate.setText(dateFmt.format(it.date));
+                imgChar1.setDrawable(characters.get(it.character1));
+                lblName1.setText(it.name1);
+                lblVs.setText("-");
+                imgChar2.setDrawable(characters.get(it.character2));
+                lblName2.setText(it.name2);
+                lblScore.setText(String.format(Locale.getDefault(), "%d-%d", it.score1, it.score2));
+                imgWin.setDrawable(it.win ? drawableWin : drawableLoss);
             }
             i++;
-        }
-        // clear other tables
-        for (int j = i; j < rows.size; j++) {
-            Actor actor = rows.get(i);
-            assert actor != null;
-            actor.clear();
         }
     }
 

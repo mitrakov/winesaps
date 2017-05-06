@@ -12,15 +12,20 @@ public final /*case*/ class HistoryItem implements Serializable {
     public final boolean win;
     public final String name1;
     public final String name2;
+    public final Model.Character character1;
+    public final Model.Character character2;
     public final int score1;
     public final int score2;
 
-    public HistoryItem(Date date, boolean win, String name1, String name2, int score1, int score2) {
+    public HistoryItem(Date date, boolean win, String name1, String name2, Model.Character character1,
+                       Model.Character character2, int score1, int score2) {
         assert date != null && name1 != null && name2 != null;
         this.date = new Date(date.getTime()); // recommended by FindBugs
         this.win = win;
         this.name1 = name1;
         this.name2 = name2;
+        this.character1 = character1;
+        this.character2 = character2;
         this.score1 = score1;
         this.score2 = score2;
     }
@@ -34,6 +39,8 @@ public final /*case*/ class HistoryItem implements Serializable {
                 ", win=" + win +
                 ", name1='" + name1 + '\'' +
                 ", name2='" + name2 + '\'' +
+                ", character1=" + character1 +
+                ", character2=" + character2 +
                 ", score1=" + score1 +
                 ", score2=" + score2 +
                 '}';
@@ -44,10 +51,17 @@ public final /*case*/ class HistoryItem implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        HistoryItem that = (HistoryItem) o;
+        HistoryItem item = (HistoryItem) o;
 
-        return win == that.win && score1 == that.score1 && score2 == that.score2 &&
-                date.equals(that.date) && name1.equals(that.name1) && name2.equals(that.name2);
+        return win == item.win
+                && score1 == item.score1
+                && score2 == item.score2
+                && date.equals(item.date)
+                && name1.equals(item.name1)
+                && name2.equals(item.name2)
+                && character1 == item.character1
+                && character2 == item.character2;
+
     }
 
     @Override
@@ -56,6 +70,8 @@ public final /*case*/ class HistoryItem implements Serializable {
         result = 31 * result + (win ? 1 : 0);
         result = 31 * result + name1.hashCode();
         result = 31 * result + name2.hashCode();
+        result = 31 * result + character1.hashCode();
+        result = 31 * result + character2.hashCode();
         result = 31 * result + score1;
         result = 31 * result + score2;
         return result;

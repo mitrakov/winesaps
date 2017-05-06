@@ -818,7 +818,7 @@ public class Model {
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training Level
             // building a history item
             HistoryItem item = new HistoryItem(new Date(), winner, aggressor ? name : enemy, aggressor ? enemy : name,
-                    totalScore1, totalScore2);
+                    character1, character2, totalScore1, totalScore2);
 
             // prepend the item into the current history (and delete old items if necessary)
             List<HistoryItem> lst = new LinkedList<HistoryItem>(history);
