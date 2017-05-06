@@ -6,8 +6,8 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font-black: {
 		file: black_rus.fnt
 	}
-	font-shortcut: {
-		file: default_rus.fnt
+	font-small: {
+		file: small_rus.fnt
 	}
 	font-title: {
 		file: big_rus.fnt
@@ -322,9 +322,8 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	title: {
 		font: font-title
 	}
-	shortcut: {
-		font: font-shortcut
-		fontColor: bleached_peach
+	small: {
+		font: font-small
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {

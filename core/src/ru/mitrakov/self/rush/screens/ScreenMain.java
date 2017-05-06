@@ -527,17 +527,20 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRatingBtns.add(btnGeneralRating);
         tableRightContentRatingBtns.add(btnWeeklyRating);
 
-        tableRightContentRating.row().spaceLeft(20).spaceBottom(20); // don't use space(), it breaks the layout
+        tableRightContentRating.row().spaceLeft(20);
         tableRightContentRating.add(lblRatingName);
         tableRightContentRating.add(lblRatingWins);
         tableRightContentRating.add(lblRatingLosses);
         tableRightContentRating.add(lblRatingScoreDiff);
 
         final int RATING_COLUMNS = 4;
+        tableRightContentRating.row();
+        tableRightContentRating.add(new Image(skin, "splitpane")).colspan(RATING_COLUMNS).width(351).height(2);
+
         for (int i = 0; i < Model.RATINGS_COUNT; i++) {
             tableRightContentRating.row().spaceLeft(20);
             for (int j = 0; j < RATING_COLUMNS; j++) {
-                Label label = new Label("", skin, "default");
+                Label label = new Label("", skin, "small");
                 tableRightContentRating.add(label);
                 ratingLabels.add(label);
             }
@@ -546,7 +549,7 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRating.add(lblRatingDots).colspan(4);
         tableRightContentRating.row().spaceLeft(20);
         for (int j = 0; j < RATING_COLUMNS; j++) {
-            Label label = new Label("", skin, "default");
+            Label label = new Label("", skin, "small");
             tableRightContentRating.add(label);
             ratingLabels.add(label);
         }
@@ -602,7 +605,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.add(lblMore).colspan(2).height(53);
                 break;
             case Rating:
-                tableRightContent.add(tableRightContentRatingBtns).pad(15);
+                tableRightContent.add(tableRightContentRatingBtns).pad(8);
                 tableRightContent.row();
                 tableRightContent.add(tableRightContentRating).expand();
                 model.getRating(Model.RatingType.General); // we should requery rating each time we choose the tab,
