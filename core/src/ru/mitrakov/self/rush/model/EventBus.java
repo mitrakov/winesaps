@@ -108,6 +108,12 @@ public class EventBus {
             this.stylePack = stylePack;
         }
     }
+    public static final class CharacterChangedEvent extends Event {
+        public final Model.Character character;
+        CharacterChangedEvent(Model.Character character) {
+            this.character = character;
+        }
+    }
 
 
     // =====================================

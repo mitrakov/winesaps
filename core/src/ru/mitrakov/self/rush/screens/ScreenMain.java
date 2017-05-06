@@ -25,6 +25,7 @@ import ru.mitrakov.self.rush.dialogs.*;
 public class ScreenMain extends LocalizableScreen {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
+    private final TextureAtlas atlasIcons = new TextureAtlas(Gdx.files.internal("pack/icons.pack"));
     private final Table tableLeft = new Table();
     private final Table tableRight;
     private final Table tableLeftHeader = new Table();
@@ -32,6 +33,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableLeftToolbar = new Table();
     private final Table tableRightHeader = new Table();
     private final Table tableRightContent = new Table();
+    private final Table tableRightContentName = new Table();
     private final Table tableRightContentAbilities = new Table();
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
@@ -59,8 +61,8 @@ public class ScreenMain extends LocalizableScreen {
     private final TextButton btnInviteByName;
     private final TextButton btnInviteRandom;
     private final TextButton btnInviteLatest;
-    private final TextButton btnInviteByNameOk;
-    private final TextButton btnInviteByNameCancel;
+    private final Button btnInviteByNameOk;
+    private final Button btnInviteByNameCancel;
     private final Button btnSettings;
     private final Button btnAbout;
     private final TextButton btnInfo;
@@ -84,6 +86,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Label lblRatingLosses;
     private final Label lblRatingScoreDiff;
     private final Label lblRatingDots;
+    private final Image imgCharacter;
 
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
@@ -100,6 +103,8 @@ public class ScreenMain extends LocalizableScreen {
 
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
         TextureRegion regionAbout = atlasMenu.findRegion("about");
+        TextureRegion regionOk = atlasMenu.findRegion("valid");
+        TextureRegion regionCancel = atlasMenu.findRegion("invalid");
         assert regionSettings != null && regionAbout != null;
 
         promocodeDialog = new DialogPromocode(model, skin, "default");
@@ -160,7 +165,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameOk = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnInviteByNameOk = new ImageButtonFeat(new TextureRegionDrawable(regionOk), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -172,7 +177,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameCancel = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnInviteByNameCancel = new ImageButtonFeat(new TextureRegionDrawable(regionCancel), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -284,7 +289,7 @@ public class ScreenMain extends LocalizableScreen {
                 moreCrystalsDialog.show(stage);
             }
         });
-        lblName = new Label("", skin, "default");
+        lblName = new Label("", skin, "title");
         lblCrystalsHeader = new Label("", skin, "default");
         lblCrystalsData = new Label("", skin, "default");
         lblAbilities = new Label("", skin, "default");
@@ -294,6 +299,7 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingLosses = new Label("", skin, "default");
         lblRatingScoreDiff = new Label("", skin, "default");
         lblRatingDots = new Label("", skin, "default");
+        imgCharacter = new Image();
 
         loadTextures();
         initTables();
@@ -333,6 +339,7 @@ public class ScreenMain extends LocalizableScreen {
     public void dispose() {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
         atlasMenu.dispose();
+        atlasIcons.dispose();
         buyAbilitiesDialog.dispose();
         super.dispose();
     }
@@ -364,8 +371,6 @@ public class ScreenMain extends LocalizableScreen {
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnInviteRandom.setText(bundle.format("opponent.random"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
-        btnInviteByNameOk.setText(bundle.format("ok"));
-        btnInviteByNameCancel.setText(bundle.format("cancel"));
         btnInfo.setText(bundle.format("info.header"));
         btnRating.setText(bundle.format("rating.header"));
         btnHistory.setText(bundle.format("history.header"));
@@ -462,6 +467,10 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
         }
+        if (event instanceof EventBus.CharacterChangedEvent) {
+            EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
+            imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character + "64")));
+        }
     }
 
     private void loadTextures() {
@@ -506,10 +515,13 @@ public class ScreenMain extends LocalizableScreen {
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
 
-        tableRightHeader.add(btnInfo)   .width(140).expand().fill();
-        tableRightHeader.add(btnRating) .width(140).expand().fill();
-        tableRightHeader.add(btnHistory).width(140).expand().fill();
-        tableRightHeader.add(btnFriends).width(140).expand().fill();
+        tableRightHeader.add(btnInfo)   .width(138).expand().fill();
+        tableRightHeader.add(btnRating) .width(138).expand().fill();
+        tableRightHeader.add(btnHistory).width(138).expand().fill();
+        tableRightHeader.add(btnFriends).width(138).expand().fill();
+
+        tableRightContentName.add(imgCharacter).spaceLeft(20);
+        tableRightContentName.add(lblName).spaceLeft(20);
 
         tableRightContentRatingBtns.row().spaceLeft(30);
         tableRightContentRatingBtns.add(btnGeneralRating);
@@ -546,14 +558,15 @@ public class ScreenMain extends LocalizableScreen {
 
         // ...
         if (showInputName) {
-            tableLeftInvite.add(txtEnemyName).colspan(2).width(145).height(50);
-            tableLeftInvite.row().space(20);
-            tableLeftInvite.add(btnInviteByNameOk).width(60).height(40);
-            tableLeftInvite.add(btnInviteByNameCancel).width(85).height(40);
-            tableLeftInvite.row().space(20);
+            tableLeftInvite.add(txtEnemyName).colspan(2).width(190).height(50);
+            tableLeftInvite.row().spaceTop(16);
+            tableLeftInvite.add(btnInviteByNameOk);
+            tableLeftInvite.add(btnInviteByNameCancel);
+            tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(btnInviteRandom).colspan(2).width(190).height(73);
-            tableLeftInvite.row().space(20);
+            tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(73);
+            stage.setKeyboardFocus(txtEnemyName);
         } else {
             tableLeftInvite.add(btnInviteByName).width(190).height(73).spaceTop(16);
             tableLeftInvite.row();
@@ -571,7 +584,7 @@ public class ScreenMain extends LocalizableScreen {
 
         switch (mode) {
             case Info:
-                tableRightContent.add(lblName).colspan(2).height(72);
+                tableRightContent.add(tableRightContentName).colspan(2).height(72);
                 tableRightContent.row();
                 tableRightContent.add(lblCrystalsHeader);
                 tableRightContent.add(lblCrystalsData);

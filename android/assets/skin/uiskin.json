@@ -10,7 +10,7 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 		file: default_rus.fnt
 	}
 	font-title: {
-		file: default_rus.fnt
+		file: big_rus.fnt
 	}
 }
 com.badlogic.gdx.graphics.Color: {
@@ -321,7 +321,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	}
 	title: {
 		font: font-title
-		fontColor: orange
 	}
 	shortcut: {
 		font: font-shortcut

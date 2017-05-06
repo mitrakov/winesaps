@@ -580,8 +580,10 @@ public class Model {
         // parse character
         Character[] characters = Character.values();
         int ch = data[i++];
-        if (0 <= ch && ch < characters.length)
+        if (0 <= ch && ch < characters.length && character != characters[ch]) {
             character = characters[ch];
+            bus.raise(new EventBus.CharacterChangedEvent(character));
+        }
 
         // parse crystals
         if (i + 3 < data.length)
