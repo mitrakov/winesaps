@@ -220,11 +220,14 @@ class Parser implements IHandler {
         if (data.length > 0) {
             int error = data[0];
             if (error == 0) {
-                StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-                for (int i = 1; i < data.length; i++) {
-                    name.append((char) data[i]);
-                }
-                model.friendAdded(name.toString());
+                if (data.length > 1) {
+                    int character = data[1];
+                    StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
+                    for (int i = 2; i < data.length; i++) {
+                        name.append((char) data[i]);
+                    }
+                    model.friendAdded(character, name.toString());
+                } else throw new IllegalArgumentException("Incorrect addFriend format");
             } else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect add friend format");
     }

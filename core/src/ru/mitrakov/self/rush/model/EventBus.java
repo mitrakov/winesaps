@@ -29,14 +29,14 @@ public class EventBus {
         }
     }
     public static final class FriendListUpdatedEvent extends Event {
-        public final Collection<String> items;
-        FriendListUpdatedEvent(Collection<String> items) {
+        public final Collection<FriendItem> items;
+        FriendListUpdatedEvent(Collection<FriendItem> items) {
             this.items = items;
         }
     }
     public static final class FriendAddedEvent extends Event {
-        public final String name;
-        FriendAddedEvent(String name) {
+        public final FriendItem name;
+        FriendAddedEvent(FriendItem name) {
             this.name = name;
         }
     }

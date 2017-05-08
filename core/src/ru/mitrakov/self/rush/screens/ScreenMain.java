@@ -7,12 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.text.*;
-import java.util.Locale;
+import java.util.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -42,6 +41,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableRightContentRatingBtns = new Table();
     private final Table tableRightContentRating = new Table();
     private final Table tableRightContentHistory = new Table();
+    private final Table tableRightContentFriends = new Table();
     private final Table tableFriendsControl = new Table();
     private final DialogPromocode promocodeDialog;
     private final DialogFeat moreCrystalsDialog;
@@ -56,9 +56,8 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
 
-    private final List<String> lstFriends;
     private final ScrollPane tableHistoryScroll;
-    private final ScrollPane lstFriendsScroll;
+    private final ScrollPane tableFriendsScroll;
     private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextField txtEnemyName;
     private final TextField txtFriendName;
@@ -132,21 +131,10 @@ public class ScreenMain extends LocalizableScreen {
         friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
 
-        lstFriends = new List<String>(skin, "default") {{
-            addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    assert i18n != null;
-                    String friend = lstFriends.getSelected();
-                    if (friend != null)
-                        friendsDialog.setFriend(friend, i18n).show(stage);
-                }
-            });
-        }};
         tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
             setupFadeScrollBars(0, 0);
         }};
-        lstFriendsScroll = new ScrollPane(lstFriends, skin, "default") {{
+        tableFriendsScroll = new ScrollPane(tableRightContentFriends, skin, "default") {{
             setupFadeScrollBars(0, 0);
         }};
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
@@ -413,19 +401,13 @@ public class ScreenMain extends LocalizableScreen {
         }
         if (event instanceof EventBus.FriendListUpdatedEvent) {
             EventBus.FriendListUpdatedEvent ev = (EventBus.FriendListUpdatedEvent) event;
-            lstFriends.setItems(ev.items.toArray(new String[0]));
+            updateFriends(ev.items);
         }
         if (event instanceof EventBus.FriendAddedEvent) {
-            EventBus.FriendAddedEvent ev = (EventBus.FriendAddedEvent) event;
-            Array<String> items = lstFriends.getItems();
-            items.add(ev.name);
-            lstFriends.setItems(items.toArray()); // toArray() is NEEDED! otherwise setItems() misbehaves
+            updateFriends(model.friends);
         }
         if (event instanceof EventBus.FriendRemovedEvent) {
-            EventBus.FriendRemovedEvent ev = (EventBus.FriendRemovedEvent) event;
-            Array<String> items = lstFriends.getItems();
-            items.removeValue(ev.name, false);
-            lstFriends.setItems(items.toArray()); // toArray() is NEEDED! otherwise setItems() misbehaves
+            updateFriends(model.friends);
         }
         if (event instanceof EventBus.AbilitiesUpdatedEvent) {
             EventBus.AbilitiesUpdatedEvent ev = (EventBus.AbilitiesUpdatedEvent) event;
@@ -649,9 +631,11 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.add(tableHistoryScroll).padTop(4).fill().expand();
                 break;
             case Friends:
-                tableRightContent.add(tableFriendsControl).pad(15);
+                tableRightContent.add(tableFriendsControl).padTop(16).fill();
                 tableRightContent.row();
-                tableRightContent.add(lstFriendsScroll).fill(.9f, .9f).expand();
+                tableRightContent.add(tableFriendsScroll).pad(4).fill();
+                tableRightContent.row();
+                tableRightContent.add().fill().expand(); // fake cell to expand
                 rebuildFriends(false);
                 model.getFriends(); // we should requery friends each time we choose the tab, because friends may be
                 break;              // added from different places
@@ -692,17 +676,19 @@ public class ScreenMain extends LocalizableScreen {
     private void updateHistory() {
         Array<Actor> cells = tableRightContentHistory.getChildren();
         assert cells != null;
+        final int COLUMNS = 8;
+
         int i = 0;
         for (HistoryItem it : model.history) {
-            if (8*i+7 < cells.size) {
-                Label lblDate = (Label) cells.get(8*i);
-                Image imgChar1 = (Image) cells.get(8*i+1);
-                Label lblName1 = (Label) cells.get(8*i+2);
-                Label lblVs = (Label) cells.get(8*i+3);
-                Image imgChar2 = (Image) cells.get(8*i+4);
-                Label lblName2 = (Label) cells.get(8*i+5);
-                Label lblScore = (Label) cells.get(8*i+6);
-                Image imgWin = (Image) cells.get(8*i+7);
+            if (COLUMNS * i + 7 < cells.size) {
+                Label lblDate = (Label) cells.get(COLUMNS * i);
+                Image imgChar1 = (Image) cells.get(COLUMNS * i + 1);
+                Label lblName1 = (Label) cells.get(COLUMNS * i + 2);
+                Label lblVs = (Label) cells.get(COLUMNS * i + 3);
+                Image imgChar2 = (Image) cells.get(COLUMNS * i + 4);
+                Label lblName2 = (Label) cells.get(COLUMNS * i + 5);
+                Label lblScore = (Label) cells.get(COLUMNS * i + 6);
+                Image imgWin = (Image) cells.get(COLUMNS * i + 7);
 
                 lblDate.setText(dateFmt.format(it.date));
                 imgChar1.setDrawable(characters.get(it.character1));
@@ -723,6 +709,83 @@ public class ScreenMain extends LocalizableScreen {
             Button btn = abilities.get(ability);
             if (btn != null)
                 tableRightContentAbilities.add(btn).space(10);
+        }
+    }
+
+    private void updateFriends(Collection<? extends FriendItem> items) {
+        adjustFriendsTable();
+        Array<Actor> cells = tableRightContentFriends.getChildren();
+        assert cells != null;
+        final int COLUMNS = 4;
+
+        int i = 0;
+        // fill the rows with friends
+        for (FriendItem item : items) {
+            if (COLUMNS * i + 3 < cells.size) {
+                Image imgChar = (Image) cells.get(COLUMNS * i);
+                Label lblName = (Label) cells.get(COLUMNS * i + 1);
+                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * i + 2);
+                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * i + 3);
+
+                imgChar.setDrawable(characters.get(item.character));
+                lblName.setText(item.name);
+                btnInvite.setVisible(true);
+                btnRemove.setVisible(true);
+            }
+            i++;
+        }
+        // fill the rest of rows with blank values
+        for (int j = i; j < tableRightContentFriends.getRows(); j++) {
+            if (COLUMNS * j + 3 < cells.size) {
+                Image imgChar = (Image) cells.get(COLUMNS * j);
+                Label lblName = (Label) cells.get(COLUMNS * j + 1);
+                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * j + 2);
+                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * j + 3);
+
+                imgChar.setDrawable(null);
+                lblName.setText("");
+                btnInvite.setVisible(false);
+                btnRemove.setVisible(false);
+            }
+        }
+    }
+
+    private void adjustFriendsTable() {
+        assert i18n != null;
+
+        int curFriendsCount = tableRightContentFriends.getRows();
+        int modelFriendsCount = model.friends.size();
+        int n = modelFriendsCount - curFriendsCount;
+        for (int i = 0; i < n; i++) {
+            final Label label = new Label("", skin, "default");
+
+            tableRightContentFriends.row();
+            tableRightContentFriends.add(new Image());
+            tableRightContentFriends.add(label).expandX().left().spaceLeft(5);
+            tableRightContentFriends.add(new ImageButtonFeat(drawableWin, audioManager) {{
+                addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        final String name = label.getText().toString();
+                        inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
+                    }
+                });
+            }});
+            tableRightContentFriends.add(new ImageButtonFeat(drawableLoss, audioManager) {{
+                addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        final String name = label.getText().toString();
+                        String txt = i18n.format("dialog.friends.remove.text", name);
+                        questionDialog.setText(txt).setRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                model.removeFriend(name);
+                            }
+                        }).show(stage);
+                    }
+                });
+            }}).spaceLeft(20);
         }
     }
 }

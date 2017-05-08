@@ -49,7 +49,7 @@ public class DialogIncoming extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         audioManager.music("call");
-        chkAddToFriends.setVisible(!model.friends.contains(enemy));
+        chkAddToFriends.setVisible(!model.friendExists(enemy));
         lblQuestion.setText(i18n.format("dialog.incoming.text", enemy)); // i18n != NULL (assert omitted)
         return super.show(stage);
     }

@@ -150,7 +150,7 @@ public class Model {
     public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>();
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
-    public final Collection<String> friends = new ConcurrentLinkedQueue<String>();
+    public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
 
     // ===========================
@@ -262,6 +262,14 @@ public class Model {
                 res.add(product);
         }
         return res;
+    }
+
+    public boolean friendExists(String name) {
+        for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
+            if (item.name.equals(name))
+                return true;
+        }
+        return false;
     }
 
     // ==============================
@@ -645,26 +653,41 @@ public class Model {
 
     public void setFriendList(int[] data) {
         assert data != null;
-        byte[] bytes = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            bytes[i] = (byte) data[i];
-        }
+        Character[] characters = Character.values();
+
         synchronized (locker) {
             friends.clear();
-            String s = newString(bytes);
-            if (s.length() > 0) // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
-                Collections.addAll(friends, s.split("\0"));
+            String s = newString(toByte(data, data.length));  // example: \3Tommy\0\2Bobby\0\3Billy\0
+            if (s.length() > 0) { // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
+                for (String item : s.split("\0")) {
+                    byte ch = (byte) item.charAt(0);
+                    if (0 <= ch && ch < characters.length) {
+                        friends.add(new FriendItem(characters[ch], item.substring(1)));
+                    }
+                }
+            }
         }
         bus.raise(new EventBus.FriendListUpdatedEvent(friends));
     }
 
-    public void friendAdded(String name) {
-        friends.add(name);
-        bus.raise(new EventBus.FriendAddedEvent(name));
+    public void friendAdded(int character, String name) {
+        Character[] characters = Character.values();
+        if (0 <= character && character < characters.length) {
+            FriendItem item = new FriendItem(characters[character], name);
+            friends.add(item);
+            bus.raise(new EventBus.FriendAddedEvent(item));
+        }
     }
 
     public void friendRemoved(String name) {
-        friends.remove(name);
+        synchronized (locker) {
+            for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
+                if (item.name.equals(name)) {
+                    friends.remove(item);
+                    break; // to avoid iterator exceptions
+                }
+            }
+        }
         bus.raise(new EventBus.FriendRemovedEvent(name));
     }
 
