@@ -53,7 +53,6 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
     private final DialogQuestion questionDialog;
-    private final DialogFriends friendsDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
 
     private final ScrollPane tableHistoryScroll;
@@ -128,7 +127,6 @@ public class ScreenMain extends LocalizableScreen {
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage, i18n);
         questionDialog = new DialogQuestion("", skin, "default");
-        friendsDialog = new DialogFriends(model, skin, "default", inviteDialog, questionDialog, stage, audioManager);
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
 
         tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
@@ -359,7 +357,6 @@ public class ScreenMain extends LocalizableScreen {
         infoDialog.onLocaleChanged(bundle);
         dialupDialog.onLocaleChanged(bundle);
         inviteDialog.onLocaleChanged(bundle);
-        friendsDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
 
         if (infoDialog.getTitleLabel() != null)
