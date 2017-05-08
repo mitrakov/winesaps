@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * Created by mitrakov on 05.03.2017
  */
-
 public class DialogTraining extends Window {
     static private final class Item {
         Drawable image;
@@ -32,19 +31,19 @@ public class DialogTraining extends Window {
         super("", skin, windowStyleName);
 
         imgMessage = new Image();
-        lblMessage1 = new Label("", skin, "default");
+        lblMessage1 = new Label("", skin, "small");
         lblMessage1.setAlignment(Align.center, Align.center);
         lblMessage2 = new Label("", skin, "default");
         lblMessage2.setAlignment(Align.center, Align.center);
 
         setMovable(false);
-        buildTable();
+        buildTable(skin);
     }
 
     public DialogTraining show(Stage stage) {
         assert stage != null;
         setWidth(stage.getWidth() / 2);
-        setHeight(stage.getHeight() * 3 / 4);
+        setHeight(stage.getHeight() * 2 / 3);
         setPosition(stage.getWidth() - getWidth() - 5, stage.getHeight() - getHeight() - 5);
         stage.addActor(this);
         return this;
@@ -70,12 +69,16 @@ public class DialogTraining extends Window {
         }
     }
 
-    private void buildTable() {
+    private void buildTable(Skin skin) {
+        assert skin != null;
+
         pad(5);
-        add(imgMessage);
-        row().space(5);
-        add(lblMessage1);
-        row().spaceTop(30);
-        add(lblMessage2);
+        add(imgMessage).expand();
+        row();
+        add(lblMessage1).expand();
+        row();
+        add(new Image(skin, "splitpane")).width(250).height(2);
+        row();
+        add(lblMessage2).expand();
     }
 }

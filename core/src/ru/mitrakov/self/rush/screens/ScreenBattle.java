@@ -50,8 +50,8 @@ public class ScreenBattle extends LocalizableScreen {
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
         infoDialog = new DialogInfo("", skin, "default");
-        lblScore = new Label("", skin, "default");
-        lblTime = new Label("", skin, "default");
+        lblScore = new Label("", skin, "white");
+        lblTime = new Label("", skin, "white");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
 
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{

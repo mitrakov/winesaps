@@ -700,6 +700,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		titleFont: font
 		stageBackground: bleached-peach
 	}
+	panel-black: {
+		background: panel-peach
+		titleFont: font
+	}
 	default_old: {
 		background: window-orange
 		titleFont: font

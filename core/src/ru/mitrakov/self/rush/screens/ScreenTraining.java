@@ -39,7 +39,7 @@ public class ScreenTraining extends LocalizableScreen {
         loadTextures();
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");
-        trainingDialog = new DialogTraining(skin, "default");
+        trainingDialog = new DialogTraining(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -126,18 +126,18 @@ public class ScreenTraining extends LocalizableScreen {
         // building table
         table.add(gui).colspan(2);
         table.row();
-        table.add(btnThing).align(Align.left);
-        table.add(btnSkip).align(Align.right).width(200).height(btnThing.getHeight());
+        table.add(btnThing).align(Align.left).padLeft(2);
+        table.add(btnSkip).align(Align.right).padRight(2).width(200).height(btnThing.getHeight());
 
         // initialize curtains windows
         Window window;
-        window = new Window("", skin, "default");
+        window = new Window("", skin, "panel-black");
         window.setBounds(235, 380, 125, 268);
         curtains.addLast(window);
-        window = new Window("", skin, "default");
+        window = new Window("", skin, "panel-black");
         window.setBounds(135, 212, 105, 180);
         curtains.addLast(window);
-        window = new Window("", skin, "default");
+        window = new Window("", skin, "panel-black");
         window.setBounds(35, 212, 105, 180);
         curtains.addLast(window);
         for (Window w : curtains) {
