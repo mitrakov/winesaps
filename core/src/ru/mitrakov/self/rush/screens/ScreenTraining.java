@@ -53,7 +53,7 @@ public class ScreenTraining extends LocalizableScreen {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     model.newbie = false;
-                    model.stopBattle();
+                    model.giveUp();
                     game.setNextScreen();
                 }
             });
@@ -107,7 +107,8 @@ public class ScreenTraining extends LocalizableScreen {
         if (event instanceof EventBus.RoundFinishedEvent) {
             if (model.newbie) { // to avoid collisions with BattleScreen
                 model.newbie = false;
-                model.stopBattle();
+                gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+                model.giveUp();
                 trainingDialog.remove();
                 finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
             }

@@ -534,7 +534,7 @@ public class Model {
         }
     }
 
-    public void stopBattle() {
+    public void giveUp() {
         if (connected && sender != null) {
             sender.send(GIVE_UP);
         }
