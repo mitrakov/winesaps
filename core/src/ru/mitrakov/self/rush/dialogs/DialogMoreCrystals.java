@@ -29,19 +29,19 @@ public class DialogMoreCrystals extends DialogFeat {
 
         lblOverview = new Label("", skin, "default");
         lblWay1 = new Label("", skin, "default");
-        lblText1 = new Label("", skin, "default");
+        lblText1 = new Label("", skin, "small");
         lblWay2 = new Label("", skin, "default");
-        lblText2 = new LinkedLabel("", "", "", skin, "default", new Runnable() {
+        lblText2 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
                 promoDialog.show(stage);
             }
         });
-        lblText2extra = new Label("", skin, "default");
+        lblText2extra = new Label("", skin, "small");
         lblWay3 = new Label("", skin, "default");
-        lblText3 = new Label("", skin, "default");
+        lblText3 = new Label("", skin, "small");
         lblWay4 = new Label("", skin, "default");
-        lblText4 = new LinkedLabel("", "", "", skin, "default", new Runnable() {
+        lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
                 log("Hey-Hey!");
@@ -84,7 +84,7 @@ public class DialogMoreCrystals extends DialogFeat {
     private void init(Table table) {
         assert table != null;
 
-        table.pad(30);
+        table.pad(16);
         table.add(lblOverview);
         table.row();
         table.add(lblWay1).left();

@@ -75,8 +75,8 @@ public class ScreenMain extends LocalizableScreen {
     private final TextButton btnGeneralRating;
     private final TextButton btnWeeklyRating;
     private final TextButton btnAddFriend;
-    private final TextButton btnAddFriendOk;
-    private final TextButton btnAddFriendCancel;
+    private final Button btnAddFriendOk;
+    private final Button btnAddFriendCancel;
     private final LinkedLabel lblMore;
     private final Label lblName;
     private final Label lblCrystalsHeader;
@@ -258,29 +258,32 @@ public class ScreenMain extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    rebuildFriends(true);
+                    rebuildFriendsButtons(true);
                 }
             });
         }};
-        btnAddFriendOk = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(regionOk), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.addFriend(txtFriendName.getText());
-                    rebuildFriends(false);
+                    String name = txtFriendName.getText();
+                    if (name.length() > 0) {
+                        model.addFriend(name);
+                        rebuildFriendsButtons(false);
+                    }
                 }
             });
         }};
-        btnAddFriendCancel = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnAddFriendCancel = new ImageButtonFeat(new TextureRegionDrawable(regionCancel), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    rebuildFriends(false);
+                    rebuildFriendsButtons(false);
                 }
             });
         }};
         tableRight = new Table(skin);
-        lblMore = new LinkedLabel("", "", "", skin, "default", new Runnable() {
+        lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override
             public void run() {
                 moreCrystalsDialog.show(stage);
@@ -375,8 +378,6 @@ public class ScreenMain extends LocalizableScreen {
         btnGeneralRating.setText(bundle.format("rating.general"));
         btnWeeklyRating.setText(bundle.format("rating.weekly"));
         btnAddFriend.setText(bundle.format("friends.add"));
-        btnAddFriendOk.setText(bundle.format("ok"));
-        btnAddFriendCancel.setText(bundle.format("cancel"));
         lblMore.setText(bundle.format("dialog.crystals.start"), bundle.format("dialog.crystals.link"), "");
         lblCrystalsHeader.setText(bundle.format("info.crystals"));
         lblAbilities.setText(bundle.format("info.abilities"));
@@ -633,24 +634,24 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.add(tableFriendsScroll).pad(4).fill();
                 tableRightContent.row();
                 tableRightContent.add().fill().expand(); // fake cell to expand
-                rebuildFriends(false);
+                rebuildFriendsButtons(false);
                 model.getFriends(); // we should requery friends each time we choose the tab, because friends may be
                 break;              // added from different places
             default:
         }
     }
 
-    private void rebuildFriends(boolean showInputName) {
+    private void rebuildFriendsButtons(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "add friend")
         tableFriendsControl.clear();
 
         if (showInputName) {
-            tableFriendsControl.add(txtFriendName).width(180).colspan(2);
-            tableFriendsControl.row().space(10);
-            tableFriendsControl.add(btnAddFriendOk).width(70);
-            tableFriendsControl.add(btnAddFriendCancel).width(100);
+            tableFriendsControl.add(txtFriendName).width(161).height(50);
+            tableFriendsControl.add(btnAddFriendOk).spaceLeft(20);
+            tableFriendsControl.add(btnAddFriendCancel).spaceLeft(20);
+            stage.setKeyboardFocus(txtFriendName);
         } else {
-            tableFriendsControl.add(btnAddFriend);
+            tableFriendsControl.add(btnAddFriend).width(120).height(46);
         }
     }
 

@@ -13,8 +13,13 @@ public class DialogAbout extends DialogFeat {
 
     private final Label lblOverview;
     private final Label lblCreated;
+    private final Label lblCreatedTxt;
+    private final Label lblVersion;
+    private final Label lblVersionTxt;
     private final Label lblSupport;
+    private final Label lblSupportTxt;
     private final Label lblWebSite;
+    private final Label lblWebSiteTxt;
 
     public DialogAbout(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
@@ -22,15 +27,22 @@ public class DialogAbout extends DialogFeat {
         Table table = getContentTable();
         assert table != null;
 
-        table.pad(30);
-        table.add(lblOverview = new Label("", skin, "default"));
-        table.row().space(20);
-        table.add(lblCreated = new Label("", skin, "default"));
+        table.pad(20);
+        table.add(lblOverview = new Label("", skin, "title")).colspan(2);
+        table.row();
+        table.add(new Image(skin, "splitpane")).width(250).height(2).spaceBottom(20).colspan(2);
+        table.row();
+        table.add(lblCreated = new Label("", skin, "default")).left();
+        table.add(lblCreatedTxt = new Label("", skin, "default")).left().spaceLeft(20);
+        table.row();
+        table.add(lblVersion = new Label("", skin, "default")).left();
+        table.add(lblVersionTxt = new Label("", skin, "default")).left().spaceLeft(20);
         table.row();
         table.add(lblSupport = new Label("", skin, "default")).left();
+        table.add(lblSupportTxt = new Label("", skin, "default")).left().spaceLeft(20);
         table.row();
         table.add(lblWebSite = new Label("", skin, "default")).left();
-        table.row();
+        table.add(lblWebSiteTxt = new Label("", skin, "default")).left().spaceLeft(20);
 
         button("Close"); // text will be replaced in onLocaleChanged()
     }
@@ -41,8 +53,13 @@ public class DialogAbout extends DialogFeat {
 
         lblOverview.setText(bundle.format("dialog.about.overview"));
         lblCreated.setText(bundle.format("dialog.about.created"));
+        lblCreatedTxt.setText(bundle.format("dialog.about.created.txt"));
+        lblVersion.setText(bundle.format("dialog.about.version"));
+        lblVersionTxt.setText(bundle.format("dialog.about.version.txt"));
         lblSupport.setText(bundle.format("dialog.about.support"));
+        lblSupportTxt.setText(bundle.format("dialog.about.support.txt"));
         lblWebSite.setText(bundle.format("dialog.about.web"));
+        lblWebSiteTxt.setText(bundle.format("dialog.about.web.txt"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.about.header"));

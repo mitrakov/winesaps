@@ -325,6 +325,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	small: {
 		font: font-small
 	}
+	link: {
+		font: font
+		fontColor: blue
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {

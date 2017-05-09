@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
+
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
@@ -47,6 +48,7 @@ public class Model {
      */
     public interface IFileReader {
         void write(String filename, String s);
+
         void append(String filename, String s);
 
         String read(String filename);
@@ -408,7 +410,8 @@ public class Model {
      */
     public void addFriend(String name) {
         if (connected && sender != null) {
-            sender.send(ADD_FRIEND, getBytes(name));
+            if (name.length() > 0)
+                sender.send(ADD_FRIEND, getBytes(name));
         }
     }
 
@@ -419,7 +422,8 @@ public class Model {
      */
     public void removeFriend(String name) {
         if (connected && sender != null) {
-            sender.send(REMOVE_FRIEND, getBytes(name));
+            if (name.length() > 0)
+                sender.send(REMOVE_FRIEND, getBytes(name));
         }
     }
 
