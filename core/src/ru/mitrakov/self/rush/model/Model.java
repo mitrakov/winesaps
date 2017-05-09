@@ -535,6 +535,7 @@ public class Model {
     }
 
     public void giveUp() {
+        field = null; // reset the current field
         if (connected && sender != null) {
             sender.send(GIVE_UP);
         }
