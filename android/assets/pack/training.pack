@@ -5,42 +5,42 @@ filter: Nearest,Nearest
 repeat: none
 msg1
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0
   index: -1
 msg2
   rotate: false
-  xy: 142, 0
+  xy: 144, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0
   index: -1
 msg3
   rotate: false
-  xy: 284, 0
+  xy: 286, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0
   index: -1
 msg4
   rotate: false
-  xy: 426, 0
+  xy: 428, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0
   index: -1
 msg5
   rotate: false
-  xy: 568, 0
+  xy: 570, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0
   index: -1
 msg6
   rotate: false
-  xy: 710, 0
+  xy: 712, 2
   size: 140, 100
   orig: 140, 100
   offset: 0, 0

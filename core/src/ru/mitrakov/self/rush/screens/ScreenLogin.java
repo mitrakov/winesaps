@@ -243,9 +243,9 @@ public class ScreenLogin extends LocalizableScreen {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
 
         tableMain.clear();
-        tableMain.add(btnSignIn).width(300).height(80).space(30);
+        tableMain.add(btnSignIn).width(222).height(85).space(30);
         tableMain.row();
-        tableMain.add(btnSignUp).width(300).height(80);
+        tableMain.add(btnSignUp).width(222).height(85);
     }
 
     private void setSignInDialog() {
@@ -253,16 +253,16 @@ public class ScreenLogin extends LocalizableScreen {
         Actor focused = stage.getKeyboardFocus();
 
         Table buttons = new Table();
-        buttons.add(btnBack).width(100).height(40).space(20);
-        buttons.add(btnOkSignIn).width(100).height(40).space(20);
+        buttons.add(btnBack).width(120).height(46).space(20);
+        buttons.add(btnOkSignIn).width(120).height(46).space(20);
 
         tableMain.clear();
         tableMain.row().space(20);
         tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin).width(280);
+        tableMain.add(txtLogin).width(305).height(50);
         tableMain.row().space(20);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(280);
+        tableMain.add(txtPassword).width(305).height(50);
         tableMain.row().spaceTop(30);
         tableMain.add(buttons).colspan(2);
         if (shiftedByKeyboard) shiftUp();
@@ -278,25 +278,25 @@ public class ScreenLogin extends LocalizableScreen {
         imgValid.setVisible(havePromocode);
 
         Table buttons = new Table();
-        buttons.add(btnBack).width(100).height(40).space(20);
-        buttons.add(btnOkSignUp).width(100).height(40).space(20);
+        buttons.add(btnBack).width(120).height(46).space(20);
+        buttons.add(btnOkSignUp).width(120).height(46).space(20);
 
         tableMain.clear();
         tableMain.row().space(20);
         tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin).width(280);
+        tableMain.add(txtLogin).width(305).height(50).colspan(2);
         tableMain.row().space(20);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(280);
+        tableMain.add(txtPassword).width(305).height(50).colspan(2);
         tableMain.row().space(20);
         tableMain.add(lblEmail).align(Align.left);
-        tableMain.add(txtEmail).width(280);
+        tableMain.add(txtEmail).width(305).height(50).colspan(2);
         tableMain.row().space(20);
         tableMain.add(chkPromocode);
-        tableMain.add(txtPromocode).width(280);
-        tableMain.add(imgValid).spaceLeft(20);
+        tableMain.add(txtPromocode).width(240).height(50).left();
+        tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
         tableMain.row().spaceTop(30);
-        tableMain.add(buttons).colspan(2);
+        tableMain.add(buttons).colspan(3);
         if (shiftedByKeyboard) shiftUp();
 
         stage.setKeyboardFocus(focused);
