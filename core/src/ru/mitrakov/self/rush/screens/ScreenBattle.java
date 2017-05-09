@@ -46,6 +46,9 @@ public class ScreenBattle extends LocalizableScreen {
         assert i18n != null;
         this.i18n = i18n;
 
+        // ....
+        glClearR = glClearG = glClearB = 0;
+
         loadTextures();
         gui = new Gui(model);
         finishedDialog = new DialogFinished(game, skin, "default");

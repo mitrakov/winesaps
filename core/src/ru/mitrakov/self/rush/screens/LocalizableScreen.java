@@ -25,6 +25,10 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Table table = new Table();
     protected final DialogConnect connectingDialog;
 
+    protected float glClearR = .96f;
+    protected float glClearG = .92f;
+    protected float glClearB = .92f;
+
     private boolean connected;
 
     LocalizableScreen(RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
@@ -56,8 +60,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     @Override
     public void render(float delta) {
         // redraw all
-        //Gdx.gl.glClearColor(.25f, .77f, .81f, 1);
-        Gdx.gl.glClearColor(.96f, .92f, .92f, 1);
+        Gdx.gl.glClearColor(glClearR, glClearG, glClearB, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
