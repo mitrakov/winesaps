@@ -3,6 +3,8 @@ package ru.mitrakov.self.rush.model;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import ru.mitrakov.self.rush.model.object.CellObject;
+
 /**
  * Created by mitrakov on 21.04.2017
  */
@@ -131,6 +133,16 @@ public class EventBus {
             this.myLives = myLives;
             this.enemyLives = enemyLives;
             this.reset = reset;
+        }
+    }
+    public static final class ThingChangedEvent extends Event {
+        public final CellObject oldThing;
+        public final CellObject newThing;
+        public final boolean mine;
+        ThingChangedEvent(CellObject oldThing, CellObject newThing, boolean mine) {
+            this.oldThing = oldThing;
+            this.newThing = newThing;
+            this.mine = mine;
         }
     }
 

@@ -134,8 +134,6 @@ public class Model {
     public volatile long roundStartTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
-    public volatile CellObject curThing;
-    public volatile CellObject enemyThing;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -185,6 +183,8 @@ public class Model {
     private IFileReader fileReader;
     private String hash = "";
     private boolean aggressor = true;
+    private CellObject curThing;
+    private CellObject enemyThing;
 
     public Model() {
         // create timer to ping the server (otherwise the server will make "signOut due to inaction")
@@ -807,21 +807,25 @@ public class Model {
     }
 
     public void setThing(int thingId) {
+        CellObject oldThing = curThing;
         curThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
             @Override
             public int next() {
                 return 0;
             }
         });
+        bus.raise(new EventBus.ThingChangedEvent(oldThing, curThing, true));
     }
 
     public void setEnemyThing(int thingId) {
+        CellObject oldThing = enemyThing;
         enemyThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
             @Override
             public int next() {
                 return 0;
             }
         });
+        bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
     }
 
     public void setLives(int myLives, int enemyLives) {

@@ -65,13 +65,8 @@ public class ScreenTraining extends LocalizableScreen {
     public void render(float delta) {
         super.render(delta);
 
-        // updating the thing
-        Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
-        btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
-
         // checking
         checkStarted();
-        checkNextMessage();
     }
 
     @Override
@@ -118,6 +113,19 @@ public class ScreenTraining extends LocalizableScreen {
                     if (curtains.size > 0)
                         curtains.removeFirst().remove();
                 }
+            }
+            if (event instanceof EventBus.ThingChangedEvent) {
+                EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
+                // 1) change button image
+                if (ev.mine) {
+                    Class clazz = ev.newThing != null ? ev.newThing.getClass() : CellObject.class;
+                    ImageButton.ImageButtonStyle style = btnThing.getStyle();
+                    if (style != null)
+                        style.imageUp = things.get(clazz);
+                }
+                // 2) show the next dialog tip
+                trainingDialog.next();
+                gui.setMovesAllowed(thing == null); // forbid moving to make a user use the umbrella (see note#1)
             }
         }
     }
@@ -170,14 +178,6 @@ public class ScreenTraining extends LocalizableScreen {
         if (!started && model.field != null) {
             started = true;
             trainingDialog.show(stage).next();
-        }
-    }
-
-    private void checkNextMessage() {
-        if (thing != model.curThing) {
-            thing = model.curThing;
-            trainingDialog.next();
-            gui.setMovesAllowed(thing == null); // forbid moving to make a user use the umbrella (see note#1)
         }
     }
 }

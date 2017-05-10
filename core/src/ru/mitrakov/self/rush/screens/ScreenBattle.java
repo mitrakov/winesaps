@@ -35,7 +35,6 @@ public class ScreenBattle extends LocalizableScreen {
 
     private boolean connected = true;
     private boolean outOfSync = false;
-    private CellObject curThing, enemyThing;
     private I18NBundle i18n;
 
     public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
@@ -75,17 +74,11 @@ public class ScreenBattle extends LocalizableScreen {
     public void render(float delta) {
         super.render(delta);
 
-        // updating the thing
-        Class clazz = model.curThing != null ? model.curThing.getClass() : CellObject.class;
-        btnThing.getStyle().imageUp = things.get(clazz); // here getStyle() != NULL
-
         // updating labels
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
         lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
 
         // checking
-        checkThing();
-        checkEnemyThing();
         checkAbilities();
         checkConnected();
     }
@@ -152,6 +145,20 @@ public class ScreenBattle extends LocalizableScreen {
             if (!ev.reset)
                 audioManager.sound("die");
         }
+        if (event instanceof EventBus.ThingChangedEvent) {
+            EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
+            // 1) change button image
+            if (ev.mine) {
+                Class clazz = ev.newThing != null ? ev.newThing.getClass() : CellObject.class;
+                ImageButton.ImageButtonStyle style = btnThing.getStyle();
+                if (style != null)
+                    style.imageUp = things.get(clazz);
+            }
+            // 2) play the sound
+            if (ev.oldThing != null && ev.newThing == null)
+                audioManager.sound(ev.oldThing.getClass().getSimpleName());
+            else audioManager.sound("thing");
+        }
         if (event instanceof EventBus.BattleNotFoundEvent) {
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             //audioManager.sound("..."); find appropriate sound!
@@ -206,8 +213,6 @@ public class ScreenBattle extends LocalizableScreen {
     }
 
     private void reset() {
-        curThing = model.curThing;
-        enemyThing = model.enemyThing;
         outOfSync = false;
         infoDialog.hide();
     }
@@ -218,24 +223,6 @@ public class ScreenBattle extends LocalizableScreen {
             for (Model.Ability ability : model.abilities) {
                 abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
             }
-        }
-    }
-
-    private void checkThing() {
-        if (curThing != model.curThing) {
-            if (curThing != null && model.curThing == null)
-                audioManager.sound(curThing.getClass().getSimpleName());
-            else audioManager.sound("thing");
-            curThing = model.curThing;
-        }
-    }
-
-    private void checkEnemyThing() {
-        if (enemyThing != model.enemyThing) {
-            if (enemyThing != null && model.enemyThing == null)
-                audioManager.sound(enemyThing.getClass().getSimpleName());
-            else audioManager.sound("thing");
-            enemyThing = model.enemyThing;
         }
     }
 
