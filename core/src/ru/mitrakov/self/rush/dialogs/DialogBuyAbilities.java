@@ -35,12 +35,15 @@ public class DialogBuyAbilities extends DialogFeat {
     }
 
     private final Model model;
-    private final Label lblPicture;
     private final Label lblCrystals;
     private final Label lblCurAbility;
     private final Label lblTotalCrystals;
+    private final Image imgGoods;
     private final List<Item> productsList;
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
+    private final TextureAtlas atlasGoods = new TextureAtlas(Gdx.files.internal("pack/goods.pack"));
+
+    private final ObjectMap<Model.Ability, Drawable> abilityIcons = new ObjectMap<Model.Ability, Drawable>(10);
 
     private I18NBundle i18n;
 
@@ -53,8 +56,8 @@ public class DialogBuyAbilities extends DialogFeat {
         productsList = new List<Item>(skin, "default");
         lblTotalCrystals = new Label("", skin, "default");
         lblCrystals = new Label("", skin, "default");
-        lblPicture = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
+        imgGoods = new Image();
 
         button("Buy", true); // text will be replaced in onLocaleChanged()
         button("Close");     // text will be replaced in onLocaleChanged()
@@ -76,12 +79,14 @@ public class DialogBuyAbilities extends DialogFeat {
 
     public void dispose() {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
+        atlasGoods.dispose();
     }
 
     private Array<Actor> loadTextures(AudioManager audioManager) {
         Array<Actor> res = new Array<Actor>();
 
         for (final Model.Ability ability : Model.Ability.values()) {
+            // == buttons ==
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
                 ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
@@ -94,6 +99,10 @@ public class DialogBuyAbilities extends DialogFeat {
                 }};
                 res.add(imageButton);
             }
+            // == images ==
+            region = atlasGoods.findRegion(ability.name());
+            if (region != null)
+                abilityIcons.put(ability, new TextureRegionDrawable(region));
         }
         return res;
     }
@@ -124,6 +133,7 @@ public class DialogBuyAbilities extends DialogFeat {
     private void init(Table table, final Array<Actor> abilities, Skin skin) {
         assert table != null && skin != null;
 
+        table.padTop(20);
         table.add(lblTotalCrystals);
         table.add(lblCrystals);
         table.row();
@@ -133,7 +143,7 @@ public class DialogBuyAbilities extends DialogFeat {
             }
         }}).colspan(2);
         table.row();
-        table.add(lblPicture).colspan(2);
+        table.add(imgGoods).colspan(2);
         table.row();
         table.add(lblCurAbility).colspan(2);
         table.row();
@@ -144,7 +154,7 @@ public class DialogBuyAbilities extends DialogFeat {
         assert i18n != null;
 
         lblCrystals.setText(String.valueOf(model.crystals));
-        lblPicture.setText("picture " + ability);
+        imgGoods.setDrawable(abilityIcons.get(ability));
         lblCurAbility.setText(ability.name());
 
         // updating products for a chosen ability

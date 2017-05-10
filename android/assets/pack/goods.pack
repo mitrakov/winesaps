@@ -1,0 +1,26 @@
+
+goods.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Sapper
+  rotate: false
+  xy: 2, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Shoes
+  rotate: false
+  xy: 76, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Snorkel
+  rotate: false
+  xy: 150, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
