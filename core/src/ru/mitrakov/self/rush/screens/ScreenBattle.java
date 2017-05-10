@@ -33,8 +33,6 @@ public class ScreenBattle extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
 
-    private int scores = 0;
-    private int lives = 0;
     private boolean connected = true;
     private boolean outOfSync = false;
     private CellObject curThing, enemyThing;
@@ -83,12 +81,9 @@ public class ScreenBattle extends LocalizableScreen {
 
         // updating labels
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblScore.setText(i18n.format("battle.score", model.score1, model.score2)); // i18n != NULL (assert omitted)
         lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
 
         // checking
-        checkScore();
-        checkLives();
         checkThing();
         checkEnemyThing();
         checkAbilities();
@@ -146,6 +141,17 @@ public class ScreenBattle extends LocalizableScreen {
             finishedDialog.show(stage);
             audioManager.music("theme");
         }
+        if (event instanceof EventBus.ScoreChangedEvent) {
+            EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
+            lblScore.setText(i18n.format("battle.score", ev.score1, ev.score2));
+            if (ev.score1 + ev.score2 > 0)
+                audioManager.sound("food");
+        }
+        if (event instanceof EventBus.LivesChangedEvent) {
+            EventBus.LivesChangedEvent ev = (EventBus.LivesChangedEvent) event;
+            if (!ev.reset)
+                audioManager.sound("die");
+        }
         if (event instanceof EventBus.BattleNotFoundEvent) {
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             //audioManager.sound("..."); find appropriate sound!
@@ -200,8 +206,6 @@ public class ScreenBattle extends LocalizableScreen {
     }
 
     private void reset() {
-        scores = model.score1 + model.score2;
-        lives = model.myLives + model.enemyLives;
         curThing = model.curThing;
         enemyThing = model.enemyThing;
         outOfSync = false;
@@ -214,22 +218,6 @@ public class ScreenBattle extends LocalizableScreen {
             for (Model.Ability ability : model.abilities) {
                 abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
             }
-        }
-    }
-
-    private void checkScore() {
-        if (scores != model.score1 + model.score2) {
-            scores = model.score1 + model.score2;
-            audioManager.sound("food");
-        }
-    }
-
-    private void checkLives() {
-        int newLives = model.myLives + model.enemyLives;
-        if (lives != newLives) {
-            if (newLives < lives) // someone died
-                audioManager.sound("die");
-            lives = newLives;
         }
     }
 

@@ -114,6 +114,25 @@ public class EventBus {
             this.character = character;
         }
     }
+    public static final class ScoreChangedEvent extends Event {
+        public final int score1;
+        public final int score2;
+        ScoreChangedEvent(int score1, int score2) {
+            this.score1 = score1;
+            this.score2 = score2;
+        }
+    }
+    @SuppressWarnings("WeakerAccess")
+    public static final class LivesChangedEvent extends Event {
+        public final int myLives;
+        public final int enemyLives;
+        public final boolean reset;
+        LivesChangedEvent(int myLives, int enemyLives, boolean reset) {
+            this.myLives = myLives;
+            this.enemyLives = enemyLives;
+            this.reset = reset;
+        }
+    }
 
 
     // =====================================

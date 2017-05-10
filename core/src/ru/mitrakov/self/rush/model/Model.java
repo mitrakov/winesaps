@@ -125,12 +125,8 @@ public class Model {
     public volatile boolean promocodeValid = false;
     public volatile boolean newbie = true;
     public volatile int crystals = 0;
-    public volatile int score1 = 0;
-    public volatile int score2 = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
-    public volatile int myLives = 2;
-    public volatile int enemyLives = 2;
     public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
     public volatile int stylePack = 0;
@@ -757,7 +753,6 @@ public class Model {
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
                              int enemyLives) {
         curThing = enemyThing = curActor = null;
-        score1 = score2 = 0;
 
         Character[] characters = Character.values();
         if (0 <= character1 && character1 < characters.length)
@@ -765,12 +760,12 @@ public class Model {
         if (0 <= character2 && character2 < characters.length)
             this.character2 = characters[character2];
 
-        this.myLives = myLives;
-        this.enemyLives = enemyLives;
         roundNumber = number;
         roundLengthSec = timeSec;
         this.aggressor = aggressor;
         roundStartTime = System.currentTimeMillis();
+        bus.raise(new EventBus.ScoreChangedEvent(0, 0));
+        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, true));
     }
 
     public void setNewField(int[] fieldData) {
@@ -808,8 +803,7 @@ public class Model {
     }
 
     public void setScore(int score1, int score2) {
-        this.score1 = score1;
-        this.score2 = score2;
+        bus.raise(new EventBus.ScoreChangedEvent(score1, score2));
     }
 
     public void setThing(int thingId) {
@@ -831,8 +825,7 @@ public class Model {
     }
 
     public void setLives(int myLives, int enemyLives) {
-        this.myLives = myLives;
-        this.enemyLives = enemyLives;
+        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, false));
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {

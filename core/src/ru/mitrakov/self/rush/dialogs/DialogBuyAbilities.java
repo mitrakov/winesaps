@@ -155,7 +155,7 @@ public class DialogBuyAbilities extends DialogFeat {
 
         lblCrystals.setText(String.valueOf(model.crystals));
         imgGoods.setDrawable(abilityIcons.get(ability));
-        lblCurAbility.setText(ability.name());
+        lblCurAbility.setText(i18n.format(String.format("ability.%s", ability.name().toLowerCase())));
 
         // updating products for a chosen ability
         Collection<Product> products = model.getProductsByAbility(ability);

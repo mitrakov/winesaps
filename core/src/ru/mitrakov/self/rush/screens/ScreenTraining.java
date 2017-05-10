@@ -29,7 +29,6 @@ public class ScreenTraining extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
-    private int score = 0;
     private CellObject thing = null;
     private boolean started = false;
 
@@ -104,13 +103,21 @@ public class ScreenTraining extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        if (event instanceof EventBus.RoundFinishedEvent) {
-            if (model.newbie) { // to avoid collisions with BattleScreen
+        if (model.newbie) { // to avoid collisions with BattleScreen
+            if (event instanceof EventBus.RoundFinishedEvent) {
                 model.newbie = false;
                 gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
                 model.giveUp();
                 trainingDialog.remove();
                 finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
+            }
+            if (event instanceof EventBus.ScoreChangedEvent) {
+                EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
+                if (ev.score1 + ev.score2 > 0) {
+                    trainingDialog.next();
+                    if (curtains.size > 0)
+                        curtains.removeFirst().remove();
+                }
             }
         }
     }
@@ -167,12 +174,6 @@ public class ScreenTraining extends LocalizableScreen {
     }
 
     private void checkNextMessage() {
-        if (score != model.score1) {
-            score = model.score1;
-            trainingDialog.next();
-            if (curtains.size > 0)
-                curtains.removeFirst().remove();
-        }
         if (thing != model.curThing) {
             thing = model.curThing;
             trainingDialog.next();
