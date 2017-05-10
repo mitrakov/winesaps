@@ -29,9 +29,6 @@ public class ScreenTraining extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
-    private CellObject thing = null;
-    private boolean started = false;
-
     public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
         super(game, model, psObject, skin, manager);
 
@@ -59,14 +56,6 @@ public class ScreenTraining extends LocalizableScreen {
         }};
 
         initComponents();
-    }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-
-        // checking
-        checkStarted();
     }
 
     @Override
@@ -108,24 +97,25 @@ public class ScreenTraining extends LocalizableScreen {
             }
             if (event instanceof EventBus.ScoreChangedEvent) {
                 EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
-                if (ev.score1 + ev.score2 > 0) {
-                    trainingDialog.next();
-                    if (curtains.size > 0)
-                        curtains.removeFirst().remove();
-                }
+                boolean justStarted = ev.score1 + ev.score2 == 0;
+                if (justStarted)
+                    trainingDialog.show(stage);
+                else if (curtains.size > 0)
+                    curtains.removeFirst().remove();
+                trainingDialog.next();
             }
             if (event instanceof EventBus.ThingChangedEvent) {
                 EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
-                // 1) change button image
                 if (ev.mine) {
+                    // 1) change button image
                     Class clazz = ev.newThing != null ? ev.newThing.getClass() : CellObject.class;
                     ImageButton.ImageButtonStyle style = btnThing.getStyle();
                     if (style != null)
                         style.imageUp = things.get(clazz);
+                    // 2) show the next dialog tip
+                    trainingDialog.next();
+                    gui.setMovesAllowed(ev.newThing == null); // forbid moving to make a user use the umbrella (note#1)
                 }
-                // 2) show the next dialog tip
-                trainingDialog.next();
-                gui.setMovesAllowed(thing == null); // forbid moving to make a user use the umbrella (see note#1)
             }
         }
     }
@@ -172,13 +162,6 @@ public class ScreenTraining extends LocalizableScreen {
                 .addMessage(atlas.findRegion("msg4"), i18n.format("train.msg4.text"), i18n.format("train.msg4.action"))
                 .addMessage(atlas.findRegion("msg5"), i18n.format("train.msg5.text"), i18n.format("train.msg5.action"))
                 .addMessage(atlas.findRegion("msg6"), i18n.format("train.msg6.text"), i18n.format("train.msg6.action"));
-    }
-
-    private void checkStarted() {
-        if (!started && model.field != null) {
-            started = true;
-            trainingDialog.show(stage).next();
-        }
     }
 }
 
