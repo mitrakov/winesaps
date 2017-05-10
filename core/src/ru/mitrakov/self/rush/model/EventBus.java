@@ -24,9 +24,9 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
-    public static final class AbilitiesUpdatedEvent extends Event {
+    public static final class AbilitiesExpireUpdatedEvent extends Event {
         public final Iterable<Model.Ability> items;
-        AbilitiesUpdatedEvent(Iterable<Model.Ability> items) {
+        AbilitiesExpireUpdatedEvent(Iterable<Model.Ability> items) {
             this.items = items;
         }
     }
@@ -114,6 +114,12 @@ public class EventBus {
         public final Model.Character character;
         CharacterChangedEvent(Model.Character character) {
             this.character = character;
+        }
+    }
+    public static final class AbilitiesChangedEvent extends Event {
+        public final Iterable<Model.Ability> items;
+        AbilitiesChangedEvent(Iterable<Model.Ability> items) {
+            this.items = items;
         }
     }
     public static final class ScoreChangedEvent extends Event {

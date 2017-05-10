@@ -143,7 +143,6 @@ public class Model {
     // all 'foreach' operations are considered to be safe
     // ==================================================
 
-    public final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>();
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
@@ -179,6 +178,7 @@ public class Model {
     // ============================
 
     private final Object locker = new Object();
+    private final Collection<Ability> abilities = new LinkedList<Ability>();
     private ISender sender;
     private IFileReader fileReader;
     private String hash = "";
@@ -616,7 +616,7 @@ public class Model {
         abilityExpireTime = System.currentTimeMillis();
         // fire the event (we use TreeSet to implicitly sort the key set; of course we may use ConcurrentSkipListMap
         // for "abilityExpireMap", but it's not supported by API Level 8, so we use ConcurrentHashMap)
-        bus.raise(new EventBus.AbilitiesUpdatedEvent(new TreeSet<Ability>(abilityExpireMap.keySet())));
+        bus.raise(new EventBus.AbilitiesExpireUpdatedEvent(new TreeSet<Ability>(abilityExpireMap.keySet())));
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null && history.isEmpty()) {
@@ -873,6 +873,7 @@ public class Model {
                     abilities.add(array[id]);
             }
         }
+        bus.raise(new EventBus.AbilitiesChangedEvent(abilities));
     }
 
     public void setUserBusy(boolean aggressor) {

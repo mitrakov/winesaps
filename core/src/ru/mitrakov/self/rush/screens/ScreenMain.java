@@ -407,8 +407,8 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.FriendRemovedEvent) {
             updateFriends(model.friends);
         }
-        if (event instanceof EventBus.AbilitiesUpdatedEvent) {
-            EventBus.AbilitiesUpdatedEvent ev = (EventBus.AbilitiesUpdatedEvent) event;
+        if (event instanceof EventBus.AbilitiesExpireUpdatedEvent) {
+            EventBus.AbilitiesExpireUpdatedEvent ev = (EventBus.AbilitiesExpireUpdatedEvent) event;
             updateAbilities(ev.items);
         }
         if (event instanceof EventBus.InviteEvent) {

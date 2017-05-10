@@ -79,7 +79,6 @@ public class ScreenBattle extends LocalizableScreen {
         lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
 
         // checking
-        checkAbilities();
         checkConnected();
     }
 
@@ -159,6 +158,13 @@ public class ScreenBattle extends LocalizableScreen {
                 audioManager.sound(ev.oldThing.getClass().getSimpleName());
             else audioManager.sound("thing");
         }
+        if (event instanceof EventBus.AbilitiesChangedEvent) {
+            EventBus.AbilitiesChangedEvent ev = (EventBus.AbilitiesChangedEvent) event;
+            abilityButtons.clear();
+            for (Model.Ability ability : ev.items) {
+                abilityButtons.add(abilities.get(ability)).spaceLeft(10);
+            }
+        }
         if (event instanceof EventBus.BattleNotFoundEvent) {
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             //audioManager.sound("..."); find appropriate sound!
@@ -215,15 +221,6 @@ public class ScreenBattle extends LocalizableScreen {
     private void reset() {
         outOfSync = false;
         infoDialog.hide();
-    }
-
-    private void checkAbilities() {
-        if (abilityButtons.getColumns() != model.abilities.size()) {
-            abilityButtons.clear();
-            for (Model.Ability ability : model.abilities) {
-                abilityButtons.add(abilities.get(ability)).spaceLeft(10); // @mitrakov: adding NULL is safe
-            }
-        }
     }
 
     private void checkConnected() {
