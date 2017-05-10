@@ -3,31 +3,31 @@ char.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Cat
-  rotate: false
-  xy: 0, 0
-  size: 160, 200
-  orig: 160, 200
-  offset: 0, 0
-  index: -1
 Hedgehog
   rotate: false
-  xy: 162, 0
-  size: 160, 200
-  orig: 160, 200
-  offset: 0, 0
-  index: -1
-Rabbit
-  rotate: false
-  xy: 324, 0
-  size: 160, 200
-  orig: 160, 200
+  xy: 2, 22
+  size: 184, 200
+  orig: 184, 200
   offset: 0, 0
   index: -1
 Squirrel
   rotate: false
-  xy: 486, 0
-  size: 160, 200
-  orig: 160, 200
+  xy: 188, 22
+  size: 162, 200
+  orig: 162, 200
+  offset: 0, 0
+  index: -1
+Rabbit
+  rotate: false
+  xy: 352, 2
+  size: 116, 220
+  orig: 116, 220
+  offset: 0, 0
+  index: -1
+Cat
+  rotate: false
+  xy: 470, 62
+  size: 133, 160
+  orig: 133, 160
   offset: 0, 0
   index: -1

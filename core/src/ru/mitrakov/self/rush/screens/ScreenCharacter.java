@@ -119,7 +119,7 @@ public class ScreenCharacter extends LocalizableScreen {
         table.add(btnNext).colspan(checkboxes.size).width(200).height(50).right();
 
         for (Actor img : images) {
-            tableMain.add(img).space(20);
+            tableMain.add(img).bottom().space(20);
         }
         tableMain.row();
         for (TextButton btn : checkboxes) {
