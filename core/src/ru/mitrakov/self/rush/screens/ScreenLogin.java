@@ -270,7 +270,8 @@ public class ScreenLogin extends LocalizableScreen {
         tableMain.add(txtPassword).width(305).height(50);
         tableMain.row().spaceTop(30);
         tableMain.add(buttons).colspan(2);
-        if (shiftedByKeyboard) shiftUp();
+        if (shiftedByKeyboard)
+            shiftUp();
 
         stage.setKeyboardFocus(focused);
     }
@@ -286,23 +287,26 @@ public class ScreenLogin extends LocalizableScreen {
         buttons.add(btnBack).width(120).height(46).space(20);
         buttons.add(btnOkSignUp).width(120).height(46).space(20);
 
+        final int txtHeight = shiftedByKeyboard ? 40 : 50; // make textboxes smaller when OnScreen Keyboard is visible
+
         tableMain.clear();
-        tableMain.row().space(20);
+        tableMain.row().space(10);
         tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin).width(305).height(50).colspan(2);
-        tableMain.row().space(20);
+        tableMain.add(txtLogin).width(305).height(txtHeight).colspan(2);
+        tableMain.row().space(10);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(305).height(50).colspan(2);
-        tableMain.row().space(20);
+        tableMain.add(txtPassword).width(305).height(txtHeight).colspan(2);
+        tableMain.row().space(10);
         tableMain.add(lblEmail).align(Align.left);
-        tableMain.add(txtEmail).width(305).height(50).colspan(2);
-        tableMain.row().space(20);
+        tableMain.add(txtEmail).width(305).height(txtHeight).colspan(2);
+        tableMain.row().space(10);
         tableMain.add(chkPromocode);
-        tableMain.add(txtPromocode).width(240).height(50).left();
+        tableMain.add(txtPromocode).width(240).height(txtHeight).left();
         tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
         tableMain.row().spaceTop(30);
         tableMain.add(buttons).colspan(3);
-        if (shiftedByKeyboard) shiftUp();
+        if (shiftedByKeyboard)
+            shiftUp();
 
         stage.setKeyboardFocus(focused);
     }
