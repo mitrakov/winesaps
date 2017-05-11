@@ -122,6 +122,12 @@ public class EventBus {
             this.items = items;
         }
     }
+    public static final class RoundStartedEvent extends Event {
+        public final int number;
+        RoundStartedEvent(int number) {
+            this.number = number;
+        }
+    }
     public static final class ScoreChangedEvent extends Event {
         public final int score1;
         public final int score2;

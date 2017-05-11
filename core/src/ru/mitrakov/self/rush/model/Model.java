@@ -125,7 +125,6 @@ public class Model {
     public volatile int crystals = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
-    public volatile int roundNumber = 0;
     public volatile int roundLengthSec = 60;
     public volatile int stylePack = 0;
     public volatile long abilityExpireTime = 0;
@@ -761,10 +760,10 @@ public class Model {
         if (0 <= character2 && character2 < characters.length)
             this.character2 = characters[character2];
 
-        roundNumber = number;
         roundLengthSec = timeSec;
         this.aggressor = aggressor;
         roundStartTime = System.currentTimeMillis();
+        bus.raise(new EventBus.RoundStartedEvent(number));
         bus.raise(new EventBus.ScoreChangedEvent(0, 0));
         bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, true));
     }

@@ -313,12 +313,6 @@ public class ScreenMain extends LocalizableScreen {
         lblName.setText(model.name); // if text is not changed, setText just returns
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
-        // changing screens
-        if (model.field != null) {
-            dialupDialog.hide();
-            game.setNextScreen();
-        }
-
         // checking MENU button on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.MENU))
             if (psObject != null)
@@ -391,6 +385,13 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
+        if (event instanceof EventBus.RoundStartedEvent) {
+            EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
+            if (game.getScreen() == this && ev.number == 0) {
+                dialupDialog.hide();
+                game.setNextScreen();
+            }
+        }
         if (event instanceof EventBus.RatingUpdatedEvent) {
             EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
             updateRating(ev.items);

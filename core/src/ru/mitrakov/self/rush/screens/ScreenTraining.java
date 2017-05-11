@@ -87,20 +87,24 @@ public class ScreenTraining extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        if (model.newbie) { // to avoid collisions with BattleScreen
+        if (game.getScreen() == this) { // to avoid collisions with BattleScreen
+            if (event instanceof EventBus.RoundStartedEvent) {
+                EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
+                if (ev.number == 0)
+                    trainingDialog.show(stage);
+            }
             if (event instanceof EventBus.RoundFinishedEvent) {
-                model.newbie = false;
-                gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
-                model.giveUp();
-                trainingDialog.remove();
-                finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
+                if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
+                    model.newbie = false;
+                    gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+                    model.giveUp();
+                    trainingDialog.remove();
+                    finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
+                }
             }
             if (event instanceof EventBus.ScoreChangedEvent) {
                 EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
-                boolean justStarted = ev.score1 + ev.score2 == 0;
-                if (justStarted)
-                    trainingDialog.show(stage);
-                else if (curtains.size > 0)
+                if (ev.score1 > 0 && curtains.size > 0)
                     curtains.removeFirst().remove();
                 trainingDialog.next();
             }
