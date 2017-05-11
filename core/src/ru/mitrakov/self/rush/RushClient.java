@@ -57,9 +57,6 @@ public class RushClient extends Game implements Localizable {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
 
-        // network is a Thread so starting in a constructor is a bad practice (by FindBugs)
-        network.start(); // recommended to start after model.loadSettings()
-
         i18nEn = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("en"));
         i18nRu = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("ru"));
 
@@ -71,6 +68,9 @@ public class RushClient extends Game implements Localizable {
         screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18nEn);
         screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18nEn);
         setScreen(screenLogin);
+
+        // starting network Thread (recommended to start after building all screens to avoid skipping events)
+        network.start();
 
         // catch Android buttons
         Gdx.input.setCatchBackKey(true);

@@ -121,8 +121,6 @@ public class Model {
     public volatile Character character1 = Character.None;
     public volatile Character character2 = Character.None;
     public volatile boolean connected = true;
-    public volatile boolean authorized = false;
-    public volatile boolean promocodeValid = false;
     public volatile boolean newbie = true;
     public volatile int crystals = 0;
     public volatile int totalScore1 = 0;
@@ -181,8 +179,9 @@ public class Model {
     private final Collection<Ability> abilities = new LinkedList<Ability>();
     private ISender sender;
     private IFileReader fileReader;
-    private String hash = "";
+    private boolean authorized = false;
     private boolean aggressor = true;
+    private String hash = "";
     private CellObject curThing;
     private CellObject enemyThing;
 
@@ -565,6 +564,7 @@ public class Model {
                 saveSettings(); // to write empty hash to a local storage
             }
         }
+        bus.raise(new EventBus.AuthorizedChangedEvent(authorized));
     }
 
     public void setUserInfo(int[] data) {
@@ -743,7 +743,7 @@ public class Model {
     }
 
     public void setPromocodeValid(boolean valid) {
-        promocodeValid = valid;
+        bus.raise(new EventBus.PromocodeValidChanged(valid));
     }
 
     public void setPromocodeDone(String name, boolean inviter, int crystals) {

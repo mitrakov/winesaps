@@ -314,8 +314,6 @@ public class ScreenMain extends LocalizableScreen {
         lblCrystalsData.setText(String.valueOf(model.crystals));
 
         // changing screens
-        if (!model.authorized)
-            game.setLoginScreen();
         if (model.field != null) {
             dialupDialog.hide();
             game.setNextScreen();
@@ -461,6 +459,11 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
             imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character + "64")));
+        }
+        if (event instanceof EventBus.AuthorizedChangedEvent) {
+            EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
+            if (!ev.authorized)
+                game.setLoginScreen();
         }
     }
 

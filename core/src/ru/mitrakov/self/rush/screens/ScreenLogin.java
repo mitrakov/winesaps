@@ -162,14 +162,6 @@ public class ScreenLogin extends LocalizableScreen {
     }
 
     @Override
-    public void render(float delta) {
-        super.render(delta);
-        if (model.authorized)
-            game.setNextScreen();
-        imgValid.setDrawable(model.promocodeValid ? textureValid : textureInvalid); // if not changed, setter returns
-    }
-
-    @Override
     public void show() {
         super.show();
         setStartDialog();
@@ -201,6 +193,15 @@ public class ScreenLogin extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
+        if (event instanceof EventBus.AuthorizedChangedEvent) {
+            EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
+            if (ev.authorized)
+                game.setNextScreen();
+        }
+        if (event instanceof EventBus.PromocodeValidChanged) {
+            EventBus.PromocodeValidChanged ev = (EventBus.PromocodeValidChanged) event;
+            imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
+        }
         if (event instanceof EventBus.IncorrectCredentialsEvent)
             infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
         if (event instanceof EventBus.IncorrectNameEvent)

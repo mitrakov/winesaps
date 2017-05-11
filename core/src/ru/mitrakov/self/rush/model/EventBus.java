@@ -151,10 +151,22 @@ public class EventBus {
             this.mine = mine;
         }
     }
+    public static final class AuthorizedChangedEvent extends Event {
+        public final boolean authorized;
+        AuthorizedChangedEvent(boolean authorized) {
+            this.authorized = authorized;
+        }
+    }
     public static final class ConnectedChangeEvent extends Event {
         public final boolean connected;
-        public ConnectedChangeEvent(boolean connected) {
+        ConnectedChangeEvent(boolean connected) {
             this.connected = connected;
+        }
+    }
+    public static final class PromocodeValidChanged extends Event {
+        public final boolean valid;
+        PromocodeValidChanged(boolean valid) {
+            this.valid = valid;
         }
     }
 
