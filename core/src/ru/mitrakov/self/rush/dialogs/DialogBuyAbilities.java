@@ -46,6 +46,7 @@ public class DialogBuyAbilities extends DialogFeat {
     private final ObjectMap<Model.Ability, Drawable> abilityIcons = new ObjectMap<Model.Ability, Drawable>(10);
 
     private I18NBundle i18n;
+    private int crystals = 0;
 
     public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
         super("", skin, style);
@@ -77,9 +78,36 @@ public class DialogBuyAbilities extends DialogFeat {
             model.buyProduct(productsList.getSelected().product);
     }
 
+    @Override
+    public void onLocaleChanged(I18NBundle bundle) {
+        assert bundle != null;
+        this.i18n = bundle;
+
+        lblTotalCrystals.setText(bundle.format("dialog.abilities.total"));
+
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(bundle.format("dialog.abilities.header"));
+        if (getButtonTable() != null) {
+            Array<Actor> buttons = getButtonTable().getChildren();
+            assert buttons != null;
+            if (buttons.size == 2) {
+                Actor buy = buttons.first();
+                if (buy instanceof TextButton) // stackoverflow.com/questions/2950319
+                    ((TextButton) buy).setText(bundle.format("buy"));
+                Actor close = buttons.get(1);
+                if (close instanceof TextButton) // stackoverflow.com/questions/2950319
+                    ((TextButton) close).setText(bundle.format("close"));
+            }
+        }
+    }
+
     public void dispose() {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
         atlasGoods.dispose();
+    }
+
+    public void setCrystals(int crystals) {
+        this.crystals = crystals;
     }
 
     private Array<Actor> loadTextures(AudioManager audioManager) {
@@ -107,29 +135,6 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
-    @Override
-    public void onLocaleChanged(I18NBundle bundle) {
-        assert bundle != null;
-        this.i18n = bundle;
-
-        lblTotalCrystals.setText(bundle.format("dialog.abilities.total"));
-
-        if (getTitleLabel() != null)
-            getTitleLabel().setText(bundle.format("dialog.abilities.header"));
-        if (getButtonTable() != null) {
-            Array<Actor> buttons = getButtonTable().getChildren();
-            assert buttons != null;
-            if (buttons.size == 2) {
-                Actor buy = buttons.first();
-                if (buy instanceof TextButton) // stackoverflow.com/questions/2950319
-                    ((TextButton) buy).setText(bundle.format("buy"));
-                Actor close = buttons.get(1);
-                if (close instanceof TextButton) // stackoverflow.com/questions/2950319
-                    ((TextButton) close).setText(bundle.format("close"));
-            }
-        }
-    }
-
     private void init(Table table, final Array<Actor> abilities, Skin skin) {
         assert table != null && skin != null;
 
@@ -153,7 +158,7 @@ public class DialogBuyAbilities extends DialogFeat {
     private void rebuildContent(Model.Ability ability) {
         assert i18n != null;
 
-        lblCrystals.setText(String.valueOf(model.crystals));
+        lblCrystals.setText(String.valueOf(crystals));
         imgGoods.setDrawable(abilityIcons.get(ability));
         lblCurAbility.setText(i18n.format(String.format("ability.%s", ability.name().toLowerCase())));
 

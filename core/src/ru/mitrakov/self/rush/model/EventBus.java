@@ -24,6 +24,18 @@ public class EventBus {
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class NameChangedEvent extends Event {
+        public final String name;
+        NameChangedEvent(String name) {
+            this.name = name;
+        }
+    }
+    public static final class CrystalChangedEvent extends Event {
+        public final int crystals;
+        public CrystalChangedEvent(int crystals) {
+            this.crystals = crystals;
+        }
+    }
     public static final class AbilitiesExpireUpdatedEvent extends Event {
         public final Iterable<Model.Ability> items;
         AbilitiesExpireUpdatedEvent(Iterable<Model.Ability> items) {

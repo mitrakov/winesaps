@@ -310,13 +310,9 @@ public class ScreenMain extends LocalizableScreen {
     public void render(float delta) {
         super.render(delta);
 
-        lblName.setText(model.name); // if text is not changed, setText just returns
-        lblCrystalsData.setText(String.valueOf(model.crystals));
-
         // checking MENU button on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.MENU))
-            if (psObject != null)
-                settingsDialog.show(stage);
+            settingsDialog.show(stage);
     }
 
     @Override
@@ -385,6 +381,15 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
+        if (event instanceof EventBus.NameChangedEvent) {
+            EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
+            lblName.setText(ev.name);
+        }
+        if (event instanceof EventBus.CrystalChangedEvent) {
+            EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
+            lblCrystalsData.setText(String.valueOf(ev.crystals));
+            buyAbilitiesDialog.setCrystals(ev.crystals);
+        }
         if (event instanceof EventBus.RoundStartedEvent) {
             EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
             if (game.getScreen() == this && ev.number == 0) {

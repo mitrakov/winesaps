@@ -122,7 +122,6 @@ public class Model {
     public volatile Character character2 = Character.None;
     public volatile boolean connected = true;
     public volatile boolean newbie = true;
-    public volatile int crystals = 0;
     public volatile int totalScore1 = 0;
     public volatile int totalScore2 = 0;
     public volatile int roundLengthSec = 60;
@@ -229,6 +228,7 @@ public class Model {
                     languageEn = settings[0].equals("e");
                     notifyNewBattles = settings[1].equals("1");
                     name = settings[2];
+                    bus.raise(new EventBus.NameChangedEvent(name));
                     if (settings.length > 3)
                         hash = settings[3];
                 }
@@ -576,6 +576,7 @@ public class Model {
             bld.append((char) data[i]);
         }
         name = bld.toString();
+        bus.raise(new EventBus.NameChangedEvent(name));
         i++;
 
         // parse promo code
@@ -595,8 +596,10 @@ public class Model {
         }
 
         // parse crystals
-        if (i + 3 < data.length)
-            crystals = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // what if > 2*10^9?
+        if (i + 3 < data.length) {
+            int crystals = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]);
+            bus.raise(new EventBus.CrystalChangedEvent(crystals));
+        }
         i += 4;
 
         // parse abilities
