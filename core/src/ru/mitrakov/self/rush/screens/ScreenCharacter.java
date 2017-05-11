@@ -60,6 +60,10 @@ public class ScreenCharacter extends LocalizableScreen {
     public void handleEvent(EventBus.Event event) {
     }
 
+    @Override
+    public void handleEventBackground(EventBus.Event event) {
+    }
+
     private Array<Actor> init() {
         Array<Actor> result = new Array<Actor>(Model.Character.values().length);
 

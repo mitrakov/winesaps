@@ -31,7 +31,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
-    LocalizableScreen(RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+    LocalizableScreen(final RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
         assert game != null && model != null && skin != null && audioManager != null; // psObject may be NULL
         this.game = game;
         this.model = model;
@@ -44,13 +44,16 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         stage.addActor(table);
 
         // adding event bus listener (subclasses must implement handleEvent() method)
+        final Screen self = this;
         model.bus.addListener(new EventBus.Listener() {
             @Override
             public void OnEvent(final EventBus.Event event) {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        handleEvent(event);
+                        if (game.getScreen() == self)
+                            handleEvent(event);
+                        handleEventBackground(event);
                     }
                 });
             }
@@ -101,4 +104,5 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     }
 
     public abstract void handleEvent(EventBus.Event event);
+    public abstract void handleEventBackground(EventBus.Event event);
 }

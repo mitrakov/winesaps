@@ -87,41 +87,45 @@ public class ScreenTraining extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        if (game.getScreen() == this) { // to avoid collisions with BattleScreen
-            if (event instanceof EventBus.RoundStartedEvent) {
-                EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
-                if (ev.number == 0)
-                    trainingDialog.show(stage);
-            }
-            if (event instanceof EventBus.RoundFinishedEvent) {
-                if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
-                    model.newbie = false;
-                    gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
-                    model.giveUp();
-                    trainingDialog.remove();
-                    finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
-                }
-            }
-            if (event instanceof EventBus.ScoreChangedEvent) {
-                EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
-                if (ev.score1 > 0 && curtains.size > 0)
-                    curtains.removeFirst().remove();
-                trainingDialog.next();
-            }
-            if (event instanceof EventBus.ThingChangedEvent) {
-                EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
-                if (ev.mine) {
-                    // 1) change button image
-                    Class clazz = ev.newThing != null ? ev.newThing.getClass() : CellObject.class;
-                    ImageButton.ImageButtonStyle style = btnThing.getStyle();
-                    if (style != null)
-                        style.imageUp = things.get(clazz);
-                    // 2) show the next dialog tip
-                    trainingDialog.next();
-                    gui.setMovesAllowed(ev.newThing == null); // forbid moving to make a user use the umbrella (note#1)
-                }
+        if (event instanceof EventBus.RoundStartedEvent) {
+            EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
+            if (ev.number == 0)
+                trainingDialog.show(stage);
+        }
+        if (event instanceof EventBus.RoundFinishedEvent) {
+            if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
+                model.newbie = false;
+                gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
+                model.giveUp();
+                trainingDialog.remove();
+                finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
             }
         }
+        if (event instanceof EventBus.ScoreChangedEvent) {
+            EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
+            if (ev.score1 > 0 && curtains.size > 0)
+                curtains.removeFirst().remove();
+            trainingDialog.next();
+        }
+        if (event instanceof EventBus.ThingChangedEvent) {
+            EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
+            if (ev.mine) {
+                // 1) change button image
+                Class clazz = ev.newThing != null ? ev.newThing.getClass() : CellObject.class;
+                ImageButton.ImageButtonStyle style = btnThing.getStyle();
+                if (style != null)
+                    style.imageUp = things.get(clazz);
+                // 2) show the next dialog tip
+                if (ev.oldThing != null || ev.newThing != null)
+                    trainingDialog.next();
+                // 3) forbid moving to make a user use the umbrella (note#1)
+                gui.setMovesAllowed(ev.newThing == null);
+            }
+        }
+    }
+
+    @Override
+    public void handleEventBackground(EventBus.Event event) {
     }
 
     private void loadTextures() {

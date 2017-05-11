@@ -198,10 +198,6 @@ public class ScreenLogin extends LocalizableScreen {
             if (ev.authorized)
                 game.setNextScreen();
         }
-        if (event instanceof EventBus.PromocodeValidChanged) {
-            EventBus.PromocodeValidChanged ev = (EventBus.PromocodeValidChanged) event;
-            imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
-        }
         if (event instanceof EventBus.IncorrectCredentialsEvent)
             infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
         if (event instanceof EventBus.IncorrectNameEvent)
@@ -212,6 +208,14 @@ public class ScreenLogin extends LocalizableScreen {
             infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
         if (event instanceof EventBus.SignUpErrorEvent)
             infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
+    }
+
+    @Override
+    public void handleEventBackground(EventBus.Event event) {
+        if (event instanceof EventBus.PromocodeValidChanged) {
+            EventBus.PromocodeValidChanged ev = (EventBus.PromocodeValidChanged) event;
+            imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
+        }
     }
 
     private Actor createLangTable(AudioManager audioManager) {

@@ -381,62 +381,18 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         assert i18n != null;
-        if (event instanceof EventBus.NameChangedEvent) {
-            EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
-            lblName.setText(ev.name);
-        }
-        if (event instanceof EventBus.CrystalChangedEvent) {
-            EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
-            lblCrystalsData.setText(String.valueOf(ev.crystals));
-            buyAbilitiesDialog.setCrystals(ev.crystals);
+        if (event instanceof EventBus.AuthorizedChangedEvent) {
+            EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
+            if (!ev.authorized)
+                game.setLoginScreen();
         }
         if (event instanceof EventBus.RoundStartedEvent) {
-            EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
-            if (game.getScreen() == this && ev.number == 0) {
-                dialupDialog.hide();
-                game.setNextScreen();
-            }
-        }
-        if (event instanceof EventBus.RatingUpdatedEvent) {
-            EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
-            updateRating(ev.items);
-        }
-        if (event instanceof EventBus.FriendListUpdatedEvent) {
-            EventBus.FriendListUpdatedEvent ev = (EventBus.FriendListUpdatedEvent) event;
-            updateFriends(ev.items);
-        }
-        if (event instanceof EventBus.FriendAddedEvent) {
-            updateFriends(model.friends);
-        }
-        if (event instanceof EventBus.FriendRemovedEvent) {
-            updateFriends(model.friends);
-        }
-        if (event instanceof EventBus.AbilitiesExpireUpdatedEvent) {
-            EventBus.AbilitiesExpireUpdatedEvent ev = (EventBus.AbilitiesExpireUpdatedEvent) event;
-            updateAbilities(ev.items);
+            dialupDialog.hide();
+            game.setNextScreen();
         }
         if (event instanceof EventBus.InviteEvent) {
             EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
             incomingDialog.setArguments(ev.enemy, ev.enemySid).show(stage);
-        }
-        if (event instanceof EventBus.PromocodeDoneEvent) {
-            EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
-            promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
-        }
-        if (event instanceof EventBus.StopCallRejectedEvent) {
-            EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
-        }
-        if (event instanceof EventBus.StopCallMissedEvent) {
-            EventBus.StopCallMissedEvent ev = (EventBus.StopCallMissedEvent) event;
-            incomingDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
-        }
-        if (event instanceof EventBus.StopCallExpiredEvent) {
-            EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
         }
         if (event instanceof EventBus.AddFriendErrorEvent)
             infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
@@ -462,14 +418,59 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
         }
+    }
+
+    @Override
+    public void handleEventBackground(EventBus.Event event) {
+        if (event instanceof EventBus.NameChangedEvent) {
+            EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
+            lblName.setText(ev.name);
+        }
+        if (event instanceof EventBus.CrystalChangedEvent) {
+            EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
+            lblCrystalsData.setText(String.valueOf(ev.crystals));
+            buyAbilitiesDialog.setCrystals(ev.crystals);
+        }
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
             imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character + "64")));
         }
-        if (event instanceof EventBus.AuthorizedChangedEvent) {
-            EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
-            if (!ev.authorized)
-                game.setLoginScreen();
+        if (event instanceof EventBus.RatingUpdatedEvent) {
+            EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
+            updateRating(ev.items);
+        }
+        if (event instanceof EventBus.FriendListUpdatedEvent) {
+            EventBus.FriendListUpdatedEvent ev = (EventBus.FriendListUpdatedEvent) event;
+            updateFriends(ev.items);
+        }
+        if (event instanceof EventBus.FriendAddedEvent) {
+            updateFriends(model.friends);
+        }
+        if (event instanceof EventBus.FriendRemovedEvent) {
+            updateFriends(model.friends);
+        }
+        if (event instanceof EventBus.AbilitiesExpireUpdatedEvent) {
+            EventBus.AbilitiesExpireUpdatedEvent ev = (EventBus.AbilitiesExpireUpdatedEvent) event;
+            updateAbilities(ev.items);
+        }
+        if (event instanceof EventBus.PromocodeDoneEvent) {
+            EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
+            promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
+        }
+        if (event instanceof EventBus.StopCallRejectedEvent) {
+            EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
+        }
+        if (event instanceof EventBus.StopCallMissedEvent) {
+            EventBus.StopCallMissedEvent ev = (EventBus.StopCallMissedEvent) event;
+            incomingDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
+        }
+        if (event instanceof EventBus.StopCallExpiredEvent) {
+            EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
         }
     }
 

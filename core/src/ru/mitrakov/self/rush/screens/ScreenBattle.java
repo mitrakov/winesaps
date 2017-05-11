@@ -154,13 +154,6 @@ public class ScreenBattle extends LocalizableScreen {
             else if (ev.newThing != null)
                 audioManager.sound("thing");
         }
-        if (event instanceof EventBus.AbilitiesChangedEvent) {
-            EventBus.AbilitiesChangedEvent ev = (EventBus.AbilitiesChangedEvent) event;
-            abilityButtons.clear();
-            for (Model.Ability ability : ev.items) {
-                abilityButtons.add(abilities.get(ability)).spaceLeft(10);
-            }
-        }
         if (event instanceof EventBus.BattleNotFoundEvent) {
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             //audioManager.sound("..."); find appropriate sound!
@@ -179,6 +172,17 @@ public class ScreenBattle extends LocalizableScreen {
             if (outOfSync)
                 infoDialog.show(stage);
             else infoDialog.hide();
+        }
+    }
+
+    @Override
+    public void handleEventBackground(EventBus.Event event) {
+        if (event instanceof EventBus.AbilitiesChangedEvent) {
+            EventBus.AbilitiesChangedEvent ev = (EventBus.AbilitiesChangedEvent) event;
+            abilityButtons.clear();
+            for (Model.Ability ability : ev.items) {
+                abilityButtons.add(abilities.get(ability)).spaceLeft(10);
+            }
         }
     }
 
