@@ -151,7 +151,8 @@ public class ScreenBattle extends LocalizableScreen {
             // 2) play the sound
             if (ev.oldThing != null && ev.newThing == null)
                 audioManager.sound(ev.oldThing.getClass().getSimpleName());
-            else audioManager.sound("thing");
+            else if (ev.newThing != null)
+                audioManager.sound("thing");
         }
         if (event instanceof EventBus.AbilitiesChangedEvent) {
             EventBus.AbilitiesChangedEvent ev = (EventBus.AbilitiesChangedEvent) event;

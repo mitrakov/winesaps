@@ -766,9 +766,12 @@ public class Model {
         roundLengthSec = timeSec;
         this.aggressor = aggressor;
         roundStartTime = System.currentTimeMillis();
+
         bus.raise(new EventBus.RoundStartedEvent(number));
         bus.raise(new EventBus.ScoreChangedEvent(0, 0));
         bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, true));
+        bus.raise(new EventBus.ThingChangedEvent(null, null, true));
+        bus.raise(new EventBus.ThingChangedEvent(null, null, false));
     }
 
     public void setNewField(int[] fieldData) {
