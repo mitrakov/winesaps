@@ -33,7 +33,6 @@ public class ScreenBattle extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
 
-    private boolean connected = true;
     private boolean outOfSync = false;
     private I18NBundle i18n;
 
@@ -74,12 +73,9 @@ public class ScreenBattle extends LocalizableScreen {
     public void render(float delta) {
         super.render(delta);
 
-        // updating labels
+        // update time
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(t >= 0 ? t : 0));
-
-        // checking
-        checkConnected();
+        lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(Math.max(t, 0)));
     }
 
     @Override
@@ -126,7 +122,6 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.GameFinishedEvent ev = (EventBus.GameFinishedEvent) event;
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
-            reset();
             String header = i18n.format("battle.finish");
             String msg = ev.winner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
             finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
@@ -168,7 +163,6 @@ public class ScreenBattle extends LocalizableScreen {
         if (event instanceof EventBus.BattleNotFoundEvent) {
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             //audioManager.sound("..."); find appropriate sound!
-            reset();
             String header = i18n.format("battle.out.of.sync");
             String msg = i18n.format("battle.out.of.sync.exit");
             finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
@@ -177,6 +171,13 @@ public class ScreenBattle extends LocalizableScreen {
         if (event instanceof EventBus.StyleChangedEvent) {
             EventBus.StyleChangedEvent ev = (EventBus.StyleChangedEvent) event;
             audioManager.music(String.format(Locale.getDefault(), "battle%d", ev.stylePack));
+        }
+        if (event instanceof EventBus.ConnectedChangeEvent) {
+            EventBus.ConnectedChangeEvent ev = (EventBus.ConnectedChangeEvent) event;
+            outOfSync = ev.connected;
+            if (outOfSync)
+                infoDialog.show(stage);
+            else infoDialog.hide();
         }
     }
 
@@ -221,15 +222,5 @@ public class ScreenBattle extends LocalizableScreen {
     private void reset() {
         outOfSync = false;
         infoDialog.hide();
-    }
-
-    private void checkConnected() {
-        if (connected != model.connected) {
-            if (!connected && model.connected) {
-                outOfSync = true;
-                infoDialog.show(stage);
-            } else outOfSync = false;
-            connected = model.connected;
-        }
     }
 }

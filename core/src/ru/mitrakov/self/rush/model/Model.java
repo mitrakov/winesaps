@@ -545,12 +545,13 @@ public class Model {
 
     public void setConnected(boolean value) {
         if (!connected && value) { // if changed "not_connected" -> "connected"
-            connected = true;
+            connected = true;  // we must change it before calling getUserInfo() or signIn()
             if (authorized)
                 getUserInfo(); // connected, but already authorized? possibly the server has been restarted: see note#4
             else signIn();     // connected and not authorized: try to sign in using stored credentials
         }
         connected = value;
+        bus.raise(new EventBus.ConnectedChangeEvent(connected));
     }
 
     public void setAuthorized(boolean value) {

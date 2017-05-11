@@ -151,6 +151,12 @@ public class EventBus {
             this.mine = mine;
         }
     }
+    public static final class ConnectedChangeEvent extends Event {
+        public final boolean connected;
+        public ConnectedChangeEvent(boolean connected) {
+            this.connected = connected;
+        }
+    }
 
 
     // =====================================

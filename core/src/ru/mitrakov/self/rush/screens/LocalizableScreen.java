@@ -38,7 +38,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         this.psObject = psObject;
         this.skin = skin;
         this.audioManager = audioManager;
-        connectingDialog = new DialogConnect(skin, "default");
+        connectingDialog = new DialogConnect(skin, "panel-maroon");
 
         table.setFillParent(true);
         stage.addActor(table);
