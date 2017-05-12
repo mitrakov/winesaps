@@ -92,6 +92,8 @@ public class ScreenMain extends LocalizableScreen {
 
     private final Drawable drawableWin;
     private final Drawable drawableLoss;
+    private final Drawable drawableInvite;
+    private final Drawable drawableRemove;
 
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
@@ -111,11 +113,14 @@ public class ScreenMain extends LocalizableScreen {
         TextureRegion regionSettings = atlasMenu.findRegion("settings");
         TextureRegion regionAbout = atlasMenu.findRegion("about");
         TextureRegion regionOk = atlasMenu.findRegion("valid");
-        TextureRegion regionCancel = atlasMenu.findRegion("invalid");
+        TextureRegion regionAdd = atlasMenu.findRegion("add");
+        TextureRegion regionCancel = atlasMenu.findRegion("back");
         assert regionSettings != null && regionAbout != null && regionOk != null && regionCancel != null;
 
-        drawableWin = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
-        drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
+        drawableWin = new TextureRegionDrawable(atlasMenu.findRegion("win"));
+        drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("loss"));
+        drawableInvite = new TextureRegionDrawable(atlasMenu.findRegion("invite"));
+        drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
 
         promocodeDialog = new DialogPromocode(model, skin, "default");
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage);
@@ -262,7 +267,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(regionOk), audioManager) {{
+        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(regionAdd), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -770,7 +775,7 @@ public class ScreenMain extends LocalizableScreen {
             tableRightContentFriends.row();
             tableRightContentFriends.add(new Image());
             tableRightContentFriends.add(label).expandX().left().spaceLeft(5);
-            tableRightContentFriends.add(new ImageButtonFeat(drawableWin, audioManager) {{
+            tableRightContentFriends.add(new ImageButtonFeat(drawableInvite, audioManager) {{
                 addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -779,7 +784,7 @@ public class ScreenMain extends LocalizableScreen {
                     }
                 });
             }});
-            tableRightContentFriends.add(new ImageButtonFeat(drawableLoss, audioManager) {{
+            tableRightContentFriends.add(new ImageButtonFeat(drawableRemove, audioManager) {{
                 addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

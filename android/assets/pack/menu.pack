@@ -3,44 +3,93 @@ menu.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+about
+  rotate: false
+  xy: 1, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+add
+  rotate: false
+  xy: 51, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+back
+  rotate: false
+  xy: 101, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+gem
+  rotate: false
+  xy: 151, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+invalid
+  rotate: false
+  xy: 201, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+invite
+  rotate: false
+  xy: 251, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+remove
+  rotate: false
+  xy: 301, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+settings
+  rotate: false
+  xy: 351, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+valid
+  rotate: false
+  xy: 401, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 eng
   rotate: false
-  xy: 2, 2
+  xy: 451, 17
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 rus
   rotate: false
-  xy: 52, 2
+  xy: 501, 17
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
-about
+loss
   rotate: false
-  xy: 102, 2
+  xy: 551, 17
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-invalid
+win
   rotate: false
-  xy: 136, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-settings
-  rotate: false
-  xy: 170, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-valid
-  rotate: false
-  xy: 204, 2
+  xy: 585, 17
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
