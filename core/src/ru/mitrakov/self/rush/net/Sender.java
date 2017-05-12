@@ -21,7 +21,7 @@ class Sender {
     private final Item[] buffer = new Item[N];
     private final Timer timer;
 
-    private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0;
+    private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0, crcid = 0;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
     Sender(DatagramSocket socket, String host, int port, IProtocol protocol) {
@@ -47,7 +47,8 @@ class Sender {
         timer.cancel();
     }
 
-    synchronized void connect() throws IOException {
+    synchronized void connect(int crc_id) throws IOException {
+        crcid = crc_id;
         id = expectedAck = SYN;
         srtt = DEFAULT_SRTT;
         totalTicks = 0;
@@ -55,7 +56,7 @@ class Sender {
         for (int j = 0; j < buffer.length; j++) {
             buffer[j] = null;
         }
-        int[] data = new int[]{0xFD, id}; // FD = fake data
+        int[] data = new int[]{id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF, crcid & 0xFF, 0xFD};
         buffer[id] = new Item(data);
         log("Send: " + Arrays.toString(data));
         socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
@@ -64,7 +65,8 @@ class Sender {
     synchronized void send(int[] msg) throws IOException {
         if (connected) {
             id = next(id);
-            int[] data = append(msg, id);
+            int[] data = prepend(msg, id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF,
+                    crcid & 0xFF);
             buffer[id] = new Item(data, totalTicks);
             log("Send: " + Arrays.toString(data));
             socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
@@ -113,7 +115,7 @@ class Sender {
                 buffer[i].attempt++;
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
-                    int[] msg = buffer[i].msg;
+                    int[] msg = buffer[i].msg; // already contains "crcid" and "id"
                     log("Sendd " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
                             buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
                             (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);

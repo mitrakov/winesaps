@@ -17,7 +17,7 @@ public class SimpleLogger {
     private final static Model.IFileReader fileReader = new FileReader();
     private final static Format sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
 
-    public static synchronized void log(String s) {
+    public static synchronized void log(Object s) {
         String w = String.format("%s: %s", sdf.format(new Date()), s);
         System.out.println(w);
         fileReader.append("logger.txt", w);

@@ -1,8 +1,10 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
+import java.util.Arrays;
 import java.io.IOException;
 
+import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.net.SwUDP.*;
 
@@ -29,10 +31,11 @@ class Receiver {
         this.protocol = protocol;
     }
 
-    void onMsg(int id, int[] msg) throws IOException {
+    void onMsg(int id, int crcid, int[] msg) throws IOException {
+        int[] ack = new int[] {id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF, crcid & 0xFF};
         if (id == SYN) {
-            log("Ack : [" + id + "]");
-            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, InetAddress.getByName(host), port));
+            log("Ack : " + Arrays.toString(ack));
+            socket.send(new DatagramPacket(toByte(ack, ack.length), ack.length, InetAddress.getByName(host), port));
             for (int j = 0; j < buffer.length; j++) {
                 buffer[j] = null;
             }
@@ -40,8 +43,8 @@ class Receiver {
             connected = true;
             protocol.onReceiverConnected();
         } else if (connected) {
-            log("Ack : [" + id + "]");
-            socket.send(new DatagramPacket(new byte[]{(byte) id}, 1, InetAddress.getByName(host), port));
+            log("Ack : " + Arrays.toString(ack));
+            socket.send(new DatagramPacket(toByte(ack, ack.length), ack.length, InetAddress.getByName(host), port));
             if (id == expected) {
                 handler.onReceived(msg);
                 expected = next(id);

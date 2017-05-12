@@ -41,6 +41,14 @@ public class Utils {
         return copy;
     }
 
+    public static int[] prepend(int[] original, int... elements) {
+        assert original != null;
+        int[] copy = new int[original.length + elements.length];
+        System.arraycopy(elements, 0, copy, 0, elements.length);
+        System.arraycopy(original, 0, copy, elements.length, original.length);
+        return copy;
+    }
+
     public static byte[] getBytes(String s) {
         // @mitrakov: don't use s.getBytes() without charsets: it's a bad practice (by FindBugs)
         // @mitrakov: don't use Charset class: it requires API Level 9

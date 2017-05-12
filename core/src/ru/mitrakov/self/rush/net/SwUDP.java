@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
+import java.util.UUID;
 import java.io.IOException;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
@@ -15,7 +16,7 @@ public class SwUDP implements IProtocol {
     final static int MAX_ATTEMPTS = 12;
     final static int PERIOD = 10;
     final static int MIN_SRTT = 2;
-    final static int DEFAULT_SRTT = 4;
+    final static int DEFAULT_SRTT = 6;
     final static int MAX_SRTT = 12;
     final static float RC = .8f;
     final static float AC = 2.5f;
@@ -60,7 +61,9 @@ public class SwUDP implements IProtocol {
 
     @Override
     public void connect() throws IOException {
-        sender.connect();
+        UUID uuid = UUID.randomUUID(); // don't use usual Random! Only SecureRandom
+        int crcid = (int) (uuid.getLeastSignificantBits() + uuid.getMostSignificantBits());
+        sender.connect(crcid);
     }
 
     @Override
@@ -70,10 +73,14 @@ public class SwUDP implements IProtocol {
 
     @Override
     public void onReceived(int[] data) throws IOException {
-        assert data != null && data.length > 0;
-        if (data.length == 1) // Ack
-            sender.onAck(data[0]);
-        else receiver.onMsg(data[data.length - 1], copyOfRange(data, 0, data.length - 1));
+        assert data != null;
+        int id = data[0];
+        int crcid = (data[1] << 24) | (data[2] << 16) | (data[3] << 8) | (data[4]);
+        if (data.length == 5) // Ack (id + crcid)
+            sender.onAck(id);
+        else if (data.length > 5)
+            receiver.onMsg(id, crcid, copyOfRange(data, 5, data.length));
+        else throw new IOException("Incorrect message length");
     }
 
     @Override
