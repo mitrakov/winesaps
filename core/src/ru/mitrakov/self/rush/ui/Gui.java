@@ -216,8 +216,8 @@ public class Gui extends Actor {
                                 // correct x-coordinate, direction and time adjusted for animation
                                 float deltaX = x - anim.x;
                                 boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
-                                boolean not_initialized = abs(deltaX) > 2 * CELL_SIZ_W;
-                                if (deltaX_equals_0 || not_initialized) {
+                                boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
+                                if (deltaX_equals_0 || out_of_sync) {
                                     anim.x = x;
                                     if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
                                         anim.t = 0;
@@ -233,7 +233,7 @@ public class Gui extends Actor {
                                 // correct y-coordinate
                                 float deltaY = y - anim.y;
                                 boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                                if (deltaY_equals_0 || not_initialized || ladderExists(cell))
+                                if (deltaY_equals_0 || out_of_sync || ladderExists(cell))
                                     anim.y = y;
                                 else {
                                     y = anim.y;
