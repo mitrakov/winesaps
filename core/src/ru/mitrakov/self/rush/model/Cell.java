@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.mitrakov.self.rush.model.object.*;
 
@@ -12,7 +12,7 @@ import ru.mitrakov.self.rush.model.object.*;
 public class Cell {
     // ....
     public CellObject bottom; // may be NULL
-    public Collection<CellObject> objects = new ConcurrentLinkedQueue<CellObject>(); // ....!!!
+    public List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
 
     private Cell() {
     }
