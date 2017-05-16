@@ -11,6 +11,9 @@ import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.screens.*;
 import ru.mitrakov.self.rush.model.Model;
 
+/**
+ * Entry point
+ */
 public class RushClient extends Game implements Localizable {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
