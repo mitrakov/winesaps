@@ -688,12 +688,13 @@ public class Model {
         bus.raise(new EventBus.StopCallExpiredEvent(defenderName));
     }
 
-    public void setFriendList(int[] data) {
+    public void setFriendList(int[] data, boolean append) {
         assert data != null;
         Character[] characters = Character.values();
 
         synchronized (locker) {
-            friends.clear();
+            if (!append)
+                friends.clear();
             String s = newString(toByte(data, data.length));  // example: \3Tommy\0\2Bobby\0\3Billy\0
             if (s.length() > 0) { // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
                 for (String item : s.split("\0")) {

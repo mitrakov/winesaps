@@ -208,11 +208,14 @@ class Parser implements IHandler {
     }
 
     private void friendList(Cmd cmd, int[] data) {
-        if (data.length > 0) {
+        if (data.length > 1) {
             int error = data[0];
+            int fragNumber = data[1];
             if (error == 0)
-                model.setFriendList(copyOfRange(data, 1, data.length));
+                model.setFriendList(copyOfRange(data, 2, data.length), fragNumber > 1);
             else inspectError(cmd, error);
+        } else if (data.length == 1) {
+            inspectError(cmd, data[0]);
         } else throw new IllegalArgumentException("Incorrect friend list format");
     }
 
