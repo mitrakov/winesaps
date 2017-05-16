@@ -66,11 +66,44 @@ public class Model {
      * server-specific commands; for more details see docs to the protocol
      */
     public enum Cmd {
-        UNSPEC_ERROR, SIGN_UP, SIGN_IN, SIGN_OUT, USER_INFO, ATTACK, CALL, ACCEPT, REJECT, STOPCALL, CANCEL_CALL,
-        RANGE_OF_PRODUCTS, BUY_PRODUCT, RECEIVE_TRAINING, CHANGE_CHARACTER, RESERVED_0F, FULL_STATE, ABILITY_LIST,
-        MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, USE_THING, USE_SKILL, STATE_CHANGED, SCORE_CHANGED, PLAYER_WOUNDED,
-        THING_TAKEN, OBJECT_APPENDED, FINISHED, GIVE_UP, ROUND_INFO, RATING, FRIEND_LIST, ADD_FRIEND, REMOVE_FRIEND,
-        CHECK_PROMOCODE, PROMOCODE_DONE
+        UNSPEC_ERROR,      // 0
+        SIGN_UP,           // 1
+        SIGN_IN,           // 2
+        SIGN_OUT,          // 3
+        USER_INFO,         // 4
+        CHANGE_CHARACTER,  // 5
+        ATTACK,            // 6
+        CALL,              // 7
+        ACCEPT,            // 8
+        REJECT,            // 9
+        STOPCALL,          // 10
+        CANCEL_CALL,       // 11
+        RECEIVE_TRAINING,  // 12
+        RANGE_OF_PRODUCTS, // 13
+        BUY_PRODUCT,       // 14
+        RESERVED_0F,       // 15
+        FULL_STATE,        // 16
+        ROUND_INFO,        // 17
+        ABILITY_LIST,      // 18
+        MOVE_LEFT,         // 19
+        MOVE_RIGHT,        // 20
+        MOVE_UP,           // 21
+        MOVE_DOWN,         // 22
+        USE_THING,         // 23
+        USE_SKILL,         // 24
+        GIVE_UP,           // 25
+        STATE_CHANGED,     // 26
+        SCORE_CHANGED,     // 27
+        PLAYER_WOUNDED,    // 28
+        THING_TAKEN,       // 29
+        OBJECT_APPENDED,   // 30
+        FINISHED,          // 31
+        RATING,            // 32
+        FRIEND_LIST,       // 33
+        ADD_FRIEND,        // 34
+        REMOVE_FRIEND,     // 35
+        CHECK_PROMOCODE,   // 36
+        PROMOCODE_DONE     // 37
     }
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
