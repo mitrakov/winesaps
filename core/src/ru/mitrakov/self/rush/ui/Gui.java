@@ -67,6 +67,7 @@ public class Gui extends Actor {
     private final MyClickListener listener = new MyClickListener();
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
+    private final TextureAtlas atlasWaterfall = new TextureAtlas(Gdx.files.internal("pack/waterfall.pack"));
     private final TextureAtlas atlasRabbit = new TextureAtlas(Gdx.files.internal("pack/rabbit.pack"));
     private final TextureAtlas atlasHedgehog = new TextureAtlas(Gdx.files.internal("pack/hedgehog.pack"));
     private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
@@ -77,8 +78,11 @@ public class Gui extends Actor {
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
+    private final Animation<TextureRegion> animWaterfall;
+    private final Animation<TextureRegion> animWaterfallSmall;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
+    private float time = 0;
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -119,7 +123,7 @@ public class Gui extends Actor {
         }
         // static up textures, each with 4 styles
         for (Class clazz : new Class[]{Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class,
-                Stair.class, Waterfall.class, WaterfallSafe.class, DecorationStatic.class, DecorationWarning.class}) {
+                Stair.class, DecorationStatic.class, DecorationWarning.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -164,6 +168,11 @@ public class Gui extends Actor {
 
             texturesAnim.put(clazz, new AnimInfo(animations, clazz != Actor2.class));
         }
+        // waterfall
+        Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasWaterfall.findRegions("Waterfall");
+        Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasWaterfall.findRegions("WaterfallSmall");
+        animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
+        animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
         // backgrounds
         for (int i = 0; i < STYLES_COUNT; i++) {
             backgrounds.add(new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/back%d.jpg", i))));
@@ -182,6 +191,7 @@ public class Gui extends Actor {
 
         float dt = Gdx.graphics.getDeltaTime();
         float dx = SPEED_X * dt, dy = SPEED_Y * dt;
+        time += dt;
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
@@ -209,9 +219,11 @@ public class Gui extends Actor {
             }
             // draw 2-nd layer (static objects)
             drawObjects(field, batch, texturesStat, model.stylePack);
-            // draw 3-rd layer (collectible objects)
+            // draw 3-th layer (waterfalls)
+            drawWaterfalls(field, batch, time);
+            // draw 4-rd layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 4-th layer (animated characters)
+            // draw 5-th layer (animated characters)
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
@@ -269,9 +281,9 @@ public class Gui extends Actor {
                     }
                 }
             }
-            // draw 5-th layer (all overlaying objects like openedUmbrella)
+            // draw 6-th layer (all overlaying objects like openedUmbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 6-th layer here...
+            // draw 7-th layer here...
         }
     }
 
@@ -282,6 +294,7 @@ public class Gui extends Actor {
     public void dispose() {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
+        atlasWaterfall.dispose();
         atlasRabbit.dispose();
         atlasHedgehog.dispose();
         atlasSquirrel.dispose();
@@ -340,6 +353,17 @@ public class Gui extends Actor {
         return false;
     }
 
+    private boolean umbrellaExists(Cell cell) {
+        if (cell != null) {
+            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
+                CellObject obj = cell.objects.get(i);
+                if (obj instanceof OpenedUmbrella)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     private void drawObjects(Field field, Batch batch, ObjectMap<Class, TextureRegion> map) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -369,6 +393,30 @@ public class Gui extends Actor {
                     CellObject obj = cell.objects.get(k);
                     if (map.containsKey(obj.getClass())) {
                         TextureRegion texture = map.get(obj.getClass()).get(style);
+                        if (texture != null) {
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void drawWaterfalls(Field field, Batch batch, float t) {
+        // field != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                boolean hasUmbrella = umbrellaExists(cell);
+                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
+                    CellObject obj = cell.objects.get(k);
+                    if (obj instanceof Waterfall || obj instanceof WaterfallSafe) {
+                        Animation<TextureRegion> animation = hasUmbrella ? animWaterfallSmall : animWaterfall;
+                        TextureRegion texture = animation.getKeyFrame(t);
                         if (texture != null) {
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
