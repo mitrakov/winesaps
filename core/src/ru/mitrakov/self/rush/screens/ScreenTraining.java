@@ -95,11 +95,13 @@ public class ScreenTraining extends LocalizableScreen {
         if (event instanceof EventBus.RoundFinishedEvent) {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
                 model.newbie = false;
-                gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
                 model.giveUp();
                 trainingDialog.remove();
                 finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
             }
+        }
+        if (event instanceof EventBus.GameFinishedEvent) {
+            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
         }
         if (event instanceof EventBus.ScoreChangedEvent) {
             EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;

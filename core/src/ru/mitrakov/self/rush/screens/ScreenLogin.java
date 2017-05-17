@@ -273,7 +273,7 @@ public class ScreenLogin extends LocalizableScreen {
         if (shiftedByKeyboard)
             shiftUp();
 
-        stage.setKeyboardFocus(focused);
+        stage.setKeyboardFocus(focused != null ? focused : txtLogin);
     }
 
     private void setSignUpDialog(boolean havePromocode) {
@@ -308,7 +308,7 @@ public class ScreenLogin extends LocalizableScreen {
         if (shiftedByKeyboard)
             shiftUp();
 
-        stage.setKeyboardFocus(focused);
+        stage.setKeyboardFocus(focused != null ? focused : txtLogin);
     }
 
     private void shiftUp() {
