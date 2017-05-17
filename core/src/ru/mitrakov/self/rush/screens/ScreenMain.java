@@ -429,7 +429,8 @@ public class ScreenMain extends LocalizableScreen {
     public void handleEventBackground(EventBus.Event event) {
         if (event instanceof EventBus.NameChangedEvent) {
             EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
-            lblName.setText(ev.name);
+            String txt = ev.name.length() <= 18 ? ev.name : String.format("%s...", ev.name.substring(0, 15));
+            lblName.setText(txt);
         }
         if (event instanceof EventBus.CrystalChangedEvent) {
             EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
