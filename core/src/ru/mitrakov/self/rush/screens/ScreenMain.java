@@ -122,7 +122,7 @@ public class ScreenMain extends LocalizableScreen {
         drawableInvite = new TextureRegionDrawable(atlasMenu.findRegion("invite"));
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
 
-        promocodeDialog = new DialogPromocode(model, skin, "default");
+        promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
@@ -631,7 +631,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.row();
                 tableRightContent.add(btnBuyAbilities).colspan(2).width(217).height(50);
                 tableRightContent.row();
-                tableRightContent.add(lblMore).colspan(2).height(53);
+                tableRightContent.add(lblMore).colspan(2).height(53).spaceTop(20);
                 break;
             case Rating:
                 tableRightContent.add(tableRightContentRatingBtns).pad(8);
