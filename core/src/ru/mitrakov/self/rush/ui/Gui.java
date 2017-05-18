@@ -233,14 +233,14 @@ public class Gui extends Actor {
                 }
             }
             // draw 2-nd layer (static objects)
-            drawObjects(field, batch, texturesStat, model.stylePack);
-            // draw ...
+            drawObjects(field, batch);
+            // draw 3-rd layer (LadderBottom objects)
             drawLadderBottom(field, batch);
-            // draw 3-th layer (waterfalls)
+            // draw 4-th layer (waterfalls)
             drawWaterfalls(field, batch);
-            // draw 4-rd layer (collectible objects)
+            // draw 5-rd layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 5-th layer (animated characters)
+            // draw 6-th layer (animated characters)
             for (int j = 0; j < Field.HEIGHT; j++) {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
@@ -298,9 +298,9 @@ public class Gui extends Actor {
                     }
                 }
             }
-            // draw 6-th layer (all overlaying objects like openedUmbrella)
+            // draw 7-th layer (all overlaying objects like openedUmbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 7-th layer here...
+            // draw 8-th layer here...
         }
     }
 
@@ -431,7 +431,7 @@ public class Gui extends Actor {
         }
     }
 
-    private void drawObjects(Field field, Batch batch, ObjectMap<Class, IntMap<TextureRegion>> map, int style) {
+    private void drawObjects(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
@@ -439,8 +439,8 @@ public class Gui extends Actor {
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                 for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
                     CellObject obj = cell.objects.get(k);
-                    if (map.containsKey(obj.getClass())) {
-                        TextureRegion texture = map.get(obj.getClass()).get(style);
+                    if (texturesStat.containsKey(obj.getClass())) {
+                        TextureRegion texture = texturesStat.get(obj.getClass()).get(model.stylePack);
                         if (texture != null) {
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
