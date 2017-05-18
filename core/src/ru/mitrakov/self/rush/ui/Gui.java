@@ -61,6 +61,7 @@ public class Gui extends Actor {
     private static final int SPEED_X = CELL_SIZ_W * MOVES_PER_SEC;
     private static final int SPEED_Y = CELL_SIZ_H * MOVES_PER_SEC;
     private static final int FRAMES_PER_MOVE = 60 / MOVES_PER_SEC; // FPS / MOVES_PER_SEC
+    private static final int BIG_VALUE = 99;
 
     private final Model model;
     private final InputController controller;
@@ -68,6 +69,7 @@ public class Gui extends Actor {
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
     private final TextureAtlas atlasWaterfall = new TextureAtlas(Gdx.files.internal("pack/waterfall.pack"));
+    private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
     private final TextureAtlas atlasRabbit = new TextureAtlas(Gdx.files.internal("pack/rabbit.pack"));
     private final TextureAtlas atlasHedgehog = new TextureAtlas(Gdx.files.internal("pack/hedgehog.pack"));
     private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
@@ -78,6 +80,8 @@ public class Gui extends Actor {
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
+    private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
+    private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
     private final Animation<TextureRegion> animWaterfall;
     private final Animation<TextureRegion> animWaterfallSmall;
 
@@ -122,8 +126,8 @@ public class Gui extends Actor {
             texturesDown.put(clazz, m);
         }
         // static up textures, each with 4 styles
-        for (Class clazz : new Class[]{Block.class, LadderTop.class, LadderBottom.class, RopeLine.class, Water.class,
-                Stair.class, DecorationStatic.class, DecorationWarning.class}) {
+        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class, Stair.class,
+                DecorationStatic.class, DecorationWarning.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -173,9 +177,20 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasWaterfall.findRegions("WaterfallSmall");
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
-        // backgrounds
+        //
         for (int i = 0; i < STYLES_COUNT; i++) {
+            // ladderBottom animations
+            Array<TextureAtlas.AtlasRegion> frames = atlasLadder.findRegions(LadderBottom.class.getSimpleName() + i);
+            animLadders.put(i, new Animation<TextureRegion>(.05f, frames));
+            // backgrounds
             backgrounds.add(new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/back%d.jpg", i))));
+        }
+
+        // fill animation time
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                animTime.add(BIG_VALUE);
+            }
         }
     }
 
@@ -219,8 +234,10 @@ public class Gui extends Actor {
             }
             // draw 2-nd layer (static objects)
             drawObjects(field, batch, texturesStat, model.stylePack);
+            // draw ...
+            drawLadderBottom(field, batch);
             // draw 3-th layer (waterfalls)
-            drawWaterfalls(field, batch, time);
+            drawWaterfalls(field, batch);
             // draw 4-rd layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
             // draw 5-th layer (animated characters)
@@ -295,6 +312,7 @@ public class Gui extends Actor {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
         atlasWaterfall.dispose();
+        atlasLadder.dispose();
         atlasRabbit.dispose();
         atlasHedgehog.dispose();
         atlasSquirrel.dispose();
@@ -364,6 +382,36 @@ public class Gui extends Actor {
         return false;
     }
 
+    private CellObject actorExists(Cell cell) {
+        if (cell != null) {
+            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
+                CellObject obj = cell.objects.get(i);
+                if (obj instanceof Actor1 || obj instanceof Actor2 || obj instanceof Wolf)
+                    return obj;
+            }
+        }
+        return null;
+    }
+
+    private boolean actorUsesLadder(Field field, int i, int j) {
+        // field != null (assert omitted)
+        Cell cell = field.cells[j * Field.WIDTH + i];  // cell != NULL (assert omitted)
+        CellObject actor = actorExists(cell);
+        if (actor == null) { // maybe actor is on the cell above (LadderTop)?
+            j -= 1;
+            cell = j >= 0 ? field.cells[j * Field.WIDTH + i] : null;
+            actor = actorExists(cell);
+        }
+        if (actor != null) {
+            AnimInfo anim = texturesAnim.get(actor.getClass());
+            if (anim != null) {
+                float y = convertYFromModelToScreen(j) + getBottomHeight(cell);
+                return anim.y != y;
+            }
+        }
+        return false;
+    }
+
     private void drawObjects(Field field, Batch batch, ObjectMap<Class, TextureRegion> map) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -405,7 +453,7 @@ public class Gui extends Actor {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void drawWaterfalls(Field field, Batch batch, float t) {
+    private void drawWaterfalls(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
@@ -416,7 +464,43 @@ public class Gui extends Actor {
                     CellObject obj = cell.objects.get(k);
                     if (obj instanceof Waterfall || obj instanceof WaterfallSafe) {
                         Animation<TextureRegion> animation = hasUmbrella ? animWaterfallSmall : animWaterfall;
-                        TextureRegion texture = animation.getKeyFrame(t);
+                        TextureRegion texture = animation.getKeyFrame(time);
+                        if (texture != null) {
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void drawLadderBottom(Field field, Batch batch) {
+        // field != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                int idx = j * Field.WIDTH + i;
+                Cell cell = field.cells[idx]; // cell != NULL (assert omitted)
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                float t = animTime.get(idx);
+                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
+                    CellObject obj = cell.objects.get(k);
+                    if (obj instanceof LadderBottom) {
+                        TextureRegion texture;
+                        // get current animation
+                        Animation<TextureRegion> animation = animLadders.get(model.stylePack); // assert omitted
+                        // find a texture region depending on ladder animation
+                        if (!animation.isAnimationFinished(t)) {     // play already started animation
+                            t += Gdx.graphics.getDeltaTime();
+                            animTime.set(idx, t);
+                            texture = animation.getKeyFrame(t);
+                        } else if (actorUsesLadder(field, i, j)) {   // start animation here
+                            animTime.set(idx, 0);
+                            texture = animation.getKeyFrame(0);
+                        } else texture = animation.getKeyFrame(0);   // draw static texture
+                        // draw texture region
                         if (texture != null) {
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
