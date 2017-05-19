@@ -72,7 +72,7 @@ class Sender {
             id = next(id);
             msg.prepend(crcid & 0xFF).prepend((crcid >> 8) & 0xFF).prepend((crcid >> 16) & 0xFF)
                     .prepend((crcid >> 24) & 0xFF).prepend(id);
-            buffer[id] = new Item(msg, totalTicks);
+            buffer[id] = new Item(msg, totalTicks); // TODO new
             log("Send: ", msg);
             socket.send(getPacket(msg.toByteArray(), msg.length()));
         } else throw new ConnectException("Not connected");

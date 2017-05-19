@@ -66,7 +66,7 @@ public final class Network extends Thread implements IHandler {
         // noinspection InfiniteLoopStatement
         while (true) {
             try {
-                DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ);
+                DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ); // TODO new
                 socket.receive(datagram);
                 if (TMP_NO_CONNECTION) continue;
                 if (protocol != null) {
@@ -119,6 +119,7 @@ public final class Network extends Thread implements IHandler {
         if (protocol != null)
             protocol.send(data);
         else socket.send(new DatagramPacket(data.toByteArray(), data.length(), InetAddress.getByName(host), port));
+        // TODO getByName
     }
 
     public void reset() {
