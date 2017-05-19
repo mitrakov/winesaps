@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
@@ -38,7 +39,9 @@ public class Model {
 
         void send(Cmd cmd, int arg);
 
-        void send(Cmd cmd, byte[] data);
+        void send(Cmd cmd, int arg1, int arg2);
+
+        void send(Cmd cmd, String arg);
 
         void reset();
     }
@@ -128,12 +131,12 @@ public class Model {
     // =============================
 
     public static synchronized String md5(String s) {
-        log("calculating md5 for: " + s);
+        log("calculating md5 for: ", s);
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
             byte[] bytes = MessageDigest.getInstance("md5").digest(getBytes(s));
             String res = String.format("%032x", new BigInteger(1, bytes)); // use "%032x" instead of "%32x"!
-            log("md5 = " + res);
+            log("md5 = ", res);
             return res;
         } catch (NoSuchAlgorithmException ignored) {
             return "";
@@ -311,7 +314,7 @@ public class Model {
         assert name != null && hash != null;
         if (name.length() > 0 && hash.length() > 0 && connected && sender != null) { // don't use method 'isEmpty()'
             sender.reset();
-            sender.send(SIGN_IN, getBytes(String.format("\1%s\0%s", name, hash))); // \1 = Local auth
+            sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash)); // \1 = Local auth
         }
     }
 
@@ -325,7 +328,7 @@ public class Model {
         if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_IN, getBytes(String.format("\1%s\0%s", login, hash))); // \1 = Local auth
+            sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash)); // \1 = Local auth
         }
     }
 
@@ -341,7 +344,7 @@ public class Model {
         if (connected && sender != null && password.length() >= 4) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_UP, getBytes(String.format("%s\0%s\0%s\0%s", login, hash, email, promocode)));
+            sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode));
         }
     }
 
@@ -367,7 +370,7 @@ public class Model {
      */
     public void invite(String victim) {
         if (connected && sender != null) {
-            sender.send(ATTACK, getBytes(String.format("\0%s", victim)));
+            sender.send(ATTACK, String.format("\0%s", victim));
         }
     }
 
@@ -394,7 +397,7 @@ public class Model {
      */
     public void accept(int enemySid) {
         if (connected && sender != null) {
-            sender.send(ACCEPT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
+            sender.send(ACCEPT, enemySid / 256, enemySid % 256);
         }
     }
 
@@ -403,7 +406,7 @@ public class Model {
      */
     public void reject(int enemySid) {
         if (connected && sender != null) {
-            sender.send(REJECT, new byte[]{(byte) (enemySid / 256), (byte) (enemySid % 256)});
+            sender.send(REJECT, enemySid / 256, enemySid % 256);
         }
     }
 
@@ -438,7 +441,7 @@ public class Model {
     public void addFriend(String name) {
         if (connected && sender != null) {
             if (name.length() > 0)
-                sender.send(ADD_FRIEND, getBytes(name));
+                sender.send(ADD_FRIEND, name);
         }
     }
 
@@ -450,7 +453,7 @@ public class Model {
     public void removeFriend(String name) {
         if (connected && sender != null) {
             if (name.length() > 0)
-                sender.send(REMOVE_FRIEND, getBytes(name));
+                sender.send(REMOVE_FRIEND, name);
         }
     }
 
@@ -469,7 +472,7 @@ public class Model {
     public void checkPromocode(String promocode) {
         assert promocode != null;
         if (connected && sender != null && promocode.length() >= PROMOCODE_LEN) {
-            sender.send(CHECK_PROMOCODE, getBytes(promocode));
+            sender.send(CHECK_PROMOCODE, promocode);
         }
     }
 
@@ -481,7 +484,7 @@ public class Model {
     public void buyProduct(Product product) {
         assert product != null;
         if (connected && sender != null) {
-            sender.send(BUY_PRODUCT, new byte[]{(byte) product.ability.ordinal(), (byte) product.days});
+            sender.send(BUY_PRODUCT, product.ability.ordinal(), product.days);
         }
     }
 
@@ -599,14 +602,14 @@ public class Model {
         bus.raise(new EventBus.AuthorizedChangedEvent(authorized));
     }
 
-    public void setUserInfo(int[] data) {
+    public void setUserInfo(IIntArray data) {
         assert data != null;
         int i = 0;
 
         // parse name
         StringBuilder bld = new StringBuilder();
-        for (; i < data.length && data[i] != 0; i++) {
-            bld.append((char) data[i]);
+        for (; i < data.length() && data.get(i) != 0; i++) {
+            bld.append((char) data.get(i));
         }
         name = bld.toString();
         bus.raise(new EventBus.NameChangedEvent(name));
@@ -614,23 +617,23 @@ public class Model {
 
         // parse promo code
         bld = new StringBuilder(name);
-        for (; i < data.length && data[i] != 0; i++) {
-            bld.append((char) data[i]);
+        for (; i < data.length() && data.get(i) != 0; i++) {
+            bld.append((char) data.get(i));
         }
         promocode = bld.toString();
         i++;
 
         // parse character
         Character[] characters = Character.values();
-        int ch = data[i++];
+        int ch = data.get(i++);
         if (0 <= ch && ch < characters.length && character != characters[ch]) {
             character = characters[ch];
             bus.raise(new EventBus.CharacterChangedEvent(character));
         }
 
         // parse crystals
-        if (i + 3 < data.length) {
-            int crystals = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]);
+        if (i + 3 < data.length()) {
+            int crystals = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
             bus.raise(new EventBus.CrystalChangedEvent(crystals));
         }
         i += 4;
@@ -639,11 +642,11 @@ public class Model {
         Ability[] array = Ability.values();
         synchronized (locker) {
             abilityExpireMap.clear();
-            int abilitiesCnt = data[i++];
+            int abilitiesCnt = data.get(i++);
             for (int j = 0; j < abilitiesCnt; j++, i += 3) {
-                if (i + 2 < data.length) {
-                    int id = data[i];
-                    int minutes = data[i + 1] * 256 + data[i + 2];
+                if (i + 2 < data.length()) {
+                    int id = data.get(i);
+                    int minutes = data.get(i + 1) * 256 + data.get(i + 2);
                     if (0 <= id && id < array.length)
                         abilityExpireMap.put(array[id], minutes);
                 }
@@ -688,14 +691,14 @@ public class Model {
         bus.raise(new EventBus.StopCallExpiredEvent(defenderName));
     }
 
-    public void setFriendList(int[] data, boolean append) {
+    public void setFriendList(IIntArray data, boolean append) {
         assert data != null;
         Character[] characters = Character.values();
 
         synchronized (locker) {
             if (!append)
                 friends.clear();
-            String s = newString(toByte(data, data.length));  // example: \3Tommy\0\2Bobby\0\3Billy\0
+            String s = data.toUTF8();  // example: \3Tommy\0\2Bobby\0\3Billy\0
             if (s.length() > 0) { // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
                 for (String item : s.split("\0")) {
                     byte ch = (byte) item.charAt(0);
@@ -729,47 +732,47 @@ public class Model {
         bus.raise(new EventBus.FriendRemovedEvent(name));
     }
 
-    public void setRangeOfProducts(final int[] data) {
+    public void setRangeOfProducts(IIntArray data) {
         assert data != null;
         Ability[] abs = Ability.values();
         synchronized (locker) {
             products.clear();
-            for (int i = 0; i + 2 < data.length; i += 3) {
-                int id = data[i];
-                int days = data[i + 1];
-                int cost = data[i + 2];
+            for (int i = 0; i + 2 < data.length(); i += 3) {
+                int id = data.get(i);
+                int days = data.get(i + 1);
+                int cost = data.get(i + 2);
                 if (0 <= id && id < abs.length)
                     products.add(new Product(abs[id], days, cost));
             }
         }
     }
 
-    public void setRating(RatingType type, int[] data) {
+    public void setRating(RatingType type, IIntArray data) {
         assert type != null && data != null;
         Collection<RatingItem> rating = new LinkedList<RatingItem>();
 
         int i = 0;
-        while (i < data.length) {
+        while (i < data.length()) {
             // name
             StringBuilder name = new StringBuilder();
             int wins = 0, losses = 0, score_diff = 0;
-            for (; data[i] != 0 && i < data.length; i++) {
-                name.append((char) data[i]);
+            for (; data.get(i) != 0 && i < data.length(); i++) {
+                name.append((char) data.get(i));
             }
             i++;
             // wins
-            if (i + 3 < data.length) {
-                wins = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+            if (i + 3 < data.length()) {
+                wins = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
                 i += 4;
             }
             // losses
-            if (i + 3 < data.length) {
-                losses = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+            if (i + 3 < data.length()) {
+                losses = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
                 i += 4;
             }
             // score_diff
-            if (i + 3 < data.length) {
-                score_diff = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | (data[i + 3]); // if > 2*10^9?
+            if (i + 3 < data.length()) {
+                score_diff = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
                 i += 4;
             }
             rating.add(new RatingItem(name.toString(), wins, losses, score_diff));
@@ -808,7 +811,7 @@ public class Model {
         bus.raise(new EventBus.ThingChangedEvent(null, null, false));
     }
 
-    public void setNewField(int[] fieldData) {
+    public void setNewField(IIntArray fieldData) {
         Field field; // for multithreaded safety
         this.field = field = new Field(fieldData);
         // assign curActor (be careful! if "fieldData" doesn't contain actors, curActor will become NULL! it may be
@@ -903,12 +906,13 @@ public class Model {
         bus.raise(new EventBus.GameFinishedEvent(winner));
     }
 
-    public void setAbilities(int[] ids) {
+    public void setAbilities(IIntArray ids) {
         assert ids != null;
         synchronized (locker) {
             abilities.clear();
             Ability[] array = Ability.values();
-            for (int id : ids) {
+            for (int i = 0; i < ids.length(); i++) {
+                int id = ids.get(i);
                 if (0 <= id && id < array.length)
                     abilities.add(array[id]);
             }

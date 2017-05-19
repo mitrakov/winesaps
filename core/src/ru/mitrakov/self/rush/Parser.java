@@ -4,9 +4,9 @@ import java.util.*;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.IHandler;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Model.*;
-import static ru.mitrakov.self.rush.utils.Utils.copyOfRange;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -31,6 +31,8 @@ class Parser implements IHandler {
 
     private final Model model;
     private final PsObject psObject;
+    private final Cmd[] commands = Cmd.values();
+    private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
     Parser(Model model, PsObject psObject) {
         assert model != null;
@@ -39,87 +41,86 @@ class Parser implements IHandler {
     }
 
     @Override
-    public void onReceived(int[] data) {
+    public void onReceived(IIntArray data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
 
-        if (data.length > 0) {
-            int code = data[0];
-            Cmd[] commands = Cmd.values();
+        if (data.length() > 0) {
+            int code = data.get(0);
             if (0 <= code && code < commands.length) {
                 Cmd cmd = commands[code];
                 switch (cmd) {
                     case SIGN_IN:
                     case SIGN_UP:
-                        signIn(cmd, copyOfRange(data, 1, data.length));
+                        signIn(cmd, data.remove(0, 1));
                         break;
                     case SIGN_OUT:
-                        signOut(cmd, copyOfRange(data, 1, data.length));
+                        signOut(cmd, data.remove(0, 1));
                         break;
                     case USER_INFO:
                     case BUY_PRODUCT:
-                        userInfo(cmd, copyOfRange(data, 1, data.length));
+                        userInfo(cmd, data.remove(0, 1));
                         break;
                     case ATTACK: // response on Attack
-                        attack(cmd, copyOfRange(data, 1, data.length));
+                        attack(cmd, data.remove(0, 1));
                         break;
                     case CALL:
-                        call(cmd, copyOfRange(data, 1, data.length));
+                        call(cmd, data.remove(0, 1));
                         break;
                     case STOPCALL:
-                        stopCall(cmd, copyOfRange(data, 1, data.length));
+                        stopCall(cmd, data.remove(0, 1));
                         break;
                     case FRIEND_LIST:
-                        friendList(cmd, copyOfRange(data, 1, data.length));
+                        friendList(cmd, data.remove(0, 1));
                         break;
                     case ADD_FRIEND:
-                        addFriend(cmd, copyOfRange(data, 1, data.length));
+                        addFriend(cmd, data.remove(0, 1));
                         break;
                     case REMOVE_FRIEND:
-                        removeFriend(cmd, copyOfRange(data, 1, data.length));
+                        removeFriend(cmd, data.remove(0, 1));
                         break;
                     case RANGE_OF_PRODUCTS:
-                        rangeOfProducts(cmd, copyOfRange(data, 1, data.length));
+                        rangeOfProducts(cmd, data.remove(0, 1));
                         break;
                     case ROUND_INFO:
-                        roundInfo(cmd, copyOfRange(data, 1, data.length));
+                        roundInfo(cmd, data.remove(0, 1));
                         break;
                     case RATING:
-                        rating(cmd, copyOfRange(data, 1, data.length));
+                        rating(cmd, data.remove(0, 1));
                         break;
                     case FULL_STATE:
-                        fullState(cmd, copyOfRange(data, 1, data.length));
+                        fullState(cmd, data.remove(0, 1));
                         break;
                     case STATE_CHANGED:
-                        stateChanged(cmd, copyOfRange(data, 1, data.length));
+                        stateChanged(cmd, data.remove(0, 1));
                         break;
                     case SCORE_CHANGED:
-                        scoreChanged(cmd, copyOfRange(data, 1, data.length));
+                        scoreChanged(cmd, data.remove(0, 1));
                         break;
                     case PLAYER_WOUNDED:
-                        playerWounded(cmd, copyOfRange(data, 1, data.length));
+                        playerWounded(cmd, data.remove(0, 1));
                         break;
                     case FINISHED:
-                        finished(cmd, copyOfRange(data, 1, data.length));
+                        finished(cmd, data.remove(0, 1));
                         break;
                     case THING_TAKEN:
-                        thingTaken(cmd, copyOfRange(data, 1, data.length));
+                        thingTaken(cmd, data.remove(0, 1));
                         break;
                     case ABILITY_LIST:
-                        abilitiesList(cmd, copyOfRange(data, 1, data.length));
+                        abilitiesList(cmd, data.remove(0, 1));
                         break;
                     case OBJECT_APPENDED:
-                        objectAppended(cmd, copyOfRange(data, 1, data.length));
+                        objectAppended(cmd, data.remove(0, 1));
                         break;
                     case CHECK_PROMOCODE:
-                        checkPromocode(cmd, copyOfRange(data, 1, data.length));
+                        checkPromocode(cmd, data.remove(0, 1));
                         break;
                     case PROMOCODE_DONE:
-                        promocodeDone(cmd, copyOfRange(data, 1, data.length));
+                        promocodeDone(cmd, data.remove(0, 1));
                         break;
                     default:
-                        if (data.length > 1)
-                            inspectError(cmd, data[1]);
+                        if (data.length() > 1)
+                            inspectError(cmd, data.get(1));
                         else throw new IllegalArgumentException("Unhandled command code");
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
@@ -131,183 +132,161 @@ class Parser implements IHandler {
         model.setConnected(connected);
     }
 
-    private void signIn(Cmd cmd, int[] data) {
-        if (data.length == 1) {
-            int error = data[0];
+    private void signIn(Cmd cmd, IIntArray data) {
+        if (data.length() == 1) {
+            int error = data.get(0);
             if (error == 0)
                 model.setAuthorized(true);
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect sign-in format");
     }
 
-    private void signOut(Cmd cmd, int[] data) {
-        if (data.length == 1) {
-            int error = data[0];
+    private void signOut(Cmd cmd, IIntArray data) {
+        if (data.length() == 1) {
+            int error = data.get(0);
             if (error == 0)
                 model.setAuthorized(false);
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect sign-out format");
     }
 
-    private void userInfo(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            int error = data[0];
+    private void userInfo(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            int error = data.get(0);
             if (error == 0)
-                model.setUserInfo(copyOfRange(data, 1, data.length));
+                model.setUserInfo(data.remove(0, 1));
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect user info format");
     }
 
-    private void attack(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            int error = data[0];
+    private void attack(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            int error = data.get(0);
             if (error == 0) {
-                StringBuilder victim = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-                for (int i = 1; i < data.length; i++) {
-                    victim.append((char) data[i]);
-                }
-                model.setVictim(victim.toString());
+                model.setVictim(data.remove(0, 1).toUTF8());
             } else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect attack format");
     }
 
-    private void call(Cmd cmd, int[] data) {
-        if (data.length > 3) {
-            int sidH = data[0];
-            int sidL = data[1];
+    private void call(Cmd cmd, IIntArray data) {
+        if (data.length() > 3) {
+            int sidH = data.get(0);
+            int sidL = data.get(1);
             int sid = sidH * 256 + sidL;
-            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-            for (int i = 2; i < data.length; i++) {
-                name.append((char) data[i]);
-            }
-            model.attacked(sid, name.toString());
+            model.attacked(sid, data.remove(0, 2).toUTF8());
             if (psObject != null && model.notifyNewBattles)
                 psObject.activate();
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect call format");
     }
 
-    private void stopCall(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            boolean rejected = data[0] == 0;
-            boolean missed = data[0] == 1;
-            boolean expired = data[0] == 2;
-            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-            for (int i = 1; i < data.length; i++) {
-                name.append((char) data[i]);
-            }
+    private void stopCall(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            boolean rejected = data.get(0) == 0;
+            boolean missed = data.get(0) == 1;
+            boolean expired = data.get(0) == 2;
             if (rejected)
-                model.stopCallRejected(name.toString());
+                model.stopCallRejected(data.remove(0, 1).toUTF8());
             else if (missed)
-                model.stopCallMissed(name.toString());
+                model.stopCallMissed(data.remove(0, 1).toUTF8());
             else if (expired)
-                model.stopCallExpired(name.toString());
-            else inspectError(cmd, data[0]);
+                model.stopCallExpired(data.remove(0, 1).toUTF8());
+            else inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect stopCall format");
     }
 
-    private void friendList(Cmd cmd, int[] data) {
-        if (data.length > 1) {
-            int error = data[0];
-            int fragNumber = data[1];
+    private void friendList(Cmd cmd, IIntArray data) {
+        if (data.length() > 1) {
+            int error = data.get(0);
+            int fragNumber = data.get(1);
             if (error == 0)
-                model.setFriendList(copyOfRange(data, 2, data.length), fragNumber > 1);
+                model.setFriendList(data.remove(0, 2), fragNumber > 1);
             else inspectError(cmd, error);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect friend list format");
     }
 
-    private void addFriend(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            int error = data[0];
+    private void addFriend(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            int error = data.get(0);
             if (error == 0) {
-                if (data.length > 1) {
-                    int character = data[1];
-                    StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-                    for (int i = 2; i < data.length; i++) {
-                        name.append((char) data[i]);
-                    }
-                    model.friendAdded(character, name.toString());
+                if (data.length() > 1) {
+                    int character = data.get(1);
+                    model.friendAdded(character, data.remove(0, 2).toUTF8());
                 } else throw new IllegalArgumentException("Incorrect addFriend format");
             } else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect add friend format");
     }
 
-    private void removeFriend(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            int error = data[0];
-            if (error == 0) {
-                StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-                for (int i = 1; i < data.length; i++) {
-                    name.append((char) data[i]);
-                }
-                model.friendRemoved(name.toString());
-            } else inspectError(cmd, error);
+    private void removeFriend(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            int error = data.get(0);
+            if (error == 0)
+                model.friendRemoved(data.remove(0, 1).toUTF8());
+            else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect remove friend format");
     }
 
-    private void rangeOfProducts(Cmd cmd, int[] data) {
-        if (data.length % 3 == 0) {
+    private void rangeOfProducts(Cmd cmd, IIntArray data) {
+        if (data.length() % 3 == 0)
             model.setRangeOfProducts(data);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
-        } else throw new IllegalArgumentException("Incorrect range-of-products format");
+        else if (data.length() == 1)
+            inspectError(cmd, data.get(0));
+        else throw new IllegalArgumentException("Incorrect range-of-products format");
     }
 
-    private void roundInfo(Cmd cmd, int[] data) {
-        if (data.length > 6) {
-            int number = data[0];
-            int timeSec = data[1];
-            boolean aggressor = data[2] != 0;
-            int character1 = data[3];
-            int character2 = data[4];
-            int myLives = data[5];
-            int enemyLives = data[6];
+    private void roundInfo(Cmd cmd, IIntArray data) {
+        if (data.length() > 6) {
+            int number = data.get(0);
+            int timeSec = data.get(1);
+            boolean aggressor = data.get(2) != 0;
+            int character1 = data.get(3);
+            int character2 = data.get(4);
+            int myLives = data.get(5);
+            int enemyLives = data.get(6);
             model.setRoundInfo(number, timeSec, aggressor, character1, character2, myLives, enemyLives);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect round info format");
     }
 
-    private void rating(Cmd cmd, int[] data) {
-        if (data.length > 1) {
-            int error = data[0];
-            int type = data[1];
+    private void rating(Cmd cmd, IIntArray data) {
+        if (data.length() > 1) {
+            int error = data.get(0);
+            int type = data.get(1);
             RatingType[] types = RatingType.values();
             if (error == 0 && (0 <= type && type < types.length)) {
-                model.setRating(types[type], copyOfRange(data, 2, data.length));
+                model.setRating(types[type], data.remove(0, 2));
             } else inspectError(cmd, error);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect rating format");
     }
 
-    private void fullState(Cmd cmd, int[] state) {
+    private void fullState(Cmd cmd, IIntArray state) {
         int n = Field.HEIGHT * Field.WIDTH;
-        if (state.length >= n) {
+        if (state.length() >= n) {
             // field
-            int field[] = copyOfRange(state, 0, n);
-            model.setNewField(field);
+            model.setNewField(field.copyFrom(state, n));
 
             // scanning additional sections
-            for (int j = n; j + 1 < state.length; j += 2) {
-                int sectionCode = state[j];
-                int sectionLen = state[j + 1];
+            for (int j = n; j + 1 < state.length(); j += 2) {
+                int sectionCode = state.get(j);
+                int sectionLen = state.get(j + 1);
                 switch (sectionCode) {
                     case 1: // parse additional level objects
-                        int objects[] = copyOfRange(state, j + 2, j + 2 + sectionLen);
-                        for (int i = 0; i < objects.length; i += 3) {
-                            int number = objects[i];
-                            int id = objects[i + 1];
-                            int xy = objects[i + 2];
+                        for (int i = j + 2; i < j + 2 + sectionLen; i += 3) {
+                            int number = state.get(i);
+                            int id = state.get(i + 1);
+                            int xy = state.get(i + 2);
                             model.appendObject(number, id, xy);
                         }
                         break;
                     case 2: // parse style pack
-                        if (sectionLen == 1 && j + 2 < state.length) {
-                            int pack = state[j + 2];
+                        if (sectionLen == 1 && j + 2 < state.length()) {
+                            int pack = state.get(j + 2);
                             model.setStylePack(pack);
                         } else throw new IllegalArgumentException("Incorrect style pack");
                         break;
@@ -315,115 +294,111 @@ class Parser implements IHandler {
                 }
                 j += sectionLen;
             }
-        } else if (state.length == 1) {
-            inspectError(cmd, state[0]);
+        } else if (state.length() == 1) {
+            inspectError(cmd, state.get(0));
         } else throw new IllegalArgumentException("Incorrect field size");
     }
 
-    private void stateChanged(Cmd cmd, int[] pairs) {
-        if (pairs.length % 2 == 0) {
-            for (int i = 0; i < pairs.length; i += 2) {
-                int number = pairs[i];
-                int xy = pairs[i + 1];
+    private void stateChanged(Cmd cmd, IIntArray pairs) {
+        if (pairs.length() % 2 == 0) {
+            for (int i = 0; i < pairs.length(); i += 2) {
+                int number = pairs.get(i);
+                int xy = pairs.get(i + 1);
                 model.setXy(number, xy);
             }
-        } else if (pairs.length == 1) {
-            inspectError(cmd, pairs[0]);
+        } else if (pairs.length() == 1) {
+            inspectError(cmd, pairs.get(0));
         } else throw new IllegalArgumentException("Incorrect state changed format");
     }
 
-    private void scoreChanged(Cmd cmd, int[] score) {
-        if (score.length == 2) {
-            int score1 = score[0];
-            int score2 = score[1];
+    private void scoreChanged(Cmd cmd, IIntArray score) {
+        if (score.length() == 2) {
+            int score1 = score.get(0);
+            int score2 = score.get(1);
             model.setScore(score1, score2);
-        } else if (score.length == 1) {
-            inspectError(cmd, score[0]);
+        } else if (score.length() == 1) {
+            inspectError(cmd, score.get(0));
         } else throw new IllegalArgumentException("Incorrect score format");
     }
 
-    private void playerWounded(Cmd cmd, int[] lives) {
-        if (lives.length == 2) {
-            int myLives = lives[0];
-            int enemyLives = lives[1];
+    private void playerWounded(Cmd cmd, IIntArray lives) {
+        if (lives.length() == 2) {
+            int myLives = lives.get(0);
+            int enemyLives = lives.get(1);
             model.setLives(myLives, enemyLives);
-        } else if (lives.length == 1) {
-            inspectError(cmd, lives[0]);
+        } else if (lives.length() == 1) {
+            inspectError(cmd, lives.get(0));
         } else throw new IllegalArgumentException("Incorrect lives format");
     }
 
-    private void finished(Cmd cmd, int[] data) {
-        if (data.length > 1) {
-            boolean roundFinished = data[0] == 0; // 0 = finished round, 1 = finished game
-            boolean gameFinished = data[0] == 1;
-            boolean winner = data[1] > 0;
+    private void finished(Cmd cmd, IIntArray data) {
+        if (data.length() > 1) {
+            boolean roundFinished = data.get(0) == 0; // 0 = finished round, 1 = finished game
+            boolean gameFinished = data.get(0) == 1;
+            boolean winner = data.get(1) > 0;
             if (gameFinished)
                 model.gameFinished(winner);
             else if (roundFinished) {
-                if (data.length == 4) {
-                    int score1 = data[2];
-                    int score2 = data[3];
+                if (data.length() == 4) {
+                    int score1 = data.get(2);
+                    int score2 = data.get(3);
                     model.roundFinished(winner, score1, score2);
                 } else throw new IllegalArgumentException("Incorrect finished round format");
-            } else inspectError(cmd, data[0]);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+            } else inspectError(cmd, data.get(0));
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect finished format");
     }
 
-    private void thingTaken(Cmd cmd, int[] data) {
-        if (data.length == 2) {
-            boolean me = data[0] != 0;
-            int thingId = data[1];
+    private void thingTaken(Cmd cmd, IIntArray data) {
+        if (data.length() == 2) {
+            boolean me = data.get(0) != 0;
+            int thingId = data.get(1);
             if (me)
                 model.setThing(thingId);
             else model.setEnemyThing(thingId);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect thing format");
     }
 
-    private void objectAppended(Cmd cmd, int[] data) {
-        if (data.length == 3) {
-            int id = data[0];
-            int objNum = data[1];
-            int xy = data[2];
+    private void objectAppended(Cmd cmd, IIntArray data) {
+        if (data.length() == 3) {
+            int id = data.get(0);
+            int objNum = data.get(1);
+            int xy = data.get(2);
             model.appendObject(objNum, id, xy);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect object format");
     }
 
-    private void checkPromocode(Cmd cmd, int[] data) {
-        if (data.length == 1) {
-            int res = data[0];
+    private void checkPromocode(Cmd cmd, IIntArray data) {
+        if (data.length() == 1) {
+            int res = data.get(0);
             if (res == 0 || res == 1) {
                 model.setPromocodeValid(res == 1);
             } else inspectError(cmd, res);
         } else throw new IllegalArgumentException("Incorrect checkPromocode format");
     }
 
-    private void promocodeDone(Cmd cmd, int[] data) {
-        if (data.length > 1) {
-            boolean inviter = data[0] == 1;
-            int crystals = data[1];
-            StringBuilder name = new StringBuilder(); // in Java 8 may be replaced with a StringJoiner
-            for (int i = 2; i < data.length; i++) {
-                name.append((char) data[i]);
-            }
-            model.setPromocodeDone(name.toString(), inviter, crystals);
-        } else if (data.length == 1) {
-            inspectError(cmd, data[0]);
+    private void promocodeDone(Cmd cmd, IIntArray data) {
+        if (data.length() > 1) {
+            boolean inviter = data.get(0) == 1;
+            int crystals = data.get(1);
+            model.setPromocodeDone(data.remove(0, 2).toUTF8(), inviter, crystals);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
     }
 
-    private void abilitiesList(Cmd cmd, int[] data) {
-        if (data.length > 0) {
-            int count = data[0];
-            int abilities[] = copyOfRange(data, 1, data.length);
-            if (abilities.length == count)
-                model.setAbilities(abilities);
-            else inspectError(cmd, data[0]);
+    private void abilitiesList(Cmd cmd, IIntArray data) {
+        if (data.length() > 0) {
+            int count = data.get(0);
+            data.remove(0, 1);
+            if (data.length() == count)
+                model.setAbilities(data);
+            else inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect abilities format");
     }
 

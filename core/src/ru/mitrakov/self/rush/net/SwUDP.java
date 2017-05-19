@@ -4,13 +4,17 @@ import java.net.*;
 import java.util.UUID;
 import java.io.IOException;
 
+import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
+
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
-import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Created by mitrakov on 31.03.2017
  */
 public class SwUDP implements IProtocol {
+    private final static int BUF_SIZ = 256;
+    
     final static int N = 256;
     final static int SYN = 0;
     final static int MAX_ATTEMPTS = 12;
@@ -27,14 +31,14 @@ public class SwUDP implements IProtocol {
         int ticks = 0;
         int attempt = 0;
         int nextRepeat = 0;
-        int[] msg;
+        IIntArray msg = new GcResistantIntArray(BUF_SIZ);
 
-        Item(int[] msg) {
-            this.msg = msg;
+        Item(IIntArray msg) {
+            this.msg.copyFrom(msg, msg.length());
         }
 
-        Item(int[] msg, int startRtt) {
-            this.msg = msg;
+        Item(IIntArray msg, int startRtt) {
+            this.msg.copyFrom(msg, msg.length());
             this.startRtt = startRtt;
         }
     }
@@ -67,36 +71,36 @@ public class SwUDP implements IProtocol {
     }
 
     @Override
-    public void send(int[] data) throws IOException {
+    public void send(IIntArray data) throws IOException {
         sender.send(data);
     }
 
     @Override
-    public void onReceived(int[] data) throws IOException {
+    public void onReceived(IIntArray data) throws IOException {
         assert data != null;
-        int id = data[0];
-        int crcid = (data[1] << 24) | (data[2] << 16) | (data[3] << 8) | (data[4]);
-        if (data.length == 5) // Ack (id + crcid)
+        int id = data.get(0);
+        int crcid = (data.get(1) << 24) | (data.get(2) << 16) | (data.get(3) << 8) | (data.get(4));
+        if (data.length() == 5) // Ack (id + crcid)
             sender.onAck(id);
-        else if (data.length > 5)
-            receiver.onMsg(id, crcid, copyOfRange(data, 5, data.length));
+        else if (data.length() > 5)
+            receiver.onMsg(id, crcid, data.remove(0, 5));
         else throw new IOException("Incorrect message length");
     }
 
     @Override
     public void onSenderConnected() throws IOException {
-        log("Sender connected!");
+        log("", "Sender connected!");
     }
 
     @Override
     public void onReceiverConnected() throws IOException {
-        log("Receiver connected!");
+        log("", "Receiver connected!");
         handler.onChanged(true);
     }
 
     @Override
     public void connectionFailed() throws IOException {
-        log("Connection failed!");
+        log("", "Connection failed!");
         handler.onChanged(false);
     }
 

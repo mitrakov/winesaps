@@ -4,8 +4,10 @@ import java.net.*;
 import java.util.*;
 import java.io.IOException;
 
+import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
+
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
-import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -24,6 +26,8 @@ public final class Network extends Thread implements IHandler {
     private final UncaughtExceptionHandler errorHandler;
     private final String host;
     private final int port;
+    private final byte[] recvBuf = new byte[BUF_SIZ];
+    private final IIntArray recvData = new GcResistantIntArray(BUF_SIZ);
 
     private int sid = 0;
     private long token = 0;
@@ -62,13 +66,14 @@ public final class Network extends Thread implements IHandler {
         // noinspection InfiniteLoopStatement
         while (true) {
             try {
-                DatagramPacket datagram = new DatagramPacket(new byte[BUF_SIZ], BUF_SIZ);
+                DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ);
                 socket.receive(datagram);
                 if (TMP_NO_CONNECTION) continue;
-                log("Recv: " + Arrays.toString(toInt(datagram.getData(), datagram.getLength())));
-                if (protocol != null)
-                    protocol.onReceived(toInt(datagram.getData(), datagram.getLength()));
-                else onReceived(toInt(datagram.getData(), datagram.getLength()));
+                if (protocol != null) {
+                    recvData.fromByteArray(datagram.getData(), datagram.getLength());
+                    log("Recv: ", recvData);
+                    protocol.onReceived(recvData);
+                } else onReceived(recvData.fromByteArray(datagram.getData(), datagram.getLength()));
             } catch (Exception e) {
                 errorHandler.uncaughtException(this, e);
             }
@@ -76,16 +81,16 @@ public final class Network extends Thread implements IHandler {
     }
 
     @Override
-    public void onReceived(int[] data) {
-        if (data.length > HEADER_SIZ) try {
-            int inSid = data[0] * 256 + data[1];
-            long inToken = (data[2] << 24) | (data[3] << 16) | (data[4] << 8) | data[5];
+    public void onReceived(IIntArray data) {
+        if (data.length() > HEADER_SIZ) try {
+            int inSid = data.get(0) * 256 + data.get(1);
+            long inToken = (data.get(2) << 24) | (data.get(3) << 16) | (data.get(4) << 8) | data.get(5);
             if (sid * token == 0) {
                 sid = inSid;
                 token = inToken;
             }
             if (sid == inSid && token == inToken)
-                handler.onReceived(copyOfRange(data, HEADER_SIZ, data.length));
+                handler.onReceived(data.remove(0, HEADER_SIZ));
             else throw new IllegalAccessException("Incorrect sid/token pair");
         } catch (Exception e) {
             errorHandler.uncaughtException(this, e); // we MUST handle all exceptions to get SwUDP working
@@ -97,24 +102,23 @@ public final class Network extends Thread implements IHandler {
         handler.onChanged(connected);
     }
 
-    public void send(int[] data) throws IOException {
+    public void send(IIntArray data) throws IOException {
         if (TMP_NO_CONNECTION) return;
 
         // concatenate a header and data
-        int[] msg = new int[data.length + HEADER_SIZ];
-        msg[0] = sid / 256;
-        msg[1] = sid % 256;
-        msg[2] = (int) ((token >> 24) & 0xFF);
-        msg[3] = (int) ((token >> 16) & 0xFF);
-        msg[4] = (int) ((token >> 8) & 0xFF);
-        msg[5] = (int) (token & 0xFF);
-        msg[6] = 0; // flags
-        System.arraycopy(data, 0, msg, HEADER_SIZ, data.length);
+        int h0 = sid / 256;
+        int h1 = sid % 256;
+        int h2 = (int) ((token >> 24) & 0xFF);
+        int h3 = (int) ((token >> 16) & 0xFF);
+        int h4 = (int) ((token >> 8) & 0xFF);
+        int h5 = (int) (token & 0xFF);
+        int h6 = 0; // flags
+        data.prepend(h6).prepend(h5).prepend(h4).prepend(h3).prepend(h2).prepend(h1).prepend(h0);
 
         // sending
         if (protocol != null)
-            protocol.send(msg);
-        else socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, InetAddress.getByName(host), port));
+            protocol.send(data);
+        else socket.send(new DatagramPacket(data.toByteArray(), data.length(), InetAddress.getByName(host), port));
     }
 
     public void reset() {

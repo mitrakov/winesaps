@@ -36,7 +36,7 @@ class InputController {
         else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) model.useAbility(9);
         else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             Network.TMP_NO_CONNECTION = !Network.TMP_NO_CONNECTION;
-            log("TMP_NO_CONNECTION = " + Network.TMP_NO_CONNECTION);
+            log("TMP_NO_CONNECTION = ", Network.TMP_NO_CONNECTION);
         }
     }
 

@@ -44,7 +44,7 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
-                log("Hey-Hey!");
+                log("", "Hey-Hey!");
             }
         });
 

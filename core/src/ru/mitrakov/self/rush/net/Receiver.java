@@ -1,10 +1,11 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.Arrays;
 import java.io.IOException;
 
-import static ru.mitrakov.self.rush.utils.Utils.*;
+import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
+
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.net.SwUDP.*;
 
@@ -18,6 +19,8 @@ class Receiver {
     private final IHandler handler;
     private final IProtocol protocol;
     private final Item[] buffer = new Item[N];
+    private final IIntArray ack = new GcResistantIntArray(5);
+    private /*final*/ DatagramPacket packet;
 
     private int expected = 0;
     boolean connected = false;
@@ -31,11 +34,12 @@ class Receiver {
         this.protocol = protocol;
     }
 
-    void onMsg(int id, int crcid, int[] msg) throws IOException {
-        int[] ack = new int[] {id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF, crcid & 0xFF};
+    void onMsg(int id, int crcid, IIntArray msg) throws IOException {
+        ack.clear();
+        ack.add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF).add(crcid & 0xFF);
         if (id == SYN) {
-            log("Ack : " + Arrays.toString(ack));
-            socket.send(new DatagramPacket(toByte(ack, ack.length), ack.length, InetAddress.getByName(host), port));
+            log("Ack : ", ack);
+            socket.send(getPacket(ack.toByteArray(), ack.length()));
             for (int j = 0; j < buffer.length; j++) {
                 buffer[j] = null;
             }
@@ -43,8 +47,8 @@ class Receiver {
             connected = true;
             protocol.onReceiverConnected();
         } else if (connected) {
-            log("Ack : " + Arrays.toString(ack));
-            socket.send(new DatagramPacket(toByte(ack, ack.length), ack.length, InetAddress.getByName(host), port));
+            log("Ack : ", ack);
+            socket.send(getPacket(ack.toByteArray(), ack.length()));
             if (id == expected) {
                 handler.onReceived(msg);
                 expected = next(id);
@@ -61,5 +65,12 @@ class Receiver {
             expected = next(expected);
             accept();
         }
+    }
+
+    private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
+        if (packet == null)
+            packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);
+        else packet.setData(data, 0, length);
+        return packet;
     }
 }

@@ -2,15 +2,15 @@ package ru.mitrakov.self.rush;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
-import static ru.mitrakov.self.rush.utils.Utils.*;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 /**
  * Created by mitrakov on 27.02.2017
  */
-
 class MsgSender implements Model.ISender {
     private final Network network;
     private final Thread.UncaughtExceptionHandler errorHandler;
+    private final IIntArray sendBuf = new GcResistantIntArray(256);
 
     MsgSender(Network network, Thread.UncaughtExceptionHandler errorHandler) {
         assert network != null && errorHandler != null;
@@ -21,7 +21,7 @@ class MsgSender implements Model.ISender {
     @Override
     public void send(Model.Cmd cmd) {
         try {
-            network.send(new int[] {cmd.ordinal()});
+            network.send(sendBuf.clear().add(cmd.ordinal()));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
@@ -30,19 +30,25 @@ class MsgSender implements Model.ISender {
     @Override
     public void send(Model.Cmd cmd, int arg) {
         try {
-            network.send(new int[] {cmd.ordinal(), arg});
+            network.send(sendBuf.clear().add(cmd.ordinal()).add(arg));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
     }
 
     @Override
-    public void send(Model.Cmd cmd, byte[] data) {
+    public void send(Model.Cmd cmd, int arg1, int arg2) {
         try {
-            int msg[] = new int[data.length + 1];
-            msg[0] = cmd.ordinal();
-            System.arraycopy(toInt(data, data.length), 0, msg, 1, data.length);
-            network.send(msg);
+            network.send(sendBuf.clear().add(cmd.ordinal()).add(arg1).add(arg2));
+        } catch (Exception e) {
+            errorHandler.uncaughtException(Thread.currentThread(), e);
+        }
+    }
+
+    @Override
+    public void send(Model.Cmd cmd, String arg) {
+        try {
+            network.send(sendBuf.fromByteArray(arg.getBytes(), arg.length()).prepend(cmd.ordinal()));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }

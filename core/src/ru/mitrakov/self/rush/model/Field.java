@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush.model;
 import java.util.*;
 
 import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -22,9 +23,9 @@ public class Field {
     private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
     private int objectNumber = 0;
 
-    Field(int[] fieldData) {
+    Field(IIntArray fieldData) {
         assert fieldData != null;
-        if (fieldData.length != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
+        if (fieldData.length() != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
 
         NextNumber nextNumber = new NextNumber() {
             @Override
@@ -32,8 +33,8 @@ public class Field {
                 return ++objectNumber;
             }
         };
-        for (int i = 0; i < fieldData.length; i++) {
-            cells[i] = Cell.newCell(fieldData[i], i, nextNumber);
+        for (int i = 0; i < fieldData.length(); i++) {
+            cells[i] = Cell.newCell(fieldData.get(i), i, nextNumber);
             assert cells[i] != null;
             for (CellObject object : cells[i].objects) {
                 objects.put(object.getNumber(), object);

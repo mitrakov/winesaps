@@ -4,10 +4,12 @@ import java.net.*;
 import java.util.*;
 import java.io.IOException;
 
+import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.utils.collections.IIntArray;
+
 import static java.lang.Math.*;
-import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
-import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.net.SwUDP.*;
+import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
  * Created by mitrakov on 03.04.2017
@@ -20,6 +22,8 @@ class Sender {
     private final IProtocol protocol;
     private final Item[] buffer = new Item[N];
     private final Timer timer;
+    private final IIntArray startMsg = new GcResistantIntArray(6);
+    private /*final*/ DatagramPacket packet;
 
     private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0, crcid = 0;
     volatile boolean connected = false; // volatile needed (by FindBugs)
@@ -56,20 +60,21 @@ class Sender {
         for (int j = 0; j < buffer.length; j++) {
             buffer[j] = null;
         }
-        int[] data = new int[]{id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF, crcid & 0xFF, 0xFD};
-        buffer[id] = new Item(data);
-        log("Send: " + Arrays.toString(data));
-        socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
+        startMsg.clear().add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF)
+                .add(crcid & 0xFF).add(0xFD);
+        buffer[id] = new Item(startMsg);
+        log("Send: ", startMsg);
+        socket.send(getPacket(startMsg.toByteArray(), startMsg.length()));
     }
 
-    synchronized void send(int[] msg) throws IOException {
+    synchronized void send(IIntArray msg) throws IOException {
         if (connected) {
             id = next(id);
-            int[] data = prepend(msg, id, (crcid >> 24) & 0xFF, (crcid >> 16) & 0xFF, (crcid >> 8) & 0xFF,
-                    crcid & 0xFF);
-            buffer[id] = new Item(data, totalTicks);
-            log("Send: " + Arrays.toString(data));
-            socket.send(new DatagramPacket(toByte(data, data.length), data.length, InetAddress.getByName(host), port));
+            msg.prepend(crcid & 0xFF).prepend((crcid >> 8) & 0xFF).prepend((crcid >> 16) & 0xFF)
+                    .prepend((crcid >> 24) & 0xFF).prepend(id);
+            buffer[id] = new Item(msg, totalTicks);
+            log("Send: ", msg);
+            socket.send(getPacket(msg.toByteArray(), msg.length()));
         } else throw new ConnectException("Not connected");
     }
 
@@ -115,16 +120,22 @@ class Sender {
                 buffer[i].attempt++;
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
-                    int[] msg = buffer[i].msg; // already contains "crcid" and "id"
-                    log("Sendd " + Arrays.toString(msg) + ";ticks=" + buffer[i].ticks + ";attempt=" +
+                    IIntArray msg = buffer[i].msg; // already contains "crcid" and "id"
+                    log("Sendd ", msg + ";ticks=" + buffer[i].ticks + ";attempt=" +
                             buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
                             (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);
                     buffer[i].startRtt = totalTicks;
-                    InetAddress addr = InetAddress.getByName(host);
-                    socket.send(new DatagramPacket(toByte(msg, msg.length), msg.length, addr, port));
+                    socket.send(getPacket(msg.toByteArray(), msg.length()));
                 }
             }
             buffer[i].ticks++;
         }
+    }
+
+    private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
+        if (packet == null)
+            packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);
+        else packet.setData(data, 0, length);
+        return packet;
     }
 }
