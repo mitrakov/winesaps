@@ -19,10 +19,10 @@ public class ScreenLogin extends LocalizableScreen {
 
     private final Table tableMain = new Table();
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-    private final TextField txtLogin;
-    private final TextField txtPassword;
-    private final TextField txtEmail;
-    private final TextField txtPromocode;
+    private final TextFieldFeat txtLogin;
+    private final TextFieldFeat txtPassword;
+    private final TextFieldFeat txtEmail;
+    private final TextFieldFeat txtPromocode;
     private final TextButton btnSignIn;
     private final TextButton btnSignUp;
     private final TextButton btnBack;
@@ -61,20 +61,6 @@ public class ScreenLogin extends LocalizableScreen {
         textureValid = new TextureRegionDrawable(regionValid);
         textureInvalid = new TextureRegionDrawable(regionInvalid);
 
-        txtLogin = new TextField("", skin, "default"); // ....
-        txtPassword = new TextField("", skin, "default") {{
-            setPasswordMode(true);
-            setPasswordCharacter('*');
-        }};
-        txtEmail = new TextField("", skin, "default");
-        txtPromocode = new TextField("", skin, "default") {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.checkPromocode(txtPromocode.getText());
-                }
-            });
-        }};
         btnSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -116,6 +102,20 @@ public class ScreenLogin extends LocalizableScreen {
                     if (password.length() >= 4)
                         model.signUp(txtLogin.getText(), password, txtEmail.getText(), txtPromocode.getText());
                     else infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+                }
+            });
+        }};
+        txtLogin = new TextFieldFeat("", skin, "default", null); // ....
+        txtPassword = new TextFieldFeat("", skin, "default", null) {{
+            setPasswordMode(true);
+            setPasswordCharacter('*');
+        }};
+        txtEmail = new TextFieldFeat("", skin, "default", btnOkSignUp);
+        txtPromocode = new TextFieldFeat("", skin, "default", btnOkSignUp) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.checkPromocode(txtPromocode.getText());
                 }
             });
         }};
@@ -257,6 +257,9 @@ public class ScreenLogin extends LocalizableScreen {
         curDialog = CurDialog.SignIn;
         Actor focused = stage.getKeyboardFocus();
 
+        txtLogin.setOnEnterActor(btnOkSignIn);
+        txtPassword.setOnEnterActor(btnOkSignIn);
+
         Table buttons = new Table();
         buttons.add(btnBack).width(120).height(46).space(20);
         buttons.add(btnOkSignIn).width(120).height(46).space(20);
@@ -280,6 +283,8 @@ public class ScreenLogin extends LocalizableScreen {
         curDialog = CurDialog.SignUp;
         Actor focused = stage.getKeyboardFocus();
 
+        txtLogin.setOnEnterActor(btnOkSignUp);
+        txtPassword.setOnEnterActor(btnOkSignUp);
         txtPromocode.setVisible(havePromocode);
         imgValid.setVisible(havePromocode);
 
