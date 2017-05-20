@@ -110,6 +110,7 @@ public class Model {
     }
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
+    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
 
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
@@ -806,7 +807,7 @@ public class Model {
 
         bus.raise(new EventBus.RoundStartedEvent(number));
         bus.raise(new EventBus.ScoreChangedEvent(0, 0));
-        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, true));
+        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives));
         bus.raise(new EventBus.ThingChangedEvent(null, null, true));
         bus.raise(new EventBus.ThingChangedEvent(null, null, false));
     }
@@ -871,8 +872,8 @@ public class Model {
         bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
     }
 
-    public void setLives(int myLives, int enemyLives) {
-        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives, false));
+    public void setPlayerWounded(int cause, int myLives, int enemyLives) {
+        bus.raise(new EventBus.PlayerWoundedEvent(cause, myLives, enemyLives));
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {

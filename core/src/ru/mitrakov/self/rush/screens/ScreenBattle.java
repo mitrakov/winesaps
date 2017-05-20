@@ -32,6 +32,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
+    private final Model.HurtCause[] hurtCauses = Model.HurtCause.values();
 
     private boolean outOfSync = false;
     private I18NBundle i18n;
@@ -134,10 +135,13 @@ public class ScreenBattle extends LocalizableScreen {
             if (ev.score1 + ev.score2 > 0)
                 audioManager.sound("food");
         }
-        if (event instanceof EventBus.LivesChangedEvent) {
-            EventBus.LivesChangedEvent ev = (EventBus.LivesChangedEvent) event;
-            if (!ev.reset)
-                audioManager.sound("die");
+        if (event instanceof EventBus.PlayerWoundedEvent) {
+            EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
+            audioManager.sound("die");
+            if (0 <= ev.cause && ev.cause < hurtCauses.length) {
+                Model.HurtCause cause = hurtCauses[ev.cause];
+                audioManager.sound(cause.name());
+            }
         }
         if (event instanceof EventBus.ThingChangedEvent) {
             EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;

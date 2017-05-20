@@ -152,11 +152,20 @@ public class EventBus {
     public static final class LivesChangedEvent extends Event {
         public final int myLives;
         public final int enemyLives;
-        public final boolean reset;
-        LivesChangedEvent(int myLives, int enemyLives, boolean reset) {
+        LivesChangedEvent(int myLives, int enemyLives) {
             this.myLives = myLives;
             this.enemyLives = enemyLives;
-            this.reset = reset;
+        }
+    }
+    @SuppressWarnings("WeakerAccess")
+    public static final class PlayerWoundedEvent extends Event {
+        public final int cause;
+        public final int myLives;
+        public final int enemyLives;
+        public PlayerWoundedEvent(int cause, int myLives, int enemyLives) {
+            this.cause = cause;
+            this.myLives = myLives;
+            this.enemyLives = enemyLives;
         }
     }
     public static final class ThingChangedEvent extends Event {
