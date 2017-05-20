@@ -23,9 +23,10 @@ public abstract class DialogFeat extends Dialog implements Localizable {
         addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ESCAPE) {
+                Array<Actor> children = getButtonTable().getChildren();
+                assert children != null;
+                if (keycode == Input.Keys.ESCAPE || (keycode == Input.Keys.ENTER && children.size == 1)) {
                     // programmatically 'push' the last button
-                    Array<Actor> children = getButtonTable().getChildren();
                     if (children.size > 0) {
                         assert children.peek() != null;
                         children.peek().fire(new ChangeListener.ChangeEvent());

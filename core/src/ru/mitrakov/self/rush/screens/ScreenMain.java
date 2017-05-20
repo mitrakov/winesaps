@@ -58,8 +58,8 @@ public class ScreenMain extends LocalizableScreen {
     private final ScrollPane tableHistoryScroll;
     private final ScrollPane tableFriendsScroll;
     private final ScrollPane tableRightContentAbilitiesScroll;
-    private final TextField txtEnemyName;
-    private final TextField txtFriendName;
+    private final TextFieldFeat txtEnemyName;
+    private final TextFieldFeat txtFriendName;
     private final TextButton btnInviteByName;
     private final TextButton btnInviteRandom;
     private final TextButton btnInviteLatest;
@@ -134,6 +134,7 @@ public class ScreenMain extends LocalizableScreen {
         questionDialog = new DialogQuestion("", skin, "default");
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
 
+        tableRight = new Table(skin);
         tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
             setupFadeScrollBars(0, 0);
         }};
@@ -141,8 +142,7 @@ public class ScreenMain extends LocalizableScreen {
             setupFadeScrollBars(0, 0);
         }};
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
-        txtEnemyName = new TextField("", skin, "default");
-        txtFriendName = new TextField("", skin, "default");
+
         btnInviteByName = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -287,7 +287,10 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        tableRight = new Table(skin);
+
+        txtEnemyName = new TextFieldFeat("", skin, "default", btnInviteByNameOk);
+        txtFriendName = new TextFieldFeat("", skin, "default", btnAddFriendOk);
+
         lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override
             public void run() {
