@@ -300,12 +300,11 @@ class Parser implements IHandler {
     }
 
     private void stateChanged(Cmd cmd, IIntArray pairs) {
-        if (pairs.length() % 2 == 0) {
-            for (int i = 0; i < pairs.length(); i += 2) {
-                int number = pairs.get(i);
-                int xy = pairs.get(i + 1);
-                model.setXy(number, xy);
-            }
+        if (pairs.length() == 3) {
+            int number = pairs.get(0);
+            int xy = pairs.get(1);
+            // int reset = pairs.get(2);       // not used for now
+            model.setXy(number, xy);
         } else if (pairs.length() == 1) {
             inspectError(cmd, pairs.get(0));
         } else throw new IllegalArgumentException("Incorrect state changed format");
