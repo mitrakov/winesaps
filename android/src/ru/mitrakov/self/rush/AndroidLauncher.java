@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.content.Intent;
 import android.app.PendingIntent;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.*;
 
 public class AndroidLauncher extends AndroidApplication {
@@ -46,5 +47,11 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
         initialize(new RushClient(obj), config);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Gdx.graphics.requestRendering(); // BUG in LibGDX! (http://badlogicgames.com/forum/viewtopic.php?f=11&t=17257)
     }
 }
