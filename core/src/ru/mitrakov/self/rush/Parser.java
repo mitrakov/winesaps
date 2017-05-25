@@ -24,7 +24,7 @@ class Parser implements IHandler {
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
     private static final int ERR_ENEMY_NOT_FOUND = 247;
-    private static final int ERR_NO_FREE_USERS = 248;
+    private static final int ERR_WAIT_FOR_ENEMY = 248;
     private static final int ERR_INCORRECT_NAME = 249;
     private static final int ERR_INCORRECT_EMAIL = 251;
     private static final int ERR_DUPLICATE_NAME = 252;
@@ -441,8 +441,8 @@ class Parser implements IHandler {
             case ERR_ENEMY_NOT_FOUND:
                 model.setEnemyNotFound();
                 break;
-            case ERR_NO_FREE_USERS:
-                model.setNoFreeUsers();
+            case ERR_WAIT_FOR_ENEMY:
+                model.setWaitingForEnemy();
                 break;
             case ERR_INCORRECT_NAME:
                 model.setIncorrectName();

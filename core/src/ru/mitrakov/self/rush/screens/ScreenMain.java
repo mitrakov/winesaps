@@ -155,7 +155,7 @@ public class ScreenMain extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    inviteDialog.setArguments(DialogInvite.InviteType.Random, "").show(stage);
+                    inviteDialog.setArguments(DialogInvite.InviteType.Quick, "").show(stage);
                 }
             });
         }};
@@ -364,7 +364,7 @@ public class ScreenMain extends LocalizableScreen {
             questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
 
         btnInviteByName.setText(bundle.format("opponent.find"));
-        btnInviteRandom.setText(bundle.format("opponent.random"));
+        btnInviteRandom.setText(bundle.format("opponent.quick"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
         btnInfo.setText(bundle.format("info.header"));
         btnRating.setText(bundle.format("rating.header"));
@@ -418,9 +418,9 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
         }
-        if (event instanceof EventBus.NoFreeUsersEvent) {
+        if (event instanceof EventBus.WaitingForEnemyEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.no.free.users")).show(stage);
+            infoDialog.setText(i18n.format("dialog.info.waiting")).show(stage);
         }
         if (event instanceof EventBus.AttackedYourselfEvent) {
             dialupDialog.hide();

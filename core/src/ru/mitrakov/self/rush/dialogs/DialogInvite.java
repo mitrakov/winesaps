@@ -12,7 +12,7 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
  */
 public class DialogInvite extends DialogFeat {
 
-    public enum InviteType {ByName, Random, Latest}
+    public enum InviteType {ByName, Quick, Latest}
 
     private final Model model;
     private final Dialog dialup;
@@ -20,7 +20,7 @@ public class DialogInvite extends DialogFeat {
     private final Label lblQuestion;
     private final CheckBox chkAddToFriends;
 
-    private InviteType type = InviteType.Random;
+    private InviteType type = InviteType.Quick;
     private String name = "";
     private I18NBundle i18n;
 
@@ -55,8 +55,8 @@ public class DialogInvite extends DialogFeat {
                     if (chkAddToFriends.isChecked())
                         model.addFriend(name);
                     break;
-                case Random:
-                    model.inviteRandom();
+                case Quick:
+                    model.quickGame();
                     break;
                 case Latest:
                     model.inviteLatest();
@@ -111,8 +111,8 @@ public class DialogInvite extends DialogFeat {
                 table.row().space(30);
                 table.add(chkAddToFriends);
                 break;
-            case Random:
-                lblQuestion.setText(i18n.format("dialog.invite.random"));
+            case Quick:
+                lblQuestion.setText(i18n.format("dialog.invite.quick"));
                 table.add(lblQuestion);
                 break;
             case Latest:

@@ -387,7 +387,7 @@ public class Model {
     /**
      * Sends INVITE command to the server (random enemy)
      */
-    public void inviteRandom() {
+    public void quickGame() {
         if (connected && sender != null) {
             sender.send(ATTACK, 2);
         }
@@ -929,8 +929,8 @@ public class Model {
         bus.raise(new EventBus.EnemyNotFoundEvent());
     }
 
-    public void setNoFreeUsers() {
-        bus.raise(new EventBus.NoFreeUsersEvent());
+    public void setWaitingForEnemy() {
+        bus.raise(new EventBus.WaitingForEnemyEvent());
     }
 
     public void setAttackYourself() {

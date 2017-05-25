@@ -14,7 +14,7 @@ public class EventBus {
     public static final class AggressorBusyEvent extends Event {}
     public static final class DefenderBusyEvent extends Event {}
     public static final class EnemyNotFoundEvent extends Event {}
-    public static final class NoFreeUsersEvent extends Event {}
+    public static final class WaitingForEnemyEvent extends Event {}
     public static final class AttackedYourselfEvent extends Event {}
     public static final class AddFriendErrorEvent extends Event {}
     public static final class NoCrystalsEvent extends Event {}
