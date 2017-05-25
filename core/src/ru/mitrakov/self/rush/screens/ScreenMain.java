@@ -50,6 +50,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogFeat aboutDialog;
     private final DialogBuyAbilities buyAbilitiesDialog;
     private final DialogInfo infoDialog;
+    private final DialogLock lockDialog;
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
     private final DialogQuestion questionDialog;
@@ -129,6 +130,7 @@ public class ScreenMain extends LocalizableScreen {
         aboutDialog = new DialogAbout(skin, "default");
         buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
         infoDialog = new DialogInfo("", skin, "default");
+        lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
         inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage, i18n);
         questionDialog = new DialogQuestion("", skin, "default");
@@ -396,6 +398,7 @@ public class ScreenMain extends LocalizableScreen {
         }
         if (event instanceof EventBus.RoundStartedEvent) {
             dialupDialog.hide();
+            lockDialog.remove();
             game.setNextScreen();
         }
         if (event instanceof EventBus.InviteEvent) {
@@ -419,8 +422,7 @@ public class ScreenMain extends LocalizableScreen {
             infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
         }
         if (event instanceof EventBus.WaitingForEnemyEvent) {
-            dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.waiting")).show(stage);
+            lockDialog.setText(i18n.format("dialog.waiting")).show(stage);
         }
         if (event instanceof EventBus.AttackedYourselfEvent) {
             dialupDialog.hide();

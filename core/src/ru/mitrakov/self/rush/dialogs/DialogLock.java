@@ -6,16 +6,13 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
-import ru.mitrakov.self.rush.Localizable;
-
 /**
  * Created by mitrakov on 05.03.2017
  */
-public class DialogConnect extends Window implements Localizable {
-
+public class DialogLock extends Window {
     private final Label label;
 
-    public DialogConnect(Skin skin, String windowStyleName) {
+    public DialogLock(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
 
         // add widgets
@@ -29,10 +26,9 @@ public class DialogConnect extends Window implements Localizable {
         pack();
     }
 
-    @Override
-    public void onLocaleChanged(I18NBundle bundle) {
-        assert bundle != null;
-        label.setText(bundle.format("dialog.connecting"));
+    public DialogLock setText(String text) {
+        label.setText(text);
+        return this;
     }
 
     public void show(Stage stage) {

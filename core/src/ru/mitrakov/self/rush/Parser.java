@@ -21,6 +21,7 @@ class Parser implements IHandler {
     private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
     private static final int ERR_NO_CRYSTALS = 215;
     private static final int ERR_ADD_FRIEND = 223;
+    private static final int ERR_NOT_HANDLED = 240;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
     private static final int ERR_ENEMY_NOT_FOUND = 247;
@@ -434,6 +435,7 @@ class Parser implements IHandler {
             case ERR_ADD_FRIEND:
                 model.setAddFriendError();
                 break;
+            case ERR_NOT_HANDLED:      // trying to send a cmd with sid=token=0
             case ERR_USER_NOT_FOUND:   // incorrect sid, server was restarted, etc.
             case ERR_INCORRECT_TOKEN:  // client was restarted, trying to use the other client, etc.
                 model.signIn();

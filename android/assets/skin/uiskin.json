@@ -767,7 +767,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		titleFontColor: dark_gray
 		stageBackground: bleached-peach
 	}
-	dialog-panel: {
+	panel-lock: {
 		background: panel-orange
 		titleFont: font
 		titleFontColor: dark_gray

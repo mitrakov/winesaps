@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.dialogs.DialogConnect;
+import ru.mitrakov.self.rush.dialogs.DialogLock;
 
 /**
  * Created by mitrakov on 11.04.2017
@@ -23,7 +23,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final AudioManager audioManager;
     protected final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
     protected final Table table = new Table();
-    protected final DialogConnect connectingDialog;
+    protected final DialogLock connectingDialog;
 
     protected float glClearR = .96f;
     protected float glClearG = .92f;
@@ -38,7 +38,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         this.psObject = psObject;
         this.skin = skin;
         this.audioManager = audioManager;
-        connectingDialog = new DialogConnect(skin, "panel-maroon");
+        connectingDialog = new DialogLock(skin, "panel-lock");
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -100,7 +100,8 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
-        connectingDialog.onLocaleChanged(bundle);
+        assert bundle != null;
+        connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
     public abstract void handleEvent(EventBus.Event event);
