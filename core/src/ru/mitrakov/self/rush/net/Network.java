@@ -28,6 +28,7 @@ public final class Network extends Thread implements IHandler {
     private final int port;
     private final byte[] recvBuf = new byte[BUF_SIZ];
     private final IIntArray recvData = new GcResistantIntArray(BUF_SIZ);
+    private /*final*/ DatagramPacket packet;
 
     private int sid = 0;
     private long token = 0;
@@ -62,11 +63,13 @@ public final class Network extends Thread implements IHandler {
             }, 0, RECONNECT_MSEC);
         }
 
+        // create DatagramPacket OUTSIDE the loop to minimize memory allocations
+        DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ);
+
         // run infinite loop
-        // noinspection InfiniteLoopStatement
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
-                DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ); // TODO new
                 socket.receive(datagram);
                 if (TMP_NO_CONNECTION) continue;
                 if (protocol != null) {
@@ -118,8 +121,7 @@ public final class Network extends Thread implements IHandler {
         // sending
         if (protocol != null)
             protocol.send(data);
-        else socket.send(new DatagramPacket(data.toByteArray(), data.length(), InetAddress.getByName(host), port));
-        // TODO getByName
+        else socket.send(getPacket(data.toByteArray(), data.length()));
     }
 
     public void reset() {
@@ -133,5 +135,12 @@ public final class Network extends Thread implements IHandler {
 
     public void setProtocol(IProtocol protocol) {
         this.protocol = protocol;
+    }
+
+    private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
+        if (packet == null)
+            packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);
+        else packet.setData(data, 0, length);
+        return packet;
     }
 }
