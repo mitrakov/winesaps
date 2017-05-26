@@ -52,6 +52,13 @@ public final class GcResistantIntArray implements IIntArray {
         return array.size;
     }
 
+    /**
+     * ...
+     * if data.length() or length is larger than bufSize it's OK (internal buffer will be resized)
+     * @param data
+     * @param length
+     * @return
+     */
     @Override
     public IIntArray copyFrom(IIntArray data, int length) {
         array.clear();
@@ -91,39 +98,4 @@ public final class GcResistantIntArray implements IIntArray {
     public String toString() {
         return array.toString();
     }
-
-    /*@Override
-    public void print() {
-        if (array.size == 0) System.out.println("[]");
-        int j = 0;
-        s.setCharAt(j++, '[');
-        if (array.first() >= 100) s.setCharAt(j++, toChar(array.first()/100%10));
-        if (array.first() >= 10)  s.setCharAt(j++, toChar(array.first()/10%10));
-        s.setCharAt(j++, toChar(array.first()%10));
-        for (int i = 1; i < array.size; i++) {
-            s.setCharAt(j++, ',');
-            s.setCharAt(j++, ' ');
-            if (array.get(i) >= 100) s.setCharAt(j++, toChar(array.get(i)/100%10));
-            if (array.get(i) >= 10) s.setCharAt(j++, toChar(array.get(i)/10%10));
-            s.setCharAt(j++, toChar(array.get(i)%10));
-        }
-        s.setCharAt(j++, ']');
-        return s.substring(0, j);
-    }
-
-    private char toChar(int x) {
-        switch (x) {
-            case 0: return '0';
-            case 1: return '1';
-            case 2: return '2';
-            case 3: return '3';
-            case 4: return '4';
-            case 5: return '5';
-            case 6: return '6';
-            case 7: return '7';
-            case 8: return '8';
-            case 9: return '9';
-        }
-        return '?';
-    }*/
 }

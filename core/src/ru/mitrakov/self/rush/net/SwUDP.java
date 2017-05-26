@@ -26,12 +26,15 @@ public class SwUDP implements IProtocol {
     final static float AC = 2.5f;
 
     static class Item {
+        boolean exists = false;
         boolean ack = false;
         int startRtt = 0;
         int ticks = 0;
         int attempt = 0;
         int nextRepeat = 0;
         IIntArray msg = new GcResistantIntArray(BUF_SIZ);
+
+        Item() {}
 
         Item(IIntArray msg) {
             this.msg.copyFrom(msg, msg.length());

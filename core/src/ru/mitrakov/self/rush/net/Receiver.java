@@ -12,6 +12,7 @@ import static ru.mitrakov.self.rush.net.SwUDP.*;
 /**
  * Created by mitrakov on 03.04.2017
  */
+@SuppressWarnings("ForLoopReplaceableByForEach")
 class Receiver {
     private final DatagramSocket socket;
     private final String host;
@@ -32,6 +33,11 @@ class Receiver {
         this.port = port;
         this.handler = handler;
         this.protocol = protocol;
+
+        // create all 256 items RIGHT AWAY (to avoid dynamic memory allocations)
+        for (int i = 0; i < N; i++) {
+            buffer[i] = new Item();
+        }
     }
 
     void onMsg(int id, int crcid, IIntArray msg) throws IOException {
@@ -41,7 +47,7 @@ class Receiver {
             log("Ack : ", ack);
             socket.send(getPacket(ack.toByteArray(), ack.length()));
             for (int j = 0; j < buffer.length; j++) {
-                buffer[j] = null;
+                buffer[j].exists = false;
             }
             expected = next(id);
             connected = true;
@@ -53,15 +59,17 @@ class Receiver {
                 handler.onReceived(msg);
                 expected = next(id);
                 accept();
-            } else if (after(id, expected))
-                buffer[id] = new Item(msg);
+            } else if (after(id, expected)) {
+                buffer[id].exists = true;
+                buffer[id].msg.copyFrom(msg, msg.length());
+            }
         }
     }
 
     private void accept() {
-        if (buffer[expected] != null) {
+        if (buffer[expected].exists) {
             handler.onReceived(buffer[expected].msg);
-            buffer[expected] = null;
+            buffer[expected].exists = false;
             expected = next(expected);
             accept();
         }

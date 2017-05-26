@@ -852,23 +852,13 @@ public class Model {
 
     public void setThing(int thingId) {
         CellObject oldThing = curThing;
-        curThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
-            @Override
-            public int next() {
-                return 0;
-            }
-        });
+        curThing = Cell.newObject(thingId, 0xFF, Field.ZeroNumber);
         bus.raise(new EventBus.ThingChangedEvent(oldThing, curThing, true));
     }
 
     public void setEnemyThing(int thingId) {
         CellObject oldThing = enemyThing;
-        enemyThing = Cell.newObject(thingId, 0xFF, new Field.NextNumber() {
-            @Override
-            public int next() {
-                return 0;
-            }
-        });
+        enemyThing = Cell.newObject(thingId, 0xFF, Field.ZeroNumber);
         bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
     }
 

@@ -14,6 +14,7 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 /**
  * Created by mitrakov on 03.04.2017
  */
+@SuppressWarnings("ForLoopReplaceableByForEach")
 class Sender {
 
     private final DatagramSocket socket;
@@ -34,6 +35,11 @@ class Sender {
         this.host = host;
         this.port = port;
         this.protocol = protocol;
+
+        // create all 256 items RIGHT AWAY (to avoid dynamic memory allocations)
+        for (int i = 0; i < N; i++) {
+            buffer[i] = new Item();
+        }
 
         timer = new Timer("protocol timer", true);
         timer.schedule(new TimerTask() {
@@ -57,12 +63,14 @@ class Sender {
         srtt = DEFAULT_SRTT;
         totalTicks = 0;
         connected = false;
+
         for (int j = 0; j < buffer.length; j++) {
-            buffer[j] = null;
+            buffer[j].exists = false;
         }
         startMsg.clear().add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF)
                 .add(crcid & 0xFF).add(0xFD);
-        buffer[id] = new Item(startMsg);
+        buffer[id].exists = true;
+        buffer[id].msg = startMsg;
         log("Send: ", startMsg);
         socket.send(getPacket(startMsg.toByteArray(), startMsg.length()));
     }
@@ -72,15 +80,17 @@ class Sender {
             id = next(id);
             msg.prepend(crcid & 0xFF).prepend((crcid >> 8) & 0xFF).prepend((crcid >> 16) & 0xFF)
                     .prepend((crcid >> 24) & 0xFF).prepend(id);
-            buffer[id] = new Item(msg, totalTicks); // TODO new
+            buffer[id].exists = true;
+            buffer[id].startRtt = totalTicks;
+            buffer[id].msg.copyFrom(msg, msg.length());
             log("Send: ", msg);
             socket.send(getPacket(msg.toByteArray(), msg.length()));
         } else throw new ConnectException("Not connected");
     }
 
     synchronized void onAck(int ack) throws IOException {
-        System.out.println("SRTT = " + srtt);
-        if (buffer[ack] != null) {
+        log("SRTT = ", srtt);
+        if (buffer[ack].exists) {
             buffer[ack].ack = true;
             if (ack == expectedAck) {
                 int rtt = totalTicks - buffer[ack].startRtt + 1;
@@ -96,9 +106,9 @@ class Sender {
     }
 
     private void accept() {
-        if (buffer[expectedAck] != null) {
+        if (buffer[expectedAck].exists) {
             if (buffer[expectedAck].ack) {
-                buffer[expectedAck] = null;
+                buffer[expectedAck].exists = false;
                 expectedAck = next(expectedAck);
                 accept();
             }
@@ -108,11 +118,11 @@ class Sender {
     private synchronized void trigger() throws IOException {
         totalTicks++;
         int i = expectedAck;
-        if (buffer[i] != null && !buffer[i].ack) {
+        if (buffer[i].exists && !buffer[i].ack) {
             if (buffer[i].attempt > MAX_ATTEMPTS) {
                 connected = false;
                 for (int j = 0; j < buffer.length; j++) {
-                    buffer[j] = null;
+                    buffer[j].exists = false;
                 }
                 protocol.connectionFailed();
                 return;

@@ -18,6 +18,13 @@ public class Field {
         int next();
     }
 
+    final static NextNumber ZeroNumber = new NextNumber() {
+        @Override
+        public int next() {
+            return 0;
+        }
+    };
+
     public final Cell cells[] = new Cell[WIDTH * HEIGHT + 1]; // .... public // + 1 fake cell
 
     private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
