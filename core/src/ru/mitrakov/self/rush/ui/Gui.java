@@ -139,7 +139,7 @@ public class Gui extends Actor {
         }
         // collectible textures
         for (Class clazz : new Class[]{Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
-                Mine.class, Umbrella.class}) {
+                Mine.class, Umbrella.class, Wolf.class}) {   // TODO remove wolf
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesCollectible.put(clazz, texture);
@@ -151,7 +151,7 @@ public class Gui extends Actor {
                 texturesOverlay.put(clazz, texture);
         }
         // animations
-        for (Class clazz : new Class[]{Actor1.class, Actor2.class, Wolf.class}) {
+        for (Class clazz : new Class[]{Actor1.class, Actor2.class/*, Wolf.class*/}) {
             ObjectMap<Model.Character, Animation<TextureRegion>> animations =
                     new ObjectMap<Model.Character, Animation<TextureRegion>>(4);
 
