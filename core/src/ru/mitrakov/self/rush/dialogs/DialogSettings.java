@@ -59,8 +59,8 @@ public class DialogSettings extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         // 'setChecked()' must be called here (not in constructor), because parameters might be changed outside
-        btnEng.setChecked(model.languageEn);
-        btnRus.setChecked(!model.languageEn);
+        btnEng.setChecked(model.language == Model.Language.English);
+        btnRus.setChecked(model.language == Model.Language.Russian);
         btnNotifyYes.setChecked(model.notifyNewBattles);
         btnNotifyNo.setChecked(!model.notifyNewBattles);
 
@@ -107,13 +107,13 @@ public class DialogSettings extends DialogFeat {
         btnEng.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.languageEn = true;
+                model.language = Model.Language.English;
             }
         });
         btnRus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.languageEn = false;
+                model.language = Model.Language.Russian;
             }
         });
         new ButtonGroup<Button>(btnEng, btnRus);

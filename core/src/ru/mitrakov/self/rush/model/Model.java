@@ -109,7 +109,10 @@ public class Model {
         PROMOCODE_DONE     // 37
     }
 
+    public enum Language {English, Russian, Spanish, Portuguese, French}
+
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
+
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
 
     /**
@@ -192,7 +195,7 @@ public class Model {
     // ================
 
     public volatile boolean notifyNewBattles = true;
-    public volatile boolean languageEn = true; // convert to enum in the future
+    public volatile Language language = Language.English;
 
     // ================================
     // === PRIVATE STATIC CONSTANTS ===
@@ -262,7 +265,11 @@ public class Model {
             if (s != null) {
                 String[] settings = s.split(" ");
                 if (settings.length > 2) {
-                    languageEn = settings[0].equals("e");
+                    try {
+                        language = Language.valueOf(settings[0]);
+                    } catch (IllegalArgumentException e) {
+                        language = Language.English;
+                    }
                     notifyNewBattles = settings[1].equals("1");
                     name = settings[2];
                     bus.raise(new EventBus.NameChangedEvent(name));
@@ -279,7 +286,7 @@ public class Model {
      */
     public void saveSettings() {
         if (fileReader != null) {
-            String s = String.format("%s %s %s %s", languageEn ? "e" : "r", notifyNewBattles ? "1" : "0", name, hash);
+            String s = String.format("%s %s %s %s", language, notifyNewBattles ? "1" : "0", name, hash);
             fileReader.write(SETTINGS_FILE, s);
         }
     }

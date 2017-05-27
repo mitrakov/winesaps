@@ -5,91 +5,112 @@ filter: Nearest,Nearest
 repeat: none
 about
   rotate: false
-  xy: 1, 1
+  xy: 2, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 add
   rotate: false
-  xy: 51, 1
+  xy: 52, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 101, 1
+  xy: 102, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 gem
   rotate: false
-  xy: 151, 1
+  xy: 152, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invalid
   rotate: false
-  xy: 201, 1
+  xy: 202, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invite
   rotate: false
-  xy: 251, 1
+  xy: 252, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 remove
   rotate: false
-  xy: 301, 1
+  xy: 302, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 settings
   rotate: false
-  xy: 351, 1
+  xy: 352, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 valid
   rotate: false
-  xy: 401, 1
+  xy: 402, 2
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-eng
+en
   rotate: false
-  xy: 451, 17
+  xy: 452, 18
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
-rus
+es
   rotate: false
-  xy: 501, 17
+  xy: 502, 18
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+fr
+  rotate: false
+  xy: 552, 18
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+pt
+  rotate: false
+  xy: 602, 18
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+ru
+  rotate: false
+  xy: 652, 18
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 loss
   rotate: false
-  xy: 551, 17
+  xy: 702, 18
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 win
   rotate: false
-  xy: 585, 17
+  xy: 736, 18
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

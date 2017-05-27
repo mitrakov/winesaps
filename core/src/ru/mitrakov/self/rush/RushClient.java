@@ -30,6 +30,9 @@ public class RushClient extends Game implements Localizable {
     private /*final*/ LocalizableScreen screenBattle;
     private /*final*/ I18NBundle i18nEn;
     private /*final*/ I18NBundle i18nRu;
+    private /*final*/ I18NBundle i18nEs;
+    private /*final*/ I18NBundle i18nPt;
+    private /*final*/ I18NBundle i18nFr;
 
     public RushClient(PsObject psObject) {
         this.psObject = psObject;
@@ -62,6 +65,9 @@ public class RushClient extends Game implements Localizable {
 
         i18nEn = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("en"));
         i18nRu = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("ru"));
+        i18nEs = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("es"));
+        i18nPt = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("pt"));
+        i18nFr = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("fr"));
 
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         audioManager = new AudioManager("theme");
@@ -133,6 +139,24 @@ public class RushClient extends Game implements Localizable {
     }
 
     public void updateLocale() {
-        onLocaleChanged(model.languageEn ? i18nEn : i18nRu);
+        switch (model.language) {
+            case English:
+                onLocaleChanged(i18nEn);
+                break;
+            case Russian:
+                onLocaleChanged(i18nRu);
+                break;
+            case Spanish:
+                onLocaleChanged(i18nEs);
+                break;
+            case Portuguese:
+                onLocaleChanged(i18nPt);
+                break;
+            case French:
+                onLocaleChanged(i18nFr);
+                break;
+            default:
+                onLocaleChanged(i18nEn);
+        }
     }
 }

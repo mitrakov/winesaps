@@ -34,8 +34,11 @@ public class ScreenLogin extends LocalizableScreen {
     private final Label lblPassword;
     private final Label lblEmail;
     private final Image imgValid;
-    private final Drawable textureEng;
-    private final Drawable textureRus;
+    private final Drawable textureEn;
+    private final Drawable textureRu;
+    private final Drawable textureEs;
+    private final Drawable texturePt;
+    private final Drawable textureFr;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
 
@@ -51,13 +54,20 @@ public class ScreenLogin extends LocalizableScreen {
         assert i18nb != null;
         i18n = i18nb;
 
-        TextureRegion regionEng = atlasMenu.findRegion("eng");
-        TextureRegion regionRus = atlasMenu.findRegion("rus");
+        TextureRegion regionEn = atlasMenu.findRegion("en");
+        TextureRegion regionRu = atlasMenu.findRegion("ru");
+        TextureRegion regionEs = atlasMenu.findRegion("es");
+        TextureRegion regionPt = atlasMenu.findRegion("pt");
+        TextureRegion regionFr = atlasMenu.findRegion("fr");
         TextureRegion regionValid = atlasMenu.findRegion("valid");
         TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
-        assert regionValid != null && regionInvalid != null && regionEng != null && regionRus != null;
-        textureEng = new TextureRegionDrawable(regionEng);
-        textureRus = new TextureRegionDrawable(regionRus);
+        assert regionEn != null && regionRu != null && regionEs != null && regionPt != null && regionFr != null;
+        assert regionValid != null && regionInvalid != null;
+        textureEn = new TextureRegionDrawable(regionEn);
+        textureRu = new TextureRegionDrawable(regionRu);
+        textureEs = new TextureRegionDrawable(regionEs);
+        texturePt = new TextureRegionDrawable(regionPt);
+        textureFr = new TextureRegionDrawable(regionFr);
         textureValid = new TextureRegionDrawable(regionValid);
         textureInvalid = new TextureRegionDrawable(regionInvalid);
 
@@ -221,20 +231,47 @@ public class ScreenLogin extends LocalizableScreen {
     private Actor createLangTable(AudioManager audioManager) {
         assert audioManager != null;
         Table tableLang = new Table().padRight(10).padTop(10);
-        tableLang.add(new ImageButtonFeat(textureEng, audioManager) {{
+        tableLang.add(new ImageButtonFeat(textureEn, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.languageEn = true;
+                    model.language = Model.Language.English;
                     game.updateLocale();
                 }
             });
         }}).spaceRight(10);
-        tableLang.add(new ImageButtonFeat(textureRus, audioManager) {{
+        tableLang.add(new ImageButtonFeat(textureRu, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.languageEn = false;
+                    model.language = Model.Language.Russian;
+                    game.updateLocale();
+                }
+            });
+        }}).spaceRight(10);
+        tableLang.add(new ImageButtonFeat(textureEs, audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = Model.Language.Spanish;
+                    game.updateLocale();
+                }
+            });
+        }}).spaceRight(10);
+        tableLang.add(new ImageButtonFeat(texturePt, audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = Model.Language.Portuguese;
+                    game.updateLocale();
+                }
+            });
+        }}).spaceRight(10);
+        tableLang.add(new ImageButtonFeat(textureFr, audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = Model.Language.French;
                     game.updateLocale();
                 }
             });
