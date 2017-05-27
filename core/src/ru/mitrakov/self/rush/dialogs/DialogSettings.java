@@ -15,8 +15,11 @@ import ru.mitrakov.self.rush.model.Model;
 public class DialogSettings extends DialogFeat {
     private final RushClient game;
     private final Model model;
-    private final TextButton btnEng;
-    private final TextButton btnRus;
+    private final TextButton btnEn;
+    private final TextButton btnRu;
+    private final TextButton btnEs;
+    private final TextButton btnPt;
+    private final TextButton btnFr;
     private final TextButton btnNotifyYes;
     private final TextButton btnNotifyNo;
     private final TextButton btnSignOut;
@@ -35,8 +38,11 @@ public class DialogSettings extends DialogFeat {
         String style = map.containsKey("radio") ? "radio" : map.containsKey("default-radio") ? "default-radio"
                 : map.keys().next();
 
-        btnEng = new CheckBox("", skin, style);
-        btnRus = new CheckBox("", skin, style);
+        btnEn = new CheckBox("", skin, style);
+        btnRu = new CheckBox("", skin, style);
+        btnEs = new CheckBox("", skin, style);
+        btnPt = new CheckBox("", skin, style);
+        btnFr = new CheckBox("", skin, style);
         btnNotifyYes = new CheckBox("", skin, style);
         btnNotifyNo = new CheckBox("", skin, style);
         btnSignOut = new TextButtonFeat("", skin, "default", audioManager) {{
@@ -59,8 +65,11 @@ public class DialogSettings extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         // 'setChecked()' must be called here (not in constructor), because parameters might be changed outside
-        btnEng.setChecked(model.language == Model.Language.English);
-        btnRus.setChecked(model.language == Model.Language.Russian);
+        btnEn.setChecked(model.language == Model.Language.English);
+        btnRu.setChecked(model.language == Model.Language.Russian);
+        btnEs.setChecked(model.language == Model.Language.Spanish);
+        btnPt.setChecked(model.language == Model.Language.Portuguese);
+        btnFr.setChecked(model.language == Model.Language.French);
         btnNotifyYes.setChecked(model.notifyNewBattles);
         btnNotifyNo.setChecked(!model.notifyNewBattles);
 
@@ -77,8 +86,11 @@ public class DialogSettings extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        btnEng.setText(bundle.format("dialog.settings.lang.english"));
-        btnRus.setText(bundle.format("dialog.settings.lang.russian"));
+        btnEn.setText(bundle.format("dialog.settings.lang.english"));
+        btnRu.setText(bundle.format("dialog.settings.lang.russian"));
+        btnEs.setText(bundle.format("dialog.settings.lang.spanish"));
+        btnPt.setText(bundle.format("dialog.settings.lang.portuguese"));
+        btnFr.setText(bundle.format("dialog.settings.lang.french"));
         btnNotifyYes.setText(bundle.format("dialog.settings.notify.yes"));
         btnNotifyNo.setText(bundle.format("dialog.settings.notify.no"));
         btnSignOut.setText(bundle.format("dialog.settings.sign.out"));
@@ -104,19 +116,42 @@ public class DialogSettings extends DialogFeat {
         table.pad(30);
 
         // ....
-        btnEng.addListener(new ChangeListener() {
+        btnEn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.English;
+                game.updateLocale();
             }
         });
-        btnRus.addListener(new ChangeListener() {
+        btnRu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.Russian;
+                game.updateLocale();
             }
         });
-        new ButtonGroup<Button>(btnEng, btnRus);
+        btnEs.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.language = Model.Language.Spanish;
+                game.updateLocale();
+            }
+        });
+        btnPt.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.language = Model.Language.Portuguese;
+                game.updateLocale();
+            }
+        });
+        btnFr.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.language = Model.Language.French;
+                game.updateLocale();
+            }
+        });
+        new ButtonGroup<Button>(btnEn, btnRu, btnEs, btnPt, btnFr);
 
         // ....
         btnNotifyYes.addListener(new ChangeListener() {
@@ -136,9 +171,15 @@ public class DialogSettings extends DialogFeat {
         // ....
         table.add(lblLang).spaceTop(30);
         table.row();
-        table.add(btnEng).left();
+        table.add(btnEn).left();
         table.row();
-        table.add(btnRus).left();
+        table.add(btnRu).left();
+        table.row();
+        table.add(btnEs).left();
+        table.row();
+        table.add(btnPt).left();
+        table.row();
+        table.add(btnFr).left();
         table.row();
 
         table.add(lblNotify).spaceTop(30);
