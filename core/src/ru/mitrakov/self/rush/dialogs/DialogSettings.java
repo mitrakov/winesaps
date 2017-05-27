@@ -25,7 +25,6 @@ public class DialogSettings extends DialogFeat {
     private final TextButton btnSignOut;
     private final Label lblLang;
     private final Label lblNotify;
-    private final Label lblSignOut;
 
     public DialogSettings(RushClient game, final Model model, Skin skin, String styleName, AudioManager audioManager) {
         super("", skin, styleName);
@@ -56,7 +55,6 @@ public class DialogSettings extends DialogFeat {
         }};
         lblLang = new Label("", skin, "default");
         lblNotify = new Label("", skin, "default");
-        lblSignOut = new Label("", skin, "default");
 
         button("Close"); // text will be replaced in onLocaleChanged()
         init(getContentTable(), game);
@@ -96,7 +94,6 @@ public class DialogSettings extends DialogFeat {
         btnSignOut.setText(bundle.format("dialog.settings.sign.out"));
         lblLang.setText(bundle.format("dialog.settings.lang.header"));
         lblNotify.setText(bundle.format("dialog.settings.notify.header"));
-        lblSignOut.setText(bundle.format("dialog.settings.sign.out"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.settings.header"));
@@ -113,7 +110,7 @@ public class DialogSettings extends DialogFeat {
 
     private void init(Table table, final RushClient game) {
         assert table != null && game != null;
-        table.pad(30);
+        table.pad(20);
 
         // ....
         btnEn.addListener(new ChangeListener() {
@@ -168,29 +165,34 @@ public class DialogSettings extends DialogFeat {
         });
         new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
 
+        Table tableLeft = new Table();
+        Table tableRight = new Table();
+
         // ....
-        table.add(lblLang).spaceTop(30);
-        table.row();
-        table.add(btnEn).left();
-        table.row();
-        table.add(btnRu).left();
-        table.row();
-        table.add(btnEs).left();
-        table.row();
-        table.add(btnPt).left();
-        table.row();
-        table.add(btnFr).left();
-        table.row();
+        tableLeft.add(lblLang).spaceTop(30);
+        tableLeft.row();
+        tableLeft.add(btnEn).left();
+        tableLeft.row();
+        tableLeft.add(btnRu).left();
+        tableLeft.row();
+        tableLeft.add(btnEs).left();
+        tableLeft.row();
+        tableLeft.add(btnPt).left();
+        tableLeft.row();
+        tableLeft.add(btnFr).left();
+        tableLeft.row();
 
-        table.add(lblNotify).spaceTop(30);
-        table.row();
-        table.add(btnNotifyYes).left();
-        table.row();
-        table.add(btnNotifyNo).left();
-        table.row();
+        // ....
+        tableRight.add(lblNotify).spaceTop(30);
+        tableRight.row();
+        tableRight.add(btnNotifyYes).left();
+        tableRight.row();
+        tableRight.add(btnNotifyNo).left();
+        tableRight.row();
+        tableRight.add(btnSignOut).spaceTop(20).expandY();
 
-        table.add(lblSignOut).spaceTop(30);
-        table.row();
-        table.add(btnSignOut);
+        // ....
+        table.add(tableLeft).top().spaceRight(30);
+        table.add(tableRight).top().spaceRight(30);
     }
 }
