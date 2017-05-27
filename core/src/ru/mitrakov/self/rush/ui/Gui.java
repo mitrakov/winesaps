@@ -55,7 +55,7 @@ public class Gui extends Actor {
 
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
-    private static final int OFFSET_X = (RushClient.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
+    private static final int OFFSET_X = (Winesaps.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
     private static final int OFFSET_Y = 33; // inferred by expertise
     private static final int MOVES_PER_SEC = 5;
     private static final int SPEED_X = CELL_SIZ_W * MOVES_PER_SEC;
@@ -111,7 +111,7 @@ public class Gui extends Actor {
         addListener(listener);
 
         // in theory width must be "Field.WIDTH * CELL_SIZ_W", but we use full width for convenience on touch screens
-        setWidth(RushClient.WIDTH);
+        setWidth(Winesaps.WIDTH);
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
         // down textures (block, dias, water), each with 4 styles

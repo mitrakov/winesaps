@@ -37,7 +37,7 @@ public class ScreenBattle extends LocalizableScreen {
     private boolean outOfSync = false;
     private I18NBundle i18n;
 
-    public ScreenBattle(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+    public ScreenBattle(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                         I18NBundle i18n) {
         super(game, model, psObject, skin, audioManager);
         assert i18n != null;

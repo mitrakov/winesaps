@@ -6,14 +6,14 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import ru.mitrakov.self.rush.RushClient;
+import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
 public class DialogFinished extends DialogFeat {
-    private final RushClient game;
+    private final Winesaps game;
     private final Label lblMessage1;
     private final Label lblMessage2;
     private final Label lblTotalScore;
@@ -21,7 +21,7 @@ public class DialogFinished extends DialogFeat {
 
     private boolean quitOnResult = false;
 
-    public DialogFinished(RushClient game, Skin skin, String windowStyleName) {
+    public DialogFinished(Winesaps game, Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
         assert game != null;
         this.game = game;

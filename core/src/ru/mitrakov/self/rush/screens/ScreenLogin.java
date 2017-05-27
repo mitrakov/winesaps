@@ -48,7 +48,7 @@ public class ScreenLogin extends LocalizableScreen {
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+    public ScreenLogin(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                        I18NBundle i18nb) {
         super(game, model, psObject, skin, audioManager);
         assert i18nb != null;

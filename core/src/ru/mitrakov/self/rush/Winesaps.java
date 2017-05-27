@@ -14,7 +14,7 @@ import ru.mitrakov.self.rush.model.Model;
 /**
  * Entry point
  */
-public class RushClient extends Game implements Localizable {
+public class Winesaps extends Game implements Localizable {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
 
@@ -34,7 +34,7 @@ public class RushClient extends Game implements Localizable {
     private /*final*/ I18NBundle i18nPt;
     private /*final*/ I18NBundle i18nFr;
 
-    public RushClient(PsObject psObject) {
+    public Winesaps(PsObject psObject) {
         this.psObject = psObject;
         try {
             // start Network in a separate thread (requirement of Android)

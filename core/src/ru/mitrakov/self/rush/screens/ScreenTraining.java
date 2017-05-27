@@ -29,7 +29,7 @@ public class ScreenTraining extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
-    public ScreenTraining(final RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
+    public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
         super(game, model, psObject, skin, manager);
 
         loadTextures();

@@ -21,7 +21,7 @@ public class ScreenCharacter extends LocalizableScreen {
     private final Array<TextButton> checkboxes = new Array<TextButton>(4);
     private final TextButton btnNext;
 
-    public ScreenCharacter(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
+    public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
         super(game, model, psObject, skin, manager);
 
         Array<Actor> images = init();

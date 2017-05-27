@@ -46,7 +46,7 @@ public class AndroidLauncher extends AndroidApplication {
             });
         }
 
-        initialize(new RushClient(obj), config);
+        initialize(new Winesaps(obj), config);
     }
 
     @Override

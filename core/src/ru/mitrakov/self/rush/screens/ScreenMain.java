@@ -105,7 +105,7 @@ public class ScreenMain extends LocalizableScreen {
 
     private I18NBundle i18n;
 
-    public ScreenMain(RushClient game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+    public ScreenMain(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
         super(game, model, psObject, skin, audioManager);
         assert i18nArg != null;

@@ -13,7 +13,7 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 public class DialogSettings extends DialogFeat {
-    private final RushClient game;
+    private final Winesaps game;
     private final Model model;
     private final TextButton btnEn;
     private final TextButton btnRu;
@@ -26,7 +26,7 @@ public class DialogSettings extends DialogFeat {
     private final Label lblLang;
     private final Label lblNotify;
 
-    public DialogSettings(RushClient game, final Model model, Skin skin, String styleName, AudioManager audioManager) {
+    public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, AudioManager audioManager) {
         super("", skin, styleName);
         assert game != null && model != null && audioManager != null;
         this.game = game;
@@ -108,7 +108,7 @@ public class DialogSettings extends DialogFeat {
         }
     }
 
-    private void init(Table table, final RushClient game) {
+    private void init(Table table, final Winesaps game) {
         assert table != null && game != null;
         table.pad(20);
 

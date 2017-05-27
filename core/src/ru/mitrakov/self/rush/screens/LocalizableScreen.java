@@ -16,12 +16,12 @@ import ru.mitrakov.self.rush.dialogs.DialogLock;
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class LocalizableScreen extends ScreenAdapter implements Localizable {
-    protected final RushClient game;
+    protected final Winesaps game;
     protected final Model model;
     protected final PsObject psObject;
     protected final Skin skin;
     protected final AudioManager audioManager;
-    protected final Stage stage = new Stage(new FitViewport(RushClient.WIDTH, RushClient.HEIGHT));
+    protected final Stage stage = new Stage(new FitViewport(Winesaps.WIDTH, Winesaps.HEIGHT));
     protected final Table table = new Table();
     protected final DialogLock connectingDialog;
 
@@ -31,7 +31,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
-    LocalizableScreen(final RushClient game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
+    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
         assert game != null && model != null && skin != null && audioManager != null; // psObject may be NULL
         this.game = game;
         this.model = model;

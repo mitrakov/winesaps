@@ -18,8 +18,8 @@ public class DesktopLauncher extends JFrame {
             @Override
             public void run() {
                 final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-                config.width = RushClient.WIDTH;
-                config.height = RushClient.HEIGHT;
+                config.width = Winesaps.WIDTH;
+                config.height = Winesaps.HEIGHT;
                 new DesktopLauncher(config);
             }
         });
@@ -46,7 +46,7 @@ public class DesktopLauncher extends JFrame {
         // set up JFrame
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         Container container = getContentPane();
-        container.add(new LwjglAWTCanvas(new RushClient(obj), config).getCanvas(), BorderLayout.CENTER);
+        container.add(new LwjglAWTCanvas(new Winesaps(obj), config).getCanvas(), BorderLayout.CENTER);
         container.setPreferredSize(new Dimension(config.width, config.height));
         setResizable(false); // this must be BEFORE pack()!
         pack();
