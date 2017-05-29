@@ -189,6 +189,48 @@ public class Cells {
         }
     }
 
+    public static class BeamThing extends CellObject {
+        public BeamThing(int xy, int number) {
+            super(0x22, xy);
+            this.number = number;
+        }
+    }
+
+    public static class AntidoteThing extends CellObject {
+        public AntidoteThing(int xy, int number) {
+            super(0x23, xy);
+            this.number = number;
+        }
+    }
+
+    public static class DazzleGrenadeThing extends CellObject {
+        public DazzleGrenadeThing(int xy, int number) {
+            super(0x24, xy);
+            this.number = number;
+        }
+    }
+
+    public static class TeleportThing extends CellObject {
+        public TeleportThing(int xy, int number) {
+            super(0x25, xy);
+            this.number = number;
+        }
+    }
+
+    public static class DetectorThing extends CellObject {
+        public DetectorThing(int xy, int number) {
+            super(0x26, xy);
+            this.number = number;
+        }
+    }
+
+    public static class BoxThing extends CellObject {
+        public BoxThing(int xy, int number) {
+            super(0x27, xy);
+            this.number = number;
+        }
+    }
+
     public static class Umbrella extends CellObject {
         public Umbrella(int xy, int number) {
             super(0x28, xy);
@@ -203,9 +245,45 @@ public class Cells {
         }
     }
 
+    public static class Beam extends CellObject {
+        public Beam(int xy, int number) {
+            super(0x2A, xy);
+            this.number = number;
+        }
+    }
+
+    public static class Antidote extends CellObject {
+        public Antidote(int xy, int number) {
+            super(0x2B, xy);
+            this.number = number;
+        }
+    }
+
+    public static class DazzleGrenade extends CellObject {
+        public DazzleGrenade(int xy, int number) {
+            super(0x2C, xy);
+            this.number = number;
+        }
+    }
+
+    public static class Teleport extends CellObject {
+        public Teleport(int xy, int number) {
+            super(0x2D, xy);
+            this.number = number;
+        }
+    }
+
+    public static class Detector extends CellObject {
+        public Detector(int xy, int number) {
+            super(0x2E, xy);
+            this.number = number;
+        }
+    }
+
     public static class Box extends CellObject {
-        public Box(int xy) {
+        public Box(int xy, int number) {
             super(0x2F, xy);
+            this.number = number;
         }
     }
 

@@ -87,12 +87,34 @@ public class Cell {
                 return new UmbrellaThing(xy, number.next());
             case 0x21:
                 return new MineThing(xy, number.next());
+            case 0x22:
+                return new BeamThing(xy, number.next());
+            case 0x23:
+                return new AntidoteThing(xy, number.next());
+            case 0x24:
+                return new DazzleGrenadeThing(xy, number.next());
+            case 0x25:
+                return new TeleportThing(xy, number.next());
+            case 0x26:
+                return new DetectorThing(xy, number.next());
+            case 0x27:
+                return new BoxThing(xy, number.next());
             case 0x28:
                 return new Umbrella(xy, number.next());
             case 0x29:
                 return new Mine(xy, number.next());
+            case 0x2A:
+                return new Beam(xy, number.next());
+            case 0x2B:
+                return new Antidote(xy, number.next());
+            case 0x2C:
+                return new DazzleGrenade(xy, number.next());
+            case 0x2D:
+                return new Teleport(xy, number.next());
             case 0x2E:
-                return new Box(xy);
+                return new Detector(xy, number.next());
+            case 0x2F:
+                return new Box(xy, number.next());
             case 0x30:
                 return new DecorationStatic(xy);
             case 0x31:
