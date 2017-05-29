@@ -3,7 +3,7 @@ package ru.mitrakov.self.rush.model;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.model.Cells.CellObject;
 
 /**
  * Created by mitrakov on 21.04.2017
@@ -32,7 +32,7 @@ public class EventBus {
     }
     public static final class CrystalChangedEvent extends Event {
         public final int crystals;
-        public CrystalChangedEvent(int crystals) {
+        CrystalChangedEvent(int crystals) {
             this.crystals = crystals;
         }
     }

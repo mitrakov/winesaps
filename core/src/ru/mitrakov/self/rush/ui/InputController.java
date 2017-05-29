@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.Network;
-import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.model.Cells.CellObject;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**

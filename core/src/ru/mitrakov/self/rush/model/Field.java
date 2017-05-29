@@ -2,7 +2,7 @@ package ru.mitrakov.self.rush.model;
 
 import java.util.*;
 
-import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.model.Cells.CellObject;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 /**

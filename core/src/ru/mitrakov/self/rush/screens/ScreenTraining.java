@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.*;
-import ru.mitrakov.self.rush.model.object.*;
+import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -131,7 +131,7 @@ public class ScreenTraining extends LocalizableScreen {
     }
 
     private void loadTextures() {
-        for (Class clazz : new Class[]{CellObject.class, Umbrella.class}) {
+        for (Class clazz : new Class[]{CellObject.class, UmbrellaThing.class}) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));

@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.model.object.*;
+import ru.mitrakov.self.rush.model.Cells.*;
 import ru.mitrakov.self.rush.ui.InputController.MoveResult;
 
 /**
@@ -115,7 +115,7 @@ public class Gui extends Actor {
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
         // down textures (block, dias, water), each with 4 styles
-        for (Class clazz : new Class[]{Block.class, Dias.class, Water.class}) {
+        for (Class clazz : new Class[]{Block.class, Dais.class, Water.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -126,7 +126,7 @@ public class Gui extends Actor {
             texturesDown.put(clazz, m);
         }
         // static up textures, each with 4 styles
-        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class, Stair.class,
+        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class, Box.class,
                 DecorationStatic.class, DecorationWarning.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
@@ -139,13 +139,13 @@ public class Gui extends Actor {
         }
         // collectible textures
         for (Class clazz : new Class[]{Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
-                Mine.class, Umbrella.class, Wolf.class}) {   // TODO remove wolf
+                MineThing.class, UmbrellaThing.class, Wolf.class}) {   // TODO remove wolf
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesCollectible.put(clazz, texture);
         }
         // overlay
-        for (Class clazz : new Class[]{OpenedUmbrella.class}) {
+        for (Class clazz : new Class[]{Umbrella.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesOverlay.put(clazz, texture);
@@ -298,7 +298,7 @@ public class Gui extends Actor {
                     }
                 }
             }
-            // draw 7-th layer (all overlaying objects like openedUmbrella)
+            // draw 7-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
             // draw 8-th layer here...
         }
@@ -375,7 +375,7 @@ public class Gui extends Actor {
         if (cell != null) {
             for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
                 CellObject obj = cell.objects.get(i);
-                if (obj instanceof OpenedUmbrella)
+                if (obj instanceof Umbrella)
                     return true;
             }
         }

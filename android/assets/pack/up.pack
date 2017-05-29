@@ -45,7 +45,7 @@ LadderTop2
   orig: 40, 55
   offset: 0, 0
   index: -1
-OpenedUmbrella
+Umbrella
   rotate: false
   xy: 316, 71
   size: 36, 55
@@ -178,14 +178,14 @@ Wolf
   orig: 30, 45
   offset: 0, 0
   index: -1
-Mine
+MineThing
   rotate: false
   xy: 747, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
-Umbrella
+UmbrellaThing
   rotate: false
   xy: 34, 24
   size: 28, 28

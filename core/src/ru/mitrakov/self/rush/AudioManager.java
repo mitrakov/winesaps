@@ -31,7 +31,7 @@ public class AudioManager {
                 curMusic.setVolume(.2f);
                 curMusic.setLooping(true);
                 curMusic.play();
-            } else throw new RuntimeException(String.format("Music %s not found", name));
+            }
         }
     }
 

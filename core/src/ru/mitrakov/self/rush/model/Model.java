@@ -5,7 +5,7 @@ import java.security.*;
 import java.math.BigInteger;
 import java.util.concurrent.*;
 
-import ru.mitrakov.self.rush.model.object.CellObject;
+import ru.mitrakov.self.rush.model.Cells.CellObject;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
@@ -201,8 +201,8 @@ public class Model {
     // === PRIVATE STATIC CONSTANTS ===
     // ================================
 
-    private static final int AGGRESSOR_ID = 1;
-    private static final int DEFENDER_ID = 2;
+    private static final int AGGRESSOR_ID = 4;
+    private static final int DEFENDER_ID = 5;
     private static final int PING_PERIOD_MSEC = 60000;
     private static final int SKILL_OFFSET = 0x20;
     private static final int PROMOCODE_LEN = 5;

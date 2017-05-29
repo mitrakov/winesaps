@@ -10,14 +10,14 @@ CellObject
   orig: 50, 50
   offset: 0, 0
   index: -1
-Mine
+MineThing
   rotate: false
   xy: 54, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
-Umbrella
+UmbrellaThing
   rotate: false
   xy: 106, 2
   size: 50, 50
