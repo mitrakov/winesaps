@@ -138,9 +138,9 @@ public class DialogBuyAbilities extends DialogFeat {
     private void init(Table table, final Array<Actor> abilities, Skin skin) {
         assert table != null && skin != null;
 
-        table.padTop(20);
+        table.pad(16);
         table.add(lblTotalCrystals);
-        table.add(lblCrystals);
+        table.add(lblCrystals).left();
         table.row();
         table.add(new Table() {{
             for (Actor actor : abilities) {
@@ -148,11 +148,11 @@ public class DialogBuyAbilities extends DialogFeat {
             }
         }}).colspan(2);
         table.row();
-        table.add(imgGoods).colspan(2);
+        table.add(imgGoods).colspan(2).spaceTop(16);
         table.row();
         table.add(lblCurAbility).colspan(2);
         table.row();
-        table.add(productsList).height(100).colspan(2);
+        table.add(productsList).height(90).colspan(2).spaceTop(16);
     }
 
     private void rebuildContent(Model.Ability ability) {
