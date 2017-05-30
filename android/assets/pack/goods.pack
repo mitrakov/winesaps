@@ -17,13 +17,6 @@ DazzleGrenadier
   orig: 72, 72
   offset: 0, 0
   index: -1
-Miner
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
 Shaman
   rotate: false
   xy: 2, 2
@@ -32,13 +25,6 @@ Shaman
   offset: 0, 0
   index: -1
 Snowshoes
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
-SouthWester
   rotate: false
   xy: 2, 2
   size: 72, 72
@@ -59,13 +45,6 @@ Sunglasses
   orig: 72, 72
   offset: 0, 0
   index: -1
-VoodooMask
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
 ClimbingShoes
   rotate: false
   xy: 76, 2
@@ -73,9 +52,30 @@ ClimbingShoes
   orig: 72, 72
   offset: 0, 0
   index: -1
-Snorkel
+Miner
   rotate: false
   xy: 150, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Snorkel
+  rotate: false
+  xy: 224, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+SouthWester
+  rotate: false
+  xy: 298, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+VoodooMask
+  rotate: false
+  xy: 372, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
