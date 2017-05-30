@@ -138,8 +138,10 @@ public class Gui extends Actor {
             texturesStat.put(clazz, m);
         }
         // collectible textures
-        for (Class clazz : new Class[]{Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
-                MineThing.class, UmbrellaThing.class, Wolf.class}) {   // TODO remove wolf
+        for (Class clazz : new Class[]{
+                Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
+                UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, DazzleGrenadeThing.class,
+                TeleportThing.class, DetectorThing.class, BoxThing.class, Wolf.class}) {   // TODO remove wolf
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesCollectible.put(clazz, texture);

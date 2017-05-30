@@ -3,23 +3,65 @@ thing.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-CellObject
+AntidoteThing
   rotate: false
   xy: 2, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
-MineThing
+BeamThing
   rotate: false
   xy: 54, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
-UmbrellaThing
+BoxThing
   rotate: false
   xy: 106, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+CellObject
+  rotate: false
+  xy: 158, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+DazzleGrenadeThing
+  rotate: false
+  xy: 210, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+DetectorThing
+  rotate: false
+  xy: 262, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+MineThing
+  rotate: false
+  xy: 314, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+TeleportThing
+  rotate: false
+  xy: 366, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+UmbrellaThing
+  rotate: false
+  xy: 418, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0

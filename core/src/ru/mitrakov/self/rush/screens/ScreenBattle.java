@@ -191,7 +191,9 @@ public class ScreenBattle extends LocalizableScreen {
     }
 
     private void loadTextures() {
-        for (Class clazz : new Class[]{CellObject.class, MineThing.class, UmbrellaThing.class}) { // all things
+        Class[] classes = new Class[]{CellObject.class, UmbrellaThing.class, MineThing.class, AntidoteThing.class,
+                BeamThing.class, DazzleGrenadeThing.class, TeleportThing.class, DetectorThing.class, BoxThing.class};
+        for (Class clazz : classes) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));

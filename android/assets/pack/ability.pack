@@ -3,23 +3,79 @@ ability.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Sapper
+Builder
   rotate: false
   xy: 2, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
-Shoes
+ClimbingShoes
   rotate: false
   xy: 49, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
-Snorkel
+DazzleGrenadier
   rotate: false
   xy: 96, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Miner
+  rotate: false
+  xy: 143, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Shaman
+  rotate: false
+  xy: 190, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Snorkel
+  rotate: false
+  xy: 237, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Snowshoes
+  rotate: false
+  xy: 284, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+SouthWester
+  rotate: false
+  xy: 331, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Spy
+  rotate: false
+  xy: 378, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+Sunglasses
+  rotate: false
+  xy: 425, 2
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+VoodooMask
+  rotate: false
+  xy: 472, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
