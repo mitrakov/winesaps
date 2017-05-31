@@ -106,7 +106,18 @@ public class Model {
         ADD_FRIEND,        // 34
         REMOVE_FRIEND,     // 35
         CHECK_PROMOCODE,   // 36
-        PROMOCODE_DONE     // 37
+        PROMOCODE_DONE,    // 37
+        RESERVED_26,       // 38
+        RESERVED_27,       // 39
+        RESERVED_28,       // 40
+        RESERVED_29,       // 41
+        RESERVED_2A,       // 42
+        RESERVED_2B,       // 43
+        RESERVED_2C,       // 44
+        RESERVED_2D,       // 45
+        RESERVED_2E,       // 46
+        RESERVED_2F,       // 47
+        EFFECT_CHANGED     // 48
     }
 
     public enum Language {English, Russian, Spanish, Portuguese, French}

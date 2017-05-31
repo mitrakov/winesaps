@@ -119,6 +119,9 @@ class Parser implements IHandler {
                     case PROMOCODE_DONE:
                         promocodeDone(cmd, data.remove(0, 1));
                         break;
+                    case EFFECT_CHANGED:
+                        effectChanged(cmd, data.remove(0, 1));
+                        break;
                     default:
                         if (data.length() > 1)
                             inspectError(cmd, data.get(1));
@@ -392,6 +395,17 @@ class Parser implements IHandler {
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
+    }
+
+    private void effectChanged(Cmd cmd, IIntArray data) {
+        if (data.length() == 3) {
+            int effectId = data.get(0);
+            boolean added = data.get(1) == 1;
+            int objNumber = data.get(2);
+            System.out.println("Effect " + effectId + " on object " + objNumber + (added ? " Added" : " Removed"));
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
+        } else throw new IllegalArgumentException("Incorrect effect format");
     }
 
     private void abilitiesList(Cmd cmd, IIntArray data) {
