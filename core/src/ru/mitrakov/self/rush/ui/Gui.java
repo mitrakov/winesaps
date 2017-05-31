@@ -126,7 +126,7 @@ public class Gui extends Actor {
             texturesDown.put(clazz, m);
         }
         // static up textures, each with 4 styles
-        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class, Box.class,
+        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
                 DecorationStatic.class, DecorationWarning.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
@@ -147,7 +147,7 @@ public class Gui extends Actor {
                 texturesCollectible.put(clazz, texture);
         }
         // overlay
-        for (Class clazz : new Class[]{Umbrella.class}) {
+        for (Class clazz : new Class[]{Umbrella.class, Box.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesOverlay.put(clazz, texture);
@@ -221,7 +221,7 @@ public class Gui extends Actor {
                         key = cell.bottom.getClass();
                     else { // case: long RopeLine
                         Cell cellBelow = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
-                        if (ropeExists(cell) && ropeExists(cellBelow))
+                        if (cellBelow != null && cell.objExists(RopeLine.class) && cellBelow.objExists(RopeLine.class))
                             key = Block.class;
                     }
                     if (key != null && texturesDown.containsKey(key)) {
@@ -247,6 +247,10 @@ public class Gui extends Actor {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                     float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                    if (cell.objExists(Box.class)) {
+                        if (texturesOverlay.containsKey(Box.class))
+                            bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
+                    }
                     for (int k = 0; k < cell.objects.size(); k++) { //  // .... GC!
                         CellObject obj = cell.objects.get(k);
                         if (texturesAnim.containsKey(obj.getClass())) {
@@ -280,7 +284,8 @@ public class Gui extends Actor {
                                 // correct y-coordinate
                                 float deltaY = y - anim.y;
                                 boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                                if (deltaY_equals_0 || out_of_sync || ladderExists(cell))
+                                boolean ladder = cell.objExists(LadderTop.class) || cell.objExists(LadderBottom.class);
+                                if (deltaY_equals_0 || out_of_sync || ladder)
                                     anim.y = y;
                                 else {
                                     y = anim.y;
@@ -348,40 +353,8 @@ public class Gui extends Actor {
                     bottomHeight = region.getRegionHeight();
             }
         }
+
         return bottomHeight;
-    }
-
-    private boolean ladderExists(Cell cell) {
-        if (cell != null) {
-            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
-                CellObject obj = cell.objects.get(i);
-                if (obj instanceof LadderBottom || obj instanceof LadderTop)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean ropeExists(Cell cell) {
-        if (cell != null) {
-            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
-                CellObject obj = cell.objects.get(i);
-                if (obj instanceof RopeLine)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean umbrellaExists(Cell cell) {
-        if (cell != null) {
-            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
-                CellObject obj = cell.objects.get(i);
-                if (obj instanceof Umbrella)
-                    return true;
-            }
-        }
-        return false;
     }
 
     private CellObject actorExists(Cell cell) {
@@ -461,7 +434,7 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                boolean hasUmbrella = umbrellaExists(cell);
+                boolean hasUmbrella = cell.objExists(Umbrella.class);
                 for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
                     CellObject obj = cell.objects.get(k);
                     if (obj instanceof Waterfall || obj instanceof WaterfallSafe) {

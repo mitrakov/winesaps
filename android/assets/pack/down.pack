@@ -3,28 +3,28 @@ down.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Dias0
+Dais0
   rotate: false
   xy: 2, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
-Dias1
+Dais1
   rotate: false
   xy: 18, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
-Dias2
+Dais2
   rotate: false
   xy: 34, 2
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
-Dias3
+Dais3
   rotate: false
   xy: 50, 2
   size: 14, 28

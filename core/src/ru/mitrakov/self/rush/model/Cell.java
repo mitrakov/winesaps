@@ -24,10 +24,10 @@ public class Cell {
                 res.bottom = new Block(xy);
                 break;
             case 2:
-                res.bottom = new Water(xy);
+                res.bottom = new Dais(xy);
                 break;
             case 3:
-                res.bottom = new Dais(xy);
+                res.bottom = new Water(xy);
                 break;
             default:
         }
@@ -124,5 +124,13 @@ public class Cell {
             default:
                 return null;
         }
+    }
+
+    public boolean objExists(Class objClass) {
+        for (int i = 0; i < objects.size(); i++) {  // .... GC!
+            if (objClass.isInstance(objects.get(i))) // TODO is it dangerous?
+                return true;
+        }
+        return false;
     }
 }
