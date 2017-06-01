@@ -357,7 +357,7 @@ public class Gui extends Actor {
         return bottomHeight;
     }
 
-    private CellObject actorExists(Cell cell) {
+    private CellObject animatedExists(Cell cell) {
         if (cell != null) {
             for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
                 CellObject obj = cell.objects.get(i);
@@ -368,14 +368,14 @@ public class Gui extends Actor {
         return null;
     }
 
-    private boolean actorUsesLadder(Field field, int i, int j) {
+    private boolean animatedUsesLadder(Field field, int i, int j) {
         // field != null (assert omitted)
         Cell cell = field.cells[j * Field.WIDTH + i];  // cell != NULL (assert omitted)
-        CellObject actor = actorExists(cell);
+        CellObject actor = animatedExists(cell);
         if (actor == null) { // maybe actor is on the cell above (LadderTop)?
             j -= 1;
             cell = j >= 0 ? field.cells[j * Field.WIDTH + i] : null;
-            actor = actorExists(cell);
+            actor = animatedExists(cell);
         }
         if (actor != null) {
             AnimInfo anim = texturesAnim.get(actor.getClass());
@@ -471,7 +471,7 @@ public class Gui extends Actor {
                             t += Gdx.graphics.getDeltaTime();
                             animTime.set(idx, t);
                             texture = animation.getKeyFrame(t);
-                        } else if (actorUsesLadder(field, i, j)) {   // start animation here
+                        } else if (animatedUsesLadder(field, i, j)) {   // start animation here
                             animTime.set(idx, 0);
                             texture = animation.getKeyFrame(0);
                         } else texture = animation.getKeyFrame(0);   // draw static texture
