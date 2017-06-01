@@ -44,6 +44,12 @@ public class SwUDP implements IProtocol {
             this.msg.copyFrom(msg, msg.length());
             this.startRtt = startRtt;
         }
+
+        void clear() {
+            exists = ack = false;
+            startRtt = ticks = attempt = nextRepeat = 0;
+            msg.clear();
+        }
     }
 
     static int next(int n) {
@@ -102,7 +108,7 @@ public class SwUDP implements IProtocol {
     }
 
     @Override
-    public void connectionFailed() throws IOException {
+    public void connectionFailed() {
         log("", "Connection failed!");
         handler.onChanged(false);
     }

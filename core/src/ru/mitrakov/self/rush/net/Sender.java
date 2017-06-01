@@ -65,7 +65,7 @@ class Sender {
         connected = false;
 
         for (int j = 0; j < buffer.length; j++) {
-            buffer[j].exists = false;
+            buffer[j].clear();
         }
         startMsg.clear().add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF)
                 .add(crcid & 0xFF).add(0xFD);
@@ -108,7 +108,7 @@ class Sender {
     private void accept() {
         if (buffer[expectedAck].exists) {
             if (buffer[expectedAck].ack) {
-                buffer[expectedAck].exists = false;
+                buffer[expectedAck].clear();
                 expectedAck = next(expectedAck);
                 accept();
             }
@@ -122,7 +122,7 @@ class Sender {
             if (buffer[i].attempt > MAX_ATTEMPTS) {
                 connected = false;
                 for (int j = 0; j < buffer.length; j++) {
-                    buffer[j].exists = false;
+                    buffer[j].clear();
                 }
                 protocol.connectionFailed();
                 return;
