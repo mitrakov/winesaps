@@ -40,6 +40,12 @@ public class Cells {
         }
     }
 
+    public static abstract class CellObjectAnimated extends CellObject {
+        public CellObjectAnimated(int id, int xy) {
+            super(id, xy);
+        }
+    }
+
     public static abstract class CellObjectFood extends CellObject {
         public CellObjectFood(int id, int xy) {
             super(id, xy);
@@ -64,21 +70,21 @@ public class Cells {
         }
     }
 
-    public static class Actor1 extends CellObject {
+    public static class Actor1 extends CellObjectAnimated {
         public Actor1(int xy, int number) {
             super(0x04, xy);
             this.number = number;
         }
     }
 
-    public static class Actor2 extends CellObject {
+    public static class Actor2 extends CellObjectAnimated {
         public Actor2(int xy, int number) {
             super(0x05, xy);
             this.number = number;
         }
     }
 
-    public static class Wolf extends CellObject {
+    public static class Wolf extends CellObjectAnimated {
         public Wolf(int xy, int number) {
             super(0x06, xy);
             this.number = number;
@@ -125,9 +131,12 @@ public class Cells {
         public Waterfall(int xy) {
             super(0x0D, xy);
         }
+        public Waterfall(int id, int xy) {
+            super(id, xy);
+        }
     }
 
-    public static class WaterfallSafe extends CellObject {
+    public static class WaterfallSafe extends Waterfall {
         public WaterfallSafe(int xy) {
             super(0x0E, xy);
         }

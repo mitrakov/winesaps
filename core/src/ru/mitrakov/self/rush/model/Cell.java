@@ -12,7 +12,7 @@ import ru.mitrakov.self.rush.model.Cells.*;
 public class Cell {
     // ....
     public CellObject bottom; // may be NULL
-    public List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
+    List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
 
     private Cell() {
     }
@@ -126,11 +126,28 @@ public class Cell {
         }
     }
 
-    public boolean objExists(Class objClass) {
+    public CellObject getFirst(Class<? extends CellObject> objClass) {
         for (int i = 0; i < objects.size(); i++) {  // .... GC!
-            if (objClass.isInstance(objects.get(i))) // TODO is it dangerous?
-                return true;
+            CellObject obj = getObject(i);
+            if (objClass.isInstance(obj))
+                return obj;
         }
-        return false;
+        return null;
+    }
+
+    public boolean objectExists(Class<? extends CellObject> objClass) {
+        return getFirst(objClass) != null;
+    }
+
+    public int getObjectsCount() {
+        return objects.size();
+    }
+
+    public CellObject getObject(int idx) {
+        try {
+            return objects.get(idx);
+        } catch (ArrayIndexOutOfBoundsException ignored) { // it may happen HARDLY EVER during concurrent
+            return null;                                   // index_based_traversal/removing
+        }
     }
 }

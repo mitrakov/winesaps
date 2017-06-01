@@ -220,8 +220,8 @@ public class Gui extends Actor {
                     if (cell.bottom != null)
                         key = cell.bottom.getClass();
                     else { // case: long RopeLine
-                        Cell cellBelow = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
-                        if (cellBelow != null && cell.objExists(RopeLine.class) && cellBelow.objExists(RopeLine.class))
+                        Cell below = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
+                        if (below != null && cell.objectExists(RopeLine.class) && below.objectExists(RopeLine.class))
                             key = Block.class;
                     }
                     if (key != null && texturesDown.containsKey(key)) {
@@ -247,12 +247,12 @@ public class Gui extends Actor {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                     float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                    if (cell.objExists(Box.class)) {
+                    if (cell.objectExists(Box.class)) {
                         if (texturesOverlay.containsKey(Box.class))
                             bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
                     }
-                    for (int k = 0; k < cell.objects.size(); k++) { //  // .... GC!
-                        CellObject obj = cell.objects.get(k);
+                    for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
+                        CellObject obj = cell.getObject(k);
                         if (texturesAnim.containsKey(obj.getClass())) {
                             AnimInfo anim = texturesAnim.get(obj.getClass()); // anim != null (assert omitted)
                             Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
@@ -284,7 +284,8 @@ public class Gui extends Actor {
                                 // correct y-coordinate
                                 float deltaY = y - anim.y;
                                 boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                                boolean ladder = cell.objExists(LadderTop.class) || cell.objExists(LadderBottom.class);
+                                boolean ladder = cell.objectExists(LadderTop.class)
+                                        || cell.objectExists(LadderBottom.class);
                                 if (deltaY_equals_0 || out_of_sync || ladder)
                                     anim.y = y;
                                 else {
@@ -357,25 +358,15 @@ public class Gui extends Actor {
         return bottomHeight;
     }
 
-    private CellObject animatedExists(Cell cell) {
-        if (cell != null) {
-            for (int i = 0; i < cell.objects.size(); i++) {  // .... GC!
-                CellObject obj = cell.objects.get(i);
-                if (obj instanceof Actor1 || obj instanceof Actor2 || obj instanceof Wolf)
-                    return obj;
-            }
-        }
-        return null;
-    }
-
     private boolean animatedUsesLadder(Field field, int i, int j) {
         // field != null (assert omitted)
         Cell cell = field.cells[j * Field.WIDTH + i];  // cell != NULL (assert omitted)
-        CellObject actor = animatedExists(cell);
+        CellObject actor = cell.getFirst(CellObjectAnimated.class);
         if (actor == null) { // maybe actor is on the cell above (LadderTop)?
             j -= 1;
             cell = j >= 0 ? field.cells[j * Field.WIDTH + i] : null;
-            actor = animatedExists(cell);
+            if (cell != null)
+                actor = cell.getFirst(CellObjectAnimated.class);
         }
         if (actor != null) {
             AnimInfo anim = texturesAnim.get(actor.getClass());
@@ -393,8 +384,8 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
-                    CellObject obj = cell.objects.get(k);
+                for (int k = 0; k < cell.getObjectsCount(); k++) {  // .... GC!
+                    CellObject obj = cell.getObject(k);
                     TextureRegion texture = map.get(obj.getClass());
                     if (texture != null) {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
@@ -412,8 +403,8 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
-                    CellObject obj = cell.objects.get(k);
+                for (int k = 0; k < cell.getObjectsCount(); k++) {  // .... GC!
+                    CellObject obj = cell.getObject(k);
                     if (texturesStat.containsKey(obj.getClass())) {
                         TextureRegion texture = texturesStat.get(obj.getClass()).get(model.stylePack);
                         if (texture != null) {
@@ -434,17 +425,15 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                boolean hasUmbrella = cell.objExists(Umbrella.class);
-                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
-                    CellObject obj = cell.objects.get(k);
-                    if (obj instanceof Waterfall || obj instanceof WaterfallSafe) {
-                        Animation<TextureRegion> animation = hasUmbrella ? animWaterfallSmall : animWaterfall;
-                        TextureRegion texture = animation.getKeyFrame(time);
-                        if (texture != null) {
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
-                        }
+                boolean hasUmbrella = cell.objectExists(Umbrella.class);
+                CellObject obj = cell.getFirst(Waterfall.class);
+                if (obj != null) {
+                    Animation<TextureRegion> animation = hasUmbrella ? animWaterfallSmall : animWaterfall;
+                    TextureRegion texture = animation.getKeyFrame(time);
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
                     }
                 }
             }
@@ -460,27 +449,25 @@ public class Gui extends Actor {
                 Cell cell = field.cells[idx]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                 float t = animTime.get(idx);
-                for (int k = 0; k < cell.objects.size(); k++) {  // .... GC!
-                    CellObject obj = cell.objects.get(k);
-                    if (obj instanceof LadderBottom) {
-                        TextureRegion texture;
-                        // get current animation
-                        Animation<TextureRegion> animation = animLadders.get(model.stylePack); // assert omitted
-                        // find a texture region depending on ladder animation
-                        if (!animation.isAnimationFinished(t)) {     // play already started animation
-                            t += Gdx.graphics.getDeltaTime();
-                            animTime.set(idx, t);
-                            texture = animation.getKeyFrame(t);
-                        } else if (animatedUsesLadder(field, i, j)) {   // start animation here
-                            animTime.set(idx, 0);
-                            texture = animation.getKeyFrame(0);
-                        } else texture = animation.getKeyFrame(0);   // draw static texture
-                        // draw texture region
-                        if (texture != null) {
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
-                        }
+                CellObject obj = cell.getFirst(LadderBottom.class);
+                if (obj != null) {
+                    TextureRegion texture;
+                    // get current animation
+                    Animation<TextureRegion> animation = animLadders.get(model.stylePack); // assert omitted
+                    // find a texture region depending on ladder animation
+                    if (!animation.isAnimationFinished(t)) {     // play already started animation
+                        t += Gdx.graphics.getDeltaTime();
+                        animTime.set(idx, t);
+                        texture = animation.getKeyFrame(t);
+                    } else if (animatedUsesLadder(field, i, j)) {   // start animation here
+                        animTime.set(idx, 0);
+                        texture = animation.getKeyFrame(0);
+                    } else texture = animation.getKeyFrame(0);   // draw static texture
+                    // draw texture region
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
                     }
                 }
             }
