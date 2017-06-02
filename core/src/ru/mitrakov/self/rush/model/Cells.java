@@ -115,8 +115,8 @@ public class Cells {
         }
     }
 
-    public static class RopeBolt extends CellObject {
-        public RopeBolt(int xy) {
+    public static class Stair extends CellObject {
+        public Stair(int xy) {
             super(0x0B, xy);
         }
     }

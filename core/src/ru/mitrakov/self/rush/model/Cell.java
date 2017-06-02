@@ -60,7 +60,7 @@ public class Cell {
             case 0x0A:
                 return new LadderBottom(xy);
             case 0x0B:
-                return new RopeBolt(xy);
+                return new Stair(xy);
             case 0x0C:
                 return new RopeLine(xy);
             case 0x0D:
