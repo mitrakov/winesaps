@@ -126,7 +126,7 @@ public class Gui extends Actor {
             texturesDown.put(clazz, m);
         }
         // static up textures, each with 4 styles
-        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
+        for (Class clazz : new Class[]{Block.class, Stair.class, LadderTop.class, RopeLine.class, Water.class,
                 DecorationStatic.class, DecorationWarning.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
@@ -247,7 +247,7 @@ public class Gui extends Actor {
                 for (int i = 0; i < Field.WIDTH; i++) {
                     Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                     float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                    if (cell.objectExists(Box.class)) {
+                    if (cell.objectExists(CellObjectRaisable.class)) {
                         if (texturesOverlay.containsKey(Box.class))
                             bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
                     }

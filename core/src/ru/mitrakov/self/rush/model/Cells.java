@@ -52,6 +52,12 @@ public class Cells {
         }
     }
 
+    public static abstract class CellObjectRaisable extends CellObject {
+        public CellObjectRaisable(int id, int xy) {
+            super(id, xy);
+        }
+    }
+
     public static class Block extends CellObject {
         public Block(int xy) {
             super(0x01, xy);
@@ -115,7 +121,7 @@ public class Cells {
         }
     }
 
-    public static class Stair extends CellObject {
+    public static class Stair extends CellObjectRaisable {
         public Stair(int xy) {
             super(0x0B, xy);
         }
@@ -289,7 +295,7 @@ public class Cells {
         }
     }
 
-    public static class Box extends CellObject {
+    public static class Box extends CellObjectRaisable {
         public Box(int xy, int number) {
             super(0x2F, xy);
             this.number = number;
