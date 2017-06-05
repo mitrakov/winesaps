@@ -635,7 +635,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.row();
                 tableRightContent.add().expandY();
                 tableRightContent.row();
-                tableRightContent.add(btnBuyAbilities).colspan(2).width(217).height(50);
+                tableRightContent.add(btnBuyAbilities).colspan(2).minWidth(217).height(50); // minWidth for French Lang
                 tableRightContent.row();
                 tableRightContent.add(lblMore).colspan(2).height(53).spaceTop(20);
                 break;
