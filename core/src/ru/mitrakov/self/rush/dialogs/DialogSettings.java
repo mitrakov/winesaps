@@ -118,6 +118,7 @@ public class DialogSettings extends DialogFeat {
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.English;
                 game.updateLocale();
+                pack();
             }
         });
         btnRu.addListener(new ChangeListener() {
@@ -125,6 +126,7 @@ public class DialogSettings extends DialogFeat {
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.Russian;
                 game.updateLocale();
+                pack();
             }
         });
         btnEs.addListener(new ChangeListener() {
@@ -132,6 +134,7 @@ public class DialogSettings extends DialogFeat {
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.Spanish;
                 game.updateLocale();
+                pack();
             }
         });
         btnPt.addListener(new ChangeListener() {
@@ -139,6 +142,7 @@ public class DialogSettings extends DialogFeat {
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.Portuguese;
                 game.updateLocale();
+                pack();
             }
         });
         btnFr.addListener(new ChangeListener() {
@@ -146,6 +150,7 @@ public class DialogSettings extends DialogFeat {
             public void changed(ChangeEvent event, Actor actor) {
                 model.language = Model.Language.French;
                 game.updateLocale();
+                pack();
             }
         });
         new ButtonGroup<Button>(btnEn, btnRu, btnEs, btnPt, btnFr);

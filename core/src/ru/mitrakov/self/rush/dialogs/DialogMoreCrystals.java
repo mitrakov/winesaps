@@ -58,7 +58,7 @@ public class DialogMoreCrystals extends DialogFeat {
 
         lblOverview.setText(bundle.format("dialog.crystals.overview"));
         lblWay1.setText(bundle.format("dialog.crystals.way1"));
-        lblText1.setText(bundle.format("dialog.crystals.text1"));
+        lblText1.setText(bundle.format("dialog.crystals.text1", 1));
         lblWay2.setText(bundle.format("dialog.crystals.way2"));
         lblText2.setText(bundle.format("dialog.crystals.text2.start"), bundle.format("dialog.crystals.text2.link"),
                 bundle.format("dialog.crystals.text2.end"));
