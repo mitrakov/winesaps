@@ -44,7 +44,7 @@ public class Winesaps extends Game implements Localizable {
                     e.printStackTrace();
                 }
             };
-            String host = "winesaps.ru"; // TODO move to config
+            String host = "winesaps.ru"; // TODO move to config (@mitrakov: right, I'll do it in the future)
             int port = 33996;
             network = new Network(new Parser(model, psObject), errorHandler, host, port);
             network.setProtocol(new SwUDP(network.getSocket(), host, port, network));
