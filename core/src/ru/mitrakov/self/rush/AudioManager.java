@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 /**
  * Created by mitrakov on 06.04.2017
  */
-//@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("WeakerAccess")
 public class AudioManager {
     private final ObjectMap<String, Sound> sounds = new ObjectMap<String, Sound>(10); // to avoid memory allocations
 
