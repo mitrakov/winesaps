@@ -40,3 +40,6 @@ We consider the following applicants on nonprofit basis:
 
 ## Contacts ##
 Feel free to contact us via E-Mail: `mitrakov-artem@yandex.ru`
+
+---
+© 2017, Mitrakov Artem, Russian Federation
