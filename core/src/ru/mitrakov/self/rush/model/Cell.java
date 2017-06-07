@@ -67,6 +67,8 @@ public class Cell {
                 return new Waterfall(xy);
             case 0x0E:
                 return new WaterfallSafe(xy);
+            case 0x0F:
+                return new BeamChunk(xy, number.next());
             case 0x10:
                 return new Apple(xy, number.next());
             case 0x11:

@@ -148,6 +148,13 @@ public class Cells {
         }
     }
 
+    public static class BeamChunk extends CellObject {
+        public BeamChunk(int xy, int number) {
+            super(0x0F, xy);
+            this.number = number;
+        }
+    }
+
     public static class Apple extends CellObjectFood {
         public Apple(int xy, int number) {
             super(0x10, xy);
