@@ -17,7 +17,7 @@ public class DialogLock extends Window {
 
         // add widgets
         pad(20);
-        add(label = new Label("", skin, "default")).width(200);
+        add(label = new Label("", skin, "default")).width(300);
         label.setAlignment(Align.center);
 
         // set up
