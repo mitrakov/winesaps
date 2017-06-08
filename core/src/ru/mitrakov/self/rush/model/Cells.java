@@ -46,6 +46,12 @@ public class Cells {
         }
     }
 
+    public static abstract class CellObjectActor extends CellObjectAnimated {
+        public CellObjectActor(int id, int xy) {
+            super(id, xy);
+        }
+    }
+
     public static abstract class CellObjectFood extends CellObject {
         public CellObjectFood(int id, int xy) {
             super(id, xy);
@@ -76,14 +82,14 @@ public class Cells {
         }
     }
 
-    public static class Actor1 extends CellObjectAnimated {
+    public static class Actor1 extends CellObjectActor {
         public Actor1(int xy, int number) {
             super(0x04, xy);
             this.number = number;
         }
     }
 
-    public static class Actor2 extends CellObjectAnimated {
+    public static class Actor2 extends CellObjectActor {
         public Actor2(int xy, int number) {
             super(0x05, xy);
             this.number = number;

@@ -207,7 +207,6 @@ public class Gui extends Actor {
         batch.draw(backgrounds.get(model.stylePack), 0, 0);
 
         float dt = Gdx.graphics.getDeltaTime();
-        float dx = SPEED_X * dt, dy = SPEED_Y * dt;
         time += dt;
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -243,69 +242,7 @@ public class Gui extends Actor {
             // draw 5-rd layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
             // draw 6-th layer (animated characters)
-            for (int j = 0; j < Field.HEIGHT; j++) {
-                for (int i = 0; i < Field.WIDTH; i++) {
-                    Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
-                    float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                    if (cell.objectExists(CellObjectRaisable.class)) {
-                        if (texturesOverlay.containsKey(Box.class))
-                            bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
-                    }
-                    for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
-                        CellObject obj = cell.getObject(k);
-                        if (texturesAnim.containsKey(obj.getClass())) {
-                            AnimInfo anim = texturesAnim.get(obj.getClass()); // anim != null (assert omitted)
-                            Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
-                            Animation<TextureRegion> animation = anim.animations.get(key);
-                            if (animation != null) {
-                                TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
-
-                                // get non-animated server-side coordinates
-                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                                float y = convertYFromModelToScreen(j) + bottomHeight;
-
-                                // correct x-coordinate, direction and time adjusted for animation
-                                float deltaX = x - anim.x;
-                                boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
-                                boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
-                                if (deltaX_equals_0 || out_of_sync) {
-                                    anim.x = x;
-                                    if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
-                                        anim.t = 0;
-                                } else {
-                                    x = anim.x;
-                                    anim.x += signum(deltaX) * dx;
-                                    anim.t += dt;
-                                    anim.delay = 0;
-                                    if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
-                                        anim.dirRight = deltaX > 0;
-                                }
-
-                                // correct y-coordinate
-                                float deltaY = y - anim.y;
-                                boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                                boolean ladder = cell.objectExists(LadderTop.class)
-                                        || cell.objectExists(LadderBottom.class);
-                                if (deltaY_equals_0 || out_of_sync || ladder)
-                                    anim.y = y;
-                                else {
-                                    y = anim.y;
-                                    anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
-                                }
-
-                                // if direction == right then draw pure texture, else draw flipped texture
-                                if (anim.dirRight)
-                                    batch.draw(texture, x, y);
-                                else {
-                                    texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
-                                    batch.draw(texture, x, y);
-                                    texture.flip(true, false);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            drawAnimatedObjects(field, batch, dt);
             // draw 7-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
             // draw 8-th layer here...
@@ -468,6 +405,74 @@ public class Gui extends Actor {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                         float y = convertYFromModelToScreen(j) + bottomHeight;
                         batch.draw(texture, x, y);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawAnimatedObjects(Field field, Batch batch, float dt) {
+        float dx = SPEED_X * dt, dy = SPEED_Y * dt;
+
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                if (cell.objectExists(CellObjectRaisable.class)) {
+                    if (texturesOverlay.containsKey(Box.class))
+                        bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
+                }
+                for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
+                    CellObject obj = cell.getObject(k);
+                    if (texturesAnim.containsKey(obj.getClass())) {
+                        AnimInfo anim = texturesAnim.get(obj.getClass()); // anim != null (assert omitted)
+                        Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
+                        Animation<TextureRegion> animation = anim.animations.get(key);
+                        if (animation != null) {
+                            TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
+
+                            // get non-animated server-side coordinates
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+
+                            // correct x-coordinate, direction and time adjusted for animation
+                            float deltaX = x - anim.x;
+                            boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
+                            boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
+                            if (deltaX_equals_0 || out_of_sync) {
+                                anim.x = x;
+                                if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
+                                    anim.t = 0;
+                            } else {
+                                x = anim.x;
+                                anim.x += signum(deltaX) * dx;
+                                anim.t += dt;
+                                anim.delay = 0;
+                                if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
+                                    anim.dirRight = deltaX > 0;
+                            }
+
+                            // correct y-coordinate
+                            float deltaY = y - anim.y;
+                            boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
+                            boolean ladder = cell.objectExists(LadderTop.class)
+                                    || cell.objectExists(LadderBottom.class);
+                            if (deltaY_equals_0 || out_of_sync || ladder)
+                                anim.y = y;
+                            else {
+                                y = anim.y;
+                                anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
+                            }
+
+                            // if direction == right then draw pure texture, else draw flipped texture
+                            if (anim.dirRight)
+                                batch.draw(texture, x, y);
+                            else {
+                                texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
+                                batch.draw(texture, x, y);
+                                texture.flip(true, false);
+                            }
+                        }
                     }
                 }
             }
