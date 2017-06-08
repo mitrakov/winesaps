@@ -157,15 +157,15 @@ public class Gui extends Actor {
             ObjectMap<Model.Character, Animation<TextureRegion>> animations =
                     new ObjectMap<Model.Character, Animation<TextureRegion>>(4);
 
-            Array<TextureAtlas.AtlasRegion> framesRabbit = atlasRabbit.findRegions(clazz.getSimpleName());
-            Array<TextureAtlas.AtlasRegion> framesHedgehog = atlasHedgehog.findRegions(clazz.getSimpleName());
-            Array<TextureAtlas.AtlasRegion> framesSquirrel = atlasSquirrel.findRegions(clazz.getSimpleName());
-            Array<TextureAtlas.AtlasRegion> framesCat = atlasCat.findRegions(clazz.getSimpleName());
+            Array<TextureAtlas.AtlasRegion> framesRabbit = atlasRabbit.findRegions("rabbit");
+            Array<TextureAtlas.AtlasRegion> framesHedgehog = atlasHedgehog.findRegions("hedgehog");
+            Array<TextureAtlas.AtlasRegion> framesSquirrel = atlasSquirrel.findRegions("squirrel");
+            Array<TextureAtlas.AtlasRegion> framesCat = atlasCat.findRegions("cat");
 
-            Animation<TextureRegion> an1 = new Animation<TextureRegion>(.09f, framesRabbit, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an2 = new Animation<TextureRegion>(.09f, framesHedgehog, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an3 = new Animation<TextureRegion>(.09f, framesSquirrel, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an4 = new Animation<TextureRegion>(.09f, framesCat, Animation.PlayMode.LOOP);
+            Animation<TextureRegion> an1 = new Animation<TextureRegion>(.07f, framesRabbit, Animation.PlayMode.LOOP);
+            Animation<TextureRegion> an2 = new Animation<TextureRegion>(.07f, framesHedgehog, Animation.PlayMode.LOOP);
+            Animation<TextureRegion> an3 = new Animation<TextureRegion>(.07f, framesSquirrel, Animation.PlayMode.LOOP);
+            Animation<TextureRegion> an4 = new Animation<TextureRegion>(.07f, framesCat, Animation.PlayMode.LOOP);
 
             animations.put(Model.Character.Rabbit, an1);
             animations.put(Model.Character.Hedgehog, an2);
@@ -258,7 +258,7 @@ public class Gui extends Actor {
                             Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
                             Animation<TextureRegion> animation = anim.animations.get(key);
                             if (animation != null) {
-                                TextureRegion texture = animation.getKeyFrame(/*anim.t*/0); // assert omitted
+                                TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
 
                                 // get non-animated server-side coordinates
                                 float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;

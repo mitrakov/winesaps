@@ -3,409 +3,115 @@ cat.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Actor1
+cat
   rotate: false
-  xy: 0, 54
-  size: 43, 52
-  orig: 43, 52
+  xy: 2, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
-  index: 9
-Actor2
+  index: 0
+cat
   rotate: false
-  xy: 0, 54
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 9
-Actor1
-  rotate: false
-  xy: 0, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 13
-Actor2
-  rotate: false
-  xy: 0, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 13
-Actor1
-  rotate: false
-  xy: 45, 54
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 23
-Actor2
-  rotate: false
-  xy: 45, 54
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 23
-Actor1
-  rotate: false
-  xy: 45, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 28
-Actor2
-  rotate: false
-  xy: 45, 0
-  size: 43, 52
-  orig: 43, 52
-  offset: 0, 0
-  index: 28
-Actor1
-  rotate: false
-  xy: 90, 54
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 4
-Actor2
-  rotate: false
-  xy: 90, 54
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 4
-Actor1
-  rotate: false
-  xy: 134, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 6
-Actor2
-  rotate: false
-  xy: 134, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 6
-Actor1
-  rotate: false
-  xy: 179, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 7
-Actor2
-  rotate: false
-  xy: 179, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 7
-Actor1
-  rotate: false
-  xy: 224, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 8
-Actor2
-  rotate: false
-  xy: 224, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 8
-Actor1
-  rotate: false
-  xy: 269, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 10
-Actor2
-  rotate: false
-  xy: 269, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 10
-Actor1
-  rotate: false
-  xy: 314, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 11
-Actor2
-  rotate: false
-  xy: 314, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 11
-Actor1
-  rotate: false
-  xy: 359, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 12
-Actor2
-  rotate: false
-  xy: 359, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 12
-Actor1
-  rotate: false
-  xy: 404, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 14
-Actor2
-  rotate: false
-  xy: 404, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 14
-Actor1
-  rotate: false
-  xy: 90, 0
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 18
-Actor2
-  rotate: false
-  xy: 90, 0
-  size: 42, 52
-  orig: 42, 52
-  offset: 0, 0
-  index: 18
-Actor1
-  rotate: false
-  xy: 134, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 20
-Actor2
-  rotate: false
-  xy: 134, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 20
-Actor1
-  rotate: false
-  xy: 449, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 21
-Actor2
-  rotate: false
-  xy: 449, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 21
-Actor1
-  rotate: false
-  xy: 179, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 22
-Actor2
-  rotate: false
-  xy: 179, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 22
-Actor1
-  rotate: false
-  xy: 494, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 24
-Actor2
-  rotate: false
-  xy: 494, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 24
-Actor1
-  rotate: false
-  xy: 224, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 25
-Actor2
-  rotate: false
-  xy: 224, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 25
-Actor1
-  rotate: false
-  xy: 539, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 26
-Actor2
-  rotate: false
-  xy: 539, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 26
-Actor1
-  rotate: false
-  xy: 269, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 27
-Actor2
-  rotate: false
-  xy: 269, 2
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 27
-Actor1
-  rotate: false
-  xy: 584, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 29
-Actor2
-  rotate: false
-  xy: 584, 55
-  size: 43, 51
-  orig: 43, 51
-  offset: 0, 0
-  index: 29
-Actor1
-  rotate: false
-  xy: 314, 2
-  size: 42, 51
-  orig: 42, 51
+  xy: 45, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
   index: 1
-Actor2
+cat
   rotate: false
-  xy: 314, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 1
-Actor1
-  rotate: false
-  xy: 629, 55
-  size: 42, 51
-  orig: 42, 51
+  xy: 88, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
   index: 2
-Actor2
+cat
   rotate: false
-  xy: 629, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 2
-Actor1
-  rotate: false
-  xy: 358, 2
-  size: 42, 51
-  orig: 42, 51
+  xy: 131, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
   index: 3
-Actor2
+cat
   rotate: false
-  xy: 358, 2
-  size: 42, 51
-  orig: 42, 51
+  xy: 174, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
-  index: 3
-Actor1
+  index: 4
+cat
   rotate: false
-  xy: 673, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 5
-Actor2
-  rotate: false
-  xy: 673, 55
-  size: 42, 51
-  orig: 42, 51
+  xy: 217, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
   index: 5
-Actor1
+cat
   rotate: false
-  xy: 402, 2
-  size: 42, 51
-  orig: 42, 51
+  xy: 260, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 6
+cat
+  rotate: false
+  xy: 303, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 7
+cat
+  rotate: false
+  xy: 346, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 8
+cat
+  rotate: false
+  xy: 389, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 9
+cat
+  rotate: false
+  xy: 432, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 10
+cat
+  rotate: false
+  xy: 475, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 11
+cat
+  rotate: false
+  xy: 518, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 12
+cat
+  rotate: false
+  xy: 561, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 13
+cat
+  rotate: false
+  xy: 604, 2
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 14
+cat
+  rotate: false
+  xy: 647, 2
+  size: 41, 55
+  orig: 41, 55
   offset: 0, 0
   index: 15
-Actor2
-  rotate: false
-  xy: 402, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 15
-Actor1
-  rotate: false
-  xy: 717, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 16
-Actor2
-  rotate: false
-  xy: 717, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 16
-Actor1
-  rotate: false
-  xy: 446, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 17
-Actor2
-  rotate: false
-  xy: 446, 2
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 17
-Actor1
-  rotate: false
-  xy: 761, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 19
-Actor2
-  rotate: false
-  xy: 761, 55
-  size: 42, 51
-  orig: 42, 51
-  offset: 0, 0
-  index: 19
