@@ -43,6 +43,7 @@ public class Gui extends Actor {
     static private abstract class AnimInfo {
         float x, y;
         float t;
+        float speedX;
         boolean dirRight;
         int delay;
 
@@ -52,8 +53,9 @@ public class Gui extends Actor {
     static private final class AnimInfoChar extends AnimInfo {
         final ObjectMap<Model.Character, Animation<TextureRegion>> animations;
 
-        AnimInfoChar(ObjectMap<Model.Character, Animation<TextureRegion>> animations, boolean dirRight) {
+        AnimInfoChar(ObjectMap<Model.Character, Animation<TextureRegion>> animations, float speedX, boolean dirRight) {
             this.animations = animations;
+            this.speedX = speedX;
             this.dirRight = dirRight;
         }
 
@@ -68,9 +70,9 @@ public class Gui extends Actor {
     static private final class AnimInfoWolf extends AnimInfo {
         final Animation<TextureRegion> animation;
 
-        AnimInfoWolf(Animation<TextureRegion> animation, boolean dirRight) {
+        AnimInfoWolf(Animation<TextureRegion> animation, float speedX) {
             this.animation = animation;
-            this.dirRight = dirRight;
+            this.speedX = speedX;
         }
 
         @Override
@@ -84,7 +86,9 @@ public class Gui extends Actor {
     private static final int OFFSET_X = (Winesaps.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
     private static final int OFFSET_Y = 33; // inferred by expertise
     private static final int MOVES_PER_SEC = 5;
+    private static final int MOVES_PER_SEC_WOLF = 4;
     private static final int SPEED_X = CELL_SIZ_W * MOVES_PER_SEC;
+    private static final int SPEED_X_WOLF = CELL_SIZ_W * MOVES_PER_SEC_WOLF;
     private static final int SPEED_Y = CELL_SIZ_H * MOVES_PER_SEC;
     private static final int FRAMES_PER_MOVE = 60 / MOVES_PER_SEC; // FPS / MOVES_PER_SEC
     private static final int BIG_VALUE = 99;
@@ -193,13 +197,13 @@ public class Gui extends Actor {
                     charAtlases.add(atlas);
                 }
             }
-            texturesAnim.put(clazz, new AnimInfoChar(animations, clazz != Actor2.class));
+            texturesAnim.put(clazz, new AnimInfoChar(animations, SPEED_X, clazz != Actor2.class));
         }
         // wolf
         Array<TextureAtlas.AtlasRegion> framesWolf = atlasWolf.findRegions("wolf");
         for (int i = 0; i < 100; i++) {
-            Animation<TextureRegion> anim = new Animation<TextureRegion>(.05f, framesWolf, Animation.PlayMode.LOOP);
-            texturesAnimWolf.put(i, new AnimInfoWolf(anim, true));
+            Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
+            texturesAnimWolf.put(i, new AnimInfoWolf(anim, SPEED_X_WOLF));
         }
         // waterfall
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasWaterfall.findRegions("Waterfall");
@@ -439,8 +443,6 @@ public class Gui extends Actor {
 
     @SuppressWarnings("ConstantConditions")
     private void drawAnimatedObjects(Field field, Batch batch, float dt) {
-        float dx = SPEED_X * dt, dy = SPEED_Y * dt;
-
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
@@ -459,6 +461,9 @@ public class Gui extends Actor {
                             Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
                             Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
                             TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
+
+                            // get dx, dy
+                            final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
 
                             // get non-animated server-side coordinates
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
