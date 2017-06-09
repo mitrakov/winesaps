@@ -353,11 +353,13 @@ public class Gui extends Actor {
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                 for (int k = 0; k < cell.getObjectsCount(); k++) {  // .... GC!
                     CellObject obj = cell.getObject(k);
-                    TextureRegion texture = map.get(obj.getClass());
-                    if (texture != null) {
-                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                        float y = convertYFromModelToScreen(j) + bottomHeight;
-                        batch.draw(texture, x, y);
+                    if (obj != null) {
+                        TextureRegion texture = map.get(obj.getClass());
+                        if (texture != null) {
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
+                        }
                     }
                 }
             }
@@ -372,12 +374,15 @@ public class Gui extends Actor {
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                 for (int k = 0; k < cell.getObjectsCount(); k++) {  // .... GC!
                     CellObject obj = cell.getObject(k);
-                    if (texturesStat.containsKey(obj.getClass())) {
-                        TextureRegion texture = texturesStat.get(obj.getClass()).get(model.stylePack);
-                        if (texture != null) {
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(texture, x, y);
+                    if (obj != null) {
+                        IntMap<TextureRegion> m = texturesStat.get(obj.getClass());
+                        if (m != null) {
+                            TextureRegion texture = m.get(model.stylePack);
+                            if (texture != null) {
+                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                                float y = convertYFromModelToScreen(j) + bottomHeight;
+                                batch.draw(texture, x, y);
+                            }
                         }
                     }
                 }
@@ -453,7 +458,7 @@ public class Gui extends Actor {
                 }
                 for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
                     CellObject obj = cell.getObject(k);
-                    if (obj instanceof CellObjectAnimated) {
+                    if (obj instanceof CellObjectAnimated) { // stackoverflow.com/questions/2950319
                         AnimInfo anim = obj instanceof CellObjectActor
                                 ? texturesAnim.get(obj.getClass())
                                 : texturesAnimWolf.get(obj.getNumber());
