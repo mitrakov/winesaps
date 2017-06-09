@@ -6,112 +6,112 @@ repeat: none
 wolf
   rotate: false
   xy: 2, 2
-  size: 49, 60
-  orig: 49, 60
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 0
 wolf
   rotate: false
   xy: 2, 2
-  size: 49, 60
-  orig: 49, 60
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 8
 wolf
   rotate: false
-  xy: 53, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 56, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 1
 wolf
   rotate: false
-  xy: 104, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 110, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 2
 wolf
   rotate: false
-  xy: 155, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 164, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 3
 wolf
   rotate: false
-  xy: 206, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 218, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 4
 wolf
   rotate: false
-  xy: 257, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 272, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 5
 wolf
   rotate: false
-  xy: 308, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 326, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 6
 wolf
   rotate: false
-  xy: 359, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 380, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 7
 wolf
   rotate: false
-  xy: 410, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 434, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 9
 wolf
   rotate: false
-  xy: 461, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 488, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 10
 wolf
   rotate: false
-  xy: 512, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 542, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 11
 wolf
   rotate: false
-  xy: 563, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 596, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 12
 wolf
   rotate: false
-  xy: 614, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 650, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 13
 wolf
   rotate: false
-  xy: 665, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 704, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 14
 wolf
   rotate: false
-  xy: 716, 2
-  size: 49, 60
-  orig: 49, 60
+  xy: 758, 2
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 15

@@ -465,51 +465,53 @@ public class Gui extends Actor {
                         if (anim != null) {
                             Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
                             Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
-                            TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
+                            if (animation != null) { // it's possible if character==None
+                                TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
 
-                            // get dx, dy
-                            final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
+                                // get dx, dy
+                                final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
 
-                            // get non-animated server-side coordinates
-                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                                // get non-animated server-side coordinates
+                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                                float y = convertYFromModelToScreen(j) + bottomHeight;
 
-                            // correct x-coordinate, direction and time adjusted for animation
-                            float deltaX = x - anim.x;
-                            boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
-                            boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
-                            if (deltaX_equals_0 || out_of_sync) {
-                                anim.x = x;
-                                if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
-                                    anim.t = 0;
-                            } else {
-                                x = anim.x;
-                                anim.x += signum(deltaX) * dx;
-                                anim.t += dt;
-                                anim.delay = 0;
-                                if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
-                                    anim.dirRight = deltaX > 0;
-                            }
+                                // correct x-coordinate, direction and time adjusted for animation
+                                float deltaX = x - anim.x;
+                                boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
+                                boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
+                                if (deltaX_equals_0 || out_of_sync) {
+                                    anim.x = x;
+                                    if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
+                                        anim.t = 0;
+                                } else {
+                                    x = anim.x;
+                                    anim.x += signum(deltaX) * dx;
+                                    anim.t += dt;
+                                    anim.delay = 0;
+                                    if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
+                                        anim.dirRight = deltaX > 0;
+                                }
 
-                            // correct y-coordinate
-                            float deltaY = y - anim.y;
-                            boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                            boolean ladder = cell.objectExists(LadderTop.class)
-                                    || cell.objectExists(LadderBottom.class);
-                            if (deltaY_equals_0 || out_of_sync || ladder)
-                                anim.y = y;
-                            else {
-                                y = anim.y;
-                                anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
-                            }
+                                // correct y-coordinate
+                                float deltaY = y - anim.y;
+                                boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
+                                boolean ladder = cell.objectExists(LadderTop.class)
+                                        || cell.objectExists(LadderBottom.class);
+                                if (deltaY_equals_0 || out_of_sync || ladder)
+                                    anim.y = y;
+                                else {
+                                    y = anim.y;
+                                    anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
+                                }
 
-                            // if direction == right then draw pure texture, else draw flipped texture
-                            if (anim.dirRight)
-                                batch.draw(texture, x, y);
-                            else {
-                                texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
-                                batch.draw(texture, x, y);
-                                texture.flip(true, false);
+                                // if direction == right then draw pure texture, else draw flipped texture
+                                if (anim.dirRight)
+                                    batch.draw(texture, x, y);
+                                else {
+                                    texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
+                                    batch.draw(texture, x, y);
+                                    texture.flip(true, false);
+                                }
                             }
                         }
                     }

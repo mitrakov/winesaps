@@ -6,112 +6,112 @@ repeat: none
 cat
   rotate: false
   xy: 2, 2
-  size: 41, 55
-  orig: 41, 55
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 0
 cat
   rotate: false
-  xy: 45, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 40, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 1
 cat
   rotate: false
-  xy: 88, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 78, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 2
 cat
   rotate: false
-  xy: 131, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 116, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 3
 cat
   rotate: false
-  xy: 174, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 154, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 4
 cat
   rotate: false
-  xy: 217, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 192, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 5
 cat
   rotate: false
-  xy: 260, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 230, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 6
 cat
   rotate: false
-  xy: 303, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 268, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 7
 cat
   rotate: false
-  xy: 346, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 306, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 8
 cat
   rotate: false
-  xy: 389, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 344, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 9
 cat
   rotate: false
-  xy: 432, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 382, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 10
 cat
   rotate: false
-  xy: 475, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 420, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 11
 cat
   rotate: false
-  xy: 518, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 458, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 12
 cat
   rotate: false
-  xy: 561, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 496, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 13
 cat
   rotate: false
-  xy: 604, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 534, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 14
 cat
   rotate: false
-  xy: 647, 2
-  size: 41, 55
-  orig: 41, 55
+  xy: 572, 2
+  size: 36, 48
+  orig: 36, 48
   offset: 0, 0
   index: 15

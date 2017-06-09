@@ -6,112 +6,112 @@ repeat: none
 rabbit
   rotate: false
   xy: 2, 2
-  size: 36, 55
-  orig: 36, 55
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 0
 rabbit
   rotate: false
-  xy: 40, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 43, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 1
 rabbit
   rotate: false
-  xy: 78, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 84, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 2
 rabbit
   rotate: false
-  xy: 78, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 84, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 10
 rabbit
   rotate: false
-  xy: 116, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 125, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 3
 rabbit
   rotate: false
-  xy: 154, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 166, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 4
 rabbit
   rotate: false
-  xy: 192, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 207, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 5
 rabbit
   rotate: false
-  xy: 230, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 248, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 6
 rabbit
   rotate: false
-  xy: 268, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 289, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 7
 rabbit
   rotate: false
-  xy: 306, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 330, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 8
 rabbit
   rotate: false
-  xy: 344, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 371, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 9
 rabbit
   rotate: false
-  xy: 382, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 412, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 11
 rabbit
   rotate: false
-  xy: 420, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 453, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 12
 rabbit
   rotate: false
-  xy: 458, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 494, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 13
 rabbit
   rotate: false
-  xy: 496, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 535, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 14
 rabbit
   rotate: false
-  xy: 534, 2
-  size: 36, 55
-  orig: 36, 55
+  xy: 576, 2
+  size: 39, 60
+  orig: 39, 60
   offset: 0, 0
   index: 15
