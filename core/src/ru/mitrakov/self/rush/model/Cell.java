@@ -128,11 +128,12 @@ public class Cell {
         }
     }
 
-    public CellObject getFirst(Class<? extends CellObject> objClass) {
+    @SuppressWarnings("unchecked")
+    public <T extends CellObject> T getFirst(Class<T> objClass) {
         for (int i = 0; i < objects.size(); i++) {  // .... GC!
             CellObject obj = getObject(i);
             if (objClass.isInstance(obj))
-                return obj;
+                return (T) obj;
         }
         return null;
     }

@@ -40,16 +40,42 @@ public class Gui extends Actor {
         }
     }
 
-    static private final class AnimInfo {
+    static private abstract class AnimInfo {
         float x, y;
         float t;
         boolean dirRight;
         int delay;
+
+        abstract Animation<TextureRegion> getAnimation(Object key);
+    }
+
+    static private final class AnimInfoChar extends AnimInfo {
         final ObjectMap<Model.Character, Animation<TextureRegion>> animations;
 
-        AnimInfo(ObjectMap<Model.Character, Animation<TextureRegion>> animations, boolean dirRight) {
+        AnimInfoChar(ObjectMap<Model.Character, Animation<TextureRegion>> animations, boolean dirRight) {
             this.animations = animations;
             this.dirRight = dirRight;
+        }
+
+        @Override
+        Animation<TextureRegion> getAnimation(Object key) {
+            if (key instanceof Model.Character)
+                return animations.get((Model.Character) key);
+            return null;
+        }
+    }
+
+    static private final class AnimInfoWolf extends AnimInfo {
+        final Animation<TextureRegion> animation;
+
+        AnimInfoWolf(Animation<TextureRegion> animation, boolean dirRight) {
+            this.animation = animation;
+            this.dirRight = dirRight;
+        }
+
+        @Override
+        Animation<TextureRegion> getAnimation(Object key) {
+            return animation;
         }
     }
 
@@ -66,20 +92,21 @@ public class Gui extends Actor {
     private final Model model;
     private final InputController controller;
     private final MyClickListener listener = new MyClickListener();
+
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
     private final TextureAtlas atlasWaterfall = new TextureAtlas(Gdx.files.internal("pack/waterfall.pack"));
     private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
-    private final TextureAtlas atlasRabbit = new TextureAtlas(Gdx.files.internal("pack/rabbit.pack"));
-    private final TextureAtlas atlasHedgehog = new TextureAtlas(Gdx.files.internal("pack/hedgehog.pack"));
-    private final TextureAtlas atlasSquirrel = new TextureAtlas(Gdx.files.internal("pack/squirrel.pack"));
-    private final TextureAtlas atlasCat = new TextureAtlas(Gdx.files.internal("pack/cat.pack"));
+    private final TextureAtlas atlasWolf = new TextureAtlas(Gdx.files.internal("pack/wolf.pack"));
+
     private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
+    private final Array<TextureAtlas> charAtlases = new Array<TextureAtlas>(Model.Character.values().length);
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesDown = new ObjectMap<Class, IntMap<TextureRegion>>(3);
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesStat = new ObjectMap<Class, IntMap<TextureRegion>>(9);
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimInfo> texturesAnim = new ObjectMap<Class, AnimInfo>(3);
+    private final IntMap<AnimInfo> texturesAnimWolf = new IntMap<AnimInfo>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
     private final Animation<TextureRegion> animWaterfall;
@@ -141,7 +168,7 @@ public class Gui extends Actor {
         for (Class clazz : new Class[]{
                 Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
                 UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, DazzleGrenadeThing.class,
-                TeleportThing.class, DetectorThing.class, BoxThing.class, Wolf.class}) {   // TODO remove wolf
+                TeleportThing.class, DetectorThing.class, BoxThing.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesCollectible.put(clazz, texture);
@@ -153,26 +180,26 @@ public class Gui extends Actor {
                 texturesOverlay.put(clazz, texture);
         }
         // animations
-        for (Class clazz : new Class[]{Actor1.class, Actor2.class/*, Wolf.class*/}) {
+        for (Class clazz : new Class[]{Actor1.class, Actor2.class}) {
             ObjectMap<Model.Character, Animation<TextureRegion>> animations =
                     new ObjectMap<Model.Character, Animation<TextureRegion>>(4);
-
-            Array<TextureAtlas.AtlasRegion> framesRabbit = atlasRabbit.findRegions("rabbit");
-            Array<TextureAtlas.AtlasRegion> framesHedgehog = atlasHedgehog.findRegions("hedgehog");
-            Array<TextureAtlas.AtlasRegion> framesSquirrel = atlasSquirrel.findRegions("squirrel");
-            Array<TextureAtlas.AtlasRegion> framesCat = atlasCat.findRegions("cat");
-
-            Animation<TextureRegion> an1 = new Animation<TextureRegion>(.07f, framesRabbit, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an2 = new Animation<TextureRegion>(.07f, framesHedgehog, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an3 = new Animation<TextureRegion>(.07f, framesSquirrel, Animation.PlayMode.LOOP);
-            Animation<TextureRegion> an4 = new Animation<TextureRegion>(.07f, framesCat, Animation.PlayMode.LOOP);
-
-            animations.put(Model.Character.Rabbit, an1);
-            animations.put(Model.Character.Hedgehog, an2);
-            animations.put(Model.Character.Squirrel, an3);
-            animations.put(Model.Character.Cat, an4);
-
-            texturesAnim.put(clazz, new AnimInfo(animations, clazz != Actor2.class));
+            for (Model.Character character : Model.Character.values()) {
+                if (character != Model.Character.None) {
+                    String key = character.name().toLowerCase();
+                    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(String.format("pack/%s.pack", key)));
+                    Array<TextureAtlas.AtlasRegion> frames = atlas.findRegions(key);
+                    Animation<TextureRegion> an = new Animation<TextureRegion>(.07f, frames, Animation.PlayMode.LOOP);
+                    animations.put(character, an);
+                    charAtlases.add(atlas);
+                }
+            }
+            texturesAnim.put(clazz, new AnimInfoChar(animations, clazz != Actor2.class));
+        }
+        // wolf
+        Array<TextureAtlas.AtlasRegion> framesWolf = atlasWolf.findRegions("wolf");
+        for (int i = 0; i < 100; i++) {
+            Animation<TextureRegion> anim = new Animation<TextureRegion>(.05f, framesWolf, Animation.PlayMode.LOOP);
+            texturesAnimWolf.put(i, new AnimInfoWolf(anim, true));
         }
         // waterfall
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasWaterfall.findRegions("Waterfall");
@@ -258,12 +285,11 @@ public class Gui extends Actor {
         atlasUp.dispose();
         atlasWaterfall.dispose();
         atlasLadder.dispose();
-        atlasRabbit.dispose();
-        atlasHedgehog.dispose();
-        atlasSquirrel.dispose();
-        atlasCat.dispose();
+        atlasWolf.dispose();
         for (Texture texture : backgrounds)
             texture.dispose();
+        for (TextureAtlas atlas : charAtlases)
+            atlas.dispose();
     }
 
     private float getBottomWidth(Cell cell) {
@@ -411,6 +437,7 @@ public class Gui extends Actor {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void drawAnimatedObjects(Field field, Batch batch, float dt) {
         float dx = SPEED_X * dt, dy = SPEED_Y * dt;
 
@@ -424,11 +451,13 @@ public class Gui extends Actor {
                 }
                 for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
                     CellObject obj = cell.getObject(k);
-                    if (texturesAnim.containsKey(obj.getClass())) {
-                        AnimInfo anim = texturesAnim.get(obj.getClass()); // anim != null (assert omitted)
-                        Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
-                        Animation<TextureRegion> animation = anim.animations.get(key);
-                        if (animation != null) {
+                    if (obj instanceof CellObjectAnimated) {
+                        AnimInfo anim = obj instanceof CellObjectActor
+                                ? texturesAnim.get(obj.getClass())
+                                : texturesAnimWolf.get(obj.getNumber());
+                        if (anim != null) {
+                            Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
+                            Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
                             TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
 
                             // get non-animated server-side coordinates
