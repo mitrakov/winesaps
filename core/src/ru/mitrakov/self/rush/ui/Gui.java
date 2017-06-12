@@ -99,7 +99,7 @@ public class Gui extends Actor {
 
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
-    private final TextureAtlas atlasWaterfall = new TextureAtlas(Gdx.files.internal("pack/waterfall.pack"));
+    private final TextureAtlas atlasAnimated = new TextureAtlas(Gdx.files.internal("pack/animated.pack"));
     private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
     private final TextureAtlas atlasWolf = new TextureAtlas(Gdx.files.internal("pack/wolf.pack"));
 
@@ -115,6 +115,7 @@ public class Gui extends Actor {
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
     private final Animation<TextureRegion> animWaterfall;
     private final Animation<TextureRegion> animWaterfallSmall;
+    private final Animation<TextureRegion> animAntidote;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
     private float time = 0;
@@ -205,11 +206,13 @@ public class Gui extends Actor {
             Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
             texturesAnimWolf.put(i, new AnimInfoWolf(anim, SPEED_X_WOLF));
         }
-        // waterfall
-        Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasWaterfall.findRegions("Waterfall");
-        Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasWaterfall.findRegions("WaterfallSmall");
+        // animated objects (waterfalls, antidotes)
+        Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasAnimated.findRegions("Waterfall");
+        Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasAnimated.findRegions("WaterfallSmall");
+        Array<TextureAtlas.AtlasRegion> framesAntidote = atlasAnimated.findRegions("Antidote");
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
+        animAntidote = new Animation<TextureRegion>(.15f, framesAntidote, Animation.PlayMode.LOOP_PINGPONG);
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
@@ -270,13 +273,14 @@ public class Gui extends Actor {
             drawLadderBottom(field, batch);
             // draw 4-th layer (waterfalls)
             drawWaterfalls(field, batch);
-            // draw 5-rd layer (collectible objects)
+            // draw 5-th layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 6-th layer (animated characters)
+            // draw 6-th layer (antidotes)
+            drawAntidotes(field, batch);
+            // draw 7-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
-            // draw 7-th layer (all overlaying objects like Umbrella)
+            // draw 8-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 8-th layer here...
         }
     }
 
@@ -287,7 +291,7 @@ public class Gui extends Actor {
     public void dispose() {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
-        atlasWaterfall.dispose();
+        atlasAnimated.dispose();
         atlasLadder.dispose();
         atlasWolf.dispose();
         for (Texture texture : backgrounds)
@@ -390,7 +394,6 @@ public class Gui extends Actor {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void drawWaterfalls(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -402,6 +405,25 @@ public class Gui extends Actor {
                 if (obj != null) {
                     Animation<TextureRegion> animation = hasUmbrella ? animWaterfallSmall : animWaterfall;
                     TextureRegion texture = animation.getKeyFrame(time);
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawAntidotes(Field field, Batch batch) {
+        // field != null && batch != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                CellObject obj = cell.getFirst(Antidote.class);
+                if (obj != null) {
+                    TextureRegion texture = animAntidote.getKeyFrame(time);
                     if (texture != null) {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                         float y = convertYFromModelToScreen(j) + bottomHeight;

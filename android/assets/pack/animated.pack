@@ -1,117 +1,145 @@
 
-waterfall.png
+animated.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Waterfall
+WaterfallSmall
   rotate: false
-  xy: 2, 148
+  xy: 2, 34
   size: 18, 71
   orig: 18, 71
   offset: 0, 0
-  index: -1
-Waterfall
+  index: 0
+WaterfallSmall
   rotate: false
-  xy: 2, 75
+  xy: 22, 34
   size: 18, 71
   orig: 18, 71
   offset: 0, 0
-  index: -1
-Waterfall
+  index: 1
+WaterfallSmall
   rotate: false
-  xy: 22, 148
+  xy: 42, 34
   size: 18, 71
   orig: 18, 71
   offset: 0, 0
-  index: -1
+  index: 2
+WaterfallSmall
+  rotate: false
+  xy: 62, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 3
+WaterfallSmall
+  rotate: false
+  xy: 82, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 4
+WaterfallSmall
+  rotate: false
+  xy: 102, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 5
+WaterfallSmall
+  rotate: false
+  xy: 122, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 6
+WaterfallSmall
+  rotate: false
+  xy: 142, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 7
 Waterfall
+  rotate: false
+  xy: 162, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 0
+Waterfall
+  rotate: false
+  xy: 182, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 1
+Waterfall
+  rotate: false
+  xy: 202, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 2
+Waterfall
+  rotate: false
+  xy: 222, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 3
+Waterfall
+  rotate: false
+  xy: 242, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 4
+Waterfall
+  rotate: false
+  xy: 262, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 5
+Waterfall
+  rotate: false
+  xy: 282, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 6
+Waterfall
+  rotate: false
+  xy: 302, 34
+  size: 18, 71
+  orig: 18, 71
+  offset: 0, 0
+  index: 7
+Antidote
   rotate: false
   xy: 2, 2
-  size: 18, 71
-  orig: 18, 71
+  size: 27, 30
+  orig: 27, 30
   offset: 0, 0
-  index: -1
-Waterfall
+  index: 0
+Antidote
   rotate: false
-  xy: 22, 75
-  size: 18, 71
-  orig: 18, 71
+  xy: 322, 75
+  size: 27, 30
+  orig: 27, 30
   offset: 0, 0
-  index: -1
-Waterfall
+  index: 1
+Antidote
   rotate: false
-  xy: 42, 148
-  size: 18, 71
-  orig: 18, 71
+  xy: 31, 2
+  size: 27, 30
+  orig: 27, 30
   offset: 0, 0
-  index: -1
-Waterfall
+  index: 2
+Antidote
   rotate: false
-  xy: 22, 2
-  size: 18, 71
-  orig: 18, 71
+  xy: 322, 43
+  size: 27, 30
+  orig: 27, 30
   offset: 0, 0
-  index: -1
-Waterfall
-  rotate: false
-  xy: 42, 75
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 62, 148
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 42, 2
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 62, 75
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 82, 148
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 62, 2
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 82, 75
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 102, 148
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
-WaterfallSmall
-  rotate: false
-  xy: 82, 2
-  size: 18, 71
-  orig: 18, 71
-  offset: 0, 0
-  index: -1
+  index: 3
