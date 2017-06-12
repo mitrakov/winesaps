@@ -10,41 +10,6 @@ Builder
   orig: 72, 72
   offset: 0, 0
   index: -1
-DazzleGrenadier
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
-Shaman
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
-Snowshoes
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
-Spy
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
-Sunglasses
-  rotate: false
-  xy: 2, 2
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
 ClimbingShoes
   rotate: false
   xy: 76, 2
@@ -52,30 +17,65 @@ ClimbingShoes
   orig: 72, 72
   offset: 0, 0
   index: -1
-Miner
+DazzleGrenadier
   rotate: false
   xy: 150, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
-Snorkel
+Miner
   rotate: false
   xy: 224, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
-SouthWester
+Shaman
   rotate: false
   xy: 298, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
-VoodooMask
+Snorkel
   rotate: false
   xy: 372, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Snowshoes
+  rotate: false
+  xy: 446, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+SouthWester
+  rotate: false
+  xy: 520, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Spy
+  rotate: false
+  xy: 594, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+Sunglasses
+  rotate: false
+  xy: 668, 2
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+VoodooMask
+  rotate: false
+  xy: 742, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
