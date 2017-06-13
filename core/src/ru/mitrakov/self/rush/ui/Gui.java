@@ -113,6 +113,7 @@ public class Gui extends Actor {
     private final IntMap<AnimInfo> texturesAnimWolf = new IntMap<AnimInfo>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
+    private final ObjectSet<Class> heightOffsets = new ObjectSet<Class>(1);
     private final Animation<TextureRegion> animWaterfall;
     private final Animation<TextureRegion> animWaterfallSmall;
     private final Animation<TextureRegion> animAntidote;
@@ -179,7 +180,7 @@ public class Gui extends Actor {
                 texturesCollectible.put(clazz, texture);
         }
         // overlay
-        for (Class clazz : new Class[]{Umbrella.class, Box.class}) {
+        for (Class clazz : new Class[]{Umbrella.class, Box.class, Beam.class, BeamChunk.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
                 texturesOverlay.put(clazz, texture);
@@ -228,6 +229,8 @@ public class Gui extends Actor {
                 animTime.add(BIG_VALUE);
             }
         }
+        // fill offsets
+        heightOffsets.add(BeamChunk.class);
     }
 
     @Override
@@ -360,6 +363,8 @@ public class Gui extends Actor {
                     if (obj != null) {
                         TextureRegion texture = map.get(obj.getClass());
                         if (texture != null) {
+                            if (heightOffsets.contains(obj.getClass()))
+                                bottomHeight -= texture.getRegionHeight();
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
                             batch.draw(texture, x, y);

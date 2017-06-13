@@ -276,37 +276,51 @@ Pear
   orig: 24, 28
   offset: 0, 0
   index: -1
-Box
+Beam
   rotate: false
-  xy: 30, 15
-  size: 14, 7
-  orig: 14, 7
+  xy: 863, 81
+  size: 6, 45
+  orig: 6, 45
   offset: 0, 0
   index: -1
-Stair0
+BeamChunk
+  rotate: false
+  xy: 30, 16
+  size: 15, 6
+  orig: 15, 6
+  offset: 0, 0
+  index: -1
+Box
   rotate: false
   xy: 747, 59
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
-Stair1
-  rotate: false
-  xy: 863, 119
-  size: 14, 7
-  orig: 14, 7
-  offset: 0, 0
-  index: -1
-Stair2
+Stair0
   rotate: false
   xy: 170, 62
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
-Stair3
+Stair1
   rotate: false
   xy: 144, 32
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+Stair2
+  rotate: false
+  xy: 871, 119
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+Stair3
+  rotate: false
+  xy: 30, 7
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
