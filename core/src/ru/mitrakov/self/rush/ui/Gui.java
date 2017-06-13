@@ -117,6 +117,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animWaterfall;
     private final Animation<TextureRegion> animWaterfallSmall;
     private final Animation<TextureRegion> animAntidote;
+    private final Animation<TextureRegion> animTeleport;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
     private float time = 0;
@@ -207,13 +208,15 @@ public class Gui extends Actor {
             Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
             texturesAnimWolf.put(i, new AnimInfoWolf(anim, SPEED_X_WOLF));
         }
-        // animated objects (waterfalls, antidotes)
+        // animated objects (waterfalls, antidotes, teleports)
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasAnimated.findRegions("Waterfall");
         Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasAnimated.findRegions("WaterfallSmall");
         Array<TextureAtlas.AtlasRegion> framesAntidote = atlasAnimated.findRegions("Antidote");
+        Array<TextureAtlas.AtlasRegion> framesTeleport = atlasAnimated.findRegions("Teleport");
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
         animAntidote = new Animation<TextureRegion>(.15f, framesAntidote, Animation.PlayMode.LOOP_PINGPONG);
+        animTeleport = new Animation<TextureRegion>(.09f, framesTeleport, Animation.PlayMode.LOOP);
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
@@ -278,8 +281,9 @@ public class Gui extends Actor {
             drawWaterfalls(field, batch);
             // draw 5-th layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 6-th layer (antidotes)
-            drawAntidotes(field, batch);
+            // draw 6-th layer (antidotes, teleports)
+            drawAnim(field, batch, Antidote.class, animAntidote);
+            drawAnim(field, batch, Teleport.class, animTeleport);
             // draw 7-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
             // draw 8-th layer (all overlaying objects like Umbrella)
@@ -420,15 +424,15 @@ public class Gui extends Actor {
         }
     }
 
-    private void drawAntidotes(Field field, Batch batch) {
+    private void drawAnim(Field field, Batch batch, Class<? extends CellObject> clazz, Animation<TextureRegion> anim) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                CellObject obj = cell.getFirst(Antidote.class);
+                CellObject obj = cell.getFirst(clazz);
                 if (obj != null) {
-                    TextureRegion texture = animAntidote.getKeyFrame(time);
+                    TextureRegion texture = anim.getKeyFrame(time);
                     if (texture != null) {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                         float y = convertYFromModelToScreen(j) + bottomHeight;
