@@ -119,6 +119,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animAntidote;
     private final Animation<TextureRegion> animTeleport;
     private final Animation<TextureRegion> animDazzleGrenade;
+    private final Animation<TextureRegion> animDetector;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
     private float time = 0;
@@ -215,11 +216,13 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesAntidote = atlasAnimated.findRegions("Antidote");
         Array<TextureAtlas.AtlasRegion> framesTeleport = atlasAnimated.findRegions("Teleport");
         Array<TextureAtlas.AtlasRegion> framesDazzleGrenade = atlasAnimated.findRegions("DazzleGrenade");
+        Array<TextureAtlas.AtlasRegion> framesDetector = atlasAnimated.findRegions("Detector");
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
         animAntidote = new Animation<TextureRegion>(.15f, framesAntidote, Animation.PlayMode.LOOP_PINGPONG);
         animTeleport = new Animation<TextureRegion>(.09f, framesTeleport, Animation.PlayMode.LOOP);
         animDazzleGrenade = new Animation<TextureRegion>(.09f, framesDazzleGrenade, Animation.PlayMode.LOOP);
+        animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
@@ -288,6 +291,7 @@ public class Gui extends Actor {
             drawAnim(field, batch, Antidote.class, animAntidote);
             drawAnim(field, batch, Teleport.class, animTeleport);
             drawAnim(field, batch, DazzleGrenade.class, animDazzleGrenade);
+            drawAnim(field, batch, Detector.class, animDetector);
             // draw 7-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
             // draw 8-th layer (all overlaying objects like Umbrella)

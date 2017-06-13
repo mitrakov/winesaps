@@ -213,13 +213,34 @@ Teleport
   orig: 44, 60
   offset: 0, 0
   index: 23
+Detector
+  rotate: false
+  xy: 621, 86
+  size: 13, 40
+  orig: 13, 40
+  offset: 0, 0
+  index: 0
+Detector
+  rotate: false
+  xy: 636, 86
+  size: 13, 40
+  orig: 13, 40
+  offset: 0, 0
+  index: 1
 WaterfallSmall
   rotate: false
-  xy: 650, 55
+  xy: 650, 13
   size: 18, 71
   orig: 18, 71
   offset: 0, 0
   index: 0
+Detector
+  rotate: false
+  xy: 651, 86
+  size: 13, 40
+  orig: 13, 40
+  offset: 0, 0
+  index: 2
 WaterfallSmall
   rotate: false
   xy: 670, 55
