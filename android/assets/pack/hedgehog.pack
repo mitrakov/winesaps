@@ -3,112 +3,112 @@ hedgehog.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-hedgehog
+Run
   rotate: false
   xy: 2, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 0
-hedgehog
+Run
   rotate: false
   xy: 42, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 1
-hedgehog
+Run
   rotate: false
   xy: 82, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 2
-hedgehog
+Run
   rotate: false
   xy: 82, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 10
-hedgehog
+Run
   rotate: false
   xy: 122, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 3
-hedgehog
+Run
   rotate: false
   xy: 162, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 4
-hedgehog
+Run
   rotate: false
   xy: 202, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 5
-hedgehog
+Run
   rotate: false
   xy: 242, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 6
-hedgehog
+Run
   rotate: false
   xy: 282, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 7
-hedgehog
+Run
   rotate: false
   xy: 322, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 8
-hedgehog
+Run
   rotate: false
   xy: 362, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 9
-hedgehog
+Run
   rotate: false
   xy: 402, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 11
-hedgehog
+Run
   rotate: false
   xy: 442, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 12
-hedgehog
+Run
   rotate: false
   xy: 482, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 13
-hedgehog
+Run
   rotate: false
   xy: 522, 2
   size: 38, 55
   orig: 38, 55
   offset: 0, 0
   index: 14
-hedgehog
+Run
   rotate: false
   xy: 562, 2
   size: 38, 55

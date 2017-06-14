@@ -47,11 +47,11 @@ public class Gui extends Actor {
         abstract Animation<TextureRegion> getAnimation(Object key);
     }
 
-    static private abstract class AnimInfoMovable extends AnimInfo {
-        float speedX;
-        boolean dirRight;
-        int delay;
-    }
+//    static private abstract class AnimInfoMovable extends AnimInfo {
+//        float speedX;
+//        boolean dirRight;
+//        int delay;
+//    }
 
     static private final class AnimInfoSimple extends AnimInfo {
         final Animation<TextureRegion> animation;
@@ -67,36 +67,38 @@ public class Gui extends Actor {
         }
     }
 
-    static private final class AnimInfoChar extends AnimInfoMovable {
-        final ObjectMap<Model.Character, Animation<TextureRegion>> animations;
-
-        AnimInfoChar(ObjectMap<Model.Character, Animation<TextureRegion>> animations, float speedX, boolean dirRight) {
-            this.animations = animations;
-            this.speedX = speedX;
-            this.dirRight = dirRight;
-        }
-
-        @Override
-        Animation<TextureRegion> getAnimation(Object key) {
-            if (key instanceof Model.Character)
-                return animations.get((Model.Character) key);
-            return null;
-        }
-    }
-
-    static private final class AnimInfoWolf extends AnimInfoMovable {
-        final Animation<TextureRegion> animation;
-
-        AnimInfoWolf(Animation<TextureRegion> animation, float speedX) {
-            this.animation = animation;
-            this.speedX = speedX;
-        }
-
-        @Override
-        Animation<TextureRegion> getAnimation(Object key) {
-            return animation;
-        }
-    }
+//    static private final class AnimInfoChar extends AnimInfoMovable {
+//        final ObjectMap<Model.Character, AnimationData> animations;
+//
+//        AnimInfoChar(ObjectMap<Model.Character, AnimationData> animations, float speedX, boolean dirRight) {
+//            this.animations = animations;
+//            this.speedX = speedX;
+//            this.dirRight = dirRight;
+//        }
+//
+//        @Override
+//        Animation<TextureRegion> getAnimation(Object key) {
+//            if (key instanceof Model.Character) {
+//                AnimationData data = animations.get((Model.Character) key);
+//                return data.animations.get(AnimationData.AnimationType.Run);
+//            }
+//            return null;
+//        }
+//    }
+//
+//    static private final class AnimInfoWolf extends AnimInfoMovable {
+//        final Animation<TextureRegion> animation;
+//
+//        AnimInfoWolf(Animation<TextureRegion> animation, float speedX) {
+//            this.animation = animation;
+//            this.speedX = speedX;
+//        }
+//
+//        @Override
+//        Animation<TextureRegion> getAnimation(Object key) {
+//            return animation;
+//        }
+//    }
 
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
@@ -128,8 +130,10 @@ public class Gui extends Actor {
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesStat = new ObjectMap<Class, IntMap<TextureRegion>>(9);
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
-    private final ObjectMap<Class, AnimInfoMovable> texturesAnim = new ObjectMap<Class, AnimInfoMovable>(3);
-    private final IntMap<AnimInfoMovable> texturesAnimWolf = new IntMap<AnimInfoMovable>(100);
+    private final ObjectMap<Class, AnimationData<Model.Character>> texturesAnim =
+            new ObjectMap<Class, AnimationData<Model.Character>>(2);
+    private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
+            new IntMap<AnimationData<Model.Character>>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
     private final IntSet mineIndices = new IntSet();
@@ -212,25 +216,26 @@ public class Gui extends Actor {
         }
         // animations
         for (Class clazz : new Class[]{Actor1.class, Actor2.class}) {
-            ObjectMap<Model.Character, Animation<TextureRegion>> animations =
-                    new ObjectMap<Model.Character, Animation<TextureRegion>>(4);
+            //ObjectMap<Model.Character, AnimationData> animations = new ObjectMap<Model.Character, AnimationData>(4);
+            AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X);
             for (Model.Character character : Model.Character.values()) {
                 if (character != Model.Character.None) {
-                    String key = character.name().toLowerCase();
-                    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(String.format("pack/%s.pack", key)));
-                    Array<TextureAtlas.AtlasRegion> frames = atlas.findRegions(key);
-                    Animation<TextureRegion> an = new Animation<TextureRegion>(.07f, frames, Animation.PlayMode.LOOP);
-                    animations.put(character, an);
+                    String filename = String.format("pack/%s.pack", character.name().toLowerCase());
+                    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(filename));
+                    data.add(character, atlas, .07f);
+                    //animations.put(character, new AnimationData(atlas, .07f));
                     charAtlases.add(atlas);
                 }
             }
-            texturesAnim.put(clazz, new AnimInfoChar(animations, SPEED_X, clazz != Actor2.class));
+            texturesAnim.put(clazz, data);
         }
         // wolf
-        Array<TextureAtlas.AtlasRegion> framesWolf = atlasWolf.findRegions("wolf");
+        //Array<TextureAtlas.AtlasRegion> framesWolf = atlasWolf.findRegions("wolf");
         for (int i = 0; i < 100; i++) {
-            Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
-            texturesAnimWolf.put(i, new AnimInfoWolf(anim, SPEED_X_WOLF));
+            AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X_WOLF);
+            data.add(Model.Character.None, atlasWolf, .09f);
+            //Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
+            texturesAnimWolf.put(i, data);
         }
         // animated objects (waterfalls, antidotes, teleports)
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasAnimated.findRegions("Waterfall");
@@ -389,7 +394,7 @@ public class Gui extends Actor {
                 actor = cell.getFirst(CellObjectAnimated.class);
         }
         if (actor != null) {
-            AnimInfo anim = texturesAnim.get(actor.getClass());
+            AnimationData anim = texturesAnim.get(actor.getClass());
             if (anim != null) {
                 float y = convertYFromModelToScreen(j) + getBottomHeight(cell);
                 return anim.y != y;
@@ -533,14 +538,17 @@ public class Gui extends Actor {
                 for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
                     CellObject obj = cell.getObject(k);
                     if (obj instanceof CellObjectAnimated) { // stackoverflow.com/questions/2950319
-                        AnimInfoMovable anim = obj instanceof CellObjectActor
+                        AnimationData<Model.Character> anim = obj instanceof CellObjectActor
                                 ? texturesAnim.get(obj.getClass())
                                 : texturesAnimWolf.get(obj.getNumber());
                         if (anim != null) {
-                            Model.Character key = obj.getClass() == Actor1.class ? model.character1 : model.character2;
-                            Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
-                            if (animation != null) { // it's possible if character==None
-                                TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
+                            Model.Character key = obj.getClass() == Actor1.class
+                                    ? model.character1 : obj.getClass() == Actor2.class
+                                    ? model.character2 : Model.Character.None;
+                            //Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
+                            //if (animation != null) { // it's possible if character==None
+                                //TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
+                                TextureRegion texture = anim.getFrame(key);
 
                                 // get dx, dy
                                 final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
@@ -556,11 +564,11 @@ public class Gui extends Actor {
                                 if (deltaX_equals_0 || out_of_sync) {
                                     anim.x = x;
                                     if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
-                                        anim.t = 0;
+                                        anim.setAnimationType(AnimationData.AnimationType.Run); // TODO Idle
                                 } else {
                                     x = anim.x;
                                     anim.x += signum(deltaX) * dx;
-                                    anim.t += dt;
+                                    anim.addDt(dt);
                                     anim.delay = 0;
                                     if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
                                         anim.dirRight = deltaX > 0;
@@ -571,11 +579,11 @@ public class Gui extends Actor {
                                 boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
                                 boolean ladder = cell.objectExists(LadderTop.class)
                                         || cell.objectExists(LadderBottom.class);
-                                if (deltaY_equals_0 || out_of_sync || ladder)
+                                if (deltaY_equals_0 || out_of_sync/* || ladder*/)
                                     anim.y = y;
                                 else {
                                     y = anim.y;
-                                    anim.y += signum(deltaY) * dy * (deltaY > 0 ? 1 : 2); // fall down is twice faster
+                                    anim.y += signum(deltaY) * dy;
                                 }
 
                                 // if direction == right then draw pure texture, else draw flipped texture
@@ -586,7 +594,7 @@ public class Gui extends Actor {
                                     batch.draw(texture, x, y);
                                     texture.flip(true, false);
                                 }
-                            }
+                            //}
                         }
                     }
                 }

@@ -3,112 +3,112 @@ squirrel.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-squirrel
+Run
   rotate: false
   xy: 2, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 0
-squirrel
+Run
   rotate: false
   xy: 49, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 1
-squirrel
+Run
   rotate: false
   xy: 96, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 2
-squirrel
+Run
   rotate: false
   xy: 143, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 3
-squirrel
+Run
   rotate: false
   xy: 190, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 4
-squirrel
+Run
   rotate: false
   xy: 237, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 5
-squirrel
+Run
   rotate: false
   xy: 284, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 6
-squirrel
+Run
   rotate: false
   xy: 331, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 7
-squirrel
+Run
   rotate: false
   xy: 378, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 8
-squirrel
+Run
   rotate: false
   xy: 425, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 9
-squirrel
+Run
   rotate: false
   xy: 472, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 10
-squirrel
+Run
   rotate: false
   xy: 519, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 11
-squirrel
+Run
   rotate: false
   xy: 566, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 12
-squirrel
+Run
   rotate: false
   xy: 613, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 13
-squirrel
+Run
   rotate: false
   xy: 660, 2
   size: 45, 50
   orig: 45, 50
   offset: 0, 0
   index: 14
-squirrel
+Run
   rotate: false
   xy: 707, 2
   size: 45, 50

@@ -3,112 +3,112 @@ wolf.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-wolf
+Run
   rotate: false
   xy: 2, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 0
-wolf
+Run
   rotate: false
   xy: 2, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 8
-wolf
+Run
   rotate: false
   xy: 56, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 1
-wolf
+Run
   rotate: false
   xy: 110, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 2
-wolf
+Run
   rotate: false
   xy: 164, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 3
-wolf
+Run
   rotate: false
   xy: 218, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 4
-wolf
+Run
   rotate: false
   xy: 272, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 5
-wolf
+Run
   rotate: false
   xy: 326, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 6
-wolf
+Run
   rotate: false
   xy: 380, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 7
-wolf
+Run
   rotate: false
   xy: 434, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 9
-wolf
+Run
   rotate: false
   xy: 488, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 10
-wolf
+Run
   rotate: false
   xy: 542, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 11
-wolf
+Run
   rotate: false
   xy: 596, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 12
-wolf
+Run
   rotate: false
   xy: 650, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 13
-wolf
+Run
   rotate: false
   xy: 704, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 14
-wolf
+Run
   rotate: false
   xy: 758, 2
   size: 52, 64
