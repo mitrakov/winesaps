@@ -126,6 +126,8 @@ public class Model {
 
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
 
+    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
+
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
      */
@@ -837,7 +839,7 @@ public class Model {
         this.field = field = new Field(fieldData);
         // assign curActor (be careful! if "fieldData" doesn't contain actors, curActor will become NULL! it may be
         // assigned later in appendObject() method)
-        curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
+        curActor = aggressor ? field.getObjectById(AGGRESSOR_ID) : field.getObjectById(DEFENDER_ID);
     }
 
     public void appendObject(int number, int id, int xy) {
@@ -848,7 +850,7 @@ public class Model {
         if (field != null) {
             field.appendObject(number, id, xy);
             if (id == AGGRESSOR_ID || id == DEFENDER_ID)
-                curActor = aggressor ? field.getObject(AGGRESSOR_ID) : field.getObject(DEFENDER_ID);
+                curActor = aggressor ? field.getObjectById(AGGRESSOR_ID) : field.getObjectById(DEFENDER_ID);
         }
     }
 
@@ -884,6 +886,25 @@ public class Model {
 
     public void setPlayerWounded(int cause, int myLives, int enemyLives) {
         bus.raise(new EventBus.PlayerWoundedEvent(cause, myLives, enemyLives));
+    }
+
+    public void addEffect(int effectId, int objNumber) {
+        Field field;
+        synchronized (locker) {
+            field = this.field;
+        }
+        if (field != null) {
+            CellObject obj = field.getObjectByNumber(objNumber);
+            if (obj != null) {
+                Effect[] effects = Effect.values();
+                if (0 <= effectId && effectId < effects.length)
+                    obj.setEffect(effects[effectId]);
+            }
+        }
+    }
+
+    public void removeEffect(int objNumber) {
+        addEffect(0, objNumber);
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {

@@ -58,6 +58,7 @@ public class Gui extends Actor {
 
         private AnimInfoSimple(Animation<TextureRegion> animation) {
             this.animation = animation;
+            t = BIG_VALUE;
         }
 
         @Override
@@ -119,6 +120,7 @@ public class Gui extends Actor {
     private final TextureAtlas atlasExplosion = new TextureAtlas(Gdx.files.internal("pack/explosion.pack"));
     private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
     private final TextureAtlas atlasWolf = new TextureAtlas(Gdx.files.internal("pack/wolf.pack"));
+    private final TextureAtlas atlasFlare = new TextureAtlas(Gdx.files.internal("pack/flare.pack"));
 
     private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
     private final Array<TextureAtlas> charAtlases = new Array<TextureAtlas>(Model.Character.values().length);
@@ -138,6 +140,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animTeleport;
     private final Animation<TextureRegion> animDazzleGrenade;
     private final Animation<TextureRegion> animDetector;
+    private final AnimInfo animFlare;
     private final AnimInfo animExplosion;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
@@ -237,6 +240,7 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesDazzleGrenade = atlasAnimated.findRegions("DazzleGrenade");
         Array<TextureAtlas.AtlasRegion> framesDetector = atlasAnimated.findRegions("Detector");
         Array<TextureAtlas.AtlasRegion> framesExplosion = atlasExplosion.findRegions("Explosion");
+        Array<TextureAtlas.AtlasRegion> framesFlare = atlasFlare.findRegions("Flare");
 
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
@@ -244,7 +248,9 @@ public class Gui extends Actor {
         animTeleport = new Animation<TextureRegion>(.09f, framesTeleport, Animation.PlayMode.LOOP);
         animDazzleGrenade = new Animation<TextureRegion>(.09f, framesDazzleGrenade, Animation.PlayMode.LOOP);
         animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
+
         animExplosion = new AnimInfoSimple(new Animation<TextureRegion>(.06f, framesExplosion));
+        animFlare = new AnimInfoSimple(new Animation<TextureRegion>(.09f, framesFlare));
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
@@ -320,6 +326,8 @@ public class Gui extends Actor {
             drawObjects(field, batch, texturesOverlay);
             //
             drawExplosions(field, batch, dt);
+            //
+            drawFlare(batch, dt);
         }
     }
 
@@ -332,6 +340,7 @@ public class Gui extends Actor {
         atlasUp.dispose();
         atlasAnimated.dispose();
         atlasExplosion.dispose();
+        atlasFlare.dispose();
         atlasLadder.dispose();
         atlasWolf.dispose();
         for (Texture texture : backgrounds)
@@ -617,6 +626,26 @@ public class Gui extends Actor {
             if (texture != null)
                 batch.draw(texture, animExplosion.x, animExplosion.y);
             animExplosion.t += dt;
+        }
+    }
+
+    private void drawFlare(Batch batch, float dt) {
+        Animation<TextureRegion> animation = animFlare.getAnimation(null); // animation != NULL (assert omitted)
+        CellObject actor = model.curActor;
+        if (actor != null) {
+            // ....
+            boolean animationNotStarted = animation.isAnimationFinished(animFlare.t);
+            boolean effectExists = actor.getEffect() == Model.Effect.Dazzle;
+            if (animationNotStarted && effectExists) {
+                animFlare.t = 0;
+                actor.setEffect(Model.Effect.None); // server doesn't remove this effect because it's momentary
+            }
+            // ....
+            if (!animation.isAnimationFinished(animFlare.t)) {
+                TextureRegion texture = animation.getKeyFrame(animFlare.t);
+                batch.draw(texture, 0, 0, Winesaps.WIDTH, Winesaps.HEIGHT);
+                animFlare.t += dt;
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ public class Cells {
         protected int number = 0;
         protected int xy;
         private int id;
+        private Model.Effect effectId = Model.Effect.None;
 
         public CellObject(int id, int xy) {
             this.id = id;
@@ -37,6 +38,14 @@ public class Cells {
 
         public int getY() {
             return xy / Field.WIDTH;
+        }
+
+        public Model.Effect getEffect() {
+            return effectId;
+        }
+
+        public void setEffect(Model.Effect effectId) {
+            this.effectId = effectId;
         }
     }
 

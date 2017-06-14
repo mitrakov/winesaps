@@ -80,11 +80,22 @@ public class Field {
         }
     }
 
-    CellObject getObject(int id) {
+    CellObject getObjectById(int id) {
         // in Java 8 may be replaced with lambda
         for (Cell cell : cells) {
             for (CellObject object : cell.objects) {
                 if (object.getId() == id)
+                    return object;
+            }
+        }
+        return null;
+    }
+
+    CellObject getObjectByNumber(int number) {
+        // in Java 8 may be replaced with lambda
+        for (Cell cell : cells) {
+            for (CellObject object : cell.objects) {
+                if (object.getNumber() == number)
                     return object;
             }
         }

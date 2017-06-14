@@ -402,7 +402,9 @@ class Parser implements IHandler {
             int effectId = data.get(0);
             boolean added = data.get(1) == 1;
             int objNumber = data.get(2);
-            System.out.println("Effect " + effectId + " on object " + objNumber + (added ? " Added" : " Removed"));
+            if (added)
+                model.addEffect(effectId, objNumber);
+            else model.removeEffect(objNumber);
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect effect format");
