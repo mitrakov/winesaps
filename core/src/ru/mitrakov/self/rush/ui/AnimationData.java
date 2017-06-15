@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 
 class AnimationData<T> {
-    enum AnimationType {Idle, Run, Climb, Enter, Leave}
+    enum AnimationType {Idle, Run, Climb, Ladder}
 
     private static class AnimChar {
         private final ObjectMap<AnimationType, Animation<TextureRegion>> animations =
@@ -19,12 +19,12 @@ class AnimationData<T> {
 
         AnimChar(TextureAtlas atlas, float frameDuration) {
             for (AnimationType type : AnimationType.values()) {
-                Animation.PlayMode mode = type == AnimationType.Enter || type == AnimationType.Leave
-                        ? Animation.PlayMode.NORMAL
+                Animation.PlayMode mode = type == AnimationType.Ladder ? Animation.PlayMode.NORMAL
                         : Animation.PlayMode.LOOP;
-                float duration = type != AnimationType.Climb ? frameDuration : .03f;
+                if (type == AnimationType.Climb) frameDuration = .03f;
+                if (type == AnimationType.Ladder) frameDuration = .033f; // 0.4s / 12 frames
                 Array<TextureAtlas.AtlasRegion> frames = atlas.findRegions(type.name());
-                Animation<TextureRegion> animation = new Animation<TextureRegion>(duration, frames, mode);
+                Animation<TextureRegion> animation = new Animation<TextureRegion>(frameDuration, frames, mode);
                 animations.put(type, animation);
             }
         }
@@ -75,6 +75,7 @@ class AnimationData<T> {
         switch (type) {
             case Run:
             case Climb:
+            case Ladder:
                 if (value && curType != type) {
                     curType = type;
                     t = 0;

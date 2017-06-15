@@ -579,6 +579,12 @@ public class Gui extends Actor {
                             if (deltaY_equals_0 || out_of_sync/* || ladder*/) {
                                 anim.y = y;
                                 anim.setAnimation(AnimationData.AnimationType.Climb, false);
+                                anim.setAnimation(AnimationData.AnimationType.Ladder, false);
+                            } else if (ladder) {
+                                if (abs(y - anim.y) > CELL_SIZ_H/2)    // modification of "y = anim.y"
+                                    y -= signum(deltaY) * CELL_SIZ_H;
+                                anim.setAnimation(AnimationData.AnimationType.Ladder, true);
+                                anim.y += signum(deltaY) * dy * .5f;
                             } else {
                                 y = anim.y;
                                 if (deltaY > 0)
