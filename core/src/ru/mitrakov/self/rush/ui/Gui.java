@@ -542,59 +542,56 @@ public class Gui extends Actor {
                                 ? texturesAnim.get(obj.getClass())
                                 : texturesAnimWolf.get(obj.getNumber());
                         if (anim != null) {
-                            Model.Character key = obj.getClass() == Actor1.class
-                                    ? model.character1 : obj.getClass() == Actor2.class
-                                    ? model.character2 : Model.Character.None;
-                            //Animation<TextureRegion> animation = anim.getAnimation(key); // assert omitted
-                            //if (animation != null) { // it's possible if character==None
-                                //TextureRegion texture = animation.getKeyFrame(anim.t); // assert omitted
-                                TextureRegion texture = anim.getFrame(key);
+                            // add dt to our animation to get it up-to-date
+                            anim.addDt(dt);
 
-                                // get dx, dy
-                                final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
+                            // get character ("None" for wolves)
+                            Model.Character key = obj.getClass() == Actor1.class ? model.character1 :
+                                    obj.getClass() == Actor2.class ? model.character2 : Model.Character.None;
 
-                                // get non-animated server-side coordinates
-                                float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
-                                float y = convertYFromModelToScreen(j) + bottomHeight;
+                            // get client-side dx, dy
+                            final float dx = anim.speedX * dt, dy = SPEED_Y * dt;
 
-                                // correct x-coordinate, direction and time adjusted for animation
-                                float deltaX = x - anim.x;
-                                boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
-                                boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
-                                if (deltaX_equals_0 || out_of_sync) {
-                                    anim.x = x;
-                                    if (anim.delay++ == 10) // time should be stopped within at least 10 loop cycles
-                                        anim.setAnimationType(AnimationData.AnimationType.Run); // TODO Idle
-                                } else {
-                                    x = anim.x;
-                                    anim.x += signum(deltaX) * dx;
-                                    anim.addDt(dt);
-                                    anim.delay = 0;
-                                    if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
-                                        anim.dirRight = deltaX > 0;
-                                }
+                            // get server-side coordinates
+                            float x = convertXFromModelToScreen(i) - (anim.getWidth(key) - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
 
-                                // correct y-coordinate
-                                float deltaY = y - anim.y;
-                                boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                                boolean ladder = cell.objectExists(LadderTop.class)
-                                        || cell.objectExists(LadderBottom.class);
-                                if (deltaY_equals_0 || out_of_sync/* || ladder*/)
-                                    anim.y = y;
-                                else {
-                                    y = anim.y;
-                                    anim.y += signum(deltaY) * dy;
-                                }
+                            // correct x-coordinate and direction adjusted for animation
+                            float deltaX = x - anim.x;
+                            boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
+                            boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
+                            if (deltaX_equals_0 || out_of_sync) {
+                                anim.x = x;
+                                anim.setAnimationType(AnimationData.AnimationType.Idle);
+                            } else {
+                                x = anim.x;
+                                anim.setAnimationType(AnimationData.AnimationType.Run);
+                                anim.x += signum(deltaX) * dx;
+                                if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
+                                    anim.dirRight = deltaX > 0;
+                            }
 
-                                // if direction == right then draw pure texture, else draw flipped texture
-                                if (anim.dirRight)
-                                    batch.draw(texture, x, y);
-                                else {
-                                    texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
-                                    batch.draw(texture, x, y);
-                                    texture.flip(true, false);
-                                }
-                            //}
+                            // correct y-coordinate
+                            float deltaY = y - anim.y;
+                            boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
+                            boolean ladder = cell.objectExists(LadderTop.class)
+                                    || cell.objectExists(LadderBottom.class);
+                            if (deltaY_equals_0 || out_of_sync/* || ladder*/)
+                                anim.y = y;
+                            else {
+                                y = anim.y;
+                                anim.y += signum(deltaY) * dy;
+                            }
+
+                            // if direction == right then draw pure texture, else draw flipped texture
+                            TextureRegion texture = anim.getFrame(key);
+                            if (anim.dirRight)
+                                batch.draw(texture, x, y);
+                            else {
+                                texture.flip(true, false); // flip is not intensive operation (only affects UV-mapping)
+                                batch.draw(texture, x, y);
+                                texture.flip(true, false);
+                            }
                         }
                     }
                 }
