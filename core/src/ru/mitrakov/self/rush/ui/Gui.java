@@ -562,10 +562,10 @@ public class Gui extends Actor {
                             boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
                             if (deltaX_equals_0 || out_of_sync) {
                                 anim.x = x;
-                                anim.setAnimationType(AnimationData.AnimationType.Idle);
+                                anim.setAnimation(AnimationData.AnimationType.Run, false);
                             } else {
                                 x = anim.x;
-                                anim.setAnimationType(AnimationData.AnimationType.Run);
+                                anim.setAnimation(AnimationData.AnimationType.Run, true);
                                 anim.x += signum(deltaX) * dx;
                                 if (abs(deltaX) > CELL_SIZ_W / 2) // if delta is too small it may cause inaccuracy
                                     anim.dirRight = deltaX > 0;
@@ -576,11 +576,14 @@ public class Gui extends Actor {
                             boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
                             boolean ladder = cell.objectExists(LadderTop.class)
                                     || cell.objectExists(LadderBottom.class);
-                            if (deltaY_equals_0 || out_of_sync/* || ladder*/)
+                            if (deltaY_equals_0 || out_of_sync/* || ladder*/) {
                                 anim.y = y;
-                            else {
+                                anim.setAnimation(AnimationData.AnimationType.Climb, false);
+                            } else {
                                 y = anim.y;
-                                anim.y += signum(deltaY) * dy;
+                                if (deltaY > 0)
+                                    anim.setAnimation(AnimationData.AnimationType.Climb, true);
+                                anim.y += signum(deltaY) * dy * (deltaY > 0 ? .5f : 1);
                             }
 
                             // if direction == right then draw pure texture, else draw flipped texture

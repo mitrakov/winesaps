@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 
 class AnimationData<T> {
-    enum AnimationType {Idle, Run, Crawl, Enter, Leave}
+    enum AnimationType {Idle, Run, Climb, Enter, Leave}
 
     private static class AnimChar {
         private final ObjectMap<AnimationType, Animation<TextureRegion>> animations =
@@ -22,8 +22,9 @@ class AnimationData<T> {
                 Animation.PlayMode mode = type == AnimationType.Enter || type == AnimationType.Leave
                         ? Animation.PlayMode.NORMAL
                         : Animation.PlayMode.LOOP;
+                float duration = type != AnimationType.Climb ? frameDuration : .03f;
                 Array<TextureAtlas.AtlasRegion> frames = atlas.findRegions(type.name());
-                Animation<TextureRegion> animation = new Animation<TextureRegion>(frameDuration, frames, mode);
+                Animation<TextureRegion> animation = new Animation<TextureRegion>(duration, frames, mode);
                 animations.put(type, animation);
             }
         }
@@ -46,17 +47,6 @@ class AnimationData<T> {
         return this;
     }
 
-    void addDt(float dt) {
-        t += dt;
-    }
-
-    void setAnimationType(AnimationType type) {
-        if (type != curType) {
-            curType = type;
-            t = 0;
-        }
-    }
-
     TextureRegion getFrame(T key) {
         AnimChar animChar = animChars.get(key);
         if (animChar != null) {
@@ -75,5 +65,25 @@ class AnimationData<T> {
                 return animation.getKeyFrame(t).getRegionWidth();
         }
         return 0;
+    }
+
+    void addDt(float dt) {
+        t += dt;
+    }
+
+    void setAnimation(AnimationType type, boolean value) {
+        switch (type) {
+            case Run:
+            case Climb:
+                if (value && curType != type) {
+                    curType = type;
+                    t = 0;
+                }
+                if (!value && curType == type) {
+                    curType = AnimationType.Idle;
+                    t = 0;
+                }
+                break;
+        }
     }
 }
