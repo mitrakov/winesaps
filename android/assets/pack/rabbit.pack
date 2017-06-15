@@ -481,29 +481,57 @@ Ladder
   index: 7
 Ladder
   rotate: false
-  xy: 660, 188
+  xy: 619, 126
   size: 37, 60
   orig: 37, 60
   offset: 0, 0
   index: 8
 Ladder
   rotate: false
-  xy: 572, 2
+  xy: 619, 126
   size: 37, 60
   orig: 37, 60
   offset: 0, 0
   index: 9
 Ladder
   rotate: false
-  xy: 615, 64
+  xy: 619, 126
   size: 37, 60
   orig: 37, 60
   offset: 0, 0
   index: 10
 Ladder
   rotate: false
-  xy: 658, 126
+  xy: 619, 126
   size: 37, 60
   orig: 37, 60
   offset: 0, 0
   index: 11
+Ladder
+  rotate: false
+  xy: 660, 188
+  size: 37, 60
+  orig: 37, 60
+  offset: 0, 0
+  index: 12
+Ladder
+  rotate: false
+  xy: 572, 2
+  size: 37, 60
+  orig: 37, 60
+  offset: 0, 0
+  index: 13
+Ladder
+  rotate: false
+  xy: 615, 64
+  size: 37, 60
+  orig: 37, 60
+  offset: 0, 0
+  index: 14
+Ladder
+  rotate: false
+  xy: 658, 126
+  size: 37, 60
+  orig: 37, 60
+  offset: 0, 0
+  index: 15

@@ -22,7 +22,7 @@ class AnimationData<T> {
                 Animation.PlayMode mode = type == AnimationType.Ladder ? Animation.PlayMode.NORMAL
                         : Animation.PlayMode.LOOP;
                 if (type == AnimationType.Climb) frameDuration = .03f;
-                if (type == AnimationType.Ladder) frameDuration = .033f; // 0.4s / 12 frames
+                if (type == AnimationType.Ladder) frameDuration = .025f; // 0.4s / 16 frames
                 Array<TextureAtlas.AtlasRegion> frames = atlas.findRegions(type.name());
                 Animation<TextureRegion> animation = new Animation<TextureRegion>(frameDuration, frames, mode);
                 animations.put(type, animation);
