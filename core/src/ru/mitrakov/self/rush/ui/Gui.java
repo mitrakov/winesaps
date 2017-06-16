@@ -41,24 +41,13 @@ public class Gui extends Actor {
         }
     }
 
-    static private abstract class AnimInfo {
+    static private class AnimInfo {
         float x, y;
-        float t;
-
-        abstract Animation<TextureRegion> getAnimation(Object key);
-    }
-
-    static private final class AnimInfoSimple extends AnimInfo {
+        float t = BIG_VALUE;
         final Animation<TextureRegion> animation;
 
-        private AnimInfoSimple(Animation<TextureRegion> animation) {
+        private AnimInfo(Animation<TextureRegion> animation) {
             this.animation = animation;
-            t = BIG_VALUE;
-        }
-
-        @Override
-        Animation<TextureRegion> getAnimation(Object key) {
-            return animation;
         }
     }
 
@@ -218,9 +207,9 @@ public class Gui extends Actor {
         animDazzleGrenade = new Animation<TextureRegion>(.09f, framesDazzleGrenade, Animation.PlayMode.LOOP);
         animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
 
-        animExplosion = new AnimInfoSimple(new Animation<TextureRegion>(.06f, framesExplosion));
-        animSmoke = new AnimInfoSimple(new Animation<TextureRegion>(.06f, framesSmoke));
-        animFlare = new AnimInfoSimple(new Animation<TextureRegion>(.09f, framesFlare));
+        animExplosion = new AnimInfo(new Animation<TextureRegion>(.06f, framesExplosion));
+        animSmoke = new AnimInfo(new Animation<TextureRegion>(.06f, framesSmoke));
+        animFlare = new AnimInfo(new Animation<TextureRegion>(.09f, framesFlare));
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
@@ -308,7 +297,7 @@ public class Gui extends Actor {
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
             if (field != null && ev.cause != Exploded) {
                 float bottomWidth = getBottomWidth(field.cells[ev.xy]);
-                TextureRegion r = animSmoke.getAnimation(null).getKeyFrame(0);
+                TextureRegion r = animSmoke.animation.getKeyFrame(0);
                 animSmoke.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
                 animSmoke.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
                 animSmoke.t = 0;
@@ -634,14 +623,14 @@ public class Gui extends Actor {
             if (!cell.objectExists(Mine.class)) {
                 iter.remove();
                 float bottomWidth = getBottomWidth(cell);
-                TextureRegion r = animExplosion.getAnimation(null).getKeyFrame(0); // r != NULL (assert omitted)
+                TextureRegion r = animExplosion.animation.getKeyFrame(0); // r != NULL (assert omitted)
                 animExplosion.x = convertXFromModelToScreen(idx % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
                 animExplosion.y = convertYFromModelToScreen(idx / Field.WIDTH);
                 animExplosion.t = 0;
             }
         }
         // ....
-        Animation<TextureRegion> animation = animExplosion.getAnimation(null); // animation != NULL
+        Animation<TextureRegion> animation = animExplosion.animation; // animation != NULL (assert omitted)
         if (!animation.isAnimationFinished(animExplosion.t)) {
             TextureRegion texture = animation.getKeyFrame(animExplosion.t);
             if (texture != null)
@@ -652,7 +641,7 @@ public class Gui extends Actor {
 
     private void drawSmoke(Batch batch, float dt) {
         // field != null (assert omitted)
-        Animation<TextureRegion> animation = animSmoke.getAnimation(null); // animation != NULL
+        Animation<TextureRegion> animation = animSmoke.animation; // animation != NULL (assert omitted)
         if (!animation.isAnimationFinished(animSmoke.t)) {
             TextureRegion texture = animation.getKeyFrame(animSmoke.t);
             if (texture != null)
@@ -662,7 +651,7 @@ public class Gui extends Actor {
     }
 
     private void drawFlare(Batch batch, float dt) {
-        Animation<TextureRegion> animation = animFlare.getAnimation(null); // animation != NULL (assert omitted)
+        Animation<TextureRegion> animation = animFlare.animation; // animation != NULL (assert omitted)
         CellObject actor = model.curActor;
         if (actor != null) {
             // ....
