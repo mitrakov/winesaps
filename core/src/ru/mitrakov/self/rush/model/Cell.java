@@ -11,14 +11,16 @@ import ru.mitrakov.self.rush.model.Cells.*;
 
 public class Cell {
     // ....
+    public final int xy;
     public CellObject bottom; // may be NULL
     List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
 
-    private Cell() {
+    private Cell(int xy) {
+        this.xy = xy;
     }
 
     static Cell newCell(int value, int xy, Field.NextNumber number) {
-        Cell res = new Cell();
+        Cell res = new Cell(xy);
         switch (value >> 6) {
             case 1:
                 res.bottom = new Block(xy);

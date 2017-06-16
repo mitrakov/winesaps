@@ -67,6 +67,10 @@ class AnimationData<T> {
         return 0;
     }
 
+    AnimationType getAnimation() {
+        return curType;
+    }
+
     void addDt(float dt) {
         t += dt;
     }

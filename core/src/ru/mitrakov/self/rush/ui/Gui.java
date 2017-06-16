@@ -383,22 +383,44 @@ public class Gui extends Actor {
         return bottomHeight;
     }
 
-    private boolean animatedUsesLadder(Field field, int i, int j) {
+    private boolean isRopeBelow(Field field, Cell cell) {
+        // field != NULL, cell != NULL
+        Cell cellBelow = cell.xy + Field.WIDTH < Field.WIDTH * Field.HEIGHT ? field.cells[cell.xy + Field.WIDTH] : null;
+        return cellBelow != null && cellBelow.objectExists(RopeLine.class);
+    }
+
+    private boolean ladderBottomExists(Field field, Cell cell) {
+        // field != NULL, cell != NULL
+        Cell cellBelow = cell.xy + Field.WIDTH < Field.WIDTH * Field.HEIGHT ? field.cells[cell.xy + Field.WIDTH] : null;
+        if (cellBelow != null) {
+            if (cell.objectExists(LadderTop.class) && cellBelow.objectExists(LadderBottom.class))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean ladderTopExists(Field field, Cell cell) {
+        // field != NULL, cell != NULL
+        Cell cellAbove = cell.xy - Field.WIDTH >= 0 ? field.cells[cell.xy - Field.WIDTH] : null;
+        if (cellAbove != null) {
+            if (cellAbove.objectExists(LadderTop.class) && cell.objectExists(LadderBottom.class))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean animatedUsesLadder(Field field, Cell cell) {
         // field != null (assert omitted)
-        Cell cell = field.cells[j * Field.WIDTH + i];  // cell != NULL (assert omitted)
         CellObject actor = cell.getFirst(CellObjectAnimated.class);
-        if (actor == null) { // maybe actor is on the cell above (LadderTop)?
-            j -= 1;
-            cell = j >= 0 ? field.cells[j * Field.WIDTH + i] : null;
-            if (cell != null)
-                actor = cell.getFirst(CellObjectAnimated.class);
+        if (actor == null) {
+            Cell cellAbove = cell.xy - Field.WIDTH >= 0 ? field.cells[cell.xy - Field.WIDTH] : null;
+            if (cellAbove != null)
+                actor = cellAbove.getFirst(CellObjectAnimated.class);
         }
         if (actor != null) {
-            AnimationData anim = texturesAnim.get(actor.getClass());
-            if (anim != null) {
-                float y = convertYFromModelToScreen(j) + getBottomHeight(cell);
-                return anim.y != y;
-            }
+            AnimationData anim = texturesAnim.get(actor.getClass()); // FIXME wolf
+            if (anim != null)
+                return anim.getAnimation() == AnimationData.AnimationType.Ladder;
         }
         return false;
     }
@@ -509,7 +531,7 @@ public class Gui extends Actor {
                         t += Gdx.graphics.getDeltaTime();
                         animTime.set(idx, t);
                         texture = animation.getKeyFrame(t);
-                    } else if (animatedUsesLadder(field, i, j)) {   // start animation here
+                    } else if (animatedUsesLadder(field, cell)) {   // start animation here
                         animTime.set(idx, 0);
                         texture = animation.getKeyFrame(0);
                     } else texture = animation.getKeyFrame(0);   // draw static texture
@@ -574,22 +596,27 @@ public class Gui extends Actor {
                             // correct y-coordinate
                             float deltaY = y - anim.y;
                             boolean deltaY_equals_0 = abs(deltaY) < dy / 2;
-                            boolean ladder = cell.objectExists(LadderTop.class)
-                                    || cell.objectExists(LadderBottom.class);
-                            if (deltaY_equals_0 || out_of_sync/* || ladder*/) {
+                            boolean ladder = deltaY > 0 && ladderBottomExists(field, cell)
+                                    || deltaY < 0 && ladderTopExists(field, cell);
+                            boolean rope = deltaY > 0 && isRopeBelow(field, cell);
+                            if (deltaY_equals_0 || out_of_sync) {
                                 anim.y = y;
                                 anim.setAnimation(AnimationData.AnimationType.Climb, false);
                                 anim.setAnimation(AnimationData.AnimationType.Ladder, false);
                             } else if (ladder) {
-                                if (abs(y - anim.y) > CELL_SIZ_H/2)    // modification of "y = anim.y"
+                                if (abs(y - anim.y) > CELL_SIZ_H / 2)    // modification of "y = anim.y"
                                     y -= signum(deltaY) * CELL_SIZ_H;
                                 anim.setAnimation(AnimationData.AnimationType.Ladder, true);
                                 anim.y += signum(deltaY) * dy * .5f;
+                            } else if (rope) {
+                                y = anim.y;
+                                anim.setAnimation(AnimationData.AnimationType.Climb, true);
+                                anim.y += signum(deltaY) * dy * .5f;
                             } else {
                                 y = anim.y;
-                                if (deltaY > 0)
-                                    anim.setAnimation(AnimationData.AnimationType.Climb, true);
-                                anim.y += signum(deltaY) * dy * (deltaY > 0 ? .5f : 1);
+                                anim.setAnimation(AnimationData.AnimationType.Climb, false);
+                                anim.setAnimation(AnimationData.AnimationType.Ladder, false);
+                                anim.y += signum(deltaY) * dy;
                             }
 
                             // if direction == right then draw pure texture, else draw flipped texture
