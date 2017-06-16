@@ -6,531 +6,531 @@ repeat: none
 Climb
   rotate: false
   xy: 2, 398
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 0
 Climb
   rotate: false
   xy: 2, 332
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 1
 Climb
   rotate: false
-  xy: 82, 398
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 398
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 2
 Climb
   rotate: false
   xy: 2, 266
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 3
 Climb
   rotate: false
-  xy: 82, 332
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 332
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 4
 Climb
   rotate: false
-  xy: 162, 398
-  size: 78, 64
-  orig: 78, 64
+  xy: 110, 398
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 5
 Climb
   rotate: false
   xy: 2, 200
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 6
 Climb
   rotate: false
-  xy: 82, 266
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 266
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 7
 Climb
   rotate: false
-  xy: 162, 332
-  size: 78, 64
-  orig: 78, 64
+  xy: 110, 332
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 8
 Climb
   rotate: false
-  xy: 242, 398
-  size: 78, 64
-  orig: 78, 64
+  xy: 164, 398
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 9
 Climb
   rotate: false
   xy: 2, 134
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 10
 Climb
   rotate: false
-  xy: 82, 200
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 200
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 11
 Climb
   rotate: false
-  xy: 162, 266
-  size: 78, 64
-  orig: 78, 64
+  xy: 110, 266
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 12
 Climb
   rotate: false
-  xy: 242, 332
-  size: 78, 64
-  orig: 78, 64
+  xy: 164, 332
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 13
 Climb
   rotate: false
-  xy: 322, 398
-  size: 78, 64
-  orig: 78, 64
+  xy: 218, 398
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 14
 Climb
   rotate: false
   xy: 2, 68
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 15
 Climb
   rotate: false
-  xy: 82, 134
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 134
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 16
 Climb
   rotate: false
-  xy: 162, 200
-  size: 78, 64
-  orig: 78, 64
+  xy: 110, 200
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 17
 Climb
   rotate: false
-  xy: 242, 266
-  size: 78, 64
-  orig: 78, 64
+  xy: 164, 266
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 18
 Climb
   rotate: false
-  xy: 322, 332
-  size: 78, 64
-  orig: 78, 64
+  xy: 218, 332
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 19
 Climb
   rotate: false
-  xy: 402, 398
-  size: 78, 64
-  orig: 78, 64
+  xy: 272, 398
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 20
 Climb
   rotate: false
   xy: 2, 2
-  size: 78, 64
-  orig: 78, 64
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 21
 Climb
   rotate: false
-  xy: 82, 68
-  size: 78, 64
-  orig: 78, 64
+  xy: 56, 68
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 22
 Climb
   rotate: false
-  xy: 162, 134
-  size: 78, 64
-  orig: 78, 64
+  xy: 110, 134
+  size: 52, 64
+  orig: 52, 64
   offset: 0, 0
   index: 23
 Run
   rotate: false
-  xy: 242, 200
+  xy: 164, 200
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 0
 Run
   rotate: false
-  xy: 242, 200
+  xy: 164, 200
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 8
 Run
   rotate: false
-  xy: 322, 266
+  xy: 218, 266
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 1
 Run
   rotate: false
-  xy: 402, 332
+  xy: 272, 332
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 2
 Run
   rotate: false
-  xy: 482, 398
+  xy: 326, 398
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 3
 Run
   rotate: false
-  xy: 82, 2
+  xy: 56, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 4
 Run
   rotate: false
-  xy: 162, 68
+  xy: 110, 68
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 5
 Run
   rotate: false
-  xy: 242, 134
+  xy: 164, 134
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 6
 Run
   rotate: false
-  xy: 296, 200
+  xy: 218, 200
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 7
 Run
   rotate: false
-  xy: 376, 266
+  xy: 272, 266
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 9
 Run
   rotate: false
-  xy: 456, 332
+  xy: 326, 332
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 10
 Run
   rotate: false
-  xy: 536, 398
+  xy: 380, 398
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 11
 Run
   rotate: false
-  xy: 136, 2
+  xy: 110, 2
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 12
 Run
   rotate: false
-  xy: 216, 68
+  xy: 164, 68
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 13
 Run
   rotate: false
-  xy: 296, 134
+  xy: 218, 134
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 14
 Run
   rotate: false
-  xy: 350, 200
+  xy: 272, 200
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: 15
 Idle
   rotate: false
-  xy: 430, 266
+  xy: 326, 266
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 0
 Idle
   rotate: false
-  xy: 430, 266
+  xy: 326, 266
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 10
 Idle
   rotate: false
-  xy: 510, 332
+  xy: 380, 332
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 1
 Idle
   rotate: false
-  xy: 590, 398
+  xy: 434, 398
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 2
 Idle
   rotate: false
-  xy: 190, 2
+  xy: 164, 2
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 3
 Idle
   rotate: false
-  xy: 270, 68
+  xy: 218, 68
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 4
 Idle
   rotate: false
-  xy: 270, 68
+  xy: 218, 68
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 14
 Idle
   rotate: false
-  xy: 350, 134
+  xy: 272, 134
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 5
 Idle
   rotate: false
-  xy: 404, 200
+  xy: 326, 200
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 6
 Idle
   rotate: false
-  xy: 482, 266
+  xy: 378, 266
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 7
 Idle
   rotate: false
-  xy: 562, 332
+  xy: 432, 332
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 8
 Idle
   rotate: false
-  xy: 642, 398
+  xy: 486, 398
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 9
 Idle
   rotate: false
-  xy: 242, 2
+  xy: 216, 2
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 11
 Idle
   rotate: false
-  xy: 322, 68
+  xy: 270, 68
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 12
 Idle
   rotate: false
-  xy: 402, 134
+  xy: 324, 134
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 13
 Idle
   rotate: false
-  xy: 456, 200
+  xy: 378, 200
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 15
 Idle
   rotate: false
-  xy: 534, 266
+  xy: 430, 266
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 16
 Idle
   rotate: false
-  xy: 614, 332
+  xy: 484, 332
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 17
 Idle
   rotate: false
-  xy: 694, 398
+  xy: 538, 398
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 18
 Idle
   rotate: false
-  xy: 294, 2
+  xy: 268, 2
   size: 50, 64
   orig: 50, 64
   offset: 0, 0
   index: 19
 Ladder
   rotate: false
-  xy: 374, 68
+  xy: 322, 68
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 0
 Ladder
   rotate: false
-  xy: 454, 134
+  xy: 376, 134
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 1
 Ladder
   rotate: false
-  xy: 508, 200
+  xy: 430, 200
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 2
 Ladder
   rotate: false
-  xy: 586, 266
+  xy: 482, 266
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 3
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 4
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 5
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 6
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 7
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 8
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 9
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 10
 Ladder
   rotate: false
-  xy: 666, 332
+  xy: 536, 332
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 11
 Ladder
   rotate: false
-  xy: 746, 398
+  xy: 590, 398
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 12
 Ladder
   rotate: false
-  xy: 346, 2
+  xy: 320, 2
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 13
 Ladder
   rotate: false
-  xy: 420, 68
+  xy: 368, 68
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
   index: 14
 Ladder
   rotate: false
-  xy: 500, 134
+  xy: 422, 134
   size: 44, 64
   orig: 44, 64
   offset: 0, 0
