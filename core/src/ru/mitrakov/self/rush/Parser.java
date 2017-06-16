@@ -325,14 +325,15 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect score format");
     }
 
-    private void playerWounded(Cmd cmd, IIntArray lives) {
-        if (lives.length() == 3) {
-            int cause = lives.get(0);
-            int myLives = lives.get(1);
-            int enemyLives = lives.get(2);
-            model.setPlayerWounded(cause, myLives, enemyLives);
-        } else if (lives.length() == 1) {
-            inspectError(cmd, lives.get(0));
+    private void playerWounded(Cmd cmd, IIntArray data) {
+        if (data.length() == 4) {
+            boolean me = data.get(0) == 1;
+            int cause = data.get(1);
+            int myLives = data.get(2);
+            int enemyLives = data.get(3);
+            model.setPlayerWounded(me, cause, myLives, enemyLives);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect lives format");
     }
 

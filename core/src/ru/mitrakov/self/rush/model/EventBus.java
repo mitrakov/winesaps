@@ -159,10 +159,12 @@ public class EventBus {
     }
     @SuppressWarnings("WeakerAccess")
     public static final class PlayerWoundedEvent extends Event {
-        public final int cause;
+        public final int xy;
+        public final Model.HurtCause cause;
         public final int myLives;
         public final int enemyLives;
-        public PlayerWoundedEvent(int cause, int myLives, int enemyLives) {
+        public PlayerWoundedEvent(int xy, Model.HurtCause cause, int myLives, int enemyLives) {
+            this.xy = xy;
             this.cause = cause;
             this.myLives = myLives;
             this.enemyLives = enemyLives;

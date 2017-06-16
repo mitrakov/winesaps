@@ -839,7 +839,7 @@ public class Model {
         this.field = field = new Field(fieldData);
         // assign curActor (be careful! if "fieldData" doesn't contain actors, curActor will become NULL! it may be
         // assigned later in appendObject() method)
-        curActor = aggressor ? field.getObjectById(AGGRESSOR_ID) : field.getObjectById(DEFENDER_ID);
+        curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
     }
 
     public void appendObject(int number, int id, int xy) {
@@ -850,7 +850,7 @@ public class Model {
         if (field != null) {
             field.appendObject(number, id, xy);
             if (id == AGGRESSOR_ID || id == DEFENDER_ID)
-                curActor = aggressor ? field.getObjectById(AGGRESSOR_ID) : field.getObjectById(DEFENDER_ID);
+                curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
         }
     }
 
@@ -884,8 +884,18 @@ public class Model {
         bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
     }
 
-    public void setPlayerWounded(int cause, int myLives, int enemyLives) {
-        bus.raise(new EventBus.PlayerWoundedEvent(cause, myLives, enemyLives));
+    public void setPlayerWounded(boolean me, int cause, int myLives, int enemyLives) {
+        Field field;
+        synchronized (locker) {
+            field = this.field;
+        }
+        if (field != null) {
+            CellObject actor = field.getObjectById(me == aggressor ? AGGRESSOR_ID : DEFENDER_ID);
+            assert actor != null;
+            HurtCause[] causes = HurtCause.values();
+            if (0 <= cause && cause < causes.length)
+                bus.raise(new EventBus.PlayerWoundedEvent(actor.xy, causes[cause], myLives, enemyLives));
+        }
     }
 
     public void addEffect(int effectId, int objNumber) {

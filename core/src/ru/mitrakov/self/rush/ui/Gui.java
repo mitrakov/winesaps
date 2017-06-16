@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.ui;
 
 import static java.lang.Math.*;
+import static ru.mitrakov.self.rush.model.Model.HurtCause.Exploded;
 import static ru.mitrakov.self.rush.model.Model.STYLES_COUNT;
 
 import java.util.Locale;
@@ -47,12 +48,6 @@ public class Gui extends Actor {
         abstract Animation<TextureRegion> getAnimation(Object key);
     }
 
-//    static private abstract class AnimInfoMovable extends AnimInfo {
-//        float speedX;
-//        boolean dirRight;
-//        int delay;
-//    }
-
     static private final class AnimInfoSimple extends AnimInfo {
         final Animation<TextureRegion> animation;
 
@@ -66,39 +61,6 @@ public class Gui extends Actor {
             return animation;
         }
     }
-
-//    static private final class AnimInfoChar extends AnimInfoMovable {
-//        final ObjectMap<Model.Character, AnimationData> animations;
-//
-//        AnimInfoChar(ObjectMap<Model.Character, AnimationData> animations, float speedX, boolean dirRight) {
-//            this.animations = animations;
-//            this.speedX = speedX;
-//            this.dirRight = dirRight;
-//        }
-//
-//        @Override
-//        Animation<TextureRegion> getAnimation(Object key) {
-//            if (key instanceof Model.Character) {
-//                AnimationData data = animations.get((Model.Character) key);
-//                return data.animations.get(AnimationData.AnimationType.Run);
-//            }
-//            return null;
-//        }
-//    }
-//
-//    static private final class AnimInfoWolf extends AnimInfoMovable {
-//        final Animation<TextureRegion> animation;
-//
-//        AnimInfoWolf(Animation<TextureRegion> animation, float speedX) {
-//            this.animation = animation;
-//            this.speedX = speedX;
-//        }
-//
-//        @Override
-//        Animation<TextureRegion> getAnimation(Object key) {
-//            return animation;
-//        }
-//    }
 
     private static final int CELL_SIZ_W = 14;
     private static final int CELL_SIZ_H = 85;
@@ -119,7 +81,7 @@ public class Gui extends Actor {
     private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
     private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
     private final TextureAtlas atlasAnimated = new TextureAtlas(Gdx.files.internal("pack/animated.pack"));
-    private final TextureAtlas atlasExplosion = new TextureAtlas(Gdx.files.internal("pack/explosion.pack"));
+    private final TextureAtlas atlasEffects = new TextureAtlas(Gdx.files.internal("pack/effects.pack"));
     private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
     private final TextureAtlas atlasWolf = new TextureAtlas(Gdx.files.internal("pack/wolf.pack"));
     private final TextureAtlas atlasFlare = new TextureAtlas(Gdx.files.internal("pack/flare.pack"));
@@ -146,6 +108,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animDetector;
     private final AnimInfo animFlare;
     private final AnimInfo animExplosion;
+    private final AnimInfo animSmoke;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
     private float time = 0;
@@ -244,7 +207,8 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesTeleport = atlasAnimated.findRegions("Teleport");
         Array<TextureAtlas.AtlasRegion> framesDazzleGrenade = atlasAnimated.findRegions("DazzleGrenade");
         Array<TextureAtlas.AtlasRegion> framesDetector = atlasAnimated.findRegions("Detector");
-        Array<TextureAtlas.AtlasRegion> framesExplosion = atlasExplosion.findRegions("Explosion");
+        Array<TextureAtlas.AtlasRegion> framesExplosion = atlasEffects.findRegions("Explosion");
+        Array<TextureAtlas.AtlasRegion> framesSmoke = atlasEffects.findRegions("Smoke");
         Array<TextureAtlas.AtlasRegion> framesFlare = atlasFlare.findRegions("Flare");
 
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
@@ -255,6 +219,7 @@ public class Gui extends Actor {
         animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
 
         animExplosion = new AnimInfoSimple(new Animation<TextureRegion>(.06f, framesExplosion));
+        animSmoke = new AnimInfoSimple(new Animation<TextureRegion>(.06f, framesSmoke));
         animFlare = new AnimInfoSimple(new Animation<TextureRegion>(.09f, framesFlare));
         //
         for (int i = 0; i < STYLES_COUNT; i++) {
@@ -331,8 +296,23 @@ public class Gui extends Actor {
             drawObjects(field, batch, texturesOverlay);
             //
             drawExplosions(field, batch, dt);
+            drawSmoke(batch, dt);
             //
             drawFlare(batch, dt);
+        }
+    }
+
+    public void handleEvent(EventBus.Event event) {
+        if (event instanceof EventBus.PlayerWoundedEvent) {
+            EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
+            Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
+            if (field != null && ev.cause != Exploded) {
+                float bottomWidth = getBottomWidth(field.cells[ev.xy]);
+                TextureRegion r = animSmoke.getAnimation(null).getKeyFrame(0);
+                animSmoke.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
+                animSmoke.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
+                animSmoke.t = 0;
+            }
         }
     }
 
@@ -344,7 +324,7 @@ public class Gui extends Actor {
         atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
         atlasUp.dispose();
         atlasAnimated.dispose();
-        atlasExplosion.dispose();
+        atlasEffects.dispose();
         atlasFlare.dispose();
         atlasLadder.dispose();
         atlasWolf.dispose();
@@ -667,6 +647,17 @@ public class Gui extends Actor {
             if (texture != null)
                 batch.draw(texture, animExplosion.x, animExplosion.y);
             animExplosion.t += dt;
+        }
+    }
+
+    private void drawSmoke(Batch batch, float dt) {
+        // field != null (assert omitted)
+        Animation<TextureRegion> animation = animSmoke.getAnimation(null); // animation != NULL
+        if (!animation.isAnimationFinished(animSmoke.t)) {
+            TextureRegion texture = animation.getKeyFrame(animSmoke.t);
+            if (texture != null)
+                batch.draw(texture, animSmoke.x, animSmoke.y);
+            animSmoke.t += dt;
         }
     }
 
