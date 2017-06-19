@@ -96,7 +96,7 @@ public class Cell {
             case 0x23:
                 return new AntidoteThing(xy, number.next());
             case 0x24:
-                return new DazzleGrenadeThing(xy, number.next());
+                return new FlashbangThing(xy, number.next());
             case 0x25:
                 return new TeleportThing(xy, number.next());
             case 0x26:
@@ -112,7 +112,7 @@ public class Cell {
             case 0x2B:
                 return new Antidote(xy, number.next());
             case 0x2C:
-                return new DazzleGrenade(xy, number.next());
+                return new Flashbang(xy, number.next());
             case 0x2D:
                 return new Teleport(xy, number.next());
             case 0x2E:

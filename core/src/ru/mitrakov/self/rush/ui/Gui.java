@@ -93,7 +93,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animWaterfallSmall;
     private final Animation<TextureRegion> animAntidote;
     private final Animation<TextureRegion> animTeleport;
-    private final Animation<TextureRegion> animDazzleGrenade;
+    private final Animation<TextureRegion> animFlashbang;
     private final Animation<TextureRegion> animDetector;
     private final AnimInfo animFlare;
     private final AnimInfo animExplosion;
@@ -154,7 +154,7 @@ public class Gui extends Actor {
         // collectible textures
         for (Class clazz : new Class[]{
                 Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
-                UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, DazzleGrenadeThing.class,
+                UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, Flashbang.class,
                 TeleportThing.class, DetectorThing.class, BoxThing.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
@@ -194,7 +194,7 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasAnimated.findRegions("WaterfallSmall");
         Array<TextureAtlas.AtlasRegion> framesAntidote = atlasAnimated.findRegions("Antidote");
         Array<TextureAtlas.AtlasRegion> framesTeleport = atlasAnimated.findRegions("Teleport");
-        Array<TextureAtlas.AtlasRegion> framesDazzleGrenade = atlasAnimated.findRegions("DazzleGrenade");
+        Array<TextureAtlas.AtlasRegion> framesFlashbang = atlasAnimated.findRegions("Flashbang");
         Array<TextureAtlas.AtlasRegion> framesDetector = atlasAnimated.findRegions("Detector");
         Array<TextureAtlas.AtlasRegion> framesExplosion = atlasEffects.findRegions("Explosion");
         Array<TextureAtlas.AtlasRegion> framesSmoke = atlasEffects.findRegions("Smoke");
@@ -204,7 +204,7 @@ public class Gui extends Actor {
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
         animAntidote = new Animation<TextureRegion>(.15f, framesAntidote, Animation.PlayMode.LOOP_PINGPONG);
         animTeleport = new Animation<TextureRegion>(.09f, framesTeleport, Animation.PlayMode.LOOP);
-        animDazzleGrenade = new Animation<TextureRegion>(.09f, framesDazzleGrenade, Animation.PlayMode.LOOP);
+        animFlashbang = new Animation<TextureRegion>(.09f, framesFlashbang, Animation.PlayMode.LOOP);
         animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
 
         animExplosion = new AnimInfo(new Animation<TextureRegion>(.06f, framesExplosion));
@@ -277,7 +277,7 @@ public class Gui extends Actor {
             // draw 6-th layer (antidotes, teleports)
             drawAnim(field, batch, Antidote.class, animAntidote);
             drawAnim(field, batch, Teleport.class, animTeleport);
-            drawAnim(field, batch, DazzleGrenade.class, animDazzleGrenade);
+            drawAnim(field, batch, Flashbang.class, animFlashbang);
             drawAnim(field, batch, Detector.class, animDetector);
             // draw 7-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);

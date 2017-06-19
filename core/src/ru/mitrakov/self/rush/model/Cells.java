@@ -240,8 +240,8 @@ public class Cells {
         }
     }
 
-    public static class DazzleGrenadeThing extends CellObject {
-        public DazzleGrenadeThing(int xy, int number) {
+    public static class FlashbangThing extends CellObject {
+        public FlashbangThing(int xy, int number) {
             super(0x24, xy);
             this.number = number;
         }
@@ -296,8 +296,8 @@ public class Cells {
         }
     }
 
-    public static class DazzleGrenade extends CellObject {
-        public DazzleGrenade(int xy, int number) {
+    public static class Flashbang extends CellObject {
+        public Flashbang(int xy, int number) {
             super(0x2C, xy);
             this.number = number;
         }

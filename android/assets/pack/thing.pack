@@ -31,7 +31,7 @@ CellObject
   orig: 50, 50
   offset: 0, 0
   index: -1
-DazzleGrenadeThing
+FlashbangThing
   rotate: false
   xy: 210, 2
   size: 50, 50

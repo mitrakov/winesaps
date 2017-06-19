@@ -199,7 +199,7 @@ BoxThing
   orig: 28, 28
   offset: 0, 0
   index: -1
-DazzleGrenadeThing
+FlashbangThing
   rotate: false
   xy: 747, 68
   size: 28, 28

@@ -3,14 +3,14 @@ animated.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-DazzleGrenade
+Flashbang
   rotate: false
   xy: 2, 81
   size: 65, 45
   orig: 65, 45
   offset: 0, 0
   index: 0
-DazzleGrenade
+Flashbang
   rotate: false
   xy: 2, 34
   size: 65, 45
