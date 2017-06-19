@@ -48,7 +48,7 @@ public class DialogIncoming extends DialogFeat {
 
     @Override
     public Dialog show(Stage stage) {
-        audioManager.music("call");
+        audioManager.sound("call");
         chkAddToFriends.setVisible(!model.friendExists(enemy));
         lblQuestion.setText(i18n.format("dialog.incoming.text", enemy)); // i18n != NULL (assert omitted)
         return super.show(stage);
@@ -68,12 +68,6 @@ public class DialogIncoming extends DialogFeat {
                 break;
             default:
         }
-    }
-
-    @Override
-    public void hide() {
-        audioManager.music("theme");
-        super.hide();
     }
 
     @Override

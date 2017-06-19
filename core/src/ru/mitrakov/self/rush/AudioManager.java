@@ -25,7 +25,7 @@ public class AudioManager {
         if (!muted && !curMusicName.equals(name)) {
             if (curMusic != null)
                 curMusic.dispose();
-            curMusic = Gdx.audio.newMusic(Gdx.files.internal(String.format("tune/%s.mp3", name)));
+            curMusic = Gdx.audio.newMusic(Gdx.files.internal(String.format("music/%s.mp3", name)));
             if (curMusic != null) {
                 curMusicName = name;
                 curMusic.setVolume(.2f);
