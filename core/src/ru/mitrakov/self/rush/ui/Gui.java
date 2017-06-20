@@ -154,7 +154,7 @@ public class Gui extends Actor {
         // collectible textures
         for (Class clazz : new Class[]{
                 Apple.class, Pear.class, Meat.class, Carrot.class, Nut.class, Mushroom.class,
-                UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, Flashbang.class,
+                UmbrellaThing.class, MineThing.class, BeamThing.class, AntidoteThing.class, FlashbangThing.class,
                 TeleportThing.class, DetectorThing.class, BoxThing.class}) {
             TextureRegion texture = atlasUp.findRegion(clazz.getSimpleName());
             if (texture != null)
