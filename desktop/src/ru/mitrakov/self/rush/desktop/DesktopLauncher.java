@@ -51,7 +51,7 @@ public class DesktopLauncher extends JFrame {
         setResizable(false); // this must be BEFORE pack()!
         pack();
         setTitle("Winesaps");
-        URL url = getClass().getResource("icon.png"); // to get resource inside a FAT jar
+        URL url = getClass().getResource("/icon.png"); // to get resource inside a FAT jar
         ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
         setIconImage(icon.getImage());
         setVisible(true);

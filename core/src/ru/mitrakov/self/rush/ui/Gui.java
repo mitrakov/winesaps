@@ -590,12 +590,14 @@ public class Gui extends Actor {
 
                             // if direction == right then draw pure texture, else draw flipped texture
                             TextureRegion texture = anim.getFrame(key);
-                            if (anim.dirRight)
-                                batch.draw(texture, x, y);
-                            else {
-                                texture.flip(true, false); // flip is not intensive operation (only affects UV-mapping)
-                                batch.draw(texture, x, y);
-                                texture.flip(true, false);
+                            if (texture != null) {
+                                if (anim.dirRight)
+                                    batch.draw(texture, x, y);
+                                else {
+                                    texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
+                                    batch.draw(texture, x, y);
+                                    texture.flip(true, false);
+                                }
                             }
                         }
                     }
