@@ -205,8 +205,13 @@ public class ScreenLogin extends LocalizableScreen {
         assert i18n != null;
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
-            if (ev.authorized)
+            if (ev.authorized) {
+                if (psObject != null) {
+                    if (psObject.getBillingProvider() != null)
+                        psObject.getBillingProvider().init();
+                }
                 game.setNextScreen();
+            }
         }
         if (event instanceof EventBus.IncorrectCredentialsEvent)
             infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);

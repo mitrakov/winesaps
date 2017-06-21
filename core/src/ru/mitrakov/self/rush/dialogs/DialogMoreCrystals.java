@@ -5,6 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
+
+import ru.mitrakov.self.rush.IBillingProvider;
+import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.ui.*;
 
 /**
@@ -23,7 +26,7 @@ public class DialogMoreCrystals extends DialogFeat {
     private final Label lblWay4;
     private final LinkedLabel lblText4;
 
-    public DialogMoreCrystals(Skin skin, String style, final Dialog promoDialog, final Stage stage) {
+    public DialogMoreCrystals(Skin skin, String style, final Dialog promoDialog, final Stage stage, final PsObject psObject) {
         super("", skin, style);
         assert promoDialog != null && stage != null;
 
@@ -44,7 +47,19 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
-                log("", "Hey-Hey!");
+                if (psObject != null) {
+                    IBillingProvider provider = psObject.getBillingProvider();
+                    if (provider != null) {
+                        IBillingProvider.Sku sku = null;
+                        for (IBillingProvider.Sku s : provider.getProducts()) {
+                            log("", s);
+                            if (s.id.equals("gems_pack_small"))
+                                sku = s;
+                        }
+                        if (sku != null)
+                            provider.purchaseProduct(sku);
+                    }
+                }
             }
         });
 

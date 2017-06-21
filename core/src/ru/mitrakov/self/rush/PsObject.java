@@ -16,6 +16,7 @@ public class PsObject {
 
     private RatioListener ratioListener;
     private VisibleListener visibleListener;
+    private IBillingProvider billingProvider;
 
     public void setRatioListener(RatioListener listener) {
         ratioListener = listener;
@@ -23,6 +24,14 @@ public class PsObject {
 
     public void setVisibleListener(VisibleListener listener) {
         visibleListener = listener;
+    }
+
+    public void setBillingProvider(IBillingProvider billingProvider) {
+        this.billingProvider = billingProvider;
+    }
+
+    public IBillingProvider getBillingProvider() {
+        return billingProvider;
     }
 
     public void raiseRatioChanged(float ratio) {
