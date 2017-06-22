@@ -9,6 +9,7 @@ import com.android.billingclient.api.BillingClient.SkuType;
 import com.android.billingclient.api.BillingClientImpl;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
@@ -93,9 +94,17 @@ public class AndroidBillingProvider implements IBillingProvider, PurchasesUpdate
     @Override
     public void onPurchasesUpdated(int responseCode, List<Purchase> purchases) {
         log("onPurchasesUpdated; code = ", responseCode);
-        if (purchases != null) {
+        if (responseCode == OK) {
             for (Purchase purchase : purchases) {
                 log("Purchase: ", purchase);
+                log("Token: ", purchase.getPurchaseToken());
+                client.consumeAsync(purchase.getPurchaseToken(), new ConsumeResponseListener() {
+                    @Override
+                    public void onConsumeResponse(String purchaseToken, int resultCode) {
+                        log("CONSUMING DONE! Code = ", resultCode);
+                        log("CONSUMING DONE! Token = ", purchaseToken);
+                    }
+                });
             }
         }
     }

@@ -17,13 +17,14 @@ public class SimpleLogger {
     private final static Model.IFileReader fileReader = new FileReader();
     private final static Format sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
     private final static boolean LOG_TO_FILE = false;
+    private final static boolean LOG_TO_SOUT = true;
 
     public static synchronized void log(String prefix, Object s) {
         if (LOG_TO_FILE) {
             String w = String.format("%s: %s%s", sdf.format(new Date()), prefix, s);
-            System.out.println(w);
             fileReader.append("logger.txt", w);
-        } else {
+        }
+        if (LOG_TO_SOUT) {
             System.out.print(prefix);
             System.out.println(s);
         }
