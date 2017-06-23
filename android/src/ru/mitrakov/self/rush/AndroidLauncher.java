@@ -34,7 +34,7 @@ public class AndroidLauncher extends AndroidApplication {
                 }
             }
         };
-        obj.setBillingProvider(new AndroidBillingProvider(this));
+        obj.setBillingProvider(new AndroidBillingProvider(this, null)); // TODO null
 
         if (Build.VERSION.SDK_INT >= 11) { // "addOnLayoutChangeListener" requires Level API 11
             getWindow().getDecorView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {

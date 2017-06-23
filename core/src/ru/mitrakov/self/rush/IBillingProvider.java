@@ -6,15 +6,15 @@ import java.util.List;
  * Created by mitrakov on 21.06.2017
  */
 public interface IBillingProvider {
-    public void init();
-    public List<Sku> getProducts();
-    public void purchaseProduct(Sku sku);
+    void init();
+    List<Sku> getProducts();
+    void purchaseProduct(Sku sku, String payload);
 
-    public static final class Sku {
+    final class Sku {
         public final String id;
-        public final String description;
-        public final String proice;
-        public Sku(String id, String description, String proice) {
+        final String description;
+        final String proice;
+        Sku(String id, String description, String proice) {
             this.id = id;
             this.description = description;
             this.proice = proice;

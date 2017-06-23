@@ -119,6 +119,9 @@ class Parser implements IHandler {
                     case PROMOCODE_DONE:
                         promocodeDone(cmd, data.remove(0, 1));
                         break;
+                    case CHECK_PURCHASE:
+                        checkPurchase(cmd, data.remove(0, 1));
+                        break;
                     case EFFECT_CHANGED:
                         effectChanged(cmd, data.remove(0, 1));
                         break;
@@ -396,6 +399,19 @@ class Parser implements IHandler {
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
+    }
+
+    private void checkPurchase(Cmd cmd, IIntArray data) {
+        if (data.length() > 5) {
+            int error = data.get(0);
+            if (error == 0) {
+                int gems = (data.get(1) << 24) | (data.get(2) << 16) | (data.get(3) << 8) | data.get(4);
+                String coupon = data.remove(0, 5).toUTF8();
+                System.out.println("GEMS ADDED: " + gems + "; PROMOCODE: " + coupon);
+            } else inspectError(cmd, error);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
+        } else throw new IllegalArgumentException("Incorrect 'check purchase' format");
     }
 
     private void effectChanged(Cmd cmd, IIntArray data) {

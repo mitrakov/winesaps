@@ -107,7 +107,7 @@ public class Model {
         REMOVE_FRIEND,     // 35
         CHECK_PROMOCODE,   // 36
         PROMOCODE_DONE,    // 37
-        RESERVED_26,       // 38
+        CHECK_PURCHASE,    // 38
         RESERVED_27,       // 39
         RESERVED_28,       // 40
         RESERVED_29,       // 41
@@ -591,6 +591,12 @@ public class Model {
         field = null; // reset the current field
         if (connected && sender != null) {
             sender.send(GIVE_UP);
+        }
+    }
+
+    public void checkPurchase(String json, String signature) {
+        if (connected && sender != null) {
+            sender.send(CHECK_PURCHASE, String.format("%s\0%s", json, signature));
         }
     }
 

@@ -15,7 +15,8 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 public final class Network extends Thread implements IHandler {
     public static boolean TMP_NO_CONNECTION = false; // REMOVE ME IN A FUTURE
 
-    private static final int BUF_SIZ = 1024;
+    public static final int BUF_SIZ_SEND = 768;
+    private static final int BUF_SIZ_RECV = 1024;
     private static final int HEADER_SIZ = 7;
     private static final int RECONNECT_MSEC = 16000;
 
@@ -26,8 +27,8 @@ public final class Network extends Thread implements IHandler {
     private final UncaughtExceptionHandler errorHandler;
     private final String host;
     private final int port;
-    private final byte[] recvBuf = new byte[BUF_SIZ];
-    private final IIntArray recvData = new GcResistantIntArray(BUF_SIZ);
+    private final byte[] recvBuf = new byte[BUF_SIZ_RECV];
+    private final IIntArray recvData = new GcResistantIntArray(BUF_SIZ_RECV);
     private /*final*/ DatagramPacket packet;
 
     private int sid = 0;
@@ -64,7 +65,7 @@ public final class Network extends Thread implements IHandler {
         }
 
         // create DatagramPacket OUTSIDE the loop to minimize memory allocations
-        DatagramPacket datagram = new DatagramPacket(recvBuf, BUF_SIZ);
+        DatagramPacket datagram = new DatagramPacket(recvBuf, recvBuf.length);
 
         // run infinite loop
         //noinspection InfiniteLoopStatement

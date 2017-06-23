@@ -4,13 +4,15 @@ import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
+import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
+
 /**
  * Created by mitrakov on 27.02.2017
  */
 class MsgSender implements Model.ISender {
     private final Network network;
     private final Thread.UncaughtExceptionHandler errorHandler;
-    private final IIntArray sendBuf = new GcResistantIntArray(256);
+    private final IIntArray sendBuf = new GcResistantIntArray(BUF_SIZ_SEND);
 
     MsgSender(Network network, Thread.UncaughtExceptionHandler errorHandler) {
         assert network != null && errorHandler != null;

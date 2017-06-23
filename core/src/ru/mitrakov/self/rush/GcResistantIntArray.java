@@ -79,7 +79,7 @@ public final class GcResistantIntArray implements IIntArray {
 
     @Override
     public byte[] toByteArray() {
-        for (int i = 0; i < array.size; i++) {
+        for (int i = 0; i < Math.min(bytes.length, array.size) ; i++) {
             bytes[i] = (byte) array.get(i);
         }
         return bytes;

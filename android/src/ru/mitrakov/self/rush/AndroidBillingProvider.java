@@ -1,48 +1,36 @@
 package ru.mitrakov.self.rush;
 
+import java.util.*;
+import java.util.concurrent.*;
+
 import android.app.Activity;
-import android.content.Context;
 
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClient.BillingResponse;
-import com.android.billingclient.api.BillingClient.SkuType;
-import com.android.billingclient.api.BillingClientImpl;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.ConsumeResponseListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.android.billingclient.api.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import ru.mitrakov.self.rush.model.Product;
-import ru.mitrakov.self.rush.utils.SimpleLogger;
-
-import static com.android.billingclient.api.BillingClient.BillingResponse.*;
 import static com.android.billingclient.api.BillingClient.SkuType.*;
+import static com.android.billingclient.api.BillingClient.BillingResponse.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 
 /**
  * Created by mitrakov on 21.06.2017
  */
-public class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListener {
+class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListener {
+
+    interface BillingListener {
+        void onResponse(String data, String signature);
+    }
+
     private final Activity activity;
+    private final BillingListener listener;
     private final BillingClient client;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<Sku> products = new ArrayList<>(3);
 
-    public AndroidBillingProvider(Activity activity) {
-        assert activity != null;
+    AndroidBillingProvider(Activity activity, BillingListener listener) {
+        assert activity != null && listener != null;
         this.activity = activity;
+        this.listener = listener;
         client = new BillingClient.Builder(activity).setListener(this).build();
-
     }
 
     @Override
@@ -60,7 +48,6 @@ public class AndroidBillingProvider implements IBillingProvider, PurchasesUpdate
                                 public void onSkuDetailsResponse(SkuDetails.SkuDetailsResult result) {
                                     if (result.getResponseCode() == OK) {
                                         for (SkuDetails d : result.getSkuDetailsList()) {
-                                            System.out.println(d);
                                             products.add(new Sku(d.getSku(), d.getDescription(), d.getPrice()));
                                         }
                                     } else log("Sku details error! Code:", result.getResponseCode());
@@ -84,25 +71,25 @@ public class AndroidBillingProvider implements IBillingProvider, PurchasesUpdate
     }
 
     @Override
-    public void purchaseProduct(Sku sku) {
+    public void purchaseProduct(Sku sku, String payload) {
         if (client.isReady()) {
-            BillingFlowParams params = new BillingFlowParams.Builder().setSku(sku.id).setType(INAPP).build();
+            BillingFlowParams params = new BillingFlowParams.Builder()
+                    .setSku(sku.id).setType(INAPP).setAccountId(payload).build();
             client.launchBillingFlow(activity, params);
         } else log("", "Billing system is not ready!");
     }
 
     @Override
     public void onPurchasesUpdated(int responseCode, List<Purchase> purchases) {
-        log("onPurchasesUpdated; code = ", responseCode);
         if (responseCode == OK) {
-            for (Purchase purchase : purchases) {
-                log("Purchase: ", purchase);
-                log("Token: ", purchase.getPurchaseToken());
+            for (final Purchase purchase : purchases) {
+                log("OrigJSON: ", purchase.getOriginalJson());
+                log("Signature: ", purchase.getSignature());
                 client.consumeAsync(purchase.getPurchaseToken(), new ConsumeResponseListener() {
                     @Override
                     public void onConsumeResponse(String purchaseToken, int resultCode) {
-                        log("CONSUMING DONE! Code = ", resultCode);
-                        log("CONSUMING DONE! Token = ", purchaseToken);
+                        log("Consuming done; code = ", resultCode);
+                        listener.onResponse(purchase.getOriginalJson(), purchase.getSignature());
                     }
                 });
             }

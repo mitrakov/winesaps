@@ -7,14 +7,13 @@ import java.io.IOException;
 import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
+import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
  * Created by mitrakov on 31.03.2017
  */
 public class SwUDP implements IProtocol {
-    private final static int BUF_SIZ = 256;
-    
     final static int N = 256;
     final static int SYN = 0;
     final static int MAX_ATTEMPTS = 8;
@@ -25,6 +24,7 @@ public class SwUDP implements IProtocol {
     final static float RC = .8f;
     final static float AC = 2.5f;
 
+    @SuppressWarnings("unused")
     static class Item {
         boolean exists = false;
         boolean ack = false;
@@ -32,7 +32,7 @@ public class SwUDP implements IProtocol {
         int ticks = 0;
         int attempt = 0;
         int nextRepeat = 0;
-        IIntArray msg = new GcResistantIntArray(BUF_SIZ);
+        IIntArray msg = new GcResistantIntArray(BUF_SIZ_SEND);
 
         Item() {}
 
