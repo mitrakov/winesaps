@@ -85,14 +85,24 @@ public class Winesaps extends Game implements Localizable {
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
 
-        // stop music on hide
         if (psObject != null) {
+            // stop music on hide
             psObject.setVisibleListener(new PsObject.VisibleListener() {
                 @Override
                 public void onVisibleChanged(boolean visible) {
                     audioManager.mute(!visible);
                 }
             });
+            // start Google Play Billing service
+            IBillingProvider provider = psObject.getBillingProvider();
+            if (provider != null) {
+                provider.startService(new IBillingProvider.BillingListener() {
+                    @Override
+                    public void onResponse(String data, String signature) {
+                        model.checkPurchase(data, signature);
+                    }
+                });
+            }
         }
 
         // set default locale

@@ -36,7 +36,7 @@ public class DesktopLauncher extends JFrame {
         }
 
         // create platform specific object
-        final PsObject obj = new PsObject() {
+        final PsObject obj = new PsObject(null) {
             @Override
             public void activate() {
                 setVisible(true);

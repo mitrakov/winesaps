@@ -18,16 +18,16 @@ public class PsObject {
     private VisibleListener visibleListener;
     private IBillingProvider billingProvider;
 
+    public PsObject(IBillingProvider billingProvider) {
+        this.billingProvider = billingProvider;
+    }
+
     public void setRatioListener(RatioListener listener) {
         ratioListener = listener;
     }
 
     public void setVisibleListener(VisibleListener listener) {
         visibleListener = listener;
-    }
-
-    public void setBillingProvider(IBillingProvider billingProvider) {
-        this.billingProvider = billingProvider;
     }
 
     public IBillingProvider getBillingProvider() {

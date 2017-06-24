@@ -18,7 +18,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.useAccelerometer = false;
         config.useGyroscope = false;
 
-        final PsObject obj = new PsObject() {
+        final PsObject obj = new PsObject(new AndroidBillingProvider(this)) {
             @Override
             public void hide() {
                 moveTaskToBack(true);
@@ -34,7 +34,6 @@ public class AndroidLauncher extends AndroidApplication {
                 }
             }
         };
-        obj.setBillingProvider(new AndroidBillingProvider(this, null)); // TODO null
 
         if (Build.VERSION.SDK_INT >= 11) { // "addOnLayoutChangeListener" requires Level API 11
             getWindow().getDecorView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {

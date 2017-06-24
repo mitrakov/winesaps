@@ -594,9 +594,9 @@ public class Model {
         }
     }
 
-    public void checkPurchase(String json, String signature) {
+    public void checkPurchase(String data, String signature) {
         if (connected && sender != null) {
-            sender.send(CHECK_PURCHASE, String.format("%s\0%s", json, signature));
+            sender.send(CHECK_PURCHASE, String.format("%s\0%s", data, signature));
         }
     }
 

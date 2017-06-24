@@ -15,26 +15,22 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
  * Created by mitrakov on 21.06.2017
  */
 class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListener {
-
-    interface BillingListener {
-        void onResponse(String data, String signature);
-    }
-
     private final Activity activity;
-    private final BillingListener listener;
     private final BillingClient client;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<Sku> products = new ArrayList<>(3);
+    private /*final*/ BillingListener listener;
 
-    AndroidBillingProvider(Activity activity, BillingListener listener) {
-        assert activity != null && listener != null;
+    AndroidBillingProvider(Activity activity) {
+        assert activity != null;
         this.activity = activity;
-        this.listener = listener;
         client = new BillingClient.Builder(activity).setListener(this).build();
     }
 
     @Override
-    public void init() {
+    public void startService(BillingListener listener) {
+        assert listener != null;
+        this.listener = listener;
         client.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(int resultCode) {
@@ -81,6 +77,7 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
 
     @Override
     public void onPurchasesUpdated(int responseCode, List<Purchase> purchases) {
+        assert listener != null;
         if (responseCode == OK) {
             for (final Purchase purchase : purchases) {
                 log("OrigJSON: ", purchase.getOriginalJson());
