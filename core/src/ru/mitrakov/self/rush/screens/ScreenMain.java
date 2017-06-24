@@ -495,7 +495,7 @@ public class ScreenMain extends LocalizableScreen {
                         if (ev.skuGems.containsKey(sku.id))
                             sku.value = ev.skuGems.get(sku.id);
                     }
-                    purchaseDialog.updateSkuButtons(skin, provider, model.name, i18n);
+                    purchaseDialog.updateSkuButtons(skin, provider, model.name, i18n, atlasMenu, audioManager);
                 }
             }
         }

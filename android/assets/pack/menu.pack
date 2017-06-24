@@ -3,114 +3,135 @@ menu.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+gems_pack
+  rotate: false
+  xy: 2, 104
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+gems_pack_big
+  rotate: false
+  xy: 154, 104
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+gems_pack_small
+  rotate: false
+  xy: 306, 104
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
 about
   rotate: false
-  xy: 2, 2
+  xy: 2, 54
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 add
   rotate: false
-  xy: 52, 2
+  xy: 458, 206
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 102, 2
+  xy: 2, 4
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 gem
   rotate: false
-  xy: 152, 2
+  xy: 52, 54
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invalid
   rotate: false
-  xy: 202, 2
+  xy: 458, 156
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invite
   rotate: false
-  xy: 252, 2
+  xy: 52, 4
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 remove
   rotate: false
-  xy: 302, 2
+  xy: 102, 54
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 settings
   rotate: false
-  xy: 352, 2
+  xy: 458, 106
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 valid
   rotate: false
-  xy: 402, 2
+  xy: 102, 4
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 en
   rotate: false
-  xy: 452, 18
+  xy: 152, 70
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 es
   rotate: false
-  xy: 502, 18
+  xy: 152, 36
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 fr
   rotate: false
-  xy: 552, 18
+  xy: 152, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 pt
   rotate: false
-  xy: 602, 18
+  xy: 202, 70
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 ru
   rotate: false
-  xy: 652, 18
+  xy: 202, 36
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 loss
   rotate: false
-  xy: 702, 18
+  xy: 202, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 win
   rotate: false
-  xy: 736, 18
+  xy: 236, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
