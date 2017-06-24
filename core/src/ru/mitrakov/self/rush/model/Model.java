@@ -817,12 +817,29 @@ public class Model {
     }
 
     public void setPromocodeValid(boolean valid) {
-        bus.raise(new EventBus.PromocodeValidChanged(valid));
+        bus.raise(new EventBus.PromocodeValidChangedEvent(valid));
     }
 
     public void setPromocodeDone(String name, boolean inviter, int crystals) {
         assert name != null;
         bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, crystals));
+    }
+
+    public void setSkuGems(IIntArray data) {
+        Map<String, Integer> res = new HashMap<String, Integer>(3);
+        for (int i = 0; i < data.length(); i += 4) {
+            StringBuilder bld = new StringBuilder();
+            for (; i < data.length() && data.get(i) != 0; i++) {
+                bld.append((char) data.get(i));
+            }
+            i++; // skip NULL-terminator
+            String sku = bld.toString();
+            if (i + 3 < data.length()) {
+                int gems = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | data.get(i + 3);
+                res.put(sku, gems);
+            }
+        }
+        bus.raise(new EventBus.SkuGemsUpdatedEvent(res));
     }
 
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,

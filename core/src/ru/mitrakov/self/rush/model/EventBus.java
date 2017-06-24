@@ -1,6 +1,6 @@
 package ru.mitrakov.self.rush.model;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.mitrakov.self.rush.model.Cells.CellObject;
@@ -192,10 +192,16 @@ public class EventBus {
             this.connected = connected;
         }
     }
-    public static final class PromocodeValidChanged extends Event {
+    public static final class PromocodeValidChangedEvent extends Event {
         public final boolean valid;
-        PromocodeValidChanged(boolean valid) {
+        PromocodeValidChangedEvent(boolean valid) {
             this.valid = valid;
+        }
+    }
+    public static final class SkuGemsUpdatedEvent extends Event {
+        public final Map<String, Integer> skuGems;
+        SkuGemsUpdatedEvent(Map<String, Integer> skuGems) {
+            this.skuGems = skuGems;
         }
     }
 

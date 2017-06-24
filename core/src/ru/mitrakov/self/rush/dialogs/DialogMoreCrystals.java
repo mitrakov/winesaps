@@ -26,8 +26,8 @@ public class DialogMoreCrystals extends DialogFeat {
     private final Label lblWay4;
     private final LinkedLabel lblText4;
 
-    public DialogMoreCrystals(Model model, Skin skin, String style, final Dialog promoDialog, final Stage stage,
-                              final PsObject psObject) {
+    public DialogMoreCrystals(Model model, Skin skin, String style, final Dialog promoDialog,
+                              final Dialog purchaseDialog, final Stage stage, final PsObject psObject) {
         super("", skin, style);
         assert model != null && promoDialog != null && stage != null;
         this.model = model;
@@ -50,12 +50,7 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
-                if (psObject != null) {
-                    IBillingProvider provider = psObject.getBillingProvider();
-                    if (provider != null) {
-                        // ....
-                    }
-                }
+                purchaseDialog.show(stage);
             }
         });
 
@@ -127,7 +122,7 @@ public class DialogMoreCrystals extends DialogFeat {
         if (psObject != null) {
             IBillingProvider provider = psObject.getBillingProvider();
             if (provider != null) {
-                for (IBillingProvider.Sku sku: provider.getProducts()) {
+                for (IBillingProvider.Sku sku : provider.getProducts()) {
                     model.requestSkuGems(sku.id);
                 }
             }

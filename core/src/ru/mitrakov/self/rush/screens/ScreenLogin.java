@@ -222,8 +222,8 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void handleEventBackground(EventBus.Event event) {
-        if (event instanceof EventBus.PromocodeValidChanged) {
-            EventBus.PromocodeValidChanged ev = (EventBus.PromocodeValidChanged) event;
+        if (event instanceof EventBus.PromocodeValidChangedEvent) {
+            EventBus.PromocodeValidChangedEvent ev = (EventBus.PromocodeValidChangedEvent) event;
             imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
         }
     }

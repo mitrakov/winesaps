@@ -44,6 +44,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableRightContentFriends = new Table();
     private final Table tableFriendsControl = new Table();
     private final DialogPromocode promocodeDialog;
+    private final DialogPurchase purchaseDialog;
     private final DialogFeat moreCrystalsDialog;
     private final DialogIncoming incomingDialog;
     private final DialogFeat settingsDialog;
@@ -124,7 +125,8 @@ public class ScreenMain extends LocalizableScreen {
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
-        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, stage, psObject);
+        purchaseDialog = new DialogPurchase(skin, "default");
+        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, purchaseDialog, stage, psObject);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
@@ -349,7 +351,7 @@ public class ScreenMain extends LocalizableScreen {
         this.i18n = bundle;
 
         promocodeDialog.onLocaleChanged(bundle);
-        questionDialog.onLocaleChanged(bundle);
+        purchaseDialog.onLocaleChanged(bundle);
         moreCrystalsDialog.onLocaleChanged(bundle);
         incomingDialog.onLocaleChanged(bundle);
         settingsDialog.onLocaleChanged(bundle);
@@ -358,6 +360,7 @@ public class ScreenMain extends LocalizableScreen {
         infoDialog.onLocaleChanged(bundle);
         dialupDialog.onLocaleChanged(bundle);
         inviteDialog.onLocaleChanged(bundle);
+        questionDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
 
         if (infoDialog.getTitleLabel() != null)
@@ -482,6 +485,19 @@ public class ScreenMain extends LocalizableScreen {
             EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
             dialupDialog.hide();
             infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
+        }
+        if (event instanceof EventBus.SkuGemsUpdatedEvent) {
+            if (psObject != null) {
+                IBillingProvider provider = psObject.getBillingProvider();
+                if (provider != null) {
+                    EventBus.SkuGemsUpdatedEvent ev = (EventBus.SkuGemsUpdatedEvent) event;
+                    for (IBillingProvider.Sku sku : provider.getProducts()) {
+                        if (ev.skuGems.containsKey(sku.id))
+                            sku.value = ev.skuGems.get(sku.id);
+                    }
+                    purchaseDialog.updateSkuButtons(skin, provider, model.name, i18n);
+                }
+            }
         }
     }
 

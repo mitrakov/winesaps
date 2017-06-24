@@ -14,10 +14,12 @@ public interface IBillingProvider {
     List<Sku> getProducts();
     void purchaseProduct(Sku sku, String payload);
 
-    final class Sku {
+    @SuppressWarnings({"WeakerAccess", "NullableProblems"})
+    final class Sku implements Comparable<Sku> {
         public final String id;
         public final String description;
         public final String price;
+        public int value;
         Sku(String id, String description, String price) {
             this.id = id;
             this.description = description;
@@ -27,6 +29,13 @@ public interface IBillingProvider {
         public String toString() {
             return "Sku{" +
                     "id='" + id + '\'' + ", description='" + description + '\'' + ", proice='" + price + '\'' + '}';
+        }
+
+        @Override
+        public int compareTo(Sku o) {
+            if (o != null)
+                return value - o.value;
+            return 0;
         }
     }
 }
