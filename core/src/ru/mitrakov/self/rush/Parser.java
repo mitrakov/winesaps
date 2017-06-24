@@ -119,6 +119,9 @@ class Parser implements IHandler {
                     case PROMOCODE_DONE:
                         promocodeDone(cmd, data.remove(0, 1));
                         break;
+                    case GET_SKU_GEMS:
+                        getSkuGems(cmd, data.remove(0, 1));
+                        break;
                     case CHECK_PURCHASE:
                         checkPurchase(cmd, data.remove(0, 1));
                         break;
@@ -399,6 +402,16 @@ class Parser implements IHandler {
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
+    }
+
+    private void getSkuGems(Cmd cmd, IIntArray data) {
+        if (data.length() > 4) {
+            int gems = (data.get(0) << 24) | (data.get(1) << 16) | (data.get(2) << 8) | data.get(3);
+            String sku = data.remove(0, 4).toUTF8();
+            System.out.println("SKU: " + sku + "; GEMS: " + gems);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
+        } else throw new IllegalArgumentException("Incorrect SKU gems format");
     }
 
     private void checkPurchase(Cmd cmd, IIntArray data) {

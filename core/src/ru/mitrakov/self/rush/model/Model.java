@@ -107,8 +107,8 @@ public class Model {
         REMOVE_FRIEND,     // 35
         CHECK_PROMOCODE,   // 36
         PROMOCODE_DONE,    // 37
-        CHECK_PURCHASE,    // 38
-        RESERVED_27,       // 39
+        GET_SKU_GEMS,      // 38
+        CHECK_PURCHASE,    // 39
         RESERVED_28,       // 40
         RESERVED_29,       // 41
         RESERVED_2A,       // 42
@@ -591,6 +591,12 @@ public class Model {
         field = null; // reset the current field
         if (connected && sender != null) {
             sender.send(GIVE_UP);
+        }
+    }
+
+    public void requestSkuGems(String sku) {
+        if (connected && sender != null) {
+            sender.send(GET_SKU_GEMS, sku);
         }
     }
 

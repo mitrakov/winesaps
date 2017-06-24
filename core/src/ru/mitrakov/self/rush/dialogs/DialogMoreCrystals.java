@@ -6,13 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import ru.mitrakov.self.rush.IBillingProvider;
 import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.ui.*;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
 public class DialogMoreCrystals extends DialogFeat {
-
+    private final Model model;
+    private final PsObject psObject;
     private final Label lblOverview;
     private final Label lblWay1;
     private final Label lblText1;
@@ -24,10 +26,12 @@ public class DialogMoreCrystals extends DialogFeat {
     private final Label lblWay4;
     private final LinkedLabel lblText4;
 
-    public DialogMoreCrystals(Skin skin, String style, final Dialog promoDialog, final Stage stage,
+    public DialogMoreCrystals(Model model, Skin skin, String style, final Dialog promoDialog, final Stage stage,
                               final PsObject psObject) {
         super("", skin, style);
-        assert promoDialog != null && stage != null;
+        assert model != null && promoDialog != null && stage != null;
+        this.model = model;
+        this.psObject = psObject;
 
         lblOverview = new Label("", skin, "default");
         lblWay1 = new Label("", skin, "default");
@@ -88,6 +92,12 @@ public class DialogMoreCrystals extends DialogFeat {
         }
     }
 
+    @Override
+    public Dialog show(Stage stage) {
+        initSkuGems();
+        return super.show(stage);
+    }
+
     private void init(Table table) {
         assert table != null;
 
@@ -111,5 +121,16 @@ public class DialogMoreCrystals extends DialogFeat {
         table.add(lblWay4).left();
         table.row();
         table.add(lblText4).left().padLeft(40);
+    }
+
+    private void initSkuGems() {
+        if (psObject != null) {
+            IBillingProvider provider = psObject.getBillingProvider();
+            if (provider != null) {
+                for (IBillingProvider.Sku sku: provider.getProducts()) {
+                    model.requestSkuGems(sku.id);
+                }
+            }
+        }
     }
 }

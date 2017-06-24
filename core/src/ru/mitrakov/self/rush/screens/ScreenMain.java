@@ -124,7 +124,7 @@ public class ScreenMain extends LocalizableScreen {
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
-        moreCrystalsDialog = new DialogMoreCrystals(skin, "default", promocodeDialog, stage, psObject);
+        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, stage, psObject);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");

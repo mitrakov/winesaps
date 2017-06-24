@@ -16,17 +16,17 @@ public interface IBillingProvider {
 
     final class Sku {
         public final String id;
-        final String description;
-        final String proice;
-        Sku(String id, String description, String proice) {
+        public final String description;
+        public final String price;
+        Sku(String id, String description, String price) {
             this.id = id;
             this.description = description;
-            this.proice = proice;
+            this.price = price;
         }
         @Override
         public String toString() {
             return "Sku{" +
-                    "id='" + id + '\'' + ", description='" + description + '\'' + ", proice='" + proice + '\'' + '}';
+                    "id='" + id + '\'' + ", description='" + description + '\'' + ", proice='" + price + '\'' + '}';
         }
     }
 }
