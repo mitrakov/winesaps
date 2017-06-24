@@ -35,6 +35,7 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
             @Override
             public void onBillingSetupFinished(int resultCode) {
                 if (resultCode == OK) {
+                    // 1. Query all SKU details (in a SEPARATE thread!)
                     executor.submit(new Runnable() {
                         @Override
                         public void run() {
@@ -51,6 +52,10 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
                             });
                         }
                     });
+                    // 2. Consume possibly outstanding purchases (recommendation from Google)
+                    // @see: https://developer.android.com/google/play/billing/api.html#managingconsumables
+                    Purchase.PurchasesResult result = client.queryPurchases(INAPP);
+                    onPurchasesUpdated(result.getResponseCode(), result.getPurchasesList());
                 } else log("Billing connection error! Code:", resultCode);
             }
 
