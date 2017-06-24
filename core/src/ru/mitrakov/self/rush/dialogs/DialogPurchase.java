@@ -17,7 +17,6 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 public class DialogPurchase extends DialogFeat {
     public DialogPurchase(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
-        pad(20);
         button("OK"); // text will be replaced in onLocaleChanged()
     }
 
@@ -81,6 +80,7 @@ public class DialogPurchase extends DialogFeat {
             table.add(new Label(sku.price, skin)).spaceLeft(20);
         }
 
+        table.pad(20);
         pack();
     }
 }
