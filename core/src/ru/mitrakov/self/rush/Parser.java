@@ -16,7 +16,7 @@ class Parser implements IHandler {
     private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
-    private static final int ERR_BATTLE_NOT_FOUND = 73;
+    private static final int ERR_BATTLE_NOT_FOUND = 77;
     private static final int ERR_SIGN_UP = 201;
     private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
     private static final int ERR_NO_CRYSTALS = 215;
