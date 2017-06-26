@@ -1,1 +1,0 @@
-CreateObject ("Wscript.Shell").Run "cmd /c java -jar winesaps.jar", 0, false
