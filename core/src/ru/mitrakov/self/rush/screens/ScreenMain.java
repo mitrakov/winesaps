@@ -14,6 +14,7 @@ import java.text.*;
 import java.util.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
@@ -126,7 +127,7 @@ public class ScreenMain extends LocalizableScreen {
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default");
-        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, purchaseDialog, stage, psObject);
+        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, purchaseDialog, stage);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
@@ -498,6 +499,14 @@ public class ScreenMain extends LocalizableScreen {
                     purchaseDialog.updateSkuButtons(skin, provider, model.name, i18n, atlasMenu, audioManager);
                 }
             }
+        }
+        if (event instanceof EventBus.PaymentDoneEvent) {
+            EventBus.PaymentDoneEvent ev = (EventBus.PaymentDoneEvent) event;
+            DialogFeat.hideAll(stage);
+            if (infoDialog.getTitleLabel() != null)
+                infoDialog.getTitleLabel().setText(i18n.format("dialog.promocode.done.header"));
+            infoDialog.setText(i18n.format("dialog.crystals.done", ev.gems)).show(stage);
+            log("Coupon = ", ev.coupon);
         }
     }
 

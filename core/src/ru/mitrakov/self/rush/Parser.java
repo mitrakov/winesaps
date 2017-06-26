@@ -418,7 +418,7 @@ class Parser implements IHandler {
             if (error == 0) {
                 int gems = (data.get(1) << 24) | (data.get(2) << 16) | (data.get(3) << 8) | data.get(4);
                 String coupon = data.remove(0, 5).toUTF8();
-                System.out.println("GEMS ADDED: " + gems + "; PROMOCODE: " + coupon);
+                model.paymentDone(gems, coupon);
             } else inspectError(cmd, error);
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));

@@ -14,7 +14,6 @@ import ru.mitrakov.self.rush.ui.*;
  */
 public class DialogMoreCrystals extends DialogFeat {
     private final Model model;
-    private final PsObject psObject;
     private final Label lblOverview;
     private final Label lblWay1;
     private final Label lblText1;
@@ -27,11 +26,10 @@ public class DialogMoreCrystals extends DialogFeat {
     private final LinkedLabel lblText4;
 
     public DialogMoreCrystals(Model model, Skin skin, String style, final Dialog promoDialog,
-                              final Dialog purchaseDialog, final Stage stage, final PsObject psObject) {
+                              final Dialog purchaseDialog, final Stage stage) {
         super("", skin, style);
         assert model != null && promoDialog != null && stage != null;
         this.model = model;
-        this.psObject = psObject;
 
         lblOverview = new Label("", skin, "default");
         lblWay1 = new Label("", skin, "default");
@@ -89,7 +87,7 @@ public class DialogMoreCrystals extends DialogFeat {
 
     @Override
     public Dialog show(Stage stage) {
-        initSkuGems();
+        model.requestSkuGems();
         return super.show(stage);
     }
 
@@ -116,16 +114,5 @@ public class DialogMoreCrystals extends DialogFeat {
         table.add(lblWay4).left();
         table.row();
         table.add(lblText4).left().padLeft(40);
-    }
-
-    private void initSkuGems() {
-        if (psObject != null) {
-            IBillingProvider provider = psObject.getBillingProvider();
-            if (provider != null) {
-                for (IBillingProvider.Sku sku : provider.getProducts()) {
-                    model.requestSkuGems(sku.id);
-                }
-            }
-        }
     }
 }

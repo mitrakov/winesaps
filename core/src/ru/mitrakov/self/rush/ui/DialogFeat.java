@@ -13,6 +13,14 @@ import ru.mitrakov.self.rush.Localizable;
  */
 
 public abstract class DialogFeat extends Dialog implements Localizable {
+    public static void hideAll(Stage stage) {
+        assert stage != null;
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof Window)
+                actor.remove(); // It is SAFE! See SnapshotArray<T>
+        }
+    }
+
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 

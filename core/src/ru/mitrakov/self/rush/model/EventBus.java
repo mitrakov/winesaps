@@ -204,6 +204,14 @@ public class EventBus {
             this.skuGems = skuGems;
         }
     }
+    public static final class PaymentDoneEvent extends Event {
+        public final int gems;
+        public final String coupon;
+        PaymentDoneEvent(int gems, String coupon) {
+            this.gems = gems;
+            this.coupon = coupon;
+        }
+    }
 
 
     // =====================================

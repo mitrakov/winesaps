@@ -594,9 +594,9 @@ public class Model {
         }
     }
 
-    public void requestSkuGems(String sku) {
+    public void requestSkuGems() {
         if (connected && sender != null) {
-            sender.send(GET_SKU_GEMS, sku);
+            sender.send(GET_SKU_GEMS);
         }
     }
 
@@ -840,6 +840,10 @@ public class Model {
             }
         }
         bus.raise(new EventBus.SkuGemsUpdatedEvent(res));
+    }
+
+    public void paymentDone(int gems, String coupon) {
+        bus.raise(new EventBus.PaymentDoneEvent(gems, coupon));
     }
 
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
