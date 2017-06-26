@@ -16,16 +16,23 @@ import ru.mitrakov.self.rush.ui.*;
  * Created by mitrakov on 05.03.2017
  */
 public class DialogPurchase extends DialogFeat {
-    public DialogPurchase(Skin skin, String windowStyleName) {
+    private final Label lblError;
+
+    public DialogPurchase(Skin skin, String windowStyleName, I18NBundle i18n) {
         super("", skin, windowStyleName);
+        Table table = getContentTable();
+        assert i18n != null && table != null;
+
+        table.pad(20).add(lblError = new Label(i18n.format("dialog.crystals.error"), skin));
         button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
-        assert bundle != null;
         Table table = getContentTable();
-        assert table != null;
+        assert bundle != null && table != null;
+
+        lblError.setText(bundle.format("dialog.crystals.error"));
 
         // gems count info ("10 gems", "35 gems", etc.)
         for (Actor actor : table.getChildren()) {
@@ -85,7 +92,6 @@ public class DialogPurchase extends DialogFeat {
             table.add(new Label(sku.price, skin)).spaceLeft(20);
         }
 
-        table.pad(20);
         pack();
     }
 }
