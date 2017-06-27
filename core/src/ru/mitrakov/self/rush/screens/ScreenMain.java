@@ -132,7 +132,7 @@ public class ScreenMain extends LocalizableScreen {
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", atlasMenu, audioManager, i18n);
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default", i18n);

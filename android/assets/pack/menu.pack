@@ -136,3 +136,10 @@ win
   orig: 32, 32
   offset: 0, 0
   index: -1
+gem_small
+  rotate: false
+  xy: 252, 78
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1

@@ -18,28 +18,14 @@ import ru.mitrakov.self.rush.AudioManager;
  * Class is NOT thread-safe
  */
 public class DialogBuyAbilities extends DialogFeat {
-
-    static private class Item {
-        Product product;
-        String text;
-
-        Item(Product p, String s) {
-            this.product = p;
-            this.text = s;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
-    }
-
     private final Model model;
+    private final Skin skin;
     private final Label lblCrystals;
     private final Label lblCurAbility;
     private final Label lblTotalCrystals;
     private final Image imgGoods;
-    private final List<Item> productsList;
+    private final Table productsList = new Table();
+    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasGoods = new TextureAtlas(Gdx.files.internal("pack/goods.pack"));
 
@@ -47,15 +33,15 @@ public class DialogBuyAbilities extends DialogFeat {
 
     private I18NBundle i18n;
     private int crystals = 0;
+    private Product selectedItem;
 
-    public DialogBuyAbilities(final Model model, Skin skin, String style, TextureAtlas atlas, AudioManager audioManager,
-                              I18NBundle i18n) {
+    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
         super("", skin, style);
-        assert model != null && atlas != null && audioManager != null && i18n != null;
+        assert model != null && audioManager != null && i18n != null;
         this.model = model;
+        this.skin = skin;
         this.i18n = i18n;
 
-        productsList = new List<Item>(skin, "default");
         lblTotalCrystals = new Label("", skin, "default");
         lblCrystals = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
@@ -64,7 +50,7 @@ public class DialogBuyAbilities extends DialogFeat {
         button("Buy", true); // text will be replaced in onLocaleChanged()
         button("Close");     // text will be replaced in onLocaleChanged()
 
-        init(getContentTable(), loadTextures(audioManager), skin, atlas);
+        init(getContentTable(), loadTextures(audioManager), skin);
     }
 
     @Override
@@ -75,8 +61,8 @@ public class DialogBuyAbilities extends DialogFeat {
 
     @Override
     protected void result(Object object) {
-        if (object != null && productsList.getSelected() != null) // "Buy" is pressed
-            model.buyProduct(productsList.getSelected().product);
+        if (object != null && selectedItem != null) // "Buy" is pressed
+            model.buyProduct(selectedItem);
     }
 
     @Override
@@ -104,6 +90,7 @@ public class DialogBuyAbilities extends DialogFeat {
 
     public void dispose() {
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
+        atlasMenu.dispose();
         atlasGoods.dispose();
     }
 
@@ -136,13 +123,13 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
-    private void init(Table table, final Array<Actor> abilities, Skin skin, TextureAtlas atlas) {
-        assert table != null && skin != null && atlas != null;
+    private void init(Table table, final Array<Actor> abilities, Skin skin) {
+        assert table != null && skin != null;
 
         // create gem table (label + image)
         Table tableGems = new Table();
         tableGems.add(lblCrystals).spaceRight(5);
-        tableGems.add(new Image(atlas.findRegion("gem"))); // TextureRegion may be NULL
+        tableGems.add(new Image(atlasMenu.findRegion("gem"))); // TextureRegion may be NULL
 
         // build content table
         table.pad(16);
@@ -165,16 +152,46 @@ public class DialogBuyAbilities extends DialogFeat {
     private void rebuildContent(Model.Ability ability) {
         assert i18n != null;
 
+        // update labels and images
         lblCrystals.setText(String.valueOf(crystals));
         imgGoods.setDrawable(abilityIcons.get(ability));
         lblCurAbility.setText(i18n.format(String.format("ability.%s", ability.name().toLowerCase())));
 
+        // reset selectedItem to avoid unexpected purchases
+        selectedItem = null;
+
         // updating products for a chosen ability
+        productsList.clear();
         Collection<Product> products = model.getProductsByAbility(ability);
-        Array<Item> items = new Array<Item>(products.size());
-        for (Product product : products) {
-            items.add(new Item(product, i18n.format("product", product.days, product.crystals)));
+        for (final Product product : products) {
+            Table t = new Table(skin) {{
+                addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        selectedItem = product;
+                        for (Actor actor : productsList.getChildren()) {
+                            if (actor instanceof Table)
+                                ((Table) actor).setBackground((Drawable) null);
+                        }
+                        setBackground("peach");
+                        return super.touchDown(event, x, y, pointer, button);
+                    }
+                });
+            }};
+            t.add(new Label(i18n.format("product", product.days), skin, "small")).minWidth(80).left();
+            t.add(new Label(String.valueOf(product.crystals), skin, "small")).spaceLeft(16);
+            t.add(new Image(atlasMenu.findRegion("gem_small")));
+            productsList.add(t);
+            productsList.row();
         }
-        productsList.setItems(items); // in Java 8 may be replaced with lambda
+
+        // programmatically select the first product
+        Array<Actor> rows = productsList.getChildren();
+        if (rows.size > 0) {
+            for (EventListener listener : rows.first().getListeners()) {
+                if (listener instanceof ClickListener)
+                    ((ClickListener) listener).touchDown(null, 0, 0, 0, 0);
+            }
+        }
     }
 }
