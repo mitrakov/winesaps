@@ -47,15 +47,19 @@ class InputController {
             // MOVEMENT HANDLING (restricted by TOUCH_DELAY intervals)
             if (movesAllowed) {
                 if (mouseButton >= 0) {
-                    // getting coordinates
+                    // get server oriented coordinates
                     int touchX = Gui.convertXFromScreenToModel(x);
                     int touchY = Gui.convertYFromScreenToModel(y);
 
                     // check
-                    if (touchY < actor.getY()) return moveUp();
+                    if (touchX < actor.getX() && touchY < actor.getY()) return moveLeftUp();
+                    else if (touchX < actor.getX() && touchY > actor.getY()) return moveLeftDown();
+                    else if (touchX > actor.getX() && touchY < actor.getY()) return moveRightUp();
+                    else if (touchX > actor.getX() && touchY > actor.getY()) return moveRightDown();
+                    else if (touchY < actor.getY()) return moveUp();
                     else if (touchY > actor.getY()) return moveDown();
-                    else if (touchX > actor.getX()) return moveRight();
                     else if (touchX < actor.getX()) return moveLeft();
+                    else if (touchX > actor.getX()) return moveRight();
                 } else if (input.isKeyPressed(Keys.W) && input.isKeyPressed(Keys.A)) return moveLeftUp();
                 else if (input.isKeyPressed(Keys.S) && input.isKeyPressed(Keys.A)) return moveLeftDown();
                 else if (input.isKeyPressed(Keys.W) && input.isKeyPressed(Keys.D)) return moveRightUp();
