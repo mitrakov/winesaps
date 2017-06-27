@@ -132,7 +132,7 @@ public class ScreenMain extends LocalizableScreen {
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
+        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", atlasMenu, audioManager, i18n);
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
@@ -614,8 +614,8 @@ public class ScreenMain extends LocalizableScreen {
         }
 
         // === Gems Data ===
-        tableGemsData.add(lblCrystalsData).spaceRight(10);
-        tableGemsData.add(new Image(new TextureRegionDrawable(atlasMenu.findRegion("gem"))));
+        tableGemsData.add(lblCrystalsData).spaceRight(5);
+        tableGemsData.add(new Image(atlasMenu.findRegion("gem"))); // TextureRegion may be NULL
     }
 
     private void rebuildLeftTable(boolean showInputName) {

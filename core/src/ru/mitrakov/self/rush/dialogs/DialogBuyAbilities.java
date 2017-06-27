@@ -48,9 +48,10 @@ public class DialogBuyAbilities extends DialogFeat {
     private I18NBundle i18n;
     private int crystals = 0;
 
-    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
+    public DialogBuyAbilities(final Model model, Skin skin, String style, TextureAtlas atlas, AudioManager audioManager,
+                              I18NBundle i18n) {
         super("", skin, style);
-        assert model != null && audioManager != null && i18n != null;
+        assert model != null && atlas != null && audioManager != null && i18n != null;
         this.model = model;
         this.i18n = i18n;
 
@@ -63,7 +64,7 @@ public class DialogBuyAbilities extends DialogFeat {
         button("Buy", true); // text will be replaced in onLocaleChanged()
         button("Close");     // text will be replaced in onLocaleChanged()
 
-        init(getContentTable(), loadTextures(audioManager), skin);
+        init(getContentTable(), loadTextures(audioManager), skin, atlas);
     }
 
     @Override
@@ -135,12 +136,18 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
-    private void init(Table table, final Array<Actor> abilities, Skin skin) {
-        assert table != null && skin != null;
+    private void init(Table table, final Array<Actor> abilities, Skin skin, TextureAtlas atlas) {
+        assert table != null && skin != null && atlas != null;
 
+        // create gem table (label + image)
+        Table tableGems = new Table();
+        tableGems.add(lblCrystals).spaceRight(5);
+        tableGems.add(new Image(atlas.findRegion("gem"))); // TextureRegion may be NULL
+
+        // build content table
         table.pad(16);
         table.add(lblTotalCrystals);
-        table.add(lblCrystals).left();
+        table.add(tableGems).left();
         table.row();
         table.add(new Table() {{
             for (Actor actor : abilities) {
