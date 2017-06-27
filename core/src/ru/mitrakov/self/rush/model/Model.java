@@ -8,7 +8,6 @@ import java.util.concurrent.*;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
-import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
@@ -143,13 +142,10 @@ public class Model {
     // =============================
 
     public static synchronized String md5(String s) {
-        log("calculating md5 for: ", s);
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
             byte[] bytes = MessageDigest.getInstance("md5").digest(getBytes(s));
-            String res = String.format("%032x", new BigInteger(1, bytes)); // use "%032x" instead of "%32x"!
-            log("md5 = ", res);
-            return res;
+            return String.format("%032x", new BigInteger(1, bytes)); // use "%032x" instead of "%32x"!
         } catch (NoSuchAlgorithmException ignored) {
             return "";
         }
@@ -613,6 +609,7 @@ public class Model {
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
+                sender.reset(); // clean up sid/token pair
                 hash = "";
                 saveSettings(); // to write empty hash to a local storage
             }

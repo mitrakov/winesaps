@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.dialogs.DialogInfo;
+import ru.mitrakov.self.rush.dialogs.*;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -41,6 +41,7 @@ public class ScreenLogin extends LocalizableScreen {
     private final Drawable textureFr;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
+    private final DialogLock connectingDialog;
 
     private enum CurDialog {Start, SignIn, SignUp}
 
@@ -99,6 +100,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    connectingDialog.show(stage);
                     model.signIn(txtLogin.getText(), txtPassword.getText());
                 }
             });
@@ -109,8 +111,10 @@ public class ScreenLogin extends LocalizableScreen {
                 public void changed(ChangeEvent event, Actor actor) {
                     assert i18n != null;
                     String password = txtPassword.getText();
-                    if (password.length() >= 4)
+                    if (password.length() >= 4) {
+                        connectingDialog.show(stage);
                         model.signUp(txtLogin.getText(), password, txtEmail.getText(), txtPromocode.getText());
+                    }
                     else infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
                 }
             });
@@ -142,6 +146,7 @@ public class ScreenLogin extends LocalizableScreen {
         lblPassword = new Label("", skin, "default");
         lblEmail = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
+        connectingDialog = new DialogLock(skin, "panel-lock");
 
         // set up layout
         table.add(createLangTable(audioManager)).right();
@@ -198,6 +203,7 @@ public class ScreenLogin extends LocalizableScreen {
         lblName.setText(bundle.format("sign.name"));
         lblPassword.setText(bundle.format("sign.password"));
         lblEmail.setText(bundle.format("sign.email"));
+        connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
     @Override
@@ -222,6 +228,7 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void handleEventBackground(EventBus.Event event) {
+        connectingDialog.remove();
         if (event instanceof EventBus.PromocodeValidChangedEvent) {
             EventBus.PromocodeValidChangedEvent ev = (EventBus.PromocodeValidChangedEvent) event;
             imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
