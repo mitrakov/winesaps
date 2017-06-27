@@ -240,11 +240,15 @@ class Parser implements IHandler {
     }
 
     private void rangeOfProducts(Cmd cmd, IIntArray data) {
-        if (data.length() % 3 == 0)
-            model.setRangeOfProducts(data);
-        else if (data.length() == 1)
-            inspectError(cmd, data.get(0));
-        else throw new IllegalArgumentException("Incorrect range-of-products format");
+        if (data.length() > 0) {
+            int error = data.get(0);
+            if (error == 0) {
+                data.remove(0, 1);
+                if (data.length() % 3 == 0)
+                    model.setRangeOfProducts(data);
+                else throw new IllegalArgumentException("Incorrect range-of-products triples format");
+            } else inspectError(cmd, error);
+        } else throw new IllegalArgumentException("Incorrect range-of-products format");
     }
 
     private void roundInfo(Cmd cmd, IIntArray data) {
@@ -386,11 +390,14 @@ class Parser implements IHandler {
     }
 
     private void checkPromocode(Cmd cmd, IIntArray data) {
-        if (data.length() == 1) {
-            int res = data.get(0);
-            if (res == 0 || res == 1) {
-                model.setPromocodeValid(res == 1);
-            } else inspectError(cmd, res);
+        if (data.length() == 2) {
+            int error = data.get(0);
+            if (error == 0) {
+                int ok = data.get(1);
+                model.setPromocodeValid(ok == 1);
+            } else inspectError(cmd, error);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect checkPromocode format");
     }
 
