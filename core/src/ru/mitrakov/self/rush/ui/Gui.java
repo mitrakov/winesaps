@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.Cells.*;
-import ru.mitrakov.self.rush.ui.InputController.MoveResult;
 
 /**
  * Created by mitrakov on 23.02.2017
@@ -233,7 +232,7 @@ public class Gui extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         controller.checkInput();
         if (++frameNumber - lastMoveFrame >= FRAMES_PER_MOVE) {
-            if (controller.checkMovement(listener.getPressedButton(), listener.x, listener.y) != MoveResult.None)
+            if (controller.checkMovement(listener.getPressedButton(), listener.x, listener.y))
                 lastMoveFrame = frameNumber;
         }
 

@@ -88,10 +88,10 @@ public class Model {
         FULL_STATE,        // 16
         ROUND_INFO,        // 17
         ABILITY_LIST,      // 18
-        MOVE_LEFT,         // 19
-        MOVE_RIGHT,        // 20
-        MOVE_UP,           // 21
-        MOVE_DOWN,         // 22
+        MOVE,              // 19
+        RESERVED_14,       // 20
+        RESERVED_15,       // 21
+        RESERVED_16,       // 22
         USE_THING,         // 23
         USE_SKILL,         // 24
         GIVE_UP,           // 25
@@ -127,6 +127,8 @@ public class Model {
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
 
     public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
+
+    public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
@@ -518,42 +520,32 @@ public class Model {
     }
 
     /**
-     * Sends MOVE_LEFT battle command to the server
+     * Sends MOVE battle command to the server
      */
-    public void moveLeft() {
+    public void move(MoveDirection direction) {
         if (connected && sender != null && curActor != null) {
-            if (curActor.getX() > 0)
-                sender.send(MOVE_LEFT);
-        }
-    }
-
-    /**
-     * Sends MOVE_RIGHT battle command to the server
-     */
-    public void moveRight() {
-        if (connected && sender != null && curActor != null) {
-            if (curActor.getX() < Field.WIDTH - 1)
-                sender.send(MOVE_RIGHT);
-        }
-    }
-
-    /**
-     * Sends MOVE_UP battle command to the server
-     */
-    public void moveUp() {
-        if (connected && sender != null && curActor != null) {
-            if (curActor.getY() > 0)
-                sender.send(MOVE_UP);
-        }
-    }
-
-    /**
-     * Sends MOVE_DOWN battle command to the server
-     */
-    public void moveDown() {
-        if (connected && sender != null && curActor != null) {
-            if (curActor.getY() < Field.HEIGHT - 1)
-                sender.send(MOVE_DOWN);
+            // simple checks to relieve the server
+            switch (direction) {
+                case LeftDown:
+                    if (curActor.getX() == 0 && curActor.getY() == Field.HEIGHT - 1) return;
+                    break;
+                case Left:
+                    if (curActor.getX() == 0) return;
+                    break;
+                case LeftUp:
+                    if (curActor.getX() == 0 && curActor.getY() == 0) return;
+                    break;
+                case RightDown:
+                    if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == Field.HEIGHT - 1) return;
+                    break;
+                case Right:
+                    if (curActor.getX() == Field.WIDTH - 1) return;
+                    break;
+                case RightUp:
+                    if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
+                    break;
+            }
+            sender.send(MOVE, direction.ordinal());
         }
     }
 
