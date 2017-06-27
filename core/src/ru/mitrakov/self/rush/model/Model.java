@@ -89,18 +89,18 @@ public class Model {
         ROUND_INFO,        // 17
         ABILITY_LIST,      // 18
         MOVE,              // 19
-        RESERVED_14,       // 20
-        RESERVED_15,       // 21
-        RESERVED_16,       // 22
-        USE_THING,         // 23
-        USE_SKILL,         // 24
-        GIVE_UP,           // 25
-        STATE_CHANGED,     // 26
-        SCORE_CHANGED,     // 27
-        PLAYER_WOUNDED,    // 28
-        THING_TAKEN,       // 29
-        OBJECT_APPENDED,   // 30
-        FINISHED,          // 31
+        USE_THING,         // 20
+        USE_SKILL,         // 21
+        GIVE_UP,           // 22
+        STATE_CHANGED,     // 23
+        SCORE_CHANGED,     // 24
+        EFFECT_CHANGED,    // 25
+        PLAYER_WOUNDED,    // 26
+        THING_TAKEN,       // 27
+        OBJECT_APPENDED,   // 28
+        FINISHED,          // 29
+        RESERVED_1E,       // 30
+        RESERVED_1F,       // 31
         RATING,            // 32
         FRIEND_LIST,       // 33
         ADD_FRIEND,        // 34
@@ -108,16 +108,7 @@ public class Model {
         CHECK_PROMOCODE,   // 36
         PROMOCODE_DONE,    // 37
         GET_SKU_GEMS,      // 38
-        CHECK_PURCHASE,    // 39
-        RESERVED_28,       // 40
-        RESERVED_29,       // 41
-        RESERVED_2A,       // 42
-        RESERVED_2B,       // 43
-        RESERVED_2C,       // 44
-        RESERVED_2D,       // 45
-        RESERVED_2E,       // 46
-        RESERVED_2F,       // 47
-        EFFECT_CHANGED     // 48
+        CHECK_PURCHASE     // 39
     }
 
     public enum Language {English, Russian, Spanish, Portuguese, French}
