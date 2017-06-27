@@ -44,6 +44,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableRightContentHistory = new Table();
     private final Table tableRightContentFriends = new Table();
     private final Table tableFriendsControl = new Table();
+    private final Table tableGemsData = new Table();
     private final DialogPromocode promocodeDialog;
     private final DialogPurchase purchaseDialog;
     private final DialogFeat moreCrystalsDialog;
@@ -611,6 +612,10 @@ public class ScreenMain extends LocalizableScreen {
             tableRightContentHistory.add(new Label("", skin, "title"));
             tableRightContentHistory.add(new Image());
         }
+
+        // === Gems Data ===
+        tableGemsData.add(lblCrystalsData).spaceRight(10);
+        tableGemsData.add(new Image(new TextureRegionDrawable(atlasMenu.findRegion("gem"))));
     }
 
     private void rebuildLeftTable(boolean showInputName) {
@@ -650,7 +655,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.add().expandY();
                 tableRightContent.row();
                 tableRightContent.add(lblCrystalsHeader);
-                tableRightContent.add(lblCrystalsData);
+                tableRightContent.add(tableGemsData);
                 tableRightContent.row().spaceTop(16);
                 tableRightContent.add(lblAbilities);
                 tableRightContent.add(tableRightContentAbilitiesScroll).pad(4).expandX().fill();
