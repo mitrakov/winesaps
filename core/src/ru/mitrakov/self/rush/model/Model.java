@@ -609,7 +609,7 @@ public class Model {
     public void setAuthorized(boolean value) {
         authorized = value;
         if (connected && sender != null) {
-            if (authorized) {
+            if (value) {
                 sender.send(RANGE_OF_PRODUCTS);
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
@@ -617,7 +617,7 @@ public class Model {
                 saveSettings(); // to write empty hash to a local storage
             }
         }
-        bus.raise(new EventBus.AuthorizedChangedEvent(authorized));
+        bus.raise(new EventBus.AuthorizedChangedEvent(value));
     }
 
     public void setUserInfo(IIntArray data) {
