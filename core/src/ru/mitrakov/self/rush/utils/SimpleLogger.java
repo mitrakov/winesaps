@@ -17,7 +17,7 @@ public class SimpleLogger {
     private final static Model.IFileReader fileReader = new FileReader();
     private final static Format sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
     private final static boolean LOG_TO_FILE = false; // don't forget about WRITE_EXTERNAL_STORAGE permission
-    private final static boolean LOG_TO_SOUT = true;
+    private final static boolean LOG_TO_SOUT = false;
 
     public static synchronized void log(String prefix, Object s) {
         if (LOG_TO_FILE) {
