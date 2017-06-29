@@ -186,7 +186,7 @@ public class Model {
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
-    public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#1
+    public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#2
 
     // ===========================
     // === PUBLIC FINAL FIELDS ===

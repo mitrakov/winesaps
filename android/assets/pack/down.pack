@@ -5,84 +5,112 @@ filter: Nearest,Nearest
 repeat: none
 Dais0
   rotate: false
-  xy: 2, 2
+  xy: 2, 96
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Dais1
   rotate: false
-  xy: 18, 2
+  xy: 2, 66
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Dais2
   rotate: false
-  xy: 34, 2
+  xy: 18, 96
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
 Dais3
   rotate: false
-  xy: 50, 2
+  xy: 2, 36
   size: 14, 28
   orig: 14, 28
   offset: 0, 0
   index: -1
+Stair0
+  rotate: false
+  xy: 18, 73
+  size: 14, 21
+  orig: 14, 21
+  offset: 0, 0
+  index: -1
+Stair1
+  rotate: false
+  xy: 34, 103
+  size: 14, 21
+  orig: 14, 21
+  offset: 0, 0
+  index: -1
+Stair2
+  rotate: false
+  xy: 2, 13
+  size: 14, 21
+  orig: 14, 21
+  offset: 0, 0
+  index: -1
+Stair3
+  rotate: false
+  xy: 18, 50
+  size: 14, 21
+  orig: 14, 21
+  offset: 0, 0
+  index: -1
 Block0
   rotate: false
-  xy: 66, 16
+  xy: 34, 87
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block1
   rotate: false
-  xy: 82, 16
+  xy: 18, 34
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block2
   rotate: false
-  xy: 98, 16
+  xy: 34, 71
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block3
   rotate: false
-  xy: 114, 16
+  xy: 18, 18
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water0
   rotate: false
-  xy: 130, 16
+  xy: 34, 55
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water1
   rotate: false
-  xy: 146, 16
+  xy: 34, 39
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water2
   rotate: false
-  xy: 162, 16
+  xy: 34, 23
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water3
   rotate: false
-  xy: 178, 16
+  xy: 18, 2
   size: 14, 14
   orig: 14, 14
   offset: 0, 0

@@ -199,14 +199,14 @@ BoxThing
   orig: 28, 28
   offset: 0, 0
   index: -1
-FlashbangThing
+DetectorThing
   rotate: false
   xy: 747, 68
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
-DetectorThing
+FlashbangThing
   rotate: false
   xy: 777, 98
   size: 28, 28
@@ -293,34 +293,6 @@ BeamChunk
 Box
   rotate: false
   xy: 747, 59
-  size: 14, 7
-  orig: 14, 7
-  offset: 0, 0
-  index: -1
-Stair0
-  rotate: false
-  xy: 170, 62
-  size: 14, 7
-  orig: 14, 7
-  offset: 0, 0
-  index: -1
-Stair1
-  rotate: false
-  xy: 144, 32
-  size: 14, 7
-  orig: 14, 7
-  offset: 0, 0
-  index: -1
-Stair2
-  rotate: false
-  xy: 871, 119
-  size: 14, 7
-  orig: 14, 7
-  offset: 0, 0
-  index: -1
-Stair3
-  rotate: false
-  xy: 30, 7
   size: 14, 7
   orig: 14, 7
   offset: 0, 0

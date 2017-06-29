@@ -31,7 +31,7 @@ public class DesktopLauncher extends JFrame {
         // register single instance application
         registerInstance();
         try {
-            Thread.sleep(200); // see note below
+            Thread.sleep(200); // see note#3 below
         } catch (InterruptedException ignored) {
         }
 
