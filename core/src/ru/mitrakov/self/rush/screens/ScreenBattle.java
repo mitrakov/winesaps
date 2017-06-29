@@ -36,8 +36,8 @@ public class ScreenBattle extends LocalizableScreen {
     private boolean outOfSync = false;
     private I18NBundle i18n;
 
-    public ScreenBattle(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                        I18NBundle i18n) {
+    public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, Skin skin,
+                        final AudioManager audioManager, I18NBundle i18n) {
         super(game, model, psObject, skin, audioManager);
         assert i18n != null;
         this.i18n = i18n;
@@ -47,11 +47,19 @@ public class ScreenBattle extends LocalizableScreen {
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default");
+        finishedDialog = new DialogFinished(skin, "default");
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
+
+        infoDialog.setOnResultAction(new Runnable() {
+            @Override
+            public void run() {
+                audioManager.music("theme");
+                game.setNextScreen();
+            }
+        });
 
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
@@ -115,7 +123,7 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound("round");
             reset();
             String msg = ev.winner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
-            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(false);
+            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setOnResultAction(null);
             finishedDialog.show(stage);
         }
         if (event instanceof EventBus.GameFinishedEvent) {
@@ -124,8 +132,13 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound("game");
             String header = i18n.format("battle.finish");
             String msg = ev.winner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
-            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2).setQuitOnResult(true);
-            finishedDialog.show(stage);
+            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2);
+            finishedDialog.setOnResultAction(new Runnable() {
+                @Override
+                public void run() {
+                    game.setNextScreen();
+                }
+            }).show(stage);
             audioManager.music("theme");
         }
         if (event instanceof EventBus.ScoreChangedEvent) {
@@ -154,14 +167,6 @@ public class ScreenBattle extends LocalizableScreen {
                 audioManager.sound(ev.oldThing.getClass().getSimpleName());
             else if (ev.newThing != null)
                 audioManager.sound("thing");
-        }
-        if (event instanceof EventBus.BattleNotFoundEvent) {
-            gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
-            //audioManager.sound("..."); find appropriate sound!
-            String header = i18n.format("battle.out.of.sync");
-            String msg = i18n.format("battle.out.of.sync.exit");
-            finishedDialog.setText(header, msg).setScore(0, 0).setQuitOnResult(true).show(stage);
-            audioManager.music("theme");
         }
         if (event instanceof EventBus.StyleChangedEvent) {
             EventBus.StyleChangedEvent ev = (EventBus.StyleChangedEvent) event;

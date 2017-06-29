@@ -11,7 +11,6 @@ import ru.mitrakov.self.rush.Localizable;
 /**
  * Created by mitrakov on 27.03.2017
  */
-
 public abstract class DialogFeat extends Dialog implements Localizable {
     public static void hideAll(Stage stage) {
         assert stage != null;
@@ -20,6 +19,8 @@ public abstract class DialogFeat extends Dialog implements Localizable {
                 actor.remove(); // It is SAFE! See SnapshotArray<T>
         }
     }
+
+    private Runnable onResultAction;
 
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
@@ -46,7 +47,19 @@ public abstract class DialogFeat extends Dialog implements Localizable {
     }
 
     @Override
+    protected void result(Object object) {
+        super.result(object);
+        if (onResultAction != null)
+            onResultAction.run();
+    }
+
+    @Override
     public void hide() {
         hide(null); // null = close immediately (without fadeOut)
+    }
+
+    public DialogFeat setOnResultAction(Runnable f) {
+        onResultAction = f;
+        return this;
     }
 }

@@ -1018,11 +1018,6 @@ public class Model {
     public void setSignUpError() {
         bus.raise(new EventBus.SignUpErrorEvent());
     }
-
-    public void setBattleNotFound() {
-        bus.raise(new EventBus.BattleNotFoundEvent());
-        field = null; // reset reference to a field
-    }
 }
 
 // note#2 (@mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8

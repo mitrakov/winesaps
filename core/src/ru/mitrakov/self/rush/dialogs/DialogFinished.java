@@ -6,25 +6,19 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
 public class DialogFinished extends DialogFeat {
-    private final Winesaps game;
     private final Label lblMessage1;
     private final Label lblMessage2;
     private final Label lblTotalScore;
     private final Label lblScore;
 
-    private boolean quitOnResult = false;
-
-    public DialogFinished(Winesaps game, Skin skin, String windowStyleName) {
+    public DialogFinished(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
-        assert game != null;
-        this.game = game;
         lblMessage1 = new Label("", skin, "default");
         lblMessage2 = new Label("", skin, "default");
         lblTotalScore = new Label("", skin, "default");
@@ -32,12 +26,6 @@ public class DialogFinished extends DialogFeat {
 
         init(getContentTable());
         button("OK"); // text will be replaced in onLocaleChanged()
-    }
-
-    @Override
-    protected void result(Object object) {
-        if (quitOnResult)
-            game.setNextScreen();
     }
 
     @Override
@@ -67,11 +55,6 @@ public class DialogFinished extends DialogFeat {
 
     public DialogFinished setScore(int score1, int score2) {
         lblScore.setText(String.format(Locale.getDefault(), "%d - %d", score1, score2));
-        return this;
-    }
-
-    public DialogFinished setQuitOnResult(boolean value) {
-        quitOnResult = value;
         return this;
     }
 

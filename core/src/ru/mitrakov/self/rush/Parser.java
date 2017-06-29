@@ -458,6 +458,7 @@ class Parser implements IHandler {
     private void inspectError(Cmd cmd, int code) {
         switch (code) {
             case 0: // no error
+            case ERR_BATTLE_NOT_FOUND: // it is possible on a battle finish in case of slow network... just skip
                 break;
             case ERR_SIGNIN_INCORRECT_PASSWORD:
                 model.setIncorrectCredentials();
@@ -470,9 +471,6 @@ class Parser implements IHandler {
                 break;
             case ERR_DEFENDER_BUSY:
                 model.setUserBusy(false);
-                break;
-            case ERR_BATTLE_NOT_FOUND: // reconnected in a battle screen when the battle had been already finished
-                model.setBattleNotFound();
                 break;
             case ERR_SIGN_UP:
                 model.setSignUpError();

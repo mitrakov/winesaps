@@ -89,6 +89,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     @Override
     public void show() {
+        connectingDialog.remove(); // hide dialog if it was already opened before
         connected = model.connected;
         Gdx.input.setInputProcessor(stage);
     }

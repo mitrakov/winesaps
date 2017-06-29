@@ -34,7 +34,7 @@ public class ScreenTraining extends LocalizableScreen {
 
         loadTextures();
         gui = new Gui(model);
-        finishedDialog = new DialogFinished(game, skin, "default");
+        finishedDialog = new DialogFinished(skin, "default");
         trainingDialog = new DialogTraining(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
@@ -97,7 +97,12 @@ public class ScreenTraining extends LocalizableScreen {
                 model.newbie = false;
                 model.giveUp();
                 trainingDialog.remove();
-                finishedDialog.setScore(1, 0).setQuitOnResult(true).show(stage);
+                finishedDialog.setScore(1, 0).setOnResultAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.setNextScreen();
+                    }
+                }).show(stage);
             }
         }
         if (event instanceof EventBus.GameFinishedEvent) {
