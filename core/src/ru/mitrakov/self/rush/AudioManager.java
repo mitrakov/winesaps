@@ -29,7 +29,7 @@ public class AudioManager {
             if (curMusic != null) {
                 curMusicName = name;
                 curMusic.setVolume(.2f);
-                curMusic.setLooping(true);
+                curMusic.setLooping(false);
                 curMusic.play();
             }
         }
