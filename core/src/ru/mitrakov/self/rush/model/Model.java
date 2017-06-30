@@ -876,8 +876,14 @@ public class Model {
         synchronized (locker) {
             field = this.field;
         }
-        if (field != null)
+        if (field != null) {
+            if (xy == Field.TRASH_CELL) {
+                CellObject obj = field.getObjectByNumber(number);
+                if (obj instanceof Cells.Mine)
+                    bus.raise(new EventBus.MineExplodedEvent(obj.xy));
+            }
             field.setXy(number, xy);
+        }
     }
 
     public void setScore(int score1, int score2) {
@@ -916,12 +922,9 @@ public class Model {
             field = this.field;
         }
         if (field != null) {
-            CellObject obj = field.getObjectByNumber(objNumber);
-            if (obj != null) {
-                Effect[] effects = Effect.values();
-                if (0 <= effectId && effectId < effects.length)
-                    obj.setEffect(effects[effectId]);
-            }
+            Effect[] effects = Effect.values();
+            if (0 <= effectId && effectId < effects.length)
+                field.setEffect(objNumber, effects[effectId]);
         }
     }
 

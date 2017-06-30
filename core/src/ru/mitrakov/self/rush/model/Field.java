@@ -12,7 +12,7 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 public class Field {
     public static final int WIDTH = 51;
     public static final int HEIGHT = 5;
-    private static final int FAKE_CELL = WIDTH * HEIGHT;
+    static final int TRASH_CELL = WIDTH * HEIGHT;
 
     interface NextNumber {
         int next();
@@ -48,11 +48,11 @@ public class Field {
             }
         }
         // create fake cell for "removed" objects
-        cells[FAKE_CELL] = Cell.newCell(0, FAKE_CELL, nextNumber);
+        cells[TRASH_CELL] = Cell.newCell(0, TRASH_CELL, nextNumber);
     }
 
     void appendObject(final int number, int id, int xy) {
-        if (xy < 0 || xy > FAKE_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+        if (xy < 0 || xy > TRASH_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
             throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = Cell.newObject(id, xy, new Field.NextNumber() {
@@ -68,7 +68,7 @@ public class Field {
     }
 
     void setXy(int number, int newXy) {
-        if (newXy < 0 || newXy > FAKE_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+        if (newXy < 0 || newXy > TRASH_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
             throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = objects.get(number);
@@ -78,6 +78,11 @@ public class Field {
             cells[oldXy].objects.remove(object);
             cells[newXy].objects.add(object);
         }
+    }
+    void setEffect(int number, Model.Effect effect) {
+        CellObject object = objects.get(number);
+        if (object != null)
+            object.setEffect(effect);
     }
 
     CellObject getObjectById(int id) {
@@ -92,13 +97,6 @@ public class Field {
     }
 
     CellObject getObjectByNumber(int number) {
-        // in Java 8 may be replaced with lambda
-        for (Cell cell : cells) {
-            for (CellObject object : cell.objects) {
-                if (object.getNumber() == number)
-                    return object;
-            }
-        }
-        return null;
+        return objects.get(number);
     }
 }

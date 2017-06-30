@@ -153,6 +153,10 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound(ev.cause.name());
             gui.handleEvent(event);
         }
+        if (event instanceof EventBus.MineExplodedEvent) {
+            audioManager.sound(Model.HurtCause.Exploded.name());
+            gui.handleEvent(event);
+        }
         if (event instanceof EventBus.ThingChangedEvent) {
             EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
             // 1) change button image

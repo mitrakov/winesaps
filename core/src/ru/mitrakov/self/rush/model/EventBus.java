@@ -162,11 +162,17 @@ public class EventBus {
         public final Model.HurtCause cause;
         public final int myLives;
         public final int enemyLives;
-        public PlayerWoundedEvent(int xy, Model.HurtCause cause, int myLives, int enemyLives) {
+        PlayerWoundedEvent(int xy, Model.HurtCause cause, int myLives, int enemyLives) {
             this.xy = xy;
             this.cause = cause;
             this.myLives = myLives;
             this.enemyLives = enemyLives;
+        }
+    }
+    public static final class MineExplodedEvent extends Event {
+        public final int xy;
+        MineExplodedEvent(int xy) {
+            this.xy = xy;
         }
     }
     public static final class ThingChangedEvent extends Event {

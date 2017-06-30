@@ -86,7 +86,6 @@ public class Gui extends Actor {
             new IntMap<AnimationData<Model.Character>>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
-    private final IntSet mineIndices = new IntSet();
     private final ObjectSet<Class> heightOffsets = new ObjectSet<Class>(1);
     private final Animation<TextureRegion> animWaterfall;
     private final Animation<TextureRegion> animWaterfallSmall;
@@ -261,10 +260,10 @@ public class Gui extends Actor {
             drawAnimatedObjects(field, batch, dt);
             // draw 8-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
-            //
-            drawExplosions(field, batch, dt);
-            drawSmoke(batch, dt);
-            //
+            // draw 9-th layer (smokes, explosions)
+            drawSingleAnim(animExplosion, batch, dt);
+            drawSingleAnim(animSmoke, batch, dt);
+            // draw last layer (flare)
             drawFlare(batch, dt);
         }
     }
@@ -279,6 +278,17 @@ public class Gui extends Actor {
                 animSmoke.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
                 animSmoke.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
                 animSmoke.t = 0;
+            }
+        }
+        if (event instanceof EventBus.MineExplodedEvent) {
+            EventBus.MineExplodedEvent ev = (EventBus.MineExplodedEvent) event;
+            Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
+            if (field != null) {
+                float botWidth = getBottomWidth(field.cells[ev.xy]);
+                TextureRegion r = animExplosion.animation.getKeyFrame(0);
+                animExplosion.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - botWidth) / 2;
+                animExplosion.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
+                animExplosion.t = 0;
             }
         }
     }
@@ -611,49 +621,14 @@ public class Gui extends Actor {
         }
     }
 
-    private void drawExplosions(Field field, Batch batch, float dt) {
-        // field != null (assert omitted)
-        // ....
-        for (int j = 0; j < Field.HEIGHT; j++) {
-            for (int i = 0; i < Field.WIDTH; i++) {
-                int idx = j * Field.WIDTH + i;
-                Cell cell = field.cells[idx]; // cell != NULL (assert omitted)
-                if (cell.objectExists(Mine.class))
-                    mineIndices.add(idx);
-            }
-        }
-        // ....
-        IntSet.IntSetIterator iter = mineIndices.iterator();
-        while (iter.hasNext) {
-            int idx = iter.next();
-            Cell cell = field.cells[idx]; // cell != NULL (assert omitted)
-            if (!cell.objectExists(Mine.class)) {
-                iter.remove();
-                float bottomWidth = getBottomWidth(cell);
-                TextureRegion r = animExplosion.animation.getKeyFrame(0); // r != NULL (assert omitted)
-                animExplosion.x = convertXFromModelToScreen(idx % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
-                animExplosion.y = convertYFromModelToScreen(idx / Field.WIDTH);
-                animExplosion.t = 0;
-            }
-        }
-        // ....
-        Animation<TextureRegion> animation = animExplosion.animation; // animation != NULL (assert omitted)
-        if (!animation.isAnimationFinished(animExplosion.t)) {
-            TextureRegion texture = animation.getKeyFrame(animExplosion.t);
+    private void drawSingleAnim(AnimInfo anim, Batch batch, float dt) {
+        // anim != null && batch != null (assert omitted)
+        Animation<TextureRegion> animation = anim.animation; // animation != NULL (assert omitted)
+        if (!animation.isAnimationFinished(anim.t)) {
+            TextureRegion texture = animation.getKeyFrame(anim.t);
             if (texture != null)
-                batch.draw(texture, animExplosion.x, animExplosion.y);
-            animExplosion.t += dt;
-        }
-    }
-
-    private void drawSmoke(Batch batch, float dt) {
-        // field != null (assert omitted)
-        Animation<TextureRegion> animation = animSmoke.animation; // animation != NULL (assert omitted)
-        if (!animation.isAnimationFinished(animSmoke.t)) {
-            TextureRegion texture = animation.getKeyFrame(animSmoke.t);
-            if (texture != null)
-                batch.draw(texture, animSmoke.x, animSmoke.y);
-            animSmoke.t += dt;
+                batch.draw(texture, anim.x, anim.y);
+            anim.t += dt;
         }
     }
 
