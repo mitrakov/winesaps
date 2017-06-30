@@ -610,8 +610,7 @@ public class Model {
                 sender.send(FRIEND_LIST); // without this "InviteByName" dialog suggests to add everyone to friends
             } else {
                 sender.reset(); // clean up sid/token pair
-                hash = "";
-                saveSettings(); // to write empty hash to a local storage
+                // hash = ""; saveSettings(); @mitrakov (2017-06-30): Do not clear hash, it may cause unexpected bugs
             }
         }
         bus.raise(new EventBus.AuthorizedChangedEvent(value));
