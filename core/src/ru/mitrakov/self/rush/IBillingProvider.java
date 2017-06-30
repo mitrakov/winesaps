@@ -27,8 +27,7 @@ public interface IBillingProvider {
         }
         @Override
         public String toString() {
-            return "Sku{" +
-                    "id='" + id + '\'' + ", description='" + description + '\'' + ", proice='" + price + '\'' + '}';
+            return "Sku{" + "id='" + id + '\'' + ", dscr='" + description + '\'' + ", price='" + price + '\'' + '}';
         }
 
         @Override

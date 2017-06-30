@@ -169,4 +169,17 @@ public class Winesaps extends Game implements Localizable {
                 onLocaleChanged(i18nEn);
         }
     }
+
+    public String getDebugInfo(String key) {
+        // Java-6 doesn't support switch on strings (https://stackoverflow.com/questions/338206)
+        if (key.equals("#!name")) return model.name;
+        if (key.equals("#!hash")) return model.hash;
+        if (key.equals("#!connected")) return model.connected + "";
+        if (key.equals("#!settings")) return model.fileReader.read(Model.SETTINGS_FILE);
+        if (key.equals("#!products")) {
+            if (psObject != null && psObject.getBillingProvider() != null)
+                return psObject.getBillingProvider().getProducts().toString().replaceAll(",",",\n");
+        }
+        return "";
+    }
 }

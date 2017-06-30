@@ -210,8 +210,8 @@ public class Model {
     private static final int PING_PERIOD_MSEC = 60000;
     private static final int SKILL_OFFSET = 0x20;
     private static final int PROMOCODE_LEN = 5;
-    private static final String SETTINGS_FILE = "settings";
     private static final String HISTORY_PREFIX = "history/";
+    public /*private*/ static final String SETTINGS_FILE = "settings"; // public for debug purposes only!
 
     // ============================
     // === USUAL PRIVATE FIELDS ===
@@ -220,12 +220,12 @@ public class Model {
     private final Object locker = new Object();
     private final Collection<Ability> abilities = new LinkedList<Ability>();
     private ISender sender;
-    private IFileReader fileReader;
     private boolean authorized = false;
     private boolean aggressor = true;
-    private String hash = "";
     private CellObject curThing;
     private CellObject enemyThing;
+    public /*private*/ IFileReader fileReader; // public for debug purposes only!
+    public /*private*/ String hash = "";       // public for debug purposes only!
 
     public Model() {
         // create timer to ping the server (otherwise the server will make "signOut due to inaction")

@@ -108,7 +108,7 @@ public class ScreenMain extends LocalizableScreen {
 
     private I18NBundle i18n;
 
-    public ScreenMain(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+    public ScreenMain(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                       I18NBundle i18nArg) {
         super(game, model, psObject, skin, audioManager);
         assert i18nArg != null;
@@ -178,7 +178,10 @@ public class ScreenMain extends LocalizableScreen {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     String name = txtEnemyName.getText();
-                    if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
+                    if (name.startsWith("#!")) {
+                        infoDialog.setText(game.getDebugInfo(name)).show(stage);
+                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                    } else if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
                         inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                         rebuildLeftTable(false);
                     }

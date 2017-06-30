@@ -19,6 +19,7 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
     private final BillingClient client;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final List<Sku> products = new ArrayList<>(3);
+    private final Object productsLocker = new Object();
     private /*final*/ BillingListener listener;
 
     AndroidBillingProvider(Activity activity) {
@@ -44,8 +45,11 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
                                 @Override
                                 public void onSkuDetailsResponse(SkuDetails.SkuDetailsResult result) {
                                     if (result.getResponseCode() == OK) {
-                                        for (SkuDetails d : result.getSkuDetailsList()) {
-                                            products.add(new Sku(d.getSku(), d.getDescription(), d.getPrice()));
+                                        synchronized (productsLocker) { // just in case (Async method on outside API)
+                                            products.clear();
+                                            for (SkuDetails d : result.getSkuDetailsList()) {
+                                                products.add(new Sku(d.getSku(), d.getDescription(), d.getPrice()));
+                                            }
                                         }
                                     } else log("Sku details error! Code:", result.getResponseCode());
                                 }

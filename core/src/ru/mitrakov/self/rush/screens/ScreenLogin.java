@@ -49,7 +49,7 @@ public class ScreenLogin extends LocalizableScreen {
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
+    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
                        I18NBundle i18nb) {
         super(game, model, psObject, skin, audioManager);
         assert i18nb != null;
@@ -100,8 +100,14 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    connectingDialog.show(stage);
-                    model.signIn(txtLogin.getText(), txtPassword.getText());
+                    String name = txtLogin.getText();
+                    if (name.startsWith("#!")) {
+                        infoDialog.setText(game.getDebugInfo(name)).show(stage);
+                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                    } else {
+                        connectingDialog.show(stage);
+                        model.signIn(name, txtPassword.getText());
+                    }
                 }
             });
         }};
