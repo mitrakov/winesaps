@@ -19,36 +19,36 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     @Override
-    public int get(int idx) {
+    public synchronized int get(int idx) {
         return array.get(idx);
     }
 
     @Override
-    public IIntArray add(int item) {
+    public synchronized IIntArray add(int item) {
         array.add(item);
         return this;
     }
 
     @Override
-    public IIntArray prepend(int item) {
+    public synchronized IIntArray prepend(int item) {
         array.insert(0, item);
         return this;
     }
 
     @Override
-    public IIntArray remove(int startPos, int endPos) {
+    public synchronized IIntArray remove(int startPos, int endPos) {
         array.removeRange(startPos, endPos-1);
         return this;
     }
 
     @Override
-    public IIntArray clear() {
+    public synchronized IIntArray clear() {
         array.clear();
         return this;
     }
 
     @Override
-    public int length() {
+    public synchronized int length() {
         return array.size;
     }
 
@@ -60,7 +60,7 @@ public final class GcResistantIntArray implements IIntArray {
      * @return
      */
     @Override
-    public IIntArray copyFrom(IIntArray data, int length) {
+    public synchronized IIntArray copyFrom(IIntArray data, int length) {
         array.clear();
         for (int i = 0; i < Math.min(data.length(), length); i++) {
             array.add(data.get(i));
@@ -69,7 +69,7 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     @Override
-    public IIntArray fromByteArray(byte[] data, int length) {
+    public synchronized IIntArray fromByteArray(byte[] data, int length) {
         array.clear();
         for (int i = 0; i < Math.min(data.length, length); i++) {
             array.add(data[i] >= 0 ? data[i] : data[i] + 256);
@@ -78,7 +78,7 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     @Override
-    public byte[] toByteArray() {
+    public synchronized byte[] toByteArray() {
         for (int i = 0; i < Math.min(bytes.length, array.size) ; i++) {
             bytes[i] = (byte) array.get(i);
         }
@@ -86,7 +86,7 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     @Override
-    public String toUTF8() {
+    public synchronized String toUTF8() {
         try {
             return new String(toByteArray(), 0, array.size, "UTF-8");
         } catch (UnsupportedEncodingException e) {

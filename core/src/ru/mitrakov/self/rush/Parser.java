@@ -6,6 +6,7 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.net.IHandler;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
+import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**
@@ -16,7 +17,8 @@ class Parser implements IHandler {
     private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
-    private static final int ERR_BATTLE_NOT_FOUND = 77;
+    private static final int ERR_BATTLE_NOT_FOUND = 55;
+    private static final int ERR_BATTLE_NOT_FOUND2 = 77;
     private static final int ERR_SIGN_UP = 201;
     private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
     private static final int ERR_NO_CRYSTALS = 215;
@@ -33,6 +35,7 @@ class Parser implements IHandler {
     private final Model model;
     private final PsObject psObject;
     private final Cmd[] commands = Cmd.values();
+    private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
     Parser(Model model, PsObject psObject) {
@@ -42,10 +45,24 @@ class Parser implements IHandler {
     }
 
     @Override
-    public void onReceived(IIntArray data) {
+    public synchronized void onReceived(IIntArray data) {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
+        while (data.length() > 2) {
+            int len = data.get(0)*256 + data.get(1);
+            processMsg(accessorial.copyFrom(data.remove(0, 2), len));
+            data.remove(0, len);
+        }
+    }
 
+    @Override
+    public void onChanged(boolean connected) {
+        model.setConnected(connected);
+    }
+
+    private void processMsg(IIntArray data) {
+        assert data != null;
+        log("Precessing:", data);
         if (data.length() > 0) {
             int code = data.get(0);
             if (0 <= code && code < commands.length) {
@@ -135,11 +152,6 @@ class Parser implements IHandler {
                 }
             } else throw new IllegalArgumentException("Incorrect command code");
         } else throw new IllegalArgumentException("Empty data");
-    }
-
-    @Override
-    public void onChanged(boolean connected) {
-        model.setConnected(connected);
     }
 
     private void signIn(Cmd cmd, IIntArray data) {
@@ -459,6 +471,7 @@ class Parser implements IHandler {
         switch (code) {
             case 0: // no error
             case ERR_BATTLE_NOT_FOUND: // it is possible on a battle finish in case of slow network... just skip
+            case ERR_BATTLE_NOT_FOUND2:
                 break;
             case ERR_SIGNIN_INCORRECT_PASSWORD:
                 model.setIncorrectCredentials();

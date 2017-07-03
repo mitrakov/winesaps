@@ -19,6 +19,7 @@ public final class Network extends Thread implements IHandler {
     private static final int BUF_SIZ_RECV = 1024;
     private static final int HEADER_SIZ = 7;
     private static final int RECONNECT_MSEC = 16000;
+    private static final int FLAGS = 0;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException
@@ -116,8 +117,11 @@ public final class Network extends Thread implements IHandler {
         int h3 = (int) ((token >> 16) & 0xFF);
         int h4 = (int) ((token >> 8) & 0xFF);
         int h5 = (int) (token & 0xFF);
-        int h6 = 0; // flags
-        data.prepend(h6).prepend(h5).prepend(h4).prepend(h3).prepend(h2).prepend(h1).prepend(h0);
+        int h6 = FLAGS;
+        int h7 = data.length() / 256;
+        int h8 = data.length() % 256;
+        data.prepend(h8).prepend(h7).prepend(h6).prepend(h5).prepend(h4).prepend(h3).prepend(h2).prepend(h1)
+                .prepend(h0);
 
         // sending
         if (protocol != null)
