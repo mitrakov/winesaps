@@ -56,7 +56,7 @@ public class ScreenBattle extends LocalizableScreen {
         infoDialog.setOnResultAction(new Runnable() {
             @Override
             public void run() {
-                audioManager.music("theme");
+                audioManager.music("theme", false);
                 game.setNextScreen();
             }
         });
@@ -139,7 +139,7 @@ public class ScreenBattle extends LocalizableScreen {
                     game.setNextScreen();
                 }
             }).show(stage);
-            audioManager.music("theme");
+            audioManager.music("theme", false);
         }
         if (event instanceof EventBus.ScoreChangedEvent) {
             EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
@@ -174,7 +174,7 @@ public class ScreenBattle extends LocalizableScreen {
         }
         if (event instanceof EventBus.StyleChangedEvent) {
             EventBus.StyleChangedEvent ev = (EventBus.StyleChangedEvent) event;
-            audioManager.music(String.format(Locale.getDefault(), "battle%d", ev.stylePack));
+            audioManager.music(String.format(Locale.getDefault(), "battle%d", ev.stylePack), true);
         }
         if (event instanceof EventBus.ConnectedChangeEvent) {
             EventBus.ConnectedChangeEvent ev = (EventBus.ConnectedChangeEvent) event;

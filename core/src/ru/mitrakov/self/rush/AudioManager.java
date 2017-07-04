@@ -15,12 +15,12 @@ public class AudioManager {
     private Music curMusic;
     private String curMusicName = "";
 
-    public AudioManager(String defaultMusic) {
+    public AudioManager(String defaultMusic, boolean loop) {
         if (defaultMusic != null)
-            music(defaultMusic);
+            music(defaultMusic, loop);
     }
 
-    public void music(String name) {
+    public void music(String name, boolean loop) {
         assert name != null;
         if (!muted && !curMusicName.equals(name)) {
             if (curMusic != null)
@@ -29,7 +29,7 @@ public class AudioManager {
             if (curMusic != null) {
                 curMusicName = name;
                 curMusic.setVolume(.2f);
-                curMusic.setLooping(false);
+                curMusic.setLooping(loop);
                 curMusic.play();
             }
         }
