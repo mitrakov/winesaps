@@ -15,11 +15,6 @@ public class AudioManager {
     private Music curMusic;
     private String curMusicName = "";
 
-    public AudioManager(String defaultMusic, boolean loop) {
-        if (defaultMusic != null)
-            music(defaultMusic, loop);
-    }
-
     public void music(String name, boolean loop) {
         assert name != null;
         if (!muted && !curMusicName.equals(name)) {

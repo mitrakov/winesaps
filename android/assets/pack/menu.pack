@@ -5,140 +5,147 @@ filter: Nearest,Nearest
 repeat: none
 gems_pack
   rotate: false
-  xy: 2, 104
+  xy: 2, 103
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 gems_pack_big
   rotate: false
-  xy: 154, 104
+  xy: 154, 103
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 gems_pack_small
   rotate: false
-  xy: 306, 104
+  xy: 306, 103
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
+logo
+  rotate: false
+  xy: 2, 36
+  size: 200, 65
+  orig: 200, 65
+  offset: 0, 0
+  index: -1
 about
   rotate: false
-  xy: 2, 54
+  xy: 458, 205
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 add
   rotate: false
-  xy: 458, 206
+  xy: 204, 53
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 2, 4
+  xy: 458, 155
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 gem
   rotate: false
-  xy: 52, 54
+  xy: 254, 53
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invalid
   rotate: false
-  xy: 458, 156
+  xy: 458, 105
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invite
   rotate: false
-  xy: 52, 4
+  xy: 304, 53
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 remove
   rotate: false
-  xy: 102, 54
+  xy: 354, 53
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 settings
   rotate: false
-  xy: 458, 106
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-valid
-  rotate: false
-  xy: 102, 4
+  xy: 404, 53
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 en
   rotate: false
-  xy: 152, 70
+  xy: 2, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 es
   rotate: false
-  xy: 152, 36
+  xy: 52, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 fr
   rotate: false
-  xy: 152, 2
+  xy: 102, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 pt
   rotate: false
-  xy: 202, 70
+  xy: 152, 2
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
 ru
   rotate: false
-  xy: 202, 36
+  xy: 204, 19
   size: 48, 32
   orig: 48, 32
   offset: 0, 0
   index: -1
+valid
+  rotate: false
+  xy: 254, 3
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 loss
   rotate: false
-  xy: 202, 2
+  xy: 304, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 win
   rotate: false
-  xy: 236, 2
+  xy: 338, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 gem_small
   rotate: false
-  xy: 252, 78
+  xy: 372, 27
   size: 24, 24
   orig: 24, 24
   offset: 0, 0

@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -29,6 +30,7 @@ public class ScreenMain extends LocalizableScreen {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final TextureAtlas atlasIcons = new TextureAtlas(Gdx.files.internal("pack/icons.pack"));
+    private final Texture background = new Texture(Gdx.files.internal("back/login.jpg"));
 
     private final Table tableLeft = new Table();
     private final Table tableRight;
@@ -342,6 +344,7 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void dispose() {
+        background.dispose();
         atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
         atlasMenu.dispose();
         atlasIcons.dispose();
@@ -549,8 +552,9 @@ public class ScreenMain extends LocalizableScreen {
     private void initTables() {
         table.add(tableLeft).pad(4).width(222).fill();
         table.add(tableRight).pad(4).expand().fill();
+        table.setBackground(new Image(background).getDrawable());
 
-        tableLeft.add(tableLeftHeader).height(90).fill();
+        tableLeft.add(tableLeftHeader).height(80).pad(10).fill();
         tableLeft.row();
         tableLeft.add(tableLeftInvite).expand().fill();
         tableLeft.row();
@@ -560,6 +564,8 @@ public class ScreenMain extends LocalizableScreen {
         tableRight.add(tableRightHeader).padTop(16).height(55).fill();
         tableRight.row();
         tableRight.add(tableRightContent).expand().fill();
+
+        tableLeftHeader.add(new Image(atlasMenu.findRegion("logo")));
 
         tableRightHeader.add(btnInfo).width(138).expand().fill();
         tableRightHeader.add(btnRating).width(138).expand().fill();

@@ -213,7 +213,8 @@ public class Gui extends Actor {
             Array<TextureAtlas.AtlasRegion> frames = atlasLadder.findRegions(LadderBottom.class.getSimpleName() + i);
             animLadders.put(i, new Animation<TextureRegion>(.05f, frames));
             // backgrounds
-            backgrounds.add(new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/back%d.jpg", i))));
+            Texture t = new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/battle%d.jpg", i)));
+            backgrounds.add(t); // TODO forget to dispose t?
         }
 
         // fill animation time

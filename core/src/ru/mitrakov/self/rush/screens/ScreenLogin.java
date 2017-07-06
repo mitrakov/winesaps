@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
@@ -17,8 +18,9 @@ import ru.mitrakov.self.rush.dialogs.*;
  */
 public class ScreenLogin extends LocalizableScreen {
 
-    private final Table tableMain = new Table();
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
+    private final Texture background = new Texture(Gdx.files.internal("back/login.jpg"));
+    private final Table tableMain;
     private final TextFieldFeat txtLogin;
     private final TextFieldFeat txtPassword;
     private final TextFieldFeat txtEmail;
@@ -71,6 +73,9 @@ public class ScreenLogin extends LocalizableScreen {
         textureFr = new TextureRegionDrawable(regionFr);
         textureValid = new TextureRegionDrawable(regionValid);
         textureInvalid = new TextureRegionDrawable(regionInvalid);
+
+        tableMain = new Table(skin).pad(20);
+        tableMain.setBackground("panel-maroon");
 
         btnSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
@@ -158,6 +163,7 @@ public class ScreenLogin extends LocalizableScreen {
         table.add(createLangTable(audioManager)).right();
         table.row();
         table.add(tableMain).expand();
+        table.setBackground(new Image(background).getDrawable());
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {
@@ -191,6 +197,7 @@ public class ScreenLogin extends LocalizableScreen {
     @Override
     public void dispose() {
         atlasMenu.dispose(); // disposing an atlas also disposes all its internal textures
+        background.dispose();
         super.dispose();
     }
 
