@@ -1,8 +1,8 @@
 package ru.mitrakov.self.rush.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
@@ -17,12 +17,12 @@ import ru.mitrakov.self.rush.model.*;
  */
 public class ScreenCharacter extends LocalizableScreen {
 
-    private final TextureAtlas atlasCharacter = new TextureAtlas(Gdx.files.internal("pack/char.pack"));
     private final Array<TextButton> checkboxes = new Array<TextButton>(4);
     private final TextButton btnNext;
 
-    public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
-        super(game, model, psObject, skin, manager);
+    public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+                           AudioManager manager) {
+        super(game, model, psObject, assetManager, skin, manager);
 
         Array<Actor> images = init();
         btnNext = createButton();
@@ -34,12 +34,6 @@ public class ScreenCharacter extends LocalizableScreen {
         super.show();
         if (!model.newbie)
             game.setNextScreen();
-    }
-
-    @Override
-    public void dispose() {
-        atlasCharacter.dispose();
-        super.dispose();
     }
 
     @Override
@@ -67,6 +61,7 @@ public class ScreenCharacter extends LocalizableScreen {
     private Array<Actor> init() {
         Array<Actor> result = new Array<Actor>(Model.Character.values().length);
 
+        TextureAtlas atlasCharacter = assetManager.get("pack/char.pack");
         for (Model.Character character : Model.Character.values()) {
             if (character != Model.Character.None) {
                 // create checkboxes

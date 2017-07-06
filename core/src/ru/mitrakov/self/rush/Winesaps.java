@@ -1,9 +1,13 @@
 package ru.mitrakov.self.rush;
 
 import java.net.*;
-import java.util.Locale;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -21,7 +25,6 @@ public class Winesaps extends Game implements Localizable {
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
     private /*final*/ Network network;
-    private /*final*/ Skin skin;
     private /*final*/ AudioManager audioManager;
     private /*final*/ LocalizableScreen screenLogin;
     private /*final*/ LocalizableScreen screenCharacter;
@@ -62,20 +65,79 @@ public class Winesaps extends Game implements Localizable {
     public void create() {
         // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
         model.loadSettings();
+        AssetManager assetManager = new AssetManager(); // TODO WTF?
+        assetManager.load("back/login.jpg", Texture.class);
+        assetManager.load("back/main.jpg", Texture.class);
+        assetManager.load("back/battle0.jpg", Texture.class);
+        assetManager.load("back/battle1.jpg", Texture.class);
+        assetManager.load("back/battle2.jpg", Texture.class);
+        assetManager.load("back/battle3.jpg", Texture.class);
+        assetManager.load("skin/uiskin.json", Skin.class);
+        assetManager.load("i18n/bundle", I18NBundle.class);
+        assetManager.load("i18n/bundle_ru", I18NBundle.class);
+        assetManager.load("i18n/bundle_es", I18NBundle.class);
+        assetManager.load("i18n/bundle_pt", I18NBundle.class);
+        assetManager.load("i18n/bundle_fr", I18NBundle.class);
+        assetManager.load("pack/ability.pack", TextureAtlas.class);
+        assetManager.load("pack/animated.pack", TextureAtlas.class);
+        assetManager.load("pack/cat.pack", TextureAtlas.class);
+        assetManager.load("pack/char.pack", TextureAtlas.class);
+        assetManager.load("pack/down.pack", TextureAtlas.class);
+        assetManager.load("pack/effects.pack", TextureAtlas.class);
+        assetManager.load("pack/flare.pack", TextureAtlas.class);
+        assetManager.load("pack/goods.pack", TextureAtlas.class);
+        assetManager.load("pack/hedgehog.pack", TextureAtlas.class);
+        assetManager.load("pack/icons.pack", TextureAtlas.class);
+        assetManager.load("pack/ladder.pack", TextureAtlas.class);
+        assetManager.load("pack/menu.pack", TextureAtlas.class);
+        assetManager.load("pack/rabbit.pack", TextureAtlas.class);
+        assetManager.load("pack/squirrel.pack", TextureAtlas.class);
+        assetManager.load("pack/thing.pack", TextureAtlas.class);
+        assetManager.load("pack/training.pack", TextureAtlas.class);
+        assetManager.load("pack/up.pack", TextureAtlas.class);
+        assetManager.load("pack/wolf.pack", TextureAtlas.class);
+        assetManager.load("music/battle0.mp3", Music.class);
+        assetManager.load("music/battle1.mp3", Music.class);
+        assetManager.load("music/battle2.mp3", Music.class);
+        assetManager.load("music/battle3.mp3", Music.class);
+        assetManager.load("music/theme.mp3", Music.class);
+        assetManager.load("sfx/AntidoteThing.wav", Sound.class);
+        assetManager.load("sfx/BeamThing.wav", Sound.class);
+        assetManager.load("sfx/BoxThing.wav", Sound.class);
+        assetManager.load("sfx/call.wav", Sound.class);
+        assetManager.load("sfx/click.wav", Sound.class);
+        assetManager.load("sfx/DetectorThing.wav", Sound.class);
+        assetManager.load("sfx/Devoured.wav", Sound.class);
+        assetManager.load("sfx/die.wav", Sound.class);
+        assetManager.load("sfx/Exploded.wav", Sound.class);
+        assetManager.load("sfx/FlashbangThing.wav", Sound.class);
+        assetManager.load("sfx/food.wav", Sound.class);
+        assetManager.load("sfx/game.wav", Sound.class);
+        assetManager.load("sfx/ladder.wav", Sound.class);
+        assetManager.load("sfx/MineThing.wav", Sound.class);
+        assetManager.load("sfx/Poisoned.wav", Sound.class);
+        assetManager.load("sfx/round.wav", Sound.class);
+        assetManager.load("sfx/Soaked.wav", Sound.class);
+        assetManager.load("sfx/Sunk.wav", Sound.class);
+        assetManager.load("sfx/TeleportThing.wav", Sound.class);
+        assetManager.load("sfx/thing.wav", Sound.class);
+        assetManager.load("sfx/UmbrellaThing.wav", Sound.class);
 
-        i18nEn = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("en"));
-        i18nRu = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("ru"));
-        i18nEs = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("es"));
-        i18nPt = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("pt"));
-        i18nFr = I18NBundle.createBundle(Gdx.files.internal("i18n/bundle"), new Locale("fr"));
+        assetManager.finishLoading(); // TODO !!!!!!
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        audioManager = new AudioManager();
-        screenLogin = new ScreenLogin(this, model, psObject, skin, audioManager, i18nEn);
-        screenCharacter = new ScreenCharacter(this, model, psObject, skin, audioManager);
-        screenTraining = new ScreenTraining(this, model, psObject, skin, audioManager);
-        screenMain = new ScreenMain(this, model, psObject, skin, audioManager, i18nEn);
-        screenBattle = new ScreenBattle(this, model, psObject, skin, audioManager, i18nEn);
+        i18nEn = assetManager.get("i18n/bundle");
+        i18nRu = assetManager.get("i18n/bundle_ru");
+        i18nEs = assetManager.get("i18n/bundle_es");
+        i18nPt = assetManager.get("i18n/bundle_pt");
+        i18nFr = assetManager.get("i18n/bundle_fr");
+
+        Skin skin = assetManager.get("skin/uiskin.json");
+        audioManager = new AudioManager(assetManager);
+        screenLogin = new ScreenLogin(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, skin, audioManager);
+        screenTraining = new ScreenTraining(this, model, psObject, assetManager, skin, audioManager);
+        screenMain = new ScreenMain(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        screenBattle = new ScreenBattle(this, model, psObject, assetManager, skin, audioManager, i18nEn);
         setScreen(screenLogin);
         audioManager.music("theme", false);
 
@@ -113,13 +175,12 @@ public class Winesaps extends Game implements Localizable {
     @Override
     public void dispose() {
         super.dispose();
-        skin.dispose();
-        audioManager.dispose();
         screenLogin.dispose();
         screenCharacter.dispose();
         screenTraining.dispose();
         screenMain.dispose();
         screenBattle.dispose();
+        // assetManager.dispose(); TODO
     }
 
     @Override

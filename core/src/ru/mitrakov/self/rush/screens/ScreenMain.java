@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -27,10 +28,8 @@ import ru.mitrakov.self.rush.dialogs.*;
  * Created by mitrakov on 03.03.2017
  */
 public class ScreenMain extends LocalizableScreen {
-    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
-    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-    private final TextureAtlas atlasIcons = new TextureAtlas(Gdx.files.internal("pack/icons.pack"));
-    private final Texture background = new Texture(Gdx.files.internal("back/main.jpg"));
+
+    private final TextureAtlas atlasMenu;
 
     private final Table tableLeft = new Table();
     private final Table tableRight;
@@ -110,18 +109,16 @@ public class ScreenMain extends LocalizableScreen {
 
     private I18NBundle i18n;
 
-    public ScreenMain(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                      I18NBundle i18nArg) {
-        super(game, model, psObject, skin, audioManager);
+    public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+                      AudioManager audioManager, I18NBundle i18nArg) {
+        super(game, model, psObject, assetManager, skin, audioManager);
         assert i18nArg != null;
         i18n = i18nArg;
 
-        TextureRegion regionSettings = atlasMenu.findRegion("settings");
-        TextureRegion regionAbout = atlasMenu.findRegion("about");
-        TextureRegion regionOk = atlasMenu.findRegion("valid");
-        TextureRegion regionAdd = atlasMenu.findRegion("add");
-        TextureRegion regionCancel = atlasMenu.findRegion("back");
-        assert regionSettings != null && regionAbout != null && regionOk != null && regionCancel != null;
+        atlasMenu = assetManager.get("pack/menu.pack");
+        TextureRegionDrawable drawable = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
+        TextureRegionDrawable back = new TextureRegionDrawable(atlasMenu.findRegion("back"));
+        TextureRegionDrawable cancel = new TextureRegionDrawable(atlasMenu.findRegion("back"));
 
         drawableWin = new TextureRegionDrawable(atlasMenu.findRegion("win"));
         drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("loss"));
@@ -134,7 +131,7 @@ public class ScreenMain extends LocalizableScreen {
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
-        buyAbilitiesDialog = new DialogBuyAbilities(model, skin, "default", audioManager, i18n);
+        buyAbilitiesDialog = new DialogBuyAbilities(model, assetManager, skin, "default", audioManager, i18n);
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default", i18n);
@@ -175,7 +172,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameOk = new ImageButtonFeat(new TextureRegionDrawable(regionOk), audioManager) {{
+        btnInviteByNameOk = new ImageButtonFeat(drawable, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -190,7 +187,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteByNameCancel = new ImageButtonFeat(new TextureRegionDrawable(regionCancel), audioManager) {{
+        btnInviteByNameCancel = new ImageButtonFeat(back, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -198,7 +195,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnSettings = new ImageButtonFeat(new TextureRegionDrawable(regionSettings), audioManager) {{
+        btnSettings = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("settings")), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -206,7 +203,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAbout = new ImageButtonFeat(new TextureRegionDrawable(regionAbout), audioManager) {{
+        btnAbout = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("about")), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -278,7 +275,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(regionAdd), audioManager) {{
+        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("add")), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -290,7 +287,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnAddFriendCancel = new ImageButtonFeat(new TextureRegionDrawable(regionCancel), audioManager) {{
+        btnAddFriendCancel = new ImageButtonFeat(cancel, audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -340,16 +337,6 @@ public class ScreenMain extends LocalizableScreen {
         model.getUserInfo();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
-    }
-
-    @Override
-    public void dispose() {
-        background.dispose();
-        atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
-        atlasMenu.dispose();
-        atlasIcons.dispose();
-        buyAbilitiesDialog.dispose();
-        super.dispose();
     }
 
     @Override
@@ -455,6 +442,7 @@ public class ScreenMain extends LocalizableScreen {
         }
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
+            TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
             imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character + "64")));
         }
         if (event instanceof EventBus.RatingUpdatedEvent) {
@@ -518,6 +506,7 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void loadTextures() {
+        TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
@@ -542,6 +531,8 @@ public class ScreenMain extends LocalizableScreen {
                 abilities.put(ability, imageButton);
             }
         }
+
+        TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
         for (Model.Character character : Model.Character.values()) {
             TextureRegion region = atlasIcons.findRegion(String.format("%s48", character));
             if (region != null)
@@ -552,7 +543,7 @@ public class ScreenMain extends LocalizableScreen {
     private void initTables() {
         table.add(tableLeft).pad(4).width(222).fill();
         table.add(tableRight).pad(4).expand().fill();
-        table.setBackground(new Image(background).getDrawable());
+        table.setBackground(new Image(assetManager.<Texture>get("back/main.jpg")).getDrawable());
 
         tableLeft.add(tableLeftHeader).height(80).pad(10).fill();
         tableLeft.row();

@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
@@ -18,8 +19,6 @@ import ru.mitrakov.self.rush.dialogs.*;
  */
 public class ScreenLogin extends LocalizableScreen {
 
-    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-    private final Texture background = new Texture(Gdx.files.internal("back/login.jpg"));
     private final Table tableMain;
     private final TextFieldFeat txtLogin;
     private final TextFieldFeat txtPassword;
@@ -51,28 +50,20 @@ public class ScreenLogin extends LocalizableScreen {
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager audioManager,
-                       I18NBundle i18nb) {
-        super(game, model, psObject, skin, audioManager);
+    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+                       AudioManager audioManager, I18NBundle i18nb) {
+        super(game, model, psObject, assetManager, skin, audioManager);
         assert i18nb != null;
         i18n = i18nb;
 
-        TextureRegion regionEn = atlasMenu.findRegion("en");
-        TextureRegion regionRu = atlasMenu.findRegion("ru");
-        TextureRegion regionEs = atlasMenu.findRegion("es");
-        TextureRegion regionPt = atlasMenu.findRegion("pt");
-        TextureRegion regionFr = atlasMenu.findRegion("fr");
-        TextureRegion regionValid = atlasMenu.findRegion("valid");
-        TextureRegion regionInvalid = atlasMenu.findRegion("invalid");
-        assert regionEn != null && regionRu != null && regionEs != null && regionPt != null && regionFr != null;
-        assert regionValid != null && regionInvalid != null;
-        textureEn = new TextureRegionDrawable(regionEn);
-        textureRu = new TextureRegionDrawable(regionRu);
-        textureEs = new TextureRegionDrawable(regionEs);
-        texturePt = new TextureRegionDrawable(regionPt);
-        textureFr = new TextureRegionDrawable(regionFr);
-        textureValid = new TextureRegionDrawable(regionValid);
-        textureInvalid = new TextureRegionDrawable(regionInvalid);
+        TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
+        textureEn = new TextureRegionDrawable(atlasMenu.findRegion("en"));
+        textureRu = new TextureRegionDrawable(atlasMenu.findRegion("ru"));
+        textureEs = new TextureRegionDrawable(atlasMenu.findRegion("es"));
+        texturePt = new TextureRegionDrawable(atlasMenu.findRegion("pt"));
+        textureFr = new TextureRegionDrawable(atlasMenu.findRegion("fr"));
+        textureValid = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
+        textureInvalid = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
 
         tableMain = new Table(skin).pad(20);
         tableMain.setBackground("panel-maroon");
@@ -163,7 +154,7 @@ public class ScreenLogin extends LocalizableScreen {
         table.add(createLangTable(audioManager)).right();
         table.row();
         table.add(tableMain).expand();
-        table.setBackground(new Image(background).getDrawable());
+        table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());
 
         // only for Android: handling show/hide OnScreenKeyboard
         if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {
@@ -192,13 +183,6 @@ public class ScreenLogin extends LocalizableScreen {
     public void show() {
         super.show();
         setStartDialog();
-    }
-
-    @Override
-    public void dispose() {
-        atlasMenu.dispose(); // disposing an atlas also disposes all its internal textures
-        background.dispose();
-        super.dispose();
     }
 
     @Override

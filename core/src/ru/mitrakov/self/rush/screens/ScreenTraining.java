@@ -1,9 +1,9 @@
 package ru.mitrakov.self.rush.screens;
 
-import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
@@ -18,8 +18,6 @@ import ru.mitrakov.self.rush.model.Cells.*;
  */
 public class ScreenTraining extends LocalizableScreen {
 
-    private final TextureAtlas atlasTraining = new TextureAtlas(Gdx.files.internal("pack/training.pack"));
-    private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
     private final Gui gui;
     private final ImageButton btnThing;
     private final TextButton btnSkip;
@@ -29,11 +27,12 @@ public class ScreenTraining extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
 
-    public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, Skin skin, AudioManager manager) {
-        super(game, model, psObject, skin, manager);
+    public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
+                          Skin skin, AudioManager manager) {
+        super(game, model, psObject, assetManager, skin, manager);
 
         loadTextures();
-        gui = new Gui(model);
+        gui = new Gui(model, assetManager);
         finishedDialog = new DialogFinished(skin, "default");
         trainingDialog = new DialogTraining(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
@@ -64,14 +63,6 @@ public class ScreenTraining extends LocalizableScreen {
         if (model.newbie)
             model.receiveTraining();
         else game.setNextScreen();
-    }
-
-    @Override
-    public void dispose() {
-        atlasTraining.dispose(); // disposing an atlas also disposes all its internal textures
-        atlasThing.dispose();
-        gui.dispose();
-        super.dispose();
     }
 
     @Override
@@ -136,6 +127,7 @@ public class ScreenTraining extends LocalizableScreen {
     }
 
     private void loadTextures() {
+        TextureAtlas atlasThing = assetManager.get("pack/thing.pack");
         for (Class clazz : new Class[]{CellObject.class, UmbrellaThing.class}) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
@@ -169,7 +161,7 @@ public class ScreenTraining extends LocalizableScreen {
 
     private void addContent(I18NBundle i18n) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
-        final TextureAtlas atlas = atlasTraining;
+        TextureAtlas atlas = assetManager.get("pack/training.pack");
         trainingDialog.clearMessages()
                 .addMessage(atlas.findRegion("msg1"), i18n.format("train.msg1.text"), i18n.format("train.msg1.action"))
                 .addMessage(atlas.findRegion("msg2"), i18n.format("train.msg2.text"), i18n.format("train.msg2.action"))

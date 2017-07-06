@@ -2,7 +2,7 @@ package ru.mitrakov.self.rush.dialogs;
 
 import java.util.Collection;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -25,9 +25,7 @@ public class DialogBuyAbilities extends DialogFeat {
     private final Label lblTotalCrystals;
     private final Image imgGoods;
     private final Table productsList = new Table();
-    private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
-    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
-    private final TextureAtlas atlasGoods = new TextureAtlas(Gdx.files.internal("pack/goods.pack"));
+    private final TextureAtlas atlasMenu;
 
     private final ObjectMap<Model.Ability, Drawable> abilityIcons = new ObjectMap<Model.Ability, Drawable>(10);
 
@@ -35,7 +33,8 @@ public class DialogBuyAbilities extends DialogFeat {
     private int crystals = 0;
     private Product selectedItem;
 
-    public DialogBuyAbilities(final Model model, Skin skin, String style, AudioManager audioManager, I18NBundle i18n) {
+    public DialogBuyAbilities(final Model model, AssetManager assetManager, Skin skin, String style,
+                              AudioManager audioManager, I18NBundle i18n) {
         super("", skin, style);
         assert model != null && audioManager != null && i18n != null;
         this.model = model;
@@ -46,11 +45,12 @@ public class DialogBuyAbilities extends DialogFeat {
         lblCrystals = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
         imgGoods = new Image();
+        atlasMenu = assetManager.get("pack/menu.pack");
 
         button("Buy", true); // text will be replaced in onLocaleChanged()
         button("Close");     // text will be replaced in onLocaleChanged()
 
-        init(getContentTable(), loadTextures(audioManager), skin);
+        init(getContentTable(), loadTextures(assetManager, audioManager), skin);
     }
 
     @Override
@@ -88,18 +88,15 @@ public class DialogBuyAbilities extends DialogFeat {
         }
     }
 
-    public void dispose() {
-        atlasAbility.dispose(); // disposing an atlas also disposes all its internal textures
-        atlasMenu.dispose();
-        atlasGoods.dispose();
-    }
-
     public void setCrystals(int crystals) {
         this.crystals = crystals;
     }
 
-    private Array<Actor> loadTextures(AudioManager audioManager) {
+    private Array<Actor> loadTextures(AssetManager assetManager, AudioManager audioManager) {
         Array<Actor> res = new Array<Actor>();
+
+        TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
+        TextureAtlas atlasGoods = assetManager.get("pack/goods.pack");
 
         for (final Model.Ability ability : Model.Ability.values()) {
             // == buttons ==

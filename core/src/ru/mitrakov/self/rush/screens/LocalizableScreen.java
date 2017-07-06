@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -19,6 +20,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Winesaps game;
     protected final Model model;
     protected final PsObject psObject;
+    protected final AssetManager assetManager;
     protected final Skin skin;
     protected final AudioManager audioManager;
     protected final Stage stage = new Stage(new FitViewport(Winesaps.WIDTH, Winesaps.HEIGHT));
@@ -31,11 +33,13 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
-    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, Skin skin, AudioManager audioManager) {
-        assert game != null && model != null && skin != null && audioManager != null; // psObject may be NULL
+    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+                      AudioManager audioManager) {
+        assert game != null && model != null && assetManager != null && skin != null && audioManager != null;
         this.game = game;
         this.model = model;
         this.psObject = psObject;
+        this.assetManager = assetManager;
         this.skin = skin;
         this.audioManager = audioManager;
         connectingDialog = new DialogLock(skin, "panel-lock");

@@ -7,6 +7,7 @@ import static ru.mitrakov.self.rush.model.Model.STYLES_COUNT;
 import java.util.Locale;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.Texture;
@@ -66,16 +67,7 @@ public class Gui extends Actor {
     private final InputController controller;
     private final MyClickListener listener = new MyClickListener();
 
-    private final TextureAtlas atlasDown = new TextureAtlas(Gdx.files.internal("pack/down.pack"));
-    private final TextureAtlas atlasUp = new TextureAtlas(Gdx.files.internal("pack/up.pack"));
-    private final TextureAtlas atlasAnimated = new TextureAtlas(Gdx.files.internal("pack/animated.pack"));
-    private final TextureAtlas atlasEffects = new TextureAtlas(Gdx.files.internal("pack/effects.pack"));
-    private final TextureAtlas atlasLadder = new TextureAtlas(Gdx.files.internal("pack/ladder.pack"));
-    private final TextureAtlas atlasWolf = new TextureAtlas(Gdx.files.internal("pack/wolf.pack"));
-    private final TextureAtlas atlasFlare = new TextureAtlas(Gdx.files.internal("pack/flare.pack"));
-
     private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
-    private final Array<TextureAtlas> charAtlases = new Array<TextureAtlas>(Model.Character.values().length);
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesDown = new ObjectMap<Class, IntMap<TextureRegion>>(3);
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesStat = new ObjectMap<Class, IntMap<TextureRegion>>(9);
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
@@ -116,8 +108,8 @@ public class Gui extends Actor {
         return (int) (Field.HEIGHT - y / CELL_SIZ_H);
     }
 
-    public Gui(Model model) {
-        assert model != null;
+    public Gui(Model model, AssetManager assetManager) {
+        assert model != null && assetManager != null;
         this.model = model;
         controller = new InputController(model);
         addListener(listener);
@@ -127,6 +119,7 @@ public class Gui extends Actor {
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
         // down textures (block, dias, water), each with 4 styles
+        TextureAtlas atlasDown = assetManager.get("pack/down.pack");
         for (Class clazz : new Class[]{Block.class, Dais.class, Water.class, Stair.class /*see note#6*/}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
@@ -138,6 +131,7 @@ public class Gui extends Actor {
             texturesDown.put(clazz, m);
         }
         // static up textures, each with 4 styles
+        TextureAtlas atlasUp = assetManager.get("pack/up.pack");
         for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
                 DecorationStatic.class, DecorationWarning.class, /*Stair.class see note#6*/}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
@@ -171,10 +165,7 @@ public class Gui extends Actor {
             for (Model.Character character : Model.Character.values()) {
                 if (character != Model.Character.None) {
                     String filename = String.format("pack/%s.pack", character.name().toLowerCase());
-                    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(filename));
-                    data.add(character, atlas, .07f);
-                    //animations.put(character, new AnimationData(atlas, .07f));
-                    charAtlases.add(atlas);
+                    data.add(character, assetManager.<TextureAtlas>get(filename), .07f);
                 }
             }
             texturesAnim.put(clazz, data);
@@ -182,11 +173,15 @@ public class Gui extends Actor {
         // wolf
         for (int i = 0; i < 100; i++) {
             AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X_WOLF);
-            data.add(Model.Character.None, atlasWolf, .09f);
+            data.add(Model.Character.None, assetManager.<TextureAtlas>get("pack/wolf.pack"), .09f);
             //Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
             texturesAnimWolf.put(i, data);
         }
         // animated objects (waterfalls, antidotes, teleports)
+        TextureAtlas atlasAnimated = assetManager.get("pack/animated.pack");
+        TextureAtlas atlasEffects = assetManager.get("pack/effects.pack");
+        TextureAtlas atlasFlare = assetManager.get("pack/flare.pack");
+
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasAnimated.findRegions("Waterfall");
         Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasAnimated.findRegions("WaterfallSmall");
         Array<TextureAtlas.AtlasRegion> framesAntidote = atlasAnimated.findRegions("Antidote");
@@ -208,13 +203,13 @@ public class Gui extends Actor {
         animSmoke = new AnimInfo(new Animation<TextureRegion>(.06f, framesSmoke));
         animFlare = new AnimInfo(new Animation<TextureRegion>(.09f, framesFlare));
         //
+        TextureAtlas atlasLadder = assetManager.get("pack/ladder.pack");
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
             Array<TextureAtlas.AtlasRegion> frames = atlasLadder.findRegions(LadderBottom.class.getSimpleName() + i);
             animLadders.put(i, new Animation<TextureRegion>(.05f, frames));
             // backgrounds
-            Texture t = new Texture(Gdx.files.internal(String.format(Locale.getDefault(), "back/battle%d.jpg", i)));
-            backgrounds.add(t); // TODO forget to dispose t?
+            backgrounds.add(assetManager.<Texture>get(String.format(Locale.getDefault(), "back/battle%d.jpg", i)));
         }
 
         // fill animation time
@@ -296,20 +291,6 @@ public class Gui extends Actor {
 
     public void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);
-    }
-
-    public void dispose() {
-        atlasDown.dispose(); // disposing an atlas also disposes all its internal textures
-        atlasUp.dispose();
-        atlasAnimated.dispose();
-        atlasEffects.dispose();
-        atlasFlare.dispose();
-        atlasLadder.dispose();
-        atlasWolf.dispose();
-        for (Texture texture : backgrounds)
-            texture.dispose();
-        for (TextureAtlas atlas : charAtlases)
-            atlas.dispose();
     }
 
     private float getBottomWidth(Cell cell) {

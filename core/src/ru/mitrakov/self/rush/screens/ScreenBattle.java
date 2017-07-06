@@ -2,11 +2,11 @@ package ru.mitrakov.self.rush.screens;
 
 import java.util.Locale;
 
-import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 import ru.mitrakov.self.rush.*;
@@ -19,8 +19,6 @@ import ru.mitrakov.self.rush.model.Cells.*;
  * Created by mitrakov on 01.03.2017
  */
 public class ScreenBattle extends LocalizableScreen {
-    private final TextureAtlas atlasThing = new TextureAtlas(Gdx.files.internal("pack/thing.pack"));
-    private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final Gui gui;
     private final Table abilityButtons = new Table();
     private final Label lblScore;
@@ -36,9 +34,9 @@ public class ScreenBattle extends LocalizableScreen {
     private boolean outOfSync = false;
     private I18NBundle i18n;
 
-    public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, Skin skin,
+    public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
                         final AudioManager audioManager, I18NBundle i18n) {
-        super(game, model, psObject, skin, audioManager);
+        super(game, model, psObject, assetManager, skin, audioManager);
         assert i18n != null;
         this.i18n = i18n;
 
@@ -46,7 +44,7 @@ public class ScreenBattle extends LocalizableScreen {
         glClearR = glClearG = glClearB = 0;
 
         loadTextures();
-        gui = new Gui(model);
+        gui = new Gui(model, assetManager);
         finishedDialog = new DialogFinished(skin, "default");
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "white");
@@ -91,14 +89,6 @@ public class ScreenBattle extends LocalizableScreen {
         super.show();
         gui.setMovesAllowed(true); // enable moves (in case they possibly were disabled before)
         reset();
-    }
-
-    @Override
-    public void dispose() {
-        atlasThing.dispose();   // disposing an atlas also disposes all its internal textures
-        atlasAbility.dispose();
-        gui.dispose();
-        super.dispose();
     }
 
     @Override
@@ -199,12 +189,15 @@ public class ScreenBattle extends LocalizableScreen {
     private void loadTextures() {
         Class[] classes = new Class[]{CellObject.class, UmbrellaThing.class, MineThing.class, AntidoteThing.class,
                 BeamThing.class, FlashbangThing.class, TeleportThing.class, DetectorThing.class, BoxThing.class};
+
+        TextureAtlas atlasThing = assetManager.get("pack/thing.pack");
         for (Class clazz : classes) {
             TextureRegion region = atlasThing.findRegion(clazz.getSimpleName());
             if (region != null)
                 things.put(clazz, new TextureRegionDrawable(region));
         }
 
+        TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
         for (final Model.Ability ability : Model.Ability.values()) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
