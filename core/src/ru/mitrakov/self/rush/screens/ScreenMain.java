@@ -30,7 +30,7 @@ public class ScreenMain extends LocalizableScreen {
     private final TextureAtlas atlasAbility = new TextureAtlas(Gdx.files.internal("pack/ability.pack"));
     private final TextureAtlas atlasMenu = new TextureAtlas(Gdx.files.internal("pack/menu.pack"));
     private final TextureAtlas atlasIcons = new TextureAtlas(Gdx.files.internal("pack/icons.pack"));
-    private final Texture background = new Texture(Gdx.files.internal("back/login.jpg"));
+    private final Texture background = new Texture(Gdx.files.internal("back/main.jpg"));
 
     private final Table tableLeft = new Table();
     private final Table tableRight;
