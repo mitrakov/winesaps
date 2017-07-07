@@ -32,7 +32,7 @@ public class ScreenTraining extends LocalizableScreen {
         super(game, model, psObject, assetManager, manager);
 
         loadTextures();
-        gui = new Gui(model, assetManager);
+        gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenBattle (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default");

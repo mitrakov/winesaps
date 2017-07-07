@@ -42,7 +42,7 @@ public class ScreenBattle extends LocalizableScreen {
         glClearR = glClearG = glClearB = 0;
 
         loadTextures();
-        gui = new Gui(model, assetManager);
+        gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTraining (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default");
