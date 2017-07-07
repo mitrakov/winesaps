@@ -3,12 +3,12 @@ package ru.mitrakov.self.rush;
 import java.net.*;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import ru.mitrakov.self.rush.net.*;
@@ -25,6 +25,7 @@ public class Winesaps extends Game implements Localizable {
     private final Model model = new Model();
     private final PsObject psObject; // may be NULL
     private /*final*/ Network network;
+    private /*final*/ AssetManager assetManager;
     private /*final*/ AudioManager audioManager;
     private /*final*/ LocalizableScreen screenLogin;
     private /*final*/ LocalizableScreen screenCharacter;
@@ -36,6 +37,7 @@ public class Winesaps extends Game implements Localizable {
     private /*final*/ I18NBundle i18nEs;
     private /*final*/ I18NBundle i18nPt;
     private /*final*/ I18NBundle i18nFr;
+    private /*final*/ SpriteBatch batch; // to draw splash screen only!
 
     public Winesaps(PsObject psObject) {
         this.psObject = psObject;
@@ -47,7 +49,7 @@ public class Winesaps extends Game implements Localizable {
                     e.printStackTrace();
                 }
             };
-            String host = "winesaps.ru"; // TODO move to config (@mitrakov: right, I'll do it in the future)
+            String host = "winesaps.ru"; // TODO move to config
             int port = 33996;
             network = new Network(new Parser(model, psObject), errorHandler, host, port);
             network.setProtocol(new SwUDP(network.getSocket(), host, port, network));
@@ -63,113 +65,24 @@ public class Winesaps extends Game implements Localizable {
 
     @Override
     public void create() {
-        // the following actions MUST be done only since here! Don't do it in constructor because Gdx would not be ready
-        model.loadSettings();
-        AssetManager assetManager = new AssetManager(); // TODO WTF?
+        batch = new SpriteBatch();
+        assetManager = new AssetManager();
         assetManager.load("back/login.jpg", Texture.class);
-        assetManager.load("back/main.jpg", Texture.class);
-        assetManager.load("back/battle0.jpg", Texture.class);
-        assetManager.load("back/battle1.jpg", Texture.class);
-        assetManager.load("back/battle2.jpg", Texture.class);
-        assetManager.load("back/battle3.jpg", Texture.class);
-        assetManager.load("skin/uiskin.json", Skin.class);
-        assetManager.load("i18n/bundle", I18NBundle.class);
-        assetManager.load("i18n/bundle_ru", I18NBundle.class);
-        assetManager.load("i18n/bundle_es", I18NBundle.class);
-        assetManager.load("i18n/bundle_pt", I18NBundle.class);
-        assetManager.load("i18n/bundle_fr", I18NBundle.class);
-        assetManager.load("pack/ability.pack", TextureAtlas.class);
-        assetManager.load("pack/animated.pack", TextureAtlas.class);
-        assetManager.load("pack/cat.pack", TextureAtlas.class);
-        assetManager.load("pack/char.pack", TextureAtlas.class);
-        assetManager.load("pack/down.pack", TextureAtlas.class);
-        assetManager.load("pack/effects.pack", TextureAtlas.class);
-        assetManager.load("pack/flare.pack", TextureAtlas.class);
-        assetManager.load("pack/goods.pack", TextureAtlas.class);
-        assetManager.load("pack/hedgehog.pack", TextureAtlas.class);
-        assetManager.load("pack/icons.pack", TextureAtlas.class);
-        assetManager.load("pack/ladder.pack", TextureAtlas.class);
-        assetManager.load("pack/menu.pack", TextureAtlas.class);
-        assetManager.load("pack/rabbit.pack", TextureAtlas.class);
-        assetManager.load("pack/squirrel.pack", TextureAtlas.class);
-        assetManager.load("pack/thing.pack", TextureAtlas.class);
-        assetManager.load("pack/training.pack", TextureAtlas.class);
-        assetManager.load("pack/up.pack", TextureAtlas.class);
-        assetManager.load("pack/wolf.pack", TextureAtlas.class);
-        assetManager.load("music/battle0.mp3", Music.class);
-        assetManager.load("music/battle1.mp3", Music.class);
-        assetManager.load("music/battle2.mp3", Music.class);
-        assetManager.load("music/battle3.mp3", Music.class);
-        assetManager.load("music/theme.mp3", Music.class);
-        assetManager.load("sfx/AntidoteThing.wav", Sound.class);
-        assetManager.load("sfx/BeamThing.wav", Sound.class);
-        assetManager.load("sfx/BoxThing.wav", Sound.class);
-        assetManager.load("sfx/call.wav", Sound.class);
-        assetManager.load("sfx/click.wav", Sound.class);
-        assetManager.load("sfx/DetectorThing.wav", Sound.class);
-        assetManager.load("sfx/Devoured.wav", Sound.class);
-        assetManager.load("sfx/die.wav", Sound.class);
-        assetManager.load("sfx/Exploded.wav", Sound.class);
-        assetManager.load("sfx/FlashbangThing.wav", Sound.class);
-        assetManager.load("sfx/food.wav", Sound.class);
-        assetManager.load("sfx/game.wav", Sound.class);
-        assetManager.load("sfx/ladder.wav", Sound.class);
-        assetManager.load("sfx/MineThing.wav", Sound.class);
-        assetManager.load("sfx/Poisoned.wav", Sound.class);
-        assetManager.load("sfx/round.wav", Sound.class);
-        assetManager.load("sfx/Soaked.wav", Sound.class);
-        assetManager.load("sfx/Sunk.wav", Sound.class);
-        assetManager.load("sfx/TeleportThing.wav", Sound.class);
-        assetManager.load("sfx/thing.wav", Sound.class);
-        assetManager.load("sfx/UmbrellaThing.wav", Sound.class);
+        assetManager.finishLoading(); // synchronous loading of the splash screen
+        enqueueAssets();              // other assets will be loaded asynchronously
+    }
 
-        assetManager.finishLoading(); // TODO !!!!!!
-
-        i18nEn = assetManager.get("i18n/bundle");
-        i18nRu = assetManager.get("i18n/bundle_ru");
-        i18nEs = assetManager.get("i18n/bundle_es");
-        i18nPt = assetManager.get("i18n/bundle_pt");
-        i18nFr = assetManager.get("i18n/bundle_fr");
-
-        Skin skin = assetManager.get("skin/uiskin.json");
-        audioManager = new AudioManager(assetManager);
-        screenLogin = new ScreenLogin(this, model, psObject, assetManager, skin, audioManager, i18nEn);
-        screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, skin, audioManager);
-        screenTraining = new ScreenTraining(this, model, psObject, assetManager, skin, audioManager);
-        screenMain = new ScreenMain(this, model, psObject, assetManager, skin, audioManager, i18nEn);
-        screenBattle = new ScreenBattle(this, model, psObject, assetManager, skin, audioManager, i18nEn);
-        setScreen(screenLogin);
-        audioManager.music("theme", false);
-
-        // starting network Thread (recommended to start after building all screens to avoid skipping events)
-        network.start();
-
-        // catch Android buttons
-        Gdx.input.setCatchBackKey(true);
-        Gdx.input.setCatchMenuKey(true);
-
-        if (psObject != null) {
-            // stop music on hide
-            psObject.setVisibleListener(new PsObject.VisibleListener() {
-                @Override
-                public void onVisibleChanged(boolean visible) {
-                    audioManager.mute(!visible);
-                }
-            });
-            // start Google Play Billing service
-            IBillingProvider provider = psObject.getBillingProvider();
-            if (provider != null) {
-                provider.startService(new IBillingProvider.BillingListener() {
-                    @Override
-                    public void onResponse(String data, String signature) {
-                        model.checkPurchase(data, signature);
-                    }
-                });
-            }
+    @Override
+    public void render() {
+        if (screen != null)                             // screen exists
+            screen.render(Gdx.graphics.getDeltaTime());
+        else if (assetManager.update()) {               // loading assets (returns true when finished)
+            init();
+        } else {                                        // draw splash screen
+            batch.begin();
+            batch.draw(assetManager.<Texture>get("back/login.jpg"), 0, 0);
+            batch.end();
         }
-
-        // set default locale
-        updateLocale();
     }
 
     @Override
@@ -180,7 +93,8 @@ public class Winesaps extends Game implements Localizable {
         screenTraining.dispose();
         screenMain.dispose();
         screenBattle.dispose();
-        // assetManager.dispose(); TODO
+        assetManager.dispose();
+        batch.dispose();
     }
 
     @Override
@@ -243,5 +157,116 @@ public class Winesaps extends Game implements Localizable {
                 return psObject.getBillingProvider().getProducts().toString().replaceAll(",",",\n");
         }
         return "";
+    }
+
+    private void init() {
+        // the following actions MUST be done only since here or create() method!
+        // Do NOT do it in constructor because Gdx would not be ready
+        model.loadSettings();
+
+        i18nEn = assetManager.get("i18n/bundle");
+        i18nRu = assetManager.get("i18n/bundle_ru");
+        i18nEs = assetManager.get("i18n/bundle_es");
+        i18nPt = assetManager.get("i18n/bundle_pt");
+        i18nFr = assetManager.get("i18n/bundle_fr");
+
+        Skin skin = assetManager.get("skin/uiskin.json");
+        audioManager = new AudioManager(assetManager);
+        screenLogin = new ScreenLogin(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, skin, audioManager);
+        screenTraining = new ScreenTraining(this, model, psObject, assetManager, skin, audioManager);
+        screenMain = new ScreenMain(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        screenBattle = new ScreenBattle(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        setScreen(screenLogin);
+        audioManager.music("theme", false);
+
+        // starting network Thread (recommended to start after building all screens to avoid skipping events)
+        network.start();
+
+        // catch Android buttons
+        Gdx.input.setCatchBackKey(true);
+        Gdx.input.setCatchMenuKey(true);
+
+        if (psObject != null) {
+            // stop music on hide
+            psObject.setVisibleListener(new PsObject.VisibleListener() {
+                @Override
+                public void onVisibleChanged(boolean visible) {
+                    audioManager.mute(!visible);
+                }
+            });
+            // start Google Play Billing service
+            IBillingProvider provider = psObject.getBillingProvider();
+            if (provider != null) {
+                provider.startService(new IBillingProvider.BillingListener() {
+                    @Override
+                    public void onResponse(String data, String signature) {
+                        model.checkPurchase(data, signature);
+                    }
+                });
+            }
+        }
+
+        // set default locale
+        updateLocale();
+    }
+
+    private void enqueueAssets() {
+        // List all your assets here (except "back/login.jpg" - it is our splash screen, and must be loaded before)
+        assetManager.load("back/main.jpg", Texture.class);
+        assetManager.load("back/battle0.jpg", Texture.class);
+        assetManager.load("back/battle1.jpg", Texture.class);
+        assetManager.load("back/battle2.jpg", Texture.class);
+        assetManager.load("back/battle3.jpg", Texture.class);
+        assetManager.load("skin/uiskin.json", Skin.class);
+        assetManager.load("i18n/bundle", I18NBundle.class);
+        assetManager.load("i18n/bundle_ru", I18NBundle.class);
+        assetManager.load("i18n/bundle_es", I18NBundle.class);
+        assetManager.load("i18n/bundle_pt", I18NBundle.class);
+        assetManager.load("i18n/bundle_fr", I18NBundle.class);
+        assetManager.load("pack/ability.pack", TextureAtlas.class);
+        assetManager.load("pack/animated.pack", TextureAtlas.class);
+        assetManager.load("pack/cat.pack", TextureAtlas.class);
+        assetManager.load("pack/char.pack", TextureAtlas.class);
+        assetManager.load("pack/down.pack", TextureAtlas.class);
+        assetManager.load("pack/effects.pack", TextureAtlas.class);
+        assetManager.load("pack/flare.pack", TextureAtlas.class);
+        assetManager.load("pack/goods.pack", TextureAtlas.class);
+        assetManager.load("pack/hedgehog.pack", TextureAtlas.class);
+        assetManager.load("pack/icons.pack", TextureAtlas.class);
+        assetManager.load("pack/ladder.pack", TextureAtlas.class);
+        assetManager.load("pack/menu.pack", TextureAtlas.class);
+        assetManager.load("pack/rabbit.pack", TextureAtlas.class);
+        assetManager.load("pack/squirrel.pack", TextureAtlas.class);
+        assetManager.load("pack/thing.pack", TextureAtlas.class);
+        assetManager.load("pack/training.pack", TextureAtlas.class);
+        assetManager.load("pack/up.pack", TextureAtlas.class);
+        assetManager.load("pack/wolf.pack", TextureAtlas.class);
+        assetManager.load("music/battle0.mp3", Music.class);
+        assetManager.load("music/battle1.mp3", Music.class);
+        assetManager.load("music/battle2.mp3", Music.class);
+        assetManager.load("music/battle3.mp3", Music.class);
+        assetManager.load("music/theme.mp3", Music.class);
+        assetManager.load("sfx/AntidoteThing.wav", Sound.class);
+        assetManager.load("sfx/BeamThing.wav", Sound.class);
+        assetManager.load("sfx/BoxThing.wav", Sound.class);
+        assetManager.load("sfx/call.wav", Sound.class);
+        assetManager.load("sfx/click.wav", Sound.class);
+        assetManager.load("sfx/DetectorThing.wav", Sound.class);
+        assetManager.load("sfx/Devoured.wav", Sound.class);
+        assetManager.load("sfx/die.wav", Sound.class);
+        assetManager.load("sfx/Exploded.wav", Sound.class);
+        assetManager.load("sfx/FlashbangThing.wav", Sound.class);
+        assetManager.load("sfx/food.wav", Sound.class);
+        assetManager.load("sfx/game.wav", Sound.class);
+        assetManager.load("sfx/ladder.wav", Sound.class);
+        assetManager.load("sfx/MineThing.wav", Sound.class);
+        assetManager.load("sfx/Poisoned.wav", Sound.class);
+        assetManager.load("sfx/round.wav", Sound.class);
+        assetManager.load("sfx/Soaked.wav", Sound.class);
+        assetManager.load("sfx/Sunk.wav", Sound.class);
+        assetManager.load("sfx/TeleportThing.wav", Sound.class);
+        assetManager.load("sfx/thing.wav", Sound.class);
+        assetManager.load("sfx/UmbrellaThing.wav", Sound.class);
     }
 }
