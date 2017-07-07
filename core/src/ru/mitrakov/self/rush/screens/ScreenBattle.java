@@ -34,9 +34,9 @@ public class ScreenBattle extends LocalizableScreen {
     private boolean outOfSync = false;
     private I18NBundle i18n;
 
-    public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+    public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                         final AudioManager audioManager, I18NBundle i18n) {
-        super(game, model, psObject, assetManager, skin, audioManager);
+        super(game, model, psObject, assetManager, audioManager);
         assert i18n != null;
         this.i18n = i18n;
 
@@ -45,6 +45,8 @@ public class ScreenBattle extends LocalizableScreen {
 
         loadTextures();
         gui = new Gui(model, assetManager);
+
+        Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default");
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "white");

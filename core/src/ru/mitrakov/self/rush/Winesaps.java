@@ -170,13 +170,12 @@ public class Winesaps extends Game implements Localizable {
         i18nPt = assetManager.get("i18n/bundle_pt");
         i18nFr = assetManager.get("i18n/bundle_fr");
 
-        Skin skin = assetManager.get("skin/uiskin.json");
         audioManager = new AudioManager(assetManager);
-        screenLogin = new ScreenLogin(this, model, psObject, assetManager, skin, audioManager, i18nEn);
-        screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, skin, audioManager);
-        screenTraining = new ScreenTraining(this, model, psObject, assetManager, skin, audioManager);
-        screenMain = new ScreenMain(this, model, psObject, assetManager, skin, audioManager, i18nEn);
-        screenBattle = new ScreenBattle(this, model, psObject, assetManager, skin, audioManager, i18nEn);
+        screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager, i18nEn);
+        screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, audioManager);
+        screenTraining = new ScreenTraining(this, model, psObject, assetManager, audioManager);
+        screenMain = new ScreenMain(this, model, psObject, assetManager, audioManager, i18nEn);
+        screenBattle = new ScreenBattle(this, model, psObject, assetManager, audioManager, i18nEn);
         setScreen(screenLogin);
         audioManager.music("theme", false);
 

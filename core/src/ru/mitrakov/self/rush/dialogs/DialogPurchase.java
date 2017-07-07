@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -55,9 +56,12 @@ public class DialogPurchase extends DialogFeat {
         }
     }
 
-    public void updateSkuButtons(Skin skin, final IBillingProvider provider, final String username, I18NBundle i18n,
-                                 TextureAtlas atlas, AudioManager audioManager) {
-        assert skin != null && provider != null && i18n != null && atlas != null && audioManager != null;
+    public void updateSkuButtons(final IBillingProvider provider, final String username, I18NBundle i18n,
+                                 AssetManager assetManager, AudioManager audioManager) {
+        assert provider != null && i18n != null && assetManager != null && audioManager != null;
+
+        TextureAtlas atlas = assetManager.get("pack/menu.pack");
+        Skin skin = assetManager.get("skin/uiskin.json");
 
         Table table = getContentTable();
         assert table != null;

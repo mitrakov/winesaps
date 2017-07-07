@@ -20,9 +20,9 @@ public class ScreenCharacter extends LocalizableScreen {
     private final Array<TextButton> checkboxes = new Array<TextButton>(4);
     private final TextButton btnNext;
 
-    public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
-                           AudioManager manager) {
-        super(game, model, psObject, assetManager, skin, manager);
+    public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
+                           AudioManager audioManager) {
+        super(game, model, psObject, assetManager, audioManager);
 
         Array<Actor> images = init();
         btnNext = createButton();
@@ -65,7 +65,7 @@ public class ScreenCharacter extends LocalizableScreen {
         for (Model.Character character : Model.Character.values()) {
             if (character != Model.Character.None) {
                 // create checkboxes
-                final TextButton btn = new CheckBox("", skin, "default");
+                final TextButton btn = new CheckBox("", assetManager.<Skin>get("skin/uiskin.json"), "default");
                 btn.setUserObject(character);
                 checkboxes.add(btn);
 
@@ -93,7 +93,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     private TextButton createButton() {
-        return new TextButtonFeat("", skin, "default", audioManager) {{
+        return new TextButtonFeat("", assetManager.<Skin>get("skin/uiskin.json"), "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

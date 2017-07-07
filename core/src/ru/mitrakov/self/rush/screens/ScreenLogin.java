@@ -50,9 +50,9 @@ public class ScreenLogin extends LocalizableScreen {
     private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                        AudioManager audioManager, I18NBundle i18nb) {
-        super(game, model, psObject, assetManager, skin, audioManager);
+        super(game, model, psObject, assetManager, audioManager);
         assert i18nb != null;
         i18n = i18nb;
 
@@ -65,6 +65,7 @@ public class ScreenLogin extends LocalizableScreen {
         textureValid = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
         textureInvalid = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
 
+        Skin skin = assetManager.get("skin/uiskin.json");
         tableMain = new Table(skin).pad(20);
         tableMain.setBackground("panel-maroon");
 

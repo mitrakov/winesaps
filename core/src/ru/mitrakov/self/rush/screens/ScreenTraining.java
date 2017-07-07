@@ -28,11 +28,13 @@ public class ScreenTraining extends LocalizableScreen {
     private final Queue<Window> curtains = new Queue<Window>(3);
 
     public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
-                          Skin skin, AudioManager manager) {
-        super(game, model, psObject, assetManager, skin, manager);
+                          AudioManager manager) {
+        super(game, model, psObject, assetManager, manager);
 
         loadTextures();
         gui = new Gui(model, assetManager);
+
+        Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default");
         trainingDialog = new DialogTraining(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
@@ -143,6 +145,7 @@ public class ScreenTraining extends LocalizableScreen {
         table.add(btnSkip).align(Align.right).padRight(2).width(200).height(btnThing.getHeight());
 
         // initialize curtains windows
+        Skin skin = assetManager.get("skin/uiskin.json");
         Window window;
         window = new Window("", skin, "panel-black");
         window.setBounds(235, 380, 125, 268);

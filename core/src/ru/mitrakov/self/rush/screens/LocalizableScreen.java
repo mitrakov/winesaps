@@ -21,7 +21,6 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Model model;
     protected final PsObject psObject;
     protected final AssetManager assetManager;
-    protected final Skin skin;
     protected final AudioManager audioManager;
     protected final Stage stage = new Stage(new FitViewport(Winesaps.WIDTH, Winesaps.HEIGHT));
     protected final Table table = new Table();
@@ -33,16 +32,15 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
-    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, AssetManager assetManager,
                       AudioManager audioManager) {
-        assert game != null && model != null && assetManager != null && skin != null && audioManager != null;
+        assert game != null && model != null && assetManager != null && audioManager != null;
         this.game = game;
         this.model = model;
         this.psObject = psObject;
         this.assetManager = assetManager;
-        this.skin = skin;
         this.audioManager = audioManager;
-        connectingDialog = new DialogLock(skin, "panel-lock");
+        connectingDialog = new DialogLock(assetManager.<Skin>get("skin/uiskin.json"), "panel-lock");
 
         table.setFillParent(true);
         stage.addActor(table);

@@ -1,5 +1,8 @@
 package ru.mitrakov.self.rush.screens;
 
+import java.text.*;
+import java.util.*;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -11,9 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
-import java.text.*;
-import java.util.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
@@ -28,8 +28,6 @@ import ru.mitrakov.self.rush.dialogs.*;
  * Created by mitrakov on 03.03.2017
  */
 public class ScreenMain extends LocalizableScreen {
-
-    private final TextureAtlas atlasMenu;
 
     private final Table tableLeft = new Table();
     private final Table tableRight;
@@ -109,13 +107,13 @@ public class ScreenMain extends LocalizableScreen {
 
     private I18NBundle i18n;
 
-    public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager, Skin skin,
+    public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                       AudioManager audioManager, I18NBundle i18nArg) {
-        super(game, model, psObject, assetManager, skin, audioManager);
+        super(game, model, psObject, assetManager, audioManager);
         assert i18nArg != null;
         i18n = i18nArg;
 
-        atlasMenu = assetManager.get("pack/menu.pack");
+        TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         TextureRegionDrawable drawable = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
         TextureRegionDrawable back = new TextureRegionDrawable(atlasMenu.findRegion("back"));
         TextureRegionDrawable cancel = new TextureRegionDrawable(atlasMenu.findRegion("back"));
@@ -124,6 +122,8 @@ public class ScreenMain extends LocalizableScreen {
         drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("loss"));
         drawableInvite = new TextureRegionDrawable(atlasMenu.findRegion("invite"));
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
+
+        Skin skin = assetManager.get("skin/uiskin.json");
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default", i18n);
@@ -491,7 +491,7 @@ public class ScreenMain extends LocalizableScreen {
                         if (ev.skuGems.containsKey(sku.id))
                             sku.value = ev.skuGems.get(sku.id);
                     }
-                    purchaseDialog.updateSkuButtons(skin, provider, model.name, i18n, atlasMenu, audioManager);
+                    purchaseDialog.updateSkuButtons(provider, model.name, i18n, assetManager, audioManager);
                 }
             }
         }
@@ -541,6 +541,9 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void initTables() {
+        TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
+        Skin skin = assetManager.get("skin/uiskin.json");
+
         table.add(tableLeft).pad(4).width(222).fill();
         table.add(tableRight).pad(4).expand().fill();
         table.setBackground(new Image(assetManager.<Texture>get("back/main.jpg")).getDrawable());
@@ -806,7 +809,7 @@ public class ScreenMain extends LocalizableScreen {
         int modelFriendsCount = model.friends.size();
         int n = modelFriendsCount - curFriendsCount;
         for (int i = 0; i < n; i++) {
-            final Label label = new Label("", skin, "default");
+            final Label label = new Label("", assetManager.<Skin>get("skin/uiskin.json"), "default");
 
             tableRightContentFriends.row();
             tableRightContentFriends.add(new Image());
