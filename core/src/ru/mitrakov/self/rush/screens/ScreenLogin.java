@@ -47,14 +47,11 @@ public class ScreenLogin extends LocalizableScreen {
     private enum CurDialog {Start, SignIn, SignUp}
 
     private CurDialog curDialog = CurDialog.Start;
-    private I18NBundle i18n;
     private boolean shiftedByKeyboard = false;
 
-    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
-                       AudioManager audioManager, I18NBundle i18nb) {
+    public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
+                       AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
-        assert i18nb != null;
-        i18n = i18nb;
 
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         textureEn = new TextureRegionDrawable(atlasMenu.findRegion("en"));
@@ -112,7 +109,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    assert i18n != null;
+                    I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
                     String password = txtPassword.getText();
                     if (password.length() >= 4) {
                         connectingDialog.show(stage);
@@ -190,7 +187,6 @@ public class ScreenLogin extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
-        this.i18n = bundle;
 
         btnSignIn.setText(bundle.format("sign.in"));
         btnSignUp.setText(bundle.format("sign.up"));
@@ -206,7 +202,7 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        assert i18n != null;
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
             if (ev.authorized)
@@ -240,7 +236,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.language = Model.Language.English;
+                    model.language = "en";
                     game.updateLocale();
                 }
             });
@@ -249,7 +245,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.language = Model.Language.Russian;
+                    model.language = "ru";
                     game.updateLocale();
                 }
             });
@@ -258,7 +254,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.language = Model.Language.Spanish;
+                    model.language = "es";
                     game.updateLocale();
                 }
             });
@@ -267,7 +263,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.language = Model.Language.Portuguese;
+                    model.language = "pt";
                     game.updateLocale();
                 }
             });
@@ -276,7 +272,7 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    model.language = Model.Language.French;
+                    model.language = "fr";
                     game.updateLocale();
                 }
             });

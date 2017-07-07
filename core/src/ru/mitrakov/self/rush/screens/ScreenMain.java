@@ -105,13 +105,9 @@ public class ScreenMain extends LocalizableScreen {
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
-    private I18NBundle i18n;
-
     public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
-                      AudioManager audioManager, I18NBundle i18nArg) {
+                      AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
-        assert i18nArg != null;
-        i18n = i18nArg;
 
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         TextureRegionDrawable drawable = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
@@ -124,6 +120,7 @@ public class ScreenMain extends LocalizableScreen {
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
 
         Skin skin = assetManager.get("skin/uiskin.json");
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default", i18n);
@@ -343,7 +340,6 @@ public class ScreenMain extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
-        this.i18n = bundle;
 
         promocodeDialog.onLocaleChanged(bundle);
         purchaseDialog.onLocaleChanged(bundle);
@@ -388,7 +384,7 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        assert i18n != null;
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
             if (!ev.authorized)
@@ -430,6 +426,7 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void handleEventBackground(EventBus.Event event) {
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         if (event instanceof EventBus.NameChangedEvent) {
             EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
             String txt = ev.name.length() <= 18 ? ev.name : String.format("%s...", ev.name.substring(0, 15));
@@ -514,7 +511,7 @@ public class ScreenMain extends LocalizableScreen {
                     addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            assert i18n != null;
+                            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
                             Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
                             if (minutes != null) {
                                 long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
@@ -803,13 +800,14 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     private void adjustFriendsTable() {
-        assert i18n != null;
+        final Skin skin = assetManager.get("skin/uiskin.json");
+        final I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
 
         int curFriendsCount = tableRightContentFriends.getRows();
         int modelFriendsCount = model.friends.size();
         int n = modelFriendsCount - curFriendsCount;
         for (int i = 0; i < n; i++) {
-            final Label label = new Label("", assetManager.<Skin>get("skin/uiskin.json"), "default");
+            final Label label = new Label("", skin, "default");
 
             tableRightContentFriends.row();
             tableRightContentFriends.add(new Image());

@@ -63,11 +63,11 @@ public class DialogSettings extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         // 'setChecked()' must be called here (not in constructor), because parameters might be changed outside
-        btnEn.setChecked(model.language == Model.Language.English);
-        btnRu.setChecked(model.language == Model.Language.Russian);
-        btnEs.setChecked(model.language == Model.Language.Spanish);
-        btnPt.setChecked(model.language == Model.Language.Portuguese);
-        btnFr.setChecked(model.language == Model.Language.French);
+        btnEn.setChecked(model.language.equals("en"));
+        btnRu.setChecked(model.language.equals("ru"));
+        btnEs.setChecked(model.language.equals("es"));
+        btnPt.setChecked(model.language.equals("pt"));
+        btnFr.setChecked(model.language.equals("fr"));
         btnNotifyYes.setChecked(model.notifyNewBattles);
         btnNotifyNo.setChecked(!model.notifyNewBattles);
 
@@ -116,7 +116,7 @@ public class DialogSettings extends DialogFeat {
         btnEn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.language = Model.Language.English;
+                model.language = "en";
                 game.updateLocale();
                 pack();
             }
@@ -124,7 +124,7 @@ public class DialogSettings extends DialogFeat {
         btnRu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.language = Model.Language.Russian;
+                model.language = "ru";
                 game.updateLocale();
                 pack();
             }
@@ -132,7 +132,7 @@ public class DialogSettings extends DialogFeat {
         btnEs.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.language = Model.Language.Spanish;
+                model.language = "es";
                 game.updateLocale();
                 pack();
             }
@@ -140,7 +140,7 @@ public class DialogSettings extends DialogFeat {
         btnPt.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.language = Model.Language.Portuguese;
+                model.language = "pt";
                 game.updateLocale();
                 pack();
             }
@@ -148,7 +148,7 @@ public class DialogSettings extends DialogFeat {
         btnFr.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                model.language = Model.Language.French;
+                model.language = "fr";
                 game.updateLocale();
                 pack();
             }

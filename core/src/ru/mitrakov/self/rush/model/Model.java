@@ -110,8 +110,6 @@ public class Model {
         CHECK_PURCHASE     // 39
     }
 
-    public enum Language {English, Russian, Spanish, Portuguese, French}
-
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
 
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
@@ -199,7 +197,7 @@ public class Model {
     // ================
 
     public volatile boolean notifyNewBattles = true;
-    public volatile Language language = Language.English;
+    public volatile String language = "en";
 
     // ================================
     // === PRIVATE STATIC CONSTANTS ===
@@ -269,11 +267,7 @@ public class Model {
             if (s != null) {
                 String[] settings = s.split(" ");
                 if (settings.length > 2) {
-                    try {
-                        language = Language.valueOf(settings[0]);
-                    } catch (IllegalArgumentException e) {
-                        language = Language.English;
-                    }
+                    language = settings[0];
                     notifyNewBattles = settings[1].equals("1");
                     name = settings[2];
                     bus.raise(new EventBus.NameChangedEvent(name));

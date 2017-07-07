@@ -31,14 +31,12 @@ public class ScreenBattle extends LocalizableScreen {
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
 
-    private boolean outOfSync = false;
-    private I18NBundle i18n;
+    private String outOfSyncStr = "";
+    private transient boolean outOfSync = false;
 
     public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
-                        final AudioManager audioManager, I18NBundle i18n) {
+                        final AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
-        assert i18n != null;
-        this.i18n = i18n;
 
         // ....
         glClearR = glClearG = glClearB = 0;
@@ -75,6 +73,9 @@ public class ScreenBattle extends LocalizableScreen {
         abilityButtonsScroll.setFadeScrollBars(false);
 
         buildTable();
+
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        outOfSyncStr = i18n.format("battle.out.of.sync");
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ScreenBattle extends LocalizableScreen {
 
         // update time
         long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblTime.setText(outOfSync ? i18n.format("battle.out.of.sync") : String.valueOf(Math.max(t, 0)));
+        lblTime.setText(outOfSync ? outOfSyncStr : String.valueOf(Math.max(t, 0)));
     }
 
     @Override
@@ -97,7 +98,8 @@ public class ScreenBattle extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
-        this.i18n = bundle;
+
+        outOfSyncStr = bundle.format("battle.out.of.sync");
 
         finishedDialog.onLocaleChanged(bundle);
         infoDialog.onLocaleChanged(bundle);
@@ -109,7 +111,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        assert i18n != null;
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         if (event instanceof EventBus.RoundFinishedEvent) {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
             audioManager.sound("round");

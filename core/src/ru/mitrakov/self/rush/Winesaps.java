@@ -18,7 +18,7 @@ import ru.mitrakov.self.rush.model.Model;
 /**
  * Entry point
  */
-public class Winesaps extends Game implements Localizable {
+public class Winesaps extends Game {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
 
@@ -32,11 +32,6 @@ public class Winesaps extends Game implements Localizable {
     private /*final*/ LocalizableScreen screenTraining;
     private /*final*/ LocalizableScreen screenMain;
     private /*final*/ LocalizableScreen screenBattle;
-    private /*final*/ I18NBundle i18nEn;
-    private /*final*/ I18NBundle i18nRu;
-    private /*final*/ I18NBundle i18nEs;
-    private /*final*/ I18NBundle i18nPt;
-    private /*final*/ I18NBundle i18nFr;
     private /*final*/ SpriteBatch batch; // to draw splash screen only!
 
     public Winesaps(PsObject psObject) {
@@ -97,15 +92,6 @@ public class Winesaps extends Game implements Localizable {
         batch.dispose();
     }
 
-    @Override
-    public void onLocaleChanged(I18NBundle bundle) {
-        screenLogin.onLocaleChanged(bundle);
-        screenCharacter.onLocaleChanged(bundle);
-        screenTraining.onLocaleChanged(bundle);
-        screenMain.onLocaleChanged(bundle);
-        screenBattle.onLocaleChanged(bundle);
-    }
-
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
@@ -125,25 +111,12 @@ public class Winesaps extends Game implements Localizable {
     }
 
     public void updateLocale() {
-        switch (model.language) {
-            case English:
-                onLocaleChanged(i18nEn);
-                break;
-            case Russian:
-                onLocaleChanged(i18nRu);
-                break;
-            case Spanish:
-                onLocaleChanged(i18nEs);
-                break;
-            case Portuguese:
-                onLocaleChanged(i18nPt);
-                break;
-            case French:
-                onLocaleChanged(i18nFr);
-                break;
-            default:
-                onLocaleChanged(i18nEn);
-        }
+        I18NBundle bundle = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        screenLogin.onLocaleChanged(bundle);
+        screenCharacter.onLocaleChanged(bundle);
+        screenTraining.onLocaleChanged(bundle);
+        screenMain.onLocaleChanged(bundle);
+        screenBattle.onLocaleChanged(bundle);
     }
 
     public String getDebugInfo(String key) {
@@ -164,18 +137,12 @@ public class Winesaps extends Game implements Localizable {
         // Do NOT do it in constructor because Gdx would not be ready
         model.loadSettings();
 
-        i18nEn = assetManager.get("i18n/bundle");
-        i18nRu = assetManager.get("i18n/bundle_ru");
-        i18nEs = assetManager.get("i18n/bundle_es");
-        i18nPt = assetManager.get("i18n/bundle_pt");
-        i18nFr = assetManager.get("i18n/bundle_fr");
-
         audioManager = new AudioManager(assetManager);
-        screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager, i18nEn);
+        screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager);
         screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, audioManager);
         screenTraining = new ScreenTraining(this, model, psObject, assetManager, audioManager);
-        screenMain = new ScreenMain(this, model, psObject, assetManager, audioManager, i18nEn);
-        screenBattle = new ScreenBattle(this, model, psObject, assetManager, audioManager, i18nEn);
+        screenMain = new ScreenMain(this, model, psObject, assetManager, audioManager);
+        screenBattle = new ScreenBattle(this, model, psObject, assetManager, audioManager);
         setScreen(screenLogin);
         audioManager.music("theme", false);
 
@@ -218,7 +185,7 @@ public class Winesaps extends Game implements Localizable {
         assetManager.load("back/battle2.jpg", Texture.class);
         assetManager.load("back/battle3.jpg", Texture.class);
         assetManager.load("skin/uiskin.json", Skin.class);
-        assetManager.load("i18n/bundle", I18NBundle.class);
+        assetManager.load("i18n/bundle_en", I18NBundle.class);
         assetManager.load("i18n/bundle_ru", I18NBundle.class);
         assetManager.load("i18n/bundle_es", I18NBundle.class);
         assetManager.load("i18n/bundle_pt", I18NBundle.class);
