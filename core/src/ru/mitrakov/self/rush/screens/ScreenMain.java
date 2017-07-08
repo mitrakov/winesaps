@@ -124,7 +124,8 @@ public class ScreenMain extends LocalizableScreen {
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default", i18n);
-        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", promocodeDialog, purchaseDialog, stage);
+        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", assetManager, audioManager, promocodeDialog,
+                purchaseDialog, stage);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", audioManager);
         aboutDialog = new DialogAbout(skin, "default");
