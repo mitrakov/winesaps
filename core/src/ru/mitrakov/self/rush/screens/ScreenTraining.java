@@ -35,7 +35,7 @@ public class ScreenTraining extends LocalizableScreen {
         gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenBattle (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
-        finishedDialog = new DialogFinished(skin, "default");
+        finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         trainingDialog = new DialogTraining(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {

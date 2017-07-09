@@ -45,7 +45,7 @@ public class ScreenBattle extends LocalizableScreen {
         gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTraining (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
-        finishedDialog = new DialogFinished(skin, "default");
+        finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
@@ -116,18 +116,19 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
             audioManager.sound("round");
             reset();
-            String msg = ev.winner ? i18n.format("battle.win.header") : i18n.format("battle.lose.header");
-            finishedDialog.setText("", msg).setScore(model.totalScore1, model.totalScore2).setOnResultAction(null);
-            finishedDialog.show(stage);
+            String h = i18n.format("dialog.finished.header.round");
+            String msg = i18n.format(ev.winner ? "dialog.finished.win.round" : "dialog.finished.lose.round");
+            finishedDialog.setPicture(false, ev.winner).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
+            finishedDialog.setReward(0).setOnResultAction(null).show(stage);
         }
         if (event instanceof EventBus.GameFinishedEvent) {
             EventBus.GameFinishedEvent ev = (EventBus.GameFinishedEvent) event;
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
-            String header = i18n.format("battle.finish");
-            String msg = ev.winner ? i18n.format("battle.win.text") : i18n.format("battle.lose.text");
-            finishedDialog.setText(header, msg).setScore(model.totalScore1, model.totalScore2);
-            finishedDialog.setOnResultAction(new Runnable() {
+            String h = i18n.format("dialog.finished.header.battle");
+            String msg = i18n.format(ev.winner ? "dialog.finished.win.battle" : "dialog.finished.lose.battle");
+            finishedDialog.setPicture(true, ev.winner).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
+            finishedDialog.setReward(ev.winner ? 1 : 0).setOnResultAction(new Runnable() {
                 @Override
                 public void run() {
                     game.setNextScreen();

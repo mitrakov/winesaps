@@ -12,6 +12,9 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font-title: {
 		file: big_rus.fnt
 	}
+	font-score: {
+		file: score.fnt
+	}
 }
 com.badlogic.gdx.graphics.Color: {
 	gray: {
@@ -328,6 +331,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	link: {
 		font: font
 		fontColor: blue
+	}
+	score: {
+	    font: font-score
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
