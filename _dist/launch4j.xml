@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>winesaps.jar</jar>
-  <outfile>../desktop/build/libs/winesaps.exe</outfile>
+  <outfile>..\desktop\build\libs\winesaps.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -23,4 +23,18 @@
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
   </jre>
+  <versionInfo>
+    <fileVersion>1.0.0.0</fileVersion>
+    <txtFileVersion>1.0.0 beta</txtFileVersion>
+    <fileDescription>Winesaps: online multiplayer game for Windows, Linux and Android</fileDescription>
+    <copyright>© Winesaps, 2017, winesaps.com</copyright>
+    <productVersion>1.0.0.0</productVersion>
+    <txtProductVersion>1.0.0 beta</txtProductVersion>
+    <productName>Winesaps</productName>
+    <companyName>Open Source Developer, Artem Mitrakov</companyName>
+    <internalName>Winesaps</internalName>
+    <originalFilename>winesaps.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>ENGLISH_US</language>
+  </versionInfo>
 </launch4jConfig>
