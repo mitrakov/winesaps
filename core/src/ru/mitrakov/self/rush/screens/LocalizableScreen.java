@@ -26,9 +26,9 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Table table = new Table();
     protected final DialogLock connectingDialog;
 
-    protected float glClearR = .96f;
-    protected float glClearG = .92f;
-    protected float glClearB = .92f;
+    protected float glClearR;
+    protected float glClearG;
+    protected float glClearB;
 
     private boolean connected;
 

@@ -38,9 +38,6 @@ public class ScreenBattle extends LocalizableScreen {
                         final AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
 
-        // ....
-        glClearR = glClearG = glClearB = 0;
-
         loadTextures();
         gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTraining (because it's an Actor)
 

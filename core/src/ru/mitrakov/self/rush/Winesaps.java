@@ -4,12 +4,14 @@ import java.net.*;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.screens.*;
@@ -32,7 +34,7 @@ public class Winesaps extends Game {
     private /*final*/ LocalizableScreen screenTraining;
     private /*final*/ LocalizableScreen screenMain;
     private /*final*/ LocalizableScreen screenBattle;
-    private /*final*/ SpriteBatch batch; // to draw splash screen only!
+    private /*final*/ Stage stage; // to draw splash screen only!
 
     public Winesaps(PsObject psObject) {
         this.psObject = psObject;
@@ -60,10 +62,13 @@ public class Winesaps extends Game {
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
         assetManager = new AssetManager();
         assetManager.load("back/login.jpg", Texture.class);
         assetManager.finishLoading(); // synchronous loading of the splash screen
+
+        stage = new Stage(new FitViewport(WIDTH, HEIGHT));
+        stage.addActor(new Image(assetManager.<Texture>get("back/login.jpg")));
+
         enqueueAssets();              // other assets will be loaded asynchronously
     }
 
@@ -74,10 +79,15 @@ public class Winesaps extends Game {
         else if (assetManager.update()) {               // loading assets (returns true when finished)
             init();
         } else {                                        // draw splash screen
-            batch.begin();
-            batch.draw(assetManager.<Texture>get("back/login.jpg"), 0, 0);
-            batch.end();
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            stage.act();
+            stage.draw();
         }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -89,7 +99,7 @@ public class Winesaps extends Game {
         screenMain.dispose();
         screenBattle.dispose();
         assetManager.dispose();
-        batch.dispose();
+        stage.dispose();
     }
 
     public void setNextScreen() {
