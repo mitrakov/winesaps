@@ -2,6 +2,7 @@ package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -112,10 +113,13 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     private void buildTable(Array<Actor> images) {
-        Table tableMain = new Table();
+        Table tableMain = new Table(assetManager.<Skin>get("skin/uiskin.json"));
+        tableMain.pad(20).setBackground("panel-maroon");
+
         table.add(tableMain).expand();
         table.row().pad(5);
         table.add(btnNext).colspan(checkboxes.size).width(200).height(50).right();
+        table.setBackground(new Image(assetManager.<Texture>get("back/main.jpg")).getDrawable());
 
         for (Actor img : images) {
             tableMain.add(img).bottom().space(20);
