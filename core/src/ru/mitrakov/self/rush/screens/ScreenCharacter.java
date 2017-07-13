@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
+import ru.mitrakov.self.rush.dialogs.DialogFood;
 
 /**
  * Created by mitrakov on 01.03.2017
@@ -20,14 +21,17 @@ public class ScreenCharacter extends LocalizableScreen {
 
     private final Array<TextButton> checkboxes = new Array<TextButton>(4);
     private final TextButton btnNext;
+    private final DialogFood dialog;
 
     public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                            AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
+        Skin skin = assetManager.get("skin/uiskin.json");
 
-        Array<Actor> images = init();
-        btnNext = createButton();
-        buildTable(images);
+        Array<Actor> images = init(skin);
+        btnNext = createButton(skin);
+        dialog = createFoodDialog(skin);
+        buildTable(images, skin);
     }
 
     @Override
@@ -48,6 +52,7 @@ public class ScreenCharacter extends LocalizableScreen {
                 btn.setText(bundle.format("character." + obj));
             }
         }
+        dialog.onLocaleChanged(bundle);
         btnNext.setText(bundle.format("next"));
     }
 
@@ -59,14 +64,14 @@ public class ScreenCharacter extends LocalizableScreen {
     public void handleEventBackground(EventBus.Event event) {
     }
 
-    private Array<Actor> init() {
+    private Array<Actor> init(Skin skin) {
         Array<Actor> result = new Array<Actor>(Model.Character.values().length);
 
         TextureAtlas atlasCharacter = assetManager.get("pack/char.pack");
         for (Model.Character character : Model.Character.values()) {
             if (character != Model.Character.None) {
                 // create checkboxes
-                final TextButton btn = new CheckBox("", assetManager.<Skin>get("skin/uiskin.json"), "default");
+                final TextButton btn = new CheckBox("", skin, "default");
                 btn.setUserObject(character);
                 checkboxes.add(btn);
 
@@ -93,8 +98,8 @@ public class ScreenCharacter extends LocalizableScreen {
         return result;
     }
 
-    private TextButton createButton() {
-        return new TextButtonFeat("", assetManager.<Skin>get("skin/uiskin.json"), "default", audioManager) {{
+    private TextButton createButton(Skin skin) {
+        return new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -103,7 +108,7 @@ public class ScreenCharacter extends LocalizableScreen {
                             Object obj = btn.getUserObject();
                             if (obj instanceof Model.Character) { // stackoverflow.com/questions/2950319
                                 model.changeCharacter((Model.Character) obj);
-                                game.setNextScreen();
+                                dialog.setCharacter((Model.Character) obj).show(stage);
                             }
                         }
                     }
@@ -112,8 +117,19 @@ public class ScreenCharacter extends LocalizableScreen {
         }};
     }
 
-    private void buildTable(Array<Actor> images) {
-        Table tableMain = new Table(assetManager.<Skin>get("skin/uiskin.json"));
+    private DialogFood createFoodDialog(Skin skin) {
+        DialogFood dialog = new DialogFood("", skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
+        dialog.setOnResultAction(new Runnable() {
+            @Override
+            public void run() {
+                game.setNextScreen();
+            }
+        });
+        return dialog;
+    }
+
+    private void buildTable(Array<Actor> images, Skin skin) {
+        Table tableMain = new Table(skin);
         tableMain.pad(20).setBackground("panel-maroon");
 
         table.add(tableMain).expand();

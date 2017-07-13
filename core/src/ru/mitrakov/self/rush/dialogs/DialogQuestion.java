@@ -52,7 +52,6 @@ public class DialogQuestion extends DialogFeat {
     }
 
     public DialogQuestion setText(String text) {
-        assert text != null;
         lblMessage.setText(text);
         return this;
     }

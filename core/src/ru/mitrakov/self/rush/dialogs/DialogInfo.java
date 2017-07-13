@@ -38,7 +38,6 @@ public class DialogInfo extends DialogFeat {
     }
 
     public Dialog setText(String text) {
-        assert text != null;
         lblMessage.setText(text);
         return this;
     }

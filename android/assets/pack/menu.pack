@@ -5,204 +5,246 @@ filter: Nearest,Nearest
 repeat: none
 gems_pack
   rotate: false
-  xy: 2, 103
+  xy: 2, 355
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 gems_pack_big
   rotate: false
-  xy: 154, 103
+  xy: 2, 203
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 gems_pack_small
   rotate: false
-  xy: 306, 103
+  xy: 154, 355
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 battleWin
   rotate: false
-  xy: 458, 125
+  xy: 306, 377
   size: 153, 128
   orig: 153, 128
   offset: 0, 0
   index: -1
 battleLoss
   rotate: false
-  xy: 613, 125
+  xy: 2, 73
   size: 141, 128
   orig: 141, 128
   offset: 0, 0
   index: -1
-logo
-  rotate: false
-  xy: 2, 36
-  size: 200, 65
-  orig: 200, 65
-  offset: 0, 0
-  index: -1
-roundLoss
-  rotate: false
-  xy: 756, 189
-  size: 160, 64
-  orig: 160, 64
-  offset: 0, 0
-  index: -1
-roundWin
-  rotate: false
-  xy: 204, 37
-  size: 160, 64
-  orig: 160, 64
-  offset: 0, 0
-  index: -1
 more1
   rotate: false
-  xy: 756, 112
+  xy: 154, 278
   size: 145, 75
   orig: 145, 75
   offset: 0, 0
   index: -1
 more4
   rotate: false
-  xy: 458, 48
+  xy: 154, 201
   size: 145, 75
   orig: 145, 75
   offset: 0, 0
   index: -1
+logo
+  rotate: false
+  xy: 145, 134
+  size: 200, 65
+  orig: 200, 65
+  offset: 0, 0
+  index: -1
+roundLoss
+  rotate: false
+  xy: 145, 68
+  size: 160, 64
+  orig: 160, 64
+  offset: 0, 0
+  index: -1
+roundWin
+  rotate: false
+  xy: 306, 311
+  size: 160, 64
+  orig: 160, 64
+  offset: 0, 0
+  index: -1
 more3
   rotate: false
-  xy: 605, 48
+  xy: 301, 234
   size: 120, 75
   orig: 120, 75
   offset: 0, 0
   index: -1
-more2
+apple
   rotate: false
-  xy: 918, 195
-  size: 64, 58
-  orig: 64, 58
+  xy: 2, 7
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+carrot
+  rotate: false
+  xy: 68, 7
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+meat
+  rotate: false
+  xy: 134, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+mushroom
+  rotate: false
+  xy: 200, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+nut
+  rotate: false
+  xy: 423, 245
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pear
+  rotate: false
+  xy: 266, 2
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 about
   rotate: false
-  xy: 366, 53
+  xy: 461, 457
   size: 48, 48
   orig: 48, 48
-  offset: 0, 0
-  index: -1
-en
-  rotate: false
-  xy: 2, 2
-  size: 48, 32
-  orig: 48, 32
-  offset: 0, 0
-  index: -1
-es
-  rotate: false
-  xy: 52, 2
-  size: 48, 32
-  orig: 48, 32
-  offset: 0, 0
-  index: -1
-fr
-  rotate: false
-  xy: 102, 2
-  size: 48, 32
-  orig: 48, 32
-  offset: 0, 0
-  index: -1
-pt
-  rotate: false
-  xy: 152, 2
-  size: 48, 32
-  orig: 48, 32
   offset: 0, 0
   index: -1
 add
   rotate: false
-  xy: 727, 62
+  xy: 461, 407
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
+more2
+  rotate: false
+  xy: 307, 74
+  size: 64, 58
+  orig: 64, 58
+  offset: 0, 0
+  index: -1
 back
   rotate: false
-  xy: 777, 62
+  xy: 332, 24
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 gem
   rotate: false
-  xy: 827, 62
+  xy: 347, 184
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 invalid
   rotate: false
-  xy: 877, 62
+  xy: 347, 134
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-loss
-  rotate: false
-  xy: 984, 221
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-win
-  rotate: false
-  xy: 416, 69
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 invite
   rotate: false
-  xy: 366, 3
+  xy: 397, 184
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 remove
   rotate: false
-  xy: 903, 139
+  xy: 397, 134
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 settings
   rotate: false
-  xy: 953, 145
+  xy: 373, 84
   size: 48, 48
   orig: 48, 48
-  offset: 0, 0
-  index: -1
-gem_small
-  rotate: false
-  xy: 984, 195
-  size: 24, 24
-  orig: 24, 24
-  offset: 0, 0
-  index: -1
-ru
-  rotate: false
-  xy: 727, 28
-  size: 48, 32
-  orig: 48, 32
   offset: 0, 0
   index: -1
 valid
   rotate: false
-  xy: 777, 12
+  xy: 447, 195
   size: 48, 48
   orig: 48, 48
+  offset: 0, 0
+  index: -1
+en
+  rotate: false
+  xy: 447, 161
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+es
+  rotate: false
+  xy: 447, 127
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+fr
+  rotate: false
+  xy: 382, 50
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+pt
+  rotate: false
+  xy: 382, 16
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+ru
+  rotate: false
+  xy: 423, 93
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+loss
+  rotate: false
+  xy: 432, 59
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+win
+  rotate: false
+  xy: 432, 25
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+gem_small
+  rotate: false
+  xy: 461, 381
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
