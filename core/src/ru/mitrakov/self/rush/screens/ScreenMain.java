@@ -441,7 +441,7 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
             TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
-            imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character + "64")));
+            imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character.name())));
         }
         if (event instanceof EventBus.RatingUpdatedEvent) {
             EventBus.RatingUpdatedEvent ev = (EventBus.RatingUpdatedEvent) event;
@@ -651,7 +651,7 @@ public class ScreenMain extends LocalizableScreen {
 
         switch (mode) {
             case Info:
-                tableRightContent.add(tableRightContentName).colspan(2).height(72);
+                tableRightContent.add(tableRightContentName).colspan(2).padTop(16);
                 tableRightContent.row();
                 tableRightContent.add().expandY();
                 tableRightContent.row();
@@ -810,7 +810,7 @@ public class ScreenMain extends LocalizableScreen {
         for (int i = 0; i < n; i++) {
             final Label label = new Label("", skin, "default");
 
-            tableRightContentFriends.row();
+            tableRightContentFriends.row().padTop(2);
             tableRightContentFriends.add(new Image());
             tableRightContentFriends.add(label).expandX().left().spaceLeft(5);
             tableRightContentFriends.add(new ImageButtonFeat(drawableInvite, audioManager) {{
