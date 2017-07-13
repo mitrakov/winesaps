@@ -23,6 +23,8 @@ public class ScreenBattle extends LocalizableScreen {
     private final Table abilityButtons = new Table();
     private final Label lblScore;
     private final Label lblTime;
+    private final Label lblVersus;
+    private final Label lblCountdown;
     private final ScrollPane abilityButtonsScroll;
     private final ImageButton btnThing;
     private final DialogFinished finishedDialog;
@@ -65,6 +67,9 @@ public class ScreenBattle extends LocalizableScreen {
             });
         }};
 
+        stage.addActor(lblVersus = new Label("", skin, "score"));
+        stage.addActor(lblCountdown = new Label("", skin, "score"));
+
         // @mitrakov: BUG in LibGDX! If a skin is not assigned to a ScrollPane then ScrollPane supposes any upper actor
         // as its scrollbar and makes it invisible after fadeOut; all that remains is to forbid fading
         abilityButtonsScroll.setFadeScrollBars(false);
@@ -80,14 +85,14 @@ public class ScreenBattle extends LocalizableScreen {
         super.render(delta);
 
         // update time
-        long t = model.roundLengthSec - (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblTime.setText(outOfSync ? outOfSyncStr : String.valueOf(Math.max(t, 0)));
+        long t = (TimeUtils.millis() - model.roundStartTime) / 1000;
+        lblTime.setText(outOfSync ? outOfSyncStr : String.valueOf(Math.max(model.roundLengthSec - t, 0)));
+        updateLabels(t);
     }
 
     @Override
     public void show() {
         super.show();
-        gui.setMovesAllowed(true); // enable moves (in case they possibly were disabled before)
         reset();
     }
 
@@ -234,5 +239,20 @@ public class ScreenBattle extends LocalizableScreen {
     private void reset() {
         outOfSync = false;
         infoDialog.hide();
+    }
+
+    private void updateLabels(long sec) {
+        boolean pause = sec < 3;
+        lblVersus.setVisible(pause);
+        lblCountdown.setVisible(pause);
+        gui.setMovesAllowed(!pause);
+        if (pause) {
+            lblVersus.setText(String.format("%s vs %s", model.name, model.enemy));
+            lblVersus.pack();
+            lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
+            lblCountdown.setText(String.valueOf(Math.max(3 - sec, 0)));
+            lblCountdown.pack();
+            lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);
+        }
     }
 }

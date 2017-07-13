@@ -100,6 +100,9 @@ class Parser implements IHandler {
                     case RANGE_OF_PRODUCTS:
                         rangeOfProducts(cmd, data.remove(0, 1));
                         break;
+                    case ENEMY_NAME:
+                        enemyName(cmd, data.remove(0, 1));
+                        break;
                     case ROUND_INFO:
                         roundInfo(cmd, data.remove(0, 1));
                         break;
@@ -184,9 +187,9 @@ class Parser implements IHandler {
     private void attack(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
-            if (error == 0) {
-                model.setVictim(data.remove(0, 1).toUTF8());
-            } else inspectError(cmd, error);
+            if (error == 0)
+                model.setEnemyName(data.remove(0, 1).toUTF8());
+            else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect attack format");
     }
 
@@ -261,6 +264,12 @@ class Parser implements IHandler {
                 else throw new IllegalArgumentException("Incorrect range-of-products triples format");
             } else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect range-of-products format");
+    }
+
+    private void enemyName(Cmd cmd, IIntArray data) {
+        if (data.length() > 0)
+            model.setEnemyName(data.toUTF8());
+        else throw new IllegalArgumentException("Incorrect range-of-products format" + cmd);
     }
 
     private void roundInfo(Cmd cmd, IIntArray data) {

@@ -83,7 +83,7 @@ public class Model {
         RECEIVE_TRAINING,  // 12
         RANGE_OF_PRODUCTS, // 13
         BUY_PRODUCT,       // 14
-        RESERVED_0F,       // 15
+        ENEMY_NAME,        // 15
         FULL_STATE,        // 16
         ROUND_INFO,        // 17
         ABILITY_LIST,      // 18
@@ -678,8 +678,8 @@ public class Model {
         saveSettings();
     }
 
-    public void setVictim(String victimName) {
-        enemy = victimName;
+    public void setEnemyName(String name) {
+        enemy = name;
     }
 
     public void attacked(int sid, String aggressorName) {
