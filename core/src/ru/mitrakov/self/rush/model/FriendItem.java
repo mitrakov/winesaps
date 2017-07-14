@@ -20,10 +20,7 @@ public final class FriendItem implements Serializable {
 
     @Override
     public String toString() {
-        return "FriendItem{" +
-                "character=" + character +
-                ", name='" + name + '\'' +
-                '}';
+        return "FriendItem{" + "character=" + character + ", name='" + name + '\'' + '}';
     }
 
     @Override

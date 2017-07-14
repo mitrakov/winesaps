@@ -9,6 +9,7 @@ import ru.mitrakov.self.rush.AudioManager;
 /**
  * Created by mitrakov on 27.03.2017
  */
+@SuppressWarnings("WeakerAccess")
 public class TextButtonFeat extends TextButton {
     public TextButtonFeat(String text, Skin skin, String styleName, final AudioManager audioManager) {
         super(text, skin, styleName);

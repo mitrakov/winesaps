@@ -9,6 +9,7 @@ import ru.mitrakov.self.rush.AudioManager;
 /**
  * Created by mitrakov on 27.03.2017
  */
+@SuppressWarnings("WeakerAccess")
 public class ImageButtonFeat extends ImageButton {
     public ImageButtonFeat(Drawable drawable, final AudioManager audioManager) {
         super(drawable);

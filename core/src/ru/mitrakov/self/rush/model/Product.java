@@ -22,11 +22,7 @@ public final /*case*/ class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "ability=" + ability +
-                ", days=" + days +
-                ", crystals=" + crystals +
-                '}';
+        return "Product{" + "ability=" + ability + ", days=" + days + ", crystals=" + crystals + '}';
     }
 
     @Override

@@ -11,7 +11,6 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 /**
  * Created by mitrakov on 05.03.2017
  */
-
 public class DialogDialup extends DialogFeat {
     private final Model model;
     private final Label lblMessage;
