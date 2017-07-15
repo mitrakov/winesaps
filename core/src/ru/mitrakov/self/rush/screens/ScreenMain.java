@@ -616,7 +616,14 @@ public class ScreenMain extends LocalizableScreen {
 
         // === Gems Data ===
         tableGemsData.add(lblCrystalsData).spaceRight(5);
-        tableGemsData.add(new Image(atlasMenu.findRegion("gem"))); // TextureRegion may be NULL
+        tableGemsData.add(new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("gem")), audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    moreCrystalsDialog.show(stage);
+                }
+            });
+        }});
     }
 
     private void rebuildLeftTable(boolean showInputName) {
