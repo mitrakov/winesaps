@@ -27,8 +27,11 @@ public class ScreenBattle extends LocalizableScreen {
     private final Label lblCountdown;
     private final ScrollPane abilityButtonsScroll;
     private final ImageButton btnThing;
+    private final Image imgLives;
     private final DialogFinished finishedDialog;
     private final DialogInfo infoDialog;
+    private final Drawable lives1;
+    private final Drawable lives2;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
@@ -44,11 +47,15 @@ public class ScreenBattle extends LocalizableScreen {
         gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTraining (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
+        TextureAtlas atlas = assetManager.get("pack/icons.pack");
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         infoDialog = new DialogInfo("", skin, "default");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
+        lives1 = new TextureRegionDrawable(atlas.findRegion("lives1"));
+        lives2 = new TextureRegionDrawable(atlas.findRegion("lives2"));
+        imgLives = new Image(lives2);
 
         infoDialog.setOnResultAction(new Runnable() {
             @Override
@@ -144,8 +151,13 @@ public class ScreenBattle extends LocalizableScreen {
             if (ev.score1 + ev.score2 > 0)
                 audioManager.sound("food");
         }
+        if (event instanceof EventBus.LivesChangedEvent) {
+            EventBus.LivesChangedEvent ev = (EventBus.LivesChangedEvent) event;
+            imgLives.setDrawable(ev.myLives == 2 ? lives2 : ev.myLives == 1 ? lives1 : null);
+        }
         if (event instanceof EventBus.PlayerWoundedEvent) {
             EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
+            imgLives.setDrawable(ev.myLives == 2 ? lives2 : ev.myLives == 1 ? lives1 : null);
             audioManager.sound("die");
             audioManager.sound(ev.cause.name());
             gui.handleEvent(event);
@@ -223,16 +235,11 @@ public class ScreenBattle extends LocalizableScreen {
 
     private void buildTable() {
         table.add(gui).colspan(5);
-        table.row(); // fake row to make the table think there are 5 columns instead of 4;
-        table.add(); // without the fake row "abilityButtonsScroll.colspan(2)" would not work properly
-        table.add();
-        table.add();
-        table.add();
-        table.add();
         table.row();
-        table.add(btnThing).align(Align.left).padLeft(2);
-        table.add(abilityButtonsScroll).colspan(2);
-        table.add(lblScore);
+        table.add(btnThing).padLeft(2).spaceRight(50);
+        table.add(abilityButtonsScroll).width(280);
+        table.add(lblScore).spaceRight(50);
+        table.add(imgLives).spaceRight(50);
         table.add(lblTime);
     }
 
