@@ -19,7 +19,7 @@ public class AudioManager {
         this.assetManager = assetManager;
     }
 
-    public void music(String name, boolean loop) {
+    public synchronized void music(String name, boolean loop) {
         assert name != null;
         if (!muted && !curMusicName.equals(name)) {
             if (curMusic != null)
@@ -27,7 +27,7 @@ public class AudioManager {
             curMusic = assetManager.get(String.format("music/%s.mp3", name));
             if (curMusic != null) {
                 curMusicName = name;
-                curMusic.setVolume(.2f);
+                curMusic.setVolume(.3f);
                 curMusic.setLooping(loop);
                 curMusic.play();
             }
