@@ -32,7 +32,9 @@ public class ScreenLogin extends LocalizableScreen {
     private final CheckBox chkPromocode;
     private final DialogInfo infoDialog;
     private final Label lblName;
+    private final Label lblNameAsterisk;
     private final Label lblPassword;
+    private final Label lblPasswordAsterisk;
     private final Label lblEmail;
     private final Image imgValid;
     private final Drawable textureEn;
@@ -143,7 +145,9 @@ public class ScreenLogin extends LocalizableScreen {
         }};
         infoDialog = new DialogInfo("", skin, "default");
         lblName = new Label("", skin, "default");
+        lblNameAsterisk = new Label("*", skin, "default");
         lblPassword = new Label("", skin, "default");
+        lblPasswordAsterisk = new Label("*", skin, "default");
         lblEmail = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
         connectingDialog = new DialogLock(skin, "panel-lock");
@@ -333,21 +337,27 @@ public class ScreenLogin extends LocalizableScreen {
         final int txtHeight = shiftedByKeyboard ? 40 : 50; // make textboxes smaller when OnScreen Keyboard is visible
 
         tableMain.clear();
-        tableMain.row().space(10);
-        tableMain.add(lblName).align(Align.left);
+        tableMain.row().spaceTop(10).spaceLeft(5);
+        tableMain.add(lblNameAsterisk).width(10);
+        tableMain.add(lblName).expandX().align(Align.left);
         tableMain.add(txtLogin).width(305).height(txtHeight).colspan(2);
-        tableMain.row().space(10);
+
+        tableMain.row().spaceTop(10).spaceLeft(5);
+        tableMain.add(lblPasswordAsterisk).width(10);
         tableMain.add(lblPassword).align(Align.left);
         tableMain.add(txtPassword).width(305).height(txtHeight).colspan(2);
-        tableMain.row().space(10);
-        tableMain.add(lblEmail).align(Align.left);
+
+        tableMain.row().spaceTop(10).spaceLeft(5);
+        tableMain.add(lblEmail).align(Align.left).colspan(2);
         tableMain.add(txtEmail).width(305).height(txtHeight).colspan(2);
-        tableMain.row().space(10);
-        tableMain.add(chkPromocode);
-        tableMain.add(txtPromocode).width(240).height(txtHeight).left();
+
+        tableMain.row().spaceTop(10).spaceLeft(5);
+        tableMain.add(chkPromocode).colspan(2);
+        tableMain.add(txtPromocode).expandX().fillX().height(txtHeight);
         tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
+
         tableMain.row().spaceTop(30);
-        tableMain.add(buttons).colspan(3);
+        tableMain.add(buttons).colspan(4);
         if (shiftedByKeyboard)
             shiftUp();
 
