@@ -9,13 +9,16 @@ import android.content.Intent;
  */
 class AndroidPsObject extends PsObject {
     private final Activity activity;
-    private final HandlerThread thread = new HandlerThread("psObject");
+    private final HandlerThread thread;
+    private final Handler handler;
 
     AndroidPsObject(Activity activity) {
         super(new AndroidBillingProvider(activity));
         assert activity != null;
         this.activity = activity;
+        thread = new HandlerThread("psObject"); // https://stackoverflow.com/questions/18856376
         thread.start();
+        handler = new Handler(thread.getLooper());
     }
 
     @Override
@@ -35,9 +38,7 @@ class AndroidPsObject extends PsObject {
 
     @Override
     public void runDaemon(int delayMsec, final int periodMsec, final Runnable f) {
-        // @mitrakov 2017-07-17: stackoverflow.com/questions/20330355
-        final Handler handler = new Handler(thread.getLooper());
-        handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() { // @mitrakov 2017-07-17: https://stackoverflow.com/questions/20330355
             @Override
             public void run() {
                 f.run();
@@ -48,6 +49,10 @@ class AndroidPsObject extends PsObject {
 
     @Override
     public void runTask(int delayMsec, Runnable f) {
-        new Handler().postDelayed(f, delayMsec); // @mitrakov 2017-07-17: stackoverflow.com/questions/20330355
+        handler.postDelayed(f, delayMsec); // @mitrakov 2017-07-17: https://stackoverflow.com/questions/20330355
+    }
+
+    void stop() {
+        thread.quit();
     }
 }

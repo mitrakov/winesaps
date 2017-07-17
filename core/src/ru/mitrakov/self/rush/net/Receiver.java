@@ -25,6 +25,7 @@ class Receiver {
 
     private int expected = 0;
     boolean connected = false;
+    private int pending = 0;
 
     Receiver(DatagramSocket socket, String host, int port, IHandler handler, IProtocol protocol) {
         assert socket != null && host != null && 0 < port && port < 65536 && handler != null && protocol != null;
@@ -47,10 +48,11 @@ class Receiver {
             log("Ack : ", ack);
             socket.send(getPacket(ack.toByteArray(), ack.length()));
             for (int j = 0; j < buffer.length; j++) {
-                buffer[j].exists = false;
+                buffer[j].clear();
             }
             expected = next(id);
             connected = true;
+            pending = 0;
             protocol.onReceiverConnected();
         } else if (connected) {
             log("Ack : ", ack);
@@ -58,10 +60,19 @@ class Receiver {
             if (id == expected) {
                 handler.onReceived(msg);
                 expected = next(id);
+                pending = 0;
                 accept();
             } else if (after(id, expected)) {
-                buffer[id].exists = true;
-                buffer[id].msg.copyFrom(msg, msg.length());
+                if (++pending < MAX_PENDING) {
+                    buffer[id].exists = true;
+                    buffer[id].msg.copyFrom(msg, msg.length());
+                } else {
+                    connected = false;
+                    for (int j = 0; j < buffer.length; j++) {
+                        buffer[j].clear();
+                    }
+                    protocol.connectionFailed();
+                }
             }
         }
     }
@@ -69,7 +80,7 @@ class Receiver {
     private void accept() {
         if (buffer[expected].exists) {
             handler.onReceived(buffer[expected].msg);
-            buffer[expected].exists = false;
+            buffer[expected].clear();
             expected = next(expected);
             accept();
         }
