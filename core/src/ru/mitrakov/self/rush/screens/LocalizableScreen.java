@@ -34,7 +34,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     LocalizableScreen(final Winesaps game, Model model, PsObject psObject, AssetManager assetManager,
                       AudioManager audioManager) {
-        assert game != null && model != null && assetManager != null && audioManager != null;
+        assert game != null && model != null && psObject != null && assetManager != null && audioManager != null;
         this.game = game;
         this.model = model;
         this.psObject = psObject;
@@ -80,8 +80,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
         // checking BACK button on Android
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK))
-            if (psObject != null)
-                psObject.hide();
+            psObject.hide();
     }
 
     @Override

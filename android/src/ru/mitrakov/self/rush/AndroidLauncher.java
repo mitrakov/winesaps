@@ -3,8 +3,6 @@ package ru.mitrakov.self.rush;
 import android.os.*;
 import android.view.View;
 import android.graphics.Rect;
-import android.content.Intent;
-import android.app.PendingIntent;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.*;
@@ -18,22 +16,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.useAccelerometer = false;
         config.useGyroscope = false;
 
-        final PsObject obj = new PsObject(new AndroidBillingProvider(this)) {
-            @Override
-            public void hide() {
-                moveTaskToBack(true);
-            }
-
-            @Override
-            public void activate() {
-                Intent intent = new Intent(getContext(), AndroidLauncher.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                try {
-                    PendingIntent.getActivity(getContext(), 0, intent, 0).send();
-                } catch (PendingIntent.CanceledException ignored) {
-                }
-            }
-        };
+        final PsObject obj = new AndroidPsObject(this);
 
         if (Build.VERSION.SDK_INT >= 11) { // "addOnLayoutChangeListener" requires Level API 11
             getWindow().getDecorView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {

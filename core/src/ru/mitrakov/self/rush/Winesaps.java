@@ -24,8 +24,8 @@ public class Winesaps extends Game {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
 
-    private final Model model = new Model();
-    private final PsObject psObject; // may be NULL
+    private final PsObject psObject;
+    private final Model model;
     private /*final*/ Network network;
     private /*final*/ AssetManager assetManager;
     private /*final*/ AudioManager audioManager;
@@ -37,7 +37,9 @@ public class Winesaps extends Game {
     private /*final*/ Stage stage; // to draw splash screen only!
 
     public Winesaps(PsObject psObject) {
+        assert psObject != null;
         this.psObject = psObject;
+        model = new Model(psObject);
         try {
             // start Network in a separate thread (requirement of Android)
             Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
@@ -48,8 +50,8 @@ public class Winesaps extends Game {
             };
             String host = "winesaps.ru"; // TODO move to config
             int port = 33996;
-            network = new Network(new Parser(model, psObject), errorHandler, host, port);
-            network.setProtocol(new SwUDP(network.getSocket(), host, port, network));
+            network = new Network(psObject, new Parser(model, psObject), errorHandler, host, port);
+            network.setProtocol(new SwUDP(psObject, network.getSocket(), host, port, network));
 
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
@@ -136,7 +138,7 @@ public class Winesaps extends Game {
         if (key.equals("#!connected")) return model.connected + "";
         if (key.equals("#!settings")) return model.fileReader.read(Model.SETTINGS_FILE).replaceAll(" ", "\n");
         if (key.equals("#!products")) {
-            if (psObject != null && psObject.getBillingProvider() != null)
+            if (psObject.getBillingProvider() != null)
                 return psObject.getBillingProvider().getProducts().toString().replaceAll(",",",\n");
         }
         return "";
@@ -163,24 +165,23 @@ public class Winesaps extends Game {
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
 
-        if (psObject != null) {
-            // stop music on hide
-            psObject.setVisibleListener(new PsObject.VisibleListener() {
+        // stop music on hide
+        psObject.setVisibleListener(new PsObject.VisibleListener() {
+            @Override
+            public void onVisibleChanged(boolean visible) {
+                audioManager.mute(!visible);
+            }
+        });
+
+        // start Google Play Billing service
+        IBillingProvider provider = psObject.getBillingProvider();
+        if (provider != null) {
+            provider.startService(new IBillingProvider.BillingListener() {
                 @Override
-                public void onVisibleChanged(boolean visible) {
-                    audioManager.mute(!visible);
+                public void onResponse(String data, String signature) {
+                    model.checkPurchase(data, signature);
                 }
             });
-            // start Google Play Billing service
-            IBillingProvider provider = psObject.getBillingProvider();
-            if (provider != null) {
-                provider.startService(new IBillingProvider.BillingListener() {
-                    @Override
-                    public void onResponse(String data, String signature) {
-                        model.checkPurchase(data, signature);
-                    }
-                });
-            }
         }
 
         // set default locale

@@ -5,6 +5,7 @@ import java.security.*;
 import java.math.BigInteger;
 import java.util.concurrent.*;
 
+import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
@@ -225,15 +226,16 @@ public class Model {
     public /*private*/ IFileReader fileReader; // public for debug purposes only!
     public /*private*/ String hash = "";       // public for debug purposes only!
 
-    public Model() {
+    public Model(PsObject psObject) {
+        assert psObject != null;
         // create timer to ping the server (otherwise the server will make "signOut due to inaction")
-        new Timer("Ping timer", true).schedule(new TimerTask() {
+        psObject.runDaemon(PING_PERIOD_MSEC, PING_PERIOD_MSEC, new Runnable() {
             @Override
             public void run() {
                 if (authorized)
                     getUserInfo();
             }
-        }, PING_PERIOD_MSEC, PING_PERIOD_MSEC);
+        });
     }
 
     // ==========================

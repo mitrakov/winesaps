@@ -159,7 +159,7 @@ public class ScreenLogin extends LocalizableScreen {
         table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());
 
         // only for Android: handling show/hide OnScreenKeyboard
-        if (psObject != null) psObject.setRatioListener(new PsObject.RatioListener() {
+        psObject.setRatioListener(new PsObject.RatioListener() {
             @Override
             public void onRatioChanged(final float ratio) {
                 Gdx.app.postRunnable(new Runnable() { // @mitrakov: it is necessary to avoid OutOfSync exceptions!

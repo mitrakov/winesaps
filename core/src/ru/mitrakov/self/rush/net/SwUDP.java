@@ -4,7 +4,7 @@ import java.net.*;
 import java.util.UUID;
 import java.io.IOException;
 
-import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
@@ -65,10 +65,10 @@ public class SwUDP implements IProtocol {
     private final Receiver receiver;
     private final IHandler handler;
 
-    public SwUDP(DatagramSocket socket, String host, int port, IHandler handler) {
-        assert socket != null && host != null && handler != null && 0 < port && port < 65536;
+    public SwUDP(PsObject psObject, DatagramSocket socket, String host, int port, IHandler handler) {
+        assert psObject != null && socket != null && host != null && handler != null && 0 < port && port < 65536;
         this.handler = handler;
-        sender = new Sender(socket, host, port, this);
+        sender = new Sender(psObject, socket, host, port, this);
         receiver = new Receiver(socket, host, port, handler, this);
     }
 
@@ -111,11 +111,6 @@ public class SwUDP implements IProtocol {
     public void connectionFailed() {
         log("", "Connection failed!");
         handler.onChanged(false);
-    }
-
-    @Override
-    public void close() {
-        sender.close();
     }
 
     @Override

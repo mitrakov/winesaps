@@ -1,10 +1,9 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.*;
 import java.io.IOException;
 
-import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static java.lang.Math.*;
@@ -22,15 +21,14 @@ class Sender {
     private final int port;
     private final IProtocol protocol;
     private final Item[] buffer = new Item[N];
-    private final Timer timer;
     private final IIntArray startMsg = new GcResistantIntArray(6);
     private /*final*/ DatagramPacket packet;
 
     private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0, crcid = 0;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
-    Sender(DatagramSocket socket, String host, int port, IProtocol protocol) {
-        assert socket != null && host != null && 0 < port && port < 65536 && protocol != null;
+    Sender(PsObject psObject, DatagramSocket socket, String host, int port, IProtocol protocol) {
+        assert psObject != null && socket != null && host != null && 0 < port && port < 65536 && protocol != null;
         this.socket = socket;
         this.host = host;
         this.port = port;
@@ -41,8 +39,7 @@ class Sender {
             buffer[i] = new Item();
         }
 
-        timer = new Timer("protocol timer", true);
-        timer.schedule(new TimerTask() {
+        psObject.runDaemon(PERIOD, PERIOD, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -50,11 +47,7 @@ class Sender {
                 } catch (IOException ignored) {
                 }
             }
-        }, PERIOD, PERIOD);
-    }
-
-    void close() {
-        timer.cancel();
+        });
     }
 
     synchronized void connect(int crc_id) throws IOException {
@@ -68,7 +61,7 @@ class Sender {
             buffer[j].clear();
         }
         startMsg.clear().add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF)
-                .add(crcid & 0xFF).add(0xFD);
+                .add(crcid & 0xFF).add(0xFD); // FD = fake data
         buffer[id].exists = true;
         buffer[id].msg = startMsg;
         log("Send: ", startMsg);

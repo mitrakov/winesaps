@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush;
 
+import java.util.*;
+
 /**
  * Created by mitrakov on 01.03.2017
  */
@@ -48,5 +50,23 @@ public class PsObject {
     }
 
     public void activate() {
+    }
+
+    public void runDaemon(int delayMsec, int periodMsec, final Runnable f) {
+        new Timer(true).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                f.run();
+            }
+        }, delayMsec, periodMsec);
+    }
+
+    public void runTask(int delayMsec, final Runnable f) {
+        new Timer(true).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                f.run();
+            }
+        }, delayMsec);
     }
 }

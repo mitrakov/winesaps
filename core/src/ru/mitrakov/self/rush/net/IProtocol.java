@@ -15,6 +15,5 @@ interface IProtocol {
     void onSenderConnected() throws IOException;
     void onReceiverConnected() throws IOException;
     void connectionFailed();
-    void close();
     boolean isConnected();
 }

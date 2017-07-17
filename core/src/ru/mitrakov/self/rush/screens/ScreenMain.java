@@ -481,16 +481,14 @@ public class ScreenMain extends LocalizableScreen {
             infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
         }
         if (event instanceof EventBus.SkuGemsUpdatedEvent) {
-            if (psObject != null) {
-                IBillingProvider provider = psObject.getBillingProvider();
-                if (provider != null) {
-                    EventBus.SkuGemsUpdatedEvent ev = (EventBus.SkuGemsUpdatedEvent) event;
-                    for (IBillingProvider.Sku sku : provider.getProducts()) {
-                        if (ev.skuGems.containsKey(sku.id))
-                            sku.value = ev.skuGems.get(sku.id);
-                    }
-                    purchaseDialog.updateSkuButtons(provider, model.name, i18n, assetManager, audioManager);
+            IBillingProvider provider = psObject.getBillingProvider();
+            if (provider != null) {
+                EventBus.SkuGemsUpdatedEvent ev = (EventBus.SkuGemsUpdatedEvent) event;
+                for (IBillingProvider.Sku sku : provider.getProducts()) {
+                    if (ev.skuGems.containsKey(sku.id))
+                        sku.value = ev.skuGems.get(sku.id);
                 }
+                purchaseDialog.updateSkuButtons(provider, model.name, i18n, assetManager, audioManager);
             }
         }
         if (event instanceof EventBus.PaymentDoneEvent) {

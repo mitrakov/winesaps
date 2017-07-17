@@ -39,9 +39,9 @@ class Parser implements IHandler {
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
     Parser(Model model, PsObject psObject) {
-        assert model != null;
+        assert model != null && psObject != null;
         this.model = model;
-        this.psObject = psObject; // may be NULL
+        this.psObject = psObject;
     }
 
     @Override
@@ -199,7 +199,7 @@ class Parser implements IHandler {
             int sidL = data.get(1);
             int sid = sidH * 256 + sidL;
             model.attacked(sid, data.remove(0, 2).toUTF8());
-            if (psObject != null && model.notifyNewBattles)
+            if (model.notifyNewBattles)
                 psObject.activate();
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));

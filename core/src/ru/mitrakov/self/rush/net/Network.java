@@ -1,10 +1,9 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.*;
 import java.io.IOException;
 
-import ru.mitrakov.self.rush.GcResistantIntArray;
+import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
@@ -18,12 +17,12 @@ public final class Network extends Thread implements IHandler {
     public static final int BUF_SIZ_SEND = 768;
     private static final int BUF_SIZ_RECV = 1024;
     private static final int HEADER_SIZ = 7;
-    private static final int RECONNECT_MSEC = 16000;
     private static final int FLAGS = 0;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException
     private final DatagramSocket socket = new DatagramSocket();
+    private final PsObject psObject;
     private final IHandler handler;
     private final UncaughtExceptionHandler errorHandler;
     private final String host;
@@ -36,9 +35,10 @@ public final class Network extends Thread implements IHandler {
     private long token = 0;
     private IProtocol protocol;
 
-    public Network(IHandler handler, UncaughtExceptionHandler eHandler, String host, int port)
+    public Network(PsObject psObject, IHandler handler, UncaughtExceptionHandler eHandler, String host, int port)
             throws SocketException {
-        assert handler != null && eHandler != null && host != null && 0 < port && port < 65536;
+        assert psObject != null && handler != null && eHandler != null && host != null && 0 < port && port < 65536;
+        this.psObject = psObject;
         this.handler = handler;
         this.errorHandler = eHandler;
         this.host = host;
@@ -51,18 +51,11 @@ public final class Network extends Thread implements IHandler {
 
     @Override
     public void run() {
-        // connect to the server inside a timer
-        if (protocol != null) {
-            new Timer("Connect timer", true).schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (protocol != null && !protocol.isConnected()) try {
-                        protocol.connect();
-                    } catch (IOException e) {
-                        errorHandler.uncaughtException(null, e);
-                    }
-                }
-            }, 0, RECONNECT_MSEC);
+        // connect to the server
+        if (protocol != null) try {
+            protocol.connect();
+        } catch (IOException e) {
+            errorHandler.uncaughtException(null, e);
         }
 
         // create DatagramPacket OUTSIDE the loop to minimize memory allocations
@@ -105,6 +98,18 @@ public final class Network extends Thread implements IHandler {
     @Override
     public void onChanged(boolean connected) {
         handler.onChanged(connected);
+        if (!connected) {
+            psObject.runTask(2000, new Runnable() {
+                @Override
+                public void run() {
+                    if (protocol != null && !protocol.isConnected()) try {
+                        protocol.connect();
+                    } catch (IOException e) {
+                        errorHandler.uncaughtException(null, e);
+                    }
+                }
+            });
+        }
     }
 
     public void send(IIntArray data) throws IOException {
