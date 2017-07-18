@@ -22,14 +22,14 @@ public class AudioManager {
     public synchronized void music(String name, boolean loop) {
         assert name != null;
         if (!muted && !curMusicName.equals(name)) {
-            if (curMusic != null)
-                curMusic.pause(); // see note#7 below
+            if (curMusic != null) {
+                /*curMusic.stop(); see note#7 below*/ curMusic.pause(); curMusic.setPosition(0);
+            }
             curMusic = assetManager.get(String.format("music/%s.mp3", name));
             if (curMusic != null) {
                 curMusicName = name;
                 curMusic.setVolume(.3f);
                 curMusic.setLooping(loop);
-                curMusic.setPosition(0); // see note#7 below
                 curMusic.play();
             }
         }
