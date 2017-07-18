@@ -23,12 +23,13 @@ public class AudioManager {
         assert name != null;
         if (!muted && !curMusicName.equals(name)) {
             if (curMusic != null)
-                curMusic.stop();
+                curMusic.pause(); // see note#7 below
             curMusic = assetManager.get(String.format("music/%s.mp3", name));
             if (curMusic != null) {
                 curMusicName = name;
                 curMusic.setVolume(.3f);
                 curMusic.setLooping(loop);
+                curMusic.setPosition(0); // see note#7 below
                 curMusic.play();
             }
         }
@@ -50,3 +51,10 @@ public class AudioManager {
 }
 
 // note#5 (@mitrakov, 2017-05-03): NOT ACTUAL ANYMORE (2017-07-06)
+//
+// note#7 (@mitrakov (2017-07-18): possible bug in LibGDX on Android. When the display is switched off and then it
+// switches on again, "stop()" method doesn't work! It just RESTARTS the music again! As a result there are 2 music
+// instances started to play simultaneously.
+// However (!) "pause()" works correctly! So I replaced "stop()" with "pause()+setPosition(0)"
+// Please see my question on https://stackoverflow.com/questions/45165572
+//
