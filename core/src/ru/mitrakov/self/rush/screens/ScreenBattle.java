@@ -240,7 +240,7 @@ public class ScreenBattle extends LocalizableScreen {
         table.add(abilityButtonsScroll).expandX();
         table.add(lblScore);
         table.add(imgLives).width(imgLives.getWidth()).height(imgLives.getHeight());
-        table.add(lblTime).padRight(3);
+        table.add(lblTime).padRight(10);
     }
 
     private void reset() {
