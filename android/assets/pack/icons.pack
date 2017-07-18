@@ -59,17 +59,17 @@ Squirrel48
   orig: 48, 48
   offset: 0, 0
   index: -1
-lives2
+lives1
   rotate: false
   xy: 102, 18
   size: 44, 32
   orig: 44, 32
   offset: 0, 0
   index: -1
-lives1
+lives2
   rotate: false
   xy: 390, 90
-  size: 32, 32
-  orig: 32, 32
+  size: 44, 32
+  orig: 44, 32
   offset: 0, 0
   index: -1
