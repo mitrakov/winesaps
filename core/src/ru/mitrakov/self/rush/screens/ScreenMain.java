@@ -641,25 +641,23 @@ public class ScreenMain extends LocalizableScreen {
 
         // ...
         if (showInputName) {
-            tableLeftInvite.add(btnTraining).width(190).height(73).spaceTop(16);
-            tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(txtEnemyName).colspan(2).width(190).height(50);
-            tableLeftInvite.row().spaceTop(16);
-            tableLeftInvite.add(btnInviteByNameOk);
-            tableLeftInvite.add(btnInviteByNameCancel);
-            tableLeftInvite.row().spaceTop(16);
-            tableLeftInvite.add(btnQuickBattle).colspan(2).width(190).height(73);
-            tableLeftInvite.row().spaceTop(16);
-            tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(73);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnInviteByNameOk).spaceTop(8);
+            tableLeftInvite.add(btnInviteByNameCancel).spaceTop(8);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnQuickBattle).colspan(2).width(190).height(68).spaceTop(45);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(68).spaceTop(8);
             stage.setKeyboardFocus(txtEnemyName);
         } else {
-            tableLeftInvite.add(btnTraining).width(190).height(73).spaceTop(16);
-            tableLeftInvite.row().spaceTop(16);
-            tableLeftInvite.add(btnInviteByName).width(190).height(73).spaceTop(16);
+            tableLeftInvite.add(btnTraining).width(190).height(68);
             tableLeftInvite.row();
-            tableLeftInvite.add(btnQuickBattle).width(190).height(73).spaceTop(16);
+            tableLeftInvite.add(btnInviteByName).width(190).height(68).spaceTop(8);
             tableLeftInvite.row();
-            tableLeftInvite.add(btnInviteLatest).width(190).height(73).spaceTop(16);
+            tableLeftInvite.add(btnQuickBattle).width(190).height(68).spaceTop(8);
+            tableLeftInvite.row();
+            tableLeftInvite.add(btnInviteLatest).width(190).height(68).spaceTop(8);
         }
 
         tableLeftToolbar.add(btnSettings).spaceRight(30);
