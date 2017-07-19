@@ -63,8 +63,9 @@ public class ScreenMain extends LocalizableScreen {
     private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextFieldFeat txtEnemyName;
     private final TextFieldFeat txtFriendName;
+    private final TextButton btnTraining;
     private final TextButton btnInviteByName;
-    private final TextButton btnInviteRandom;
+    private final TextButton btnQuickBattle;
     private final TextButton btnInviteLatest;
     private final Button btnInviteByNameOk;
     private final Button btnInviteByNameCancel;
@@ -146,6 +147,15 @@ public class ScreenMain extends LocalizableScreen {
         }};
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
 
+        btnTraining = new TextButtonFeat("", skin, "default", audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
+                }
+            });
+        }};
+
         btnInviteByName = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -154,7 +164,7 @@ public class ScreenMain extends LocalizableScreen {
                 }
             });
         }};
-        btnInviteRandom = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnQuickBattle = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -360,8 +370,9 @@ public class ScreenMain extends LocalizableScreen {
         if (questionDialog.getTitleLabel() != null)
             questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
 
+        btnTraining.setText(bundle.format("opponent.none"));
         btnInviteByName.setText(bundle.format("opponent.find"));
-        btnInviteRandom.setText(bundle.format("opponent.quick"));
+        btnQuickBattle.setText(bundle.format("opponent.quick"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
         btnInfo.setText(bundle.format("info.header"));
         btnRating.setText(bundle.format("rating.header"));
@@ -630,19 +641,23 @@ public class ScreenMain extends LocalizableScreen {
 
         // ...
         if (showInputName) {
+            tableLeftInvite.add(btnTraining).width(190).height(73).spaceTop(16);
+            tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(txtEnemyName).colspan(2).width(190).height(50);
             tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(btnInviteByNameOk);
             tableLeftInvite.add(btnInviteByNameCancel);
             tableLeftInvite.row().spaceTop(16);
-            tableLeftInvite.add(btnInviteRandom).colspan(2).width(190).height(73);
+            tableLeftInvite.add(btnQuickBattle).colspan(2).width(190).height(73);
             tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(73);
             stage.setKeyboardFocus(txtEnemyName);
         } else {
+            tableLeftInvite.add(btnTraining).width(190).height(73).spaceTop(16);
+            tableLeftInvite.row().spaceTop(16);
             tableLeftInvite.add(btnInviteByName).width(190).height(73).spaceTop(16);
             tableLeftInvite.row();
-            tableLeftInvite.add(btnInviteRandom).width(190).height(73).spaceTop(16);
+            tableLeftInvite.add(btnQuickBattle).width(190).height(73).spaceTop(16);
             tableLeftInvite.row();
             tableLeftInvite.add(btnInviteLatest).width(190).height(73).spaceTop(16);
         }

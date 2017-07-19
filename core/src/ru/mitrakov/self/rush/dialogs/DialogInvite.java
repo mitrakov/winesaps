@@ -12,13 +12,13 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
  */
 public class DialogInvite extends DialogFeat {
 
-    public enum InviteType {ByName, Quick, Latest}
+    public enum InviteType {Training, ByName, Quick, Latest}
 
     private final Model model;
     private final Dialog dialup;
     private final Stage stage;
     private final Label lblQuestion;
-    private final CheckBox chkAddToFriends;
+    // private final CheckBox chkAddToFriends; @mitrakov (2017-07-19): decided to remove this possibility
 
     private InviteType type = InviteType.Quick;
     private String name = "";
@@ -33,7 +33,6 @@ public class DialogInvite extends DialogFeat {
         this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
-        chkAddToFriends = new CheckBox("", skin, "default"); // not checked by default
 
         button("OK", true); // text will be replaced in onLocaleChanged()
         button("Cancel");   // text will be replaced in onLocaleChanged()
@@ -50,10 +49,11 @@ public class DialogInvite extends DialogFeat {
         assert type != null;
         if (object != null) {                // "OK" is pressed
             switch (type) {
+                case Training:
+                    model.receiveLevel("training.level");
+                    break;
                 case ByName:
                     model.invite(name);
-                    if (chkAddToFriends.isChecked())
-                        model.addFriend(name);
                     break;
                 case Quick:
                     model.quickGame();
@@ -71,8 +71,6 @@ public class DialogInvite extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
         this.i18n = bundle;
-
-        chkAddToFriends.setText(bundle.format("dialog.friends.add"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.invite.header"));
@@ -94,8 +92,6 @@ public class DialogInvite extends DialogFeat {
         assert type != null;
         this.type = type;
         this.name = name;
-        chkAddToFriends.setChecked(!model.friendExists(name) && !name.equals(model.name));
-        chkAddToFriends.setVisible(!model.friendExists(name) && !name.equals(model.name));
         return this;
     }
 
@@ -104,20 +100,19 @@ public class DialogInvite extends DialogFeat {
         assert type != null && table != null && i18n != null;
 
         table.pad(20).clear();
+        table.add(lblQuestion);
         switch (type) {
+            case Training:
+                lblQuestion.setText(i18n.format("dialog.invite.none"));
+                break;
             case ByName:
                 lblQuestion.setText(i18n.format("dialog.invite.name", name));
-                table.add(lblQuestion);
-                table.row().space(30);
-                table.add(chkAddToFriends);
                 break;
             case Quick:
                 lblQuestion.setText(i18n.format("dialog.invite.quick"));
-                table.add(lblQuestion);
                 break;
             case Latest:
                 lblQuestion.setText(i18n.format("dialog.invite.latest"));
-                table.add(lblQuestion);
                 break;
             default:
         }

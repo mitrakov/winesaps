@@ -22,7 +22,7 @@ public class ScreenTraining extends LocalizableScreen {
     private final ImageButton btnThing;
     private final TextButton btnSkip;
     private final DialogFinished finishedDialog;
-    private final DialogTraining trainingDialog;
+    private final DialogTutorial trainingDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
@@ -36,7 +36,7 @@ public class ScreenTraining extends LocalizableScreen {
 
         Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
-        trainingDialog = new DialogTraining(skin, "panel-maroon");
+        trainingDialog = new DialogTutorial(skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -63,7 +63,7 @@ public class ScreenTraining extends LocalizableScreen {
     public void show() {
         super.show();
         if (model.newbie)
-            model.receiveTraining();
+            model.receiveLevel("tutorial.level");
         else game.setNextScreen();
     }
 
@@ -72,8 +72,8 @@ public class ScreenTraining extends LocalizableScreen {
         super.onLocaleChanged(bundle);
         assert bundle != null;
 
-        btnSkip.setText(bundle.format("train.skip"));
-        finishedDialog.setText(bundle.format("train.msgX.text"), bundle.format("train.msgX.action"));
+        btnSkip.setText(bundle.format("tutorial.skip"));
+        finishedDialog.setText(bundle.format("tutorial.msgX.text"), bundle.format("tutorial.msgX.action"));
         finishedDialog.onLocaleChanged(bundle);
         addContent(bundle);
     }
@@ -88,7 +88,6 @@ public class ScreenTraining extends LocalizableScreen {
         if (event instanceof EventBus.RoundFinishedEvent) {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
                 model.newbie = false;
-                model.giveUp();
                 trainingDialog.remove();
                 finishedDialog.setScore(1, 0).setOnResultAction(new Runnable() {
                     @Override
@@ -162,16 +161,16 @@ public class ScreenTraining extends LocalizableScreen {
         }
     }
 
-    private void addContent(I18NBundle i18n) {
+    private void addContent(I18NBundle b) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
-        TextureAtlas atlas = assetManager.get("pack/training.pack");
+        TextureAtlas atlas = assetManager.get("pack/tutorial.pack");
         trainingDialog.clearMessages()
-                .addMessage(atlas.findRegion("msg1"), i18n.format("train.msg1.text"), i18n.format("train.msg1.action"))
-                .addMessage(atlas.findRegion("msg2"), i18n.format("train.msg2.text"), i18n.format("train.msg2.action"))
-                .addMessage(atlas.findRegion("msg3"), i18n.format("train.msg3.text"), i18n.format("train.msg3.action"))
-                .addMessage(atlas.findRegion("msg4"), i18n.format("train.msg4.text"), i18n.format("train.msg4.action"))
-                .addMessage(atlas.findRegion("msg5"), i18n.format("train.msg5.text"), i18n.format("train.msg5.action"))
-                .addMessage(atlas.findRegion("msg6"), i18n.format("train.msg6.text"), i18n.format("train.msg6.action"));
+                .addMessage(atlas.findRegion("msg1"), b.format("tutorial.msg1.text"), b.format("tutorial.msg1.action"))
+                .addMessage(atlas.findRegion("msg2"), b.format("tutorial.msg2.text"), b.format("tutorial.msg2.action"))
+                .addMessage(atlas.findRegion("msg3"), b.format("tutorial.msg3.text"), b.format("tutorial.msg3.action"))
+                .addMessage(atlas.findRegion("msg4"), b.format("tutorial.msg4.text"), b.format("tutorial.msg4.action"))
+                .addMessage(atlas.findRegion("msg5"), b.format("tutorial.msg5.text"), b.format("tutorial.msg5.action"))
+                .addMessage(atlas.findRegion("msg6"), b.format("tutorial.msg6.text"), b.format("tutorial.msg6.action"));
     }
 }
 

@@ -81,7 +81,7 @@ public class Model {
         REJECT,            // 9
         STOPCALL,          // 10
         CANCEL_CALL,       // 11
-        RECEIVE_TRAINING,  // 12
+        RECEIVE_LEVEL,     // 12
         RANGE_OF_PRODUCTS, // 13
         BUY_PRODUCT,       // 14
         ENEMY_NAME,        // 15
@@ -418,9 +418,9 @@ public class Model {
         }
     }
 
-    public void receiveTraining() {
+    public void receiveLevel(String levelName) {
         if (connected && sender != null) {
-            sender.send(RECEIVE_TRAINING);
+            sender.send(RECEIVE_LEVEL, levelName);
         }
     }
 
@@ -537,7 +537,7 @@ public class Model {
      */
     public void useThing() {
         if (connected && sender != null && curThing != null) {
-            sender.send(USE_THING, curThing.getId());
+            sender.send(USE_THING);
         }
     }
 
@@ -936,7 +936,7 @@ public class Model {
 
     public void gameFinished(boolean winner) {
         // updating history
-        if (enemy.length() > 0) { // it may be empty, e.g. in the Training Level
+        if (enemy.length() > 0) { // it may be empty, e.g. in the Training/Tutorial Level
             // building a history item
             HistoryItem item = new HistoryItem(new Date(), winner, aggressor ? name : enemy, aggressor ? enemy : name,
                     character1, character2, totalScore1, totalScore2);

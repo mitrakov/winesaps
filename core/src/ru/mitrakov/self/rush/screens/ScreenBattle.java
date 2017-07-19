@@ -44,7 +44,7 @@ public class ScreenBattle extends LocalizableScreen {
         super(game, model, psObject, assetManager, audioManager);
 
         loadTextures();
-        gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTraining (because it's an Actor)
+        gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenTutorial (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
         TextureAtlas atlas = assetManager.get("pack/icons.pack");

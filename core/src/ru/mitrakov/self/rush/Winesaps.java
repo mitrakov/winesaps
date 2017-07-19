@@ -31,7 +31,7 @@ public class Winesaps extends Game {
     private /*final*/ AudioManager audioManager;
     private /*final*/ LocalizableScreen screenLogin;
     private /*final*/ LocalizableScreen screenCharacter;
-    private /*final*/ LocalizableScreen screenTraining;
+    private /*final*/ LocalizableScreen screenTutorial;
     private /*final*/ LocalizableScreen screenMain;
     private /*final*/ LocalizableScreen screenBattle;
     private /*final*/ Stage stage; // to draw splash screen only!
@@ -97,7 +97,7 @@ public class Winesaps extends Game {
         super.dispose();
         screenLogin.dispose();
         screenCharacter.dispose();
-        screenTraining.dispose();
+        screenTutorial.dispose();
         screenMain.dispose();
         screenBattle.dispose();
         assetManager.dispose();
@@ -109,8 +109,8 @@ public class Winesaps extends Game {
         if (screen == screenLogin)
             setScreen(screenCharacter);
         else if (screen == screenCharacter)
-            setScreen(screenTraining);
-        else if (screen == screenTraining)
+            setScreen(screenTutorial);
+        else if (screen == screenTutorial)
             setScreen(screenMain);
         else if (screen == screenMain)
             setScreen(screenBattle);
@@ -126,7 +126,7 @@ public class Winesaps extends Game {
         I18NBundle bundle = assetManager.get(String.format("i18n/bundle_%s", model.language));
         screenLogin.onLocaleChanged(bundle);
         screenCharacter.onLocaleChanged(bundle);
-        screenTraining.onLocaleChanged(bundle);
+        screenTutorial.onLocaleChanged(bundle);
         screenMain.onLocaleChanged(bundle);
         screenBattle.onLocaleChanged(bundle);
     }
@@ -152,7 +152,7 @@ public class Winesaps extends Game {
         audioManager = new AudioManager(assetManager);
         screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager);
         screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, audioManager);
-        screenTraining = new ScreenTraining(this, model, psObject, assetManager, audioManager);
+        screenTutorial = new ScreenTraining(this, model, psObject, assetManager, audioManager);
         screenMain = new ScreenMain(this, model, psObject, assetManager, audioManager);
         screenBattle = new ScreenBattle(this, model, psObject, assetManager, audioManager);
         setScreen(screenLogin);
@@ -216,7 +216,7 @@ public class Winesaps extends Game {
         assetManager.load("pack/rabbit.pack", TextureAtlas.class);
         assetManager.load("pack/squirrel.pack", TextureAtlas.class);
         assetManager.load("pack/thing.pack", TextureAtlas.class);
-        assetManager.load("pack/training.pack", TextureAtlas.class);
+        assetManager.load("pack/tutorial.pack", TextureAtlas.class);
         assetManager.load("pack/up.pack", TextureAtlas.class);
         assetManager.load("pack/wolf.pack", TextureAtlas.class);
         assetManager.load("music/battle0.mp3", Music.class);
