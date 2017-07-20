@@ -335,14 +335,15 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect field size");
     }
 
-    private void stateChanged(Cmd cmd, IIntArray pairs) {
-        if (pairs.length() == 3) {
-            int number = pairs.get(0);
-            int xy = pairs.get(1);
-            // int reset = pairs.get(2);       // not used for now
-            model.setXy(number, xy);
-        } else if (pairs.length() == 1) {
-            inspectError(cmd, pairs.get(0));
+    private void stateChanged(Cmd cmd, IIntArray data) {
+        if (data.length() == 4) {
+            int number = data.get(0);
+            int id = data.get(1);
+            int xy = data.get(2);
+            // int reset = data.get(3);       // not used for now
+            model.setXy(number, id, xy);
+        } else if (data.length() == 1) {
+            inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect state changed format");
     }
 

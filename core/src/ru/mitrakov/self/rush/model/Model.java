@@ -113,7 +113,7 @@ public class Model {
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
 
-    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
+    public enum HurtCause {@SuppressWarnings("unused") Poisoned, Sunk, Soaked, Devoured, Exploded}
 
     public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
 
@@ -867,7 +867,7 @@ public class Model {
         bus.raise(new EventBus.StyleChangedEvent(pack));
     }
 
-    public void setXy(int number, int xy) {
+    public void setXy(int number, int id, int xy) {
         Field field;
         synchronized (locker) {
             field = this.field;
@@ -878,7 +878,7 @@ public class Model {
                 if (obj instanceof Cells.Mine)
                     bus.raise(new EventBus.MineExplodedEvent(obj.xy));
             }
-            field.setXy(number, xy);
+            field.setXy(number, id, xy);
         }
     }
 
@@ -888,13 +888,13 @@ public class Model {
 
     public void setThing(int thingId) {
         CellObject oldThing = curThing;
-        curThing = Cell.newObject(thingId, 0xFF, Field.ZeroNumber);
+        curThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
         bus.raise(new EventBus.ThingChangedEvent(oldThing, curThing, true));
     }
 
     public void setEnemyThing(int thingId) {
         CellObject oldThing = enemyThing;
-        enemyThing = Cell.newObject(thingId, 0xFF, Field.ZeroNumber);
+        enemyThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
         bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
     }
 

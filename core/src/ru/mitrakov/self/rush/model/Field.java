@@ -67,18 +67,22 @@ public class Field {
         }
     }
 
-    void setXy(int number, int newXy) {
+    void setXy(int number, int id, int newXy) {
         if (newXy < 0 || newXy > TRASH_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
             throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = objects.get(number);
         if (object != null) {
-            int oldXy = object.getXy();
-            object.setXy(newXy);
-            cells[oldXy].objects.remove(object);
-            cells[newXy].objects.add(object);
+            if (object.getId() == id) { // Server API recommends to check it to avoid out-of-sync occasions
+                int oldXy = object.getXy();
+                object.setXy(newXy);
+                cells[oldXy].objects.remove(object);
+                cells[newXy].objects.add(object);
+            } else throw new IllegalStateException(String.format(Locale.getDefault(),
+                    "SetXY (%d) error! Object num %d has different id (%d <> %d)", newXy, number, object.getId(), id));
         }
     }
+
     void setEffect(int number, Model.Effect effect) {
         CellObject object = objects.get(number);
         if (object != null)

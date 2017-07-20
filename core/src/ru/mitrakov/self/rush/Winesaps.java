@@ -41,7 +41,6 @@ public class Winesaps extends Game {
         this.psObject = psObject;
         model = new Model(psObject);
         try {
-            // start Network in a separate thread (requirement of Android)
             Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread t, Throwable e) {
