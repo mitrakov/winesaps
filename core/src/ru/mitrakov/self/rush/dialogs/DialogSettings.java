@@ -3,7 +3,8 @@ package ru.mitrakov.self.rush.dialogs;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
@@ -15,20 +16,16 @@ import ru.mitrakov.self.rush.model.Model;
 public class DialogSettings extends DialogFeat {
     private final Winesaps game;
     private final Model model;
-    private final TextButton btnEn;
-    private final TextButton btnRu;
-    private final TextButton btnEs;
-    private final TextButton btnPt;
-    private final TextButton btnFr;
     private final TextButton btnNotifyYes;
     private final TextButton btnNotifyNo;
     private final TextButton btnSignOut;
     private final Label lblLang;
     private final Label lblNotify;
 
-    public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, AudioManager audioManager) {
+    public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, TextureAtlas atlas,
+                          I18NBundle i18n, AudioManager audioManager) {
         super("", skin, styleName);
-        assert game != null && model != null && audioManager != null;
+        assert model != null;
         this.game = game;
         this.model = model;
 
@@ -37,11 +34,6 @@ public class DialogSettings extends DialogFeat {
         String style = map.containsKey("radio") ? "radio" : map.containsKey("default-radio") ? "default-radio"
                 : map.keys().next();
 
-        btnEn = new CheckBox("", skin, style);
-        btnRu = new CheckBox("", skin, style);
-        btnEs = new CheckBox("", skin, style);
-        btnPt = new CheckBox("", skin, style);
-        btnFr = new CheckBox("", skin, style);
         btnNotifyYes = new CheckBox("", skin, style);
         btnNotifyNo = new CheckBox("", skin, style);
         btnSignOut = new TextButtonFeat("", skin, "default", audioManager) {{
@@ -54,20 +46,16 @@ public class DialogSettings extends DialogFeat {
             });
         }};
         lblLang = new Label("", skin, "default");
+        lblLang.setAlignment(Align.center);
         lblNotify = new Label("", skin, "default");
 
         button("Close"); // text will be replaced in onLocaleChanged()
-        init(getContentTable(), game);
+        init(getContentTable(), skin, atlas, i18n, audioManager);
     }
 
     @Override
     public Dialog show(Stage stage) {
         // 'setChecked()' must be called here (not in constructor), because parameters might be changed outside
-        btnEn.setChecked(model.language.equals("en"));
-        btnRu.setChecked(model.language.equals("ru"));
-        btnEs.setChecked(model.language.equals("es"));
-        btnPt.setChecked(model.language.equals("pt"));
-        btnFr.setChecked(model.language.equals("fr"));
         btnNotifyYes.setChecked(model.notifyNewBattles);
         btnNotifyNo.setChecked(!model.notifyNewBattles);
 
@@ -84,11 +72,6 @@ public class DialogSettings extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        btnEn.setText(bundle.format("dialog.settings.lang.english"));
-        btnRu.setText(bundle.format("dialog.settings.lang.russian"));
-        btnEs.setText(bundle.format("dialog.settings.lang.spanish"));
-        btnPt.setText(bundle.format("dialog.settings.lang.portuguese"));
-        btnFr.setText(bundle.format("dialog.settings.lang.french"));
         btnNotifyYes.setText(bundle.format("dialog.settings.notify.yes"));
         btnNotifyNo.setText(bundle.format("dialog.settings.notify.no"));
         btnSignOut.setText(bundle.format("dialog.settings.sign.out"));
@@ -108,52 +91,9 @@ public class DialogSettings extends DialogFeat {
         }
     }
 
-    private void init(Table table, final Winesaps game) {
-        assert table != null && game != null;
+    private void init(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, AudioManager audioManager) {
+        assert table != null;
         table.pad(20);
-
-        // ....
-        btnEn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.language = "en";
-                game.updateLocale();
-                pack();
-            }
-        });
-        btnRu.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.language = "ru";
-                game.updateLocale();
-                pack();
-            }
-        });
-        btnEs.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.language = "es";
-                game.updateLocale();
-                pack();
-            }
-        });
-        btnPt.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.language = "pt";
-                game.updateLocale();
-                pack();
-            }
-        });
-        btnFr.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                model.language = "fr";
-                game.updateLocale();
-                pack();
-            }
-        });
-        new ButtonGroup<Button>(btnEn, btnRu, btnEs, btnPt, btnFr);
 
         // ....
         btnNotifyYes.addListener(new ChangeListener() {
@@ -174,18 +114,7 @@ public class DialogSettings extends DialogFeat {
         Table tableRight = new Table();
 
         // ....
-        tableLeft.add(lblLang).spaceTop(30);
-        tableLeft.row();
-        tableLeft.add(btnEn).left();
-        tableLeft.row();
-        tableLeft.add(btnRu).left();
-        tableLeft.row();
-        tableLeft.add(btnEs).left();
-        tableLeft.row();
-        tableLeft.add(btnPt).left();
-        tableLeft.row();
-        tableLeft.add(btnFr).left();
-        tableLeft.row();
+        buildLangTable(tableLeft, skin, atlas, i18n, audioManager);
 
         // ....
         tableRight.add(lblNotify).spaceTop(30);
@@ -194,10 +123,129 @@ public class DialogSettings extends DialogFeat {
         tableRight.row();
         tableRight.add(btnNotifyNo).left();
         tableRight.row();
-        tableRight.add(btnSignOut).spaceTop(20).expandY();
+        tableRight.add(btnSignOut).spaceTop(40).expandY();
 
         // ....
         table.add(tableLeft).top().spaceRight(30);
         table.add(tableRight).top().spaceRight(30);
+    }
+
+    // note: copy-paste from DialogLanguage
+    private void buildLangTable(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, AudioManager manager) {
+        assert table != null && atlas != null && i18n != null && manager != null;
+        final DialogSettings self = this;
+
+        table.add(lblLang).colspan(2);
+
+        table.row().space(20);
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("en")), manager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = "en";
+                    game.updateLocale();
+                    self.pack();
+                }
+            });
+        }}).right();
+        table.add(new Label(i18n.format("dialog.settings.lang.english"), skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    model.language = "en";
+                    game.updateLocale();
+                    self.pack();
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+        }}).left();
+        table.row().space(20);
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("ru")), manager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = "ru";
+                    game.updateLocale();
+                    self.pack();
+                }
+            });
+        }}).right();
+        table.add(new Label(i18n.format("dialog.settings.lang.russian"), skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    model.language = "ru";
+                    game.updateLocale();
+                    self.pack();
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+        }}).left();
+        table.row().space(20);
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("es")), manager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = "es";
+                    game.updateLocale();
+                    self.pack();
+                }
+            });
+        }}).right();
+        table.add(new Label(i18n.format("dialog.settings.lang.spanish"), skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    model.language = "es";
+                    game.updateLocale();
+                    self.pack();
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+        }}).left();
+        table.row().space(20);
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("pt")), manager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = "pt";
+                    game.updateLocale();
+                    self.pack();
+                }
+            });
+        }}).right();
+        table.add(new Label(i18n.format("dialog.settings.lang.portuguese"), skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    model.language = "pt";
+                    game.updateLocale();
+                    self.pack();
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+        }}).left();
+        table.row().space(20);
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("fr")), manager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    model.language = "fr";
+                    game.updateLocale();
+                    self.pack();
+                }
+            });
+        }}).right();
+        table.add(new Label(i18n.format("dialog.settings.lang.french"), skin, "default") {{
+            addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    model.language = "fr";
+                    game.updateLocale();
+                    self.pack();
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            });
+        }}).left();
     }
 }

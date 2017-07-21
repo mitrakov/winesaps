@@ -14,16 +14,16 @@ import ru.mitrakov.self.rush.model.Model;
  * Created by mitrakov on 05.03.2017
  */
 public class DialogLanguage extends DialogFeat {
-    private final Label lblMessage;
+    private final Label lblLang;
 
     public DialogLanguage(Winesaps game, Model model, String title, Skin skin, String windowStyleName,
                           TextureAtlas atlas, I18NBundle i18n, AudioManager audioManager) {
         super(title, skin, windowStyleName);
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center);
+        lblLang = new Label("", skin, "default");
+        lblLang.setAlignment(Align.center);
 
-        buildTable(game, model, getContentTable(), skin, atlas, i18n, audioManager);
+        buildLangTable(game, model, getContentTable(), skin, atlas, i18n, audioManager);
 
         button("OK"); // text will be replaced in onLocaleChanged()
     }
@@ -32,7 +32,7 @@ public class DialogLanguage extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        lblMessage.setText(bundle.format("dialog.settings.lang.text"));
+        lblLang.setText(bundle.format("dialog.settings.lang.text"));
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.settings.lang.header"));
 
@@ -47,11 +47,11 @@ public class DialogLanguage extends DialogFeat {
         }
     }
 
-    private void buildTable(final Winesaps game, final Model model, Table table, Skin skin, TextureAtlas atlas,
+    private void buildLangTable(final Winesaps game, final Model model, Table table, Skin skin, TextureAtlas atlas,
                             I18NBundle i18n, AudioManager manager) {
         assert game != null && model != null && table != null && atlas != null && i18n != null && manager != null;
 
-        table.pad(16).add(lblMessage).width(300).colspan(2);
+        table.pad(16).add(lblLang).width(250).colspan(2);
 
         table.row().space(20);
         table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("en")), manager) {{
@@ -62,7 +62,7 @@ public class DialogLanguage extends DialogFeat {
                     game.updateLocale();
                 }
             });
-        }});
+        }}).right();
         table.add(new Label(i18n.format("dialog.settings.lang.english"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -82,7 +82,7 @@ public class DialogLanguage extends DialogFeat {
                     game.updateLocale();
                 }
             });
-        }});
+        }}).right();
         table.add(new Label(i18n.format("dialog.settings.lang.russian"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -102,7 +102,7 @@ public class DialogLanguage extends DialogFeat {
                     game.updateLocale();
                 }
             });
-        }});
+        }}).right();
         table.add(new Label(i18n.format("dialog.settings.lang.spanish"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -122,7 +122,7 @@ public class DialogLanguage extends DialogFeat {
                     game.updateLocale();
                 }
             });
-        }});
+        }}).right();
         table.add(new Label(i18n.format("dialog.settings.lang.portuguese"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -142,7 +142,7 @@ public class DialogLanguage extends DialogFeat {
                     game.updateLocale();
                 }
             });
-        }});
+        }}).right();
         table.add(new Label(i18n.format("dialog.settings.lang.french"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
