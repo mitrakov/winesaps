@@ -85,6 +85,7 @@ public class Gui extends Actor {
     private final Animation<TextureRegion> animTeleport;
     private final Animation<TextureRegion> animFlashbang;
     private final Animation<TextureRegion> animDetector;
+    private final AnimInfo animAura;
     private final AnimInfo animFlare;
     private final AnimInfo animExplosion;
     private final AnimInfo animSmoke;
@@ -181,6 +182,7 @@ public class Gui extends Actor {
         TextureAtlas atlasAnimated = assetManager.get("pack/animated.pack");
         TextureAtlas atlasEffects = assetManager.get("pack/effects.pack");
         TextureAtlas atlasFlare = assetManager.get("pack/flare.pack");
+        TextureAtlas atlasAura = assetManager.get("pack/aura.pack");
 
         Array<TextureAtlas.AtlasRegion> framesWaterfall = atlasAnimated.findRegions("Waterfall");
         Array<TextureAtlas.AtlasRegion> framesWaterfallSmall = atlasAnimated.findRegions("WaterfallSmall");
@@ -191,6 +193,7 @@ public class Gui extends Actor {
         Array<TextureAtlas.AtlasRegion> framesExplosion = atlasEffects.findRegions("Explosion");
         Array<TextureAtlas.AtlasRegion> framesSmoke = atlasEffects.findRegions("Smoke");
         Array<TextureAtlas.AtlasRegion> framesFlare = atlasFlare.findRegions("Flare");
+        Array<TextureAtlas.AtlasRegion> framesAura = atlasAura.findRegions("Aura");
 
         animWaterfall = new Animation<TextureRegion>(.09f, framesWaterfall, Animation.PlayMode.LOOP);
         animWaterfallSmall = new Animation<TextureRegion>(.09f, framesWaterfallSmall, Animation.PlayMode.LOOP);
@@ -199,6 +202,7 @@ public class Gui extends Actor {
         animFlashbang = new Animation<TextureRegion>(.09f, framesFlashbang, Animation.PlayMode.LOOP);
         animDetector = new Animation<TextureRegion>(.15f, framesDetector, Animation.PlayMode.LOOP);
 
+        animAura = new AnimInfo(new Animation<TextureRegion>(.09f, framesAura));
         animExplosion = new AnimInfo(new Animation<TextureRegion>(.06f, framesExplosion));
         animSmoke = new AnimInfo(new Animation<TextureRegion>(.06f, framesSmoke));
         animFlare = new AnimInfo(new Animation<TextureRegion>(.09f, framesFlare));
@@ -256,9 +260,10 @@ public class Gui extends Actor {
             drawAnimatedObjects(field, batch, dt);
             // draw 8-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 9-th layer (smokes, explosions)
+            // draw 9-th layer (smokes, explosions, aura)
             drawSingleAnim(animExplosion, batch, dt);
             drawSingleAnim(animSmoke, batch, dt);
+            drawSingleAnim(animAura, batch, dt);
             // draw last layer (flare)
             drawFlare(batch, dt);
         }
@@ -273,7 +278,7 @@ public class Gui extends Actor {
                 TextureRegion r = animSmoke.animation.getKeyFrame(0);
                 animSmoke.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - bottomWidth) / 2;
                 animSmoke.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
-                animSmoke.t = 0;
+                animSmoke.t = 0; // start animation
             }
         }
         if (event instanceof EventBus.MineExplodedEvent) {
@@ -284,7 +289,19 @@ public class Gui extends Actor {
                 TextureRegion r = animExplosion.animation.getKeyFrame(0);
                 animExplosion.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - botWidth) / 2;
                 animExplosion.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
-                animExplosion.t = 0;
+                animExplosion.t = 0; // start animation
+            }
+        }
+        if (event instanceof EventBus.RoundStartedEvent) {
+            System.out.println("Gui: " + event);
+            CellObject me = model.curActor;
+            Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
+            if (field != null && me instanceof CellObjectActor) {
+                float bottomHeight = getBottomHeight(field.cells[me.getXy()]);
+                TextureRegion r = animExplosion.animation.getKeyFrame(0);
+                animAura.x = convertXFromModelToScreen(me.getX()) - (r.getRegionWidth() / 2);
+                animAura.y = convertYFromModelToScreen(me.getY()) - CELL_SIZ_H / 2 + bottomHeight;
+                animAura.t = 0; // start animation
             }
         }
     }
