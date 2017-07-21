@@ -30,6 +30,7 @@ public class ScreenLogin extends LocalizableScreen {
     private final TextButton btnOkSignIn;
     private final TextButton btnOkSignUp;
     private final CheckBox chkPromocode;
+    private final DialogLanguage langDialog;
     private final DialogInfo infoDialog;
     private final Label lblName;
     private final Label lblNameAsterisk;
@@ -37,11 +38,6 @@ public class ScreenLogin extends LocalizableScreen {
     private final Label lblPasswordAsterisk;
     private final Label lblEmail;
     private final Image imgValid;
-    private final Drawable textureEn;
-    private final Drawable textureRu;
-    private final Drawable textureEs;
-    private final Drawable texturePt;
-    private final Drawable textureFr;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
     private final DialogLock connectingDialog;
@@ -56,15 +52,12 @@ public class ScreenLogin extends LocalizableScreen {
         super(game, model, psObject, assetManager, audioManager);
 
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
-        textureEn = new TextureRegionDrawable(atlasMenu.findRegion("en"));
-        textureRu = new TextureRegionDrawable(atlasMenu.findRegion("ru"));
-        textureEs = new TextureRegionDrawable(atlasMenu.findRegion("es"));
-        texturePt = new TextureRegionDrawable(atlasMenu.findRegion("pt"));
-        textureFr = new TextureRegionDrawable(atlasMenu.findRegion("fr"));
         textureValid = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
         textureInvalid = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
 
         Skin skin = assetManager.get("skin/uiskin.json");
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+
         tableMain = new Table(skin).pad(20);
         tableMain.setBackground("panel-maroon");
 
@@ -143,6 +136,7 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
+        langDialog = new DialogLanguage(game, model, "", skin, "default", atlasMenu, i18n, audioManager);
         infoDialog = new DialogInfo("", skin, "default");
         lblName = new Label("", skin, "default");
         lblNameAsterisk = new Label("*", skin, "default");
@@ -153,8 +147,7 @@ public class ScreenLogin extends LocalizableScreen {
         connectingDialog = new DialogLock(skin, "panel-lock");
 
         // set up layout
-        table.add(createLangTable(audioManager)).right();
-        table.row();
+        // table.add(createLangTable(audioManager)).right(); table.row(); @mitrakov: removed after Newbie-Beta-Testing
         table.add(tableMain).expand();
         table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());
 
@@ -185,12 +178,16 @@ public class ScreenLogin extends LocalizableScreen {
     public void show() {
         super.show();
         setStartDialog();
+        if (model.newbie)
+            langDialog.show(stage);
     }
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
+
+        langDialog.onLocaleChanged(bundle);
 
         btnSignIn.setText(bundle.format("sign.in"));
         btnSignUp.setText(bundle.format("sign.up"));
@@ -231,57 +228,6 @@ public class ScreenLogin extends LocalizableScreen {
             EventBus.PromocodeValidChangedEvent ev = (EventBus.PromocodeValidChangedEvent) event;
             imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
         }
-    }
-
-    private Actor createLangTable(AudioManager audioManager) {
-        assert audioManager != null;
-        Table tableLang = new Table().padRight(10).padTop(10);
-        tableLang.add(new ImageButtonFeat(textureEn, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "en";
-                    game.updateLocale();
-                }
-            });
-        }}).spaceRight(10);
-        tableLang.add(new ImageButtonFeat(textureRu, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "ru";
-                    game.updateLocale();
-                }
-            });
-        }}).spaceRight(10);
-        tableLang.add(new ImageButtonFeat(textureEs, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "es";
-                    game.updateLocale();
-                }
-            });
-        }}).spaceRight(10);
-        tableLang.add(new ImageButtonFeat(texturePt, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "pt";
-                    game.updateLocale();
-                }
-            });
-        }}).spaceRight(10);
-        tableLang.add(new ImageButtonFeat(textureFr, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "fr";
-                    game.updateLocale();
-                }
-            });
-        }}).spaceRight(10);
-        return tableLang;
     }
 
     private void setStartDialog() {
