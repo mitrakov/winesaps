@@ -5,225 +5,232 @@ filter: Nearest,Nearest
 repeat: none
 Explosion
   rotate: false
-  xy: 2, 410
+  xy: 2, 413
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 0
 Explosion
   rotate: false
-  xy: 2, 319
+  xy: 2, 322
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 1
 Explosion
   rotate: false
-  xy: 120, 410
+  xy: 120, 413
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 2
 Explosion
   rotate: false
-  xy: 2, 228
+  xy: 2, 231
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 3
 Explosion
   rotate: false
-  xy: 120, 319
+  xy: 120, 322
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 4
 Explosion
   rotate: false
-  xy: 238, 410
+  xy: 238, 413
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 5
 Explosion
   rotate: false
-  xy: 2, 137
+  xy: 2, 140
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 6
 Explosion
   rotate: false
-  xy: 120, 228
+  xy: 120, 231
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 7
 Explosion
   rotate: false
-  xy: 238, 319
+  xy: 238, 322
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 8
 Explosion
   rotate: false
-  xy: 356, 410
+  xy: 356, 413
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 9
 Explosion
   rotate: false
-  xy: 2, 46
+  xy: 2, 49
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 10
 Explosion
   rotate: false
-  xy: 120, 137
+  xy: 120, 140
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 11
 Explosion
   rotate: false
-  xy: 238, 228
+  xy: 238, 231
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 12
 Explosion
   rotate: false
-  xy: 356, 319
+  xy: 356, 322
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 13
 Explosion
   rotate: false
-  xy: 474, 410
+  xy: 474, 413
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 14
 Explosion
   rotate: false
-  xy: 120, 46
+  xy: 120, 49
   size: 116, 89
   orig: 116, 89
   offset: 0, 0
   index: 15
 Smoke
   rotate: false
-  xy: 238, 126
+  xy: 238, 129
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 0
 Smoke
   rotate: false
-  xy: 356, 217
+  xy: 356, 220
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 1
 Smoke
   rotate: false
-  xy: 474, 308
+  xy: 474, 311
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 2
 Smoke
   rotate: false
-  xy: 592, 399
+  xy: 592, 402
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 3
 Smoke
   rotate: false
-  xy: 694, 399
+  xy: 694, 402
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 4
 Smoke
   rotate: false
-  xy: 796, 399
+  xy: 796, 402
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 5
 Smoke
   rotate: false
-  xy: 898, 399
+  xy: 898, 402
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 6
 Smoke
   rotate: false
-  xy: 238, 24
+  xy: 238, 27
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 7
 Smoke
   rotate: false
-  xy: 340, 115
+  xy: 340, 118
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 8
 Smoke
   rotate: false
-  xy: 340, 13
+  xy: 340, 16
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 9
 Smoke
   rotate: false
-  xy: 458, 206
+  xy: 458, 209
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 10
 Smoke
   rotate: false
-  xy: 442, 104
+  xy: 442, 107
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 11
 Smoke
   rotate: false
-  xy: 442, 2
+  xy: 442, 5
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 12
 Smoke
   rotate: false
-  xy: 576, 297
+  xy: 576, 300
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 13
 Smoke
   rotate: false
-  xy: 678, 297
+  xy: 678, 300
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 14
 Smoke
   rotate: false
-  xy: 780, 297
+  xy: 780, 300
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 15
+Antidote
+  rotate: false
+  xy: 2, 2
+  size: 50, 45
+  orig: 50, 45
+  offset: 0, 0
+  index: -1

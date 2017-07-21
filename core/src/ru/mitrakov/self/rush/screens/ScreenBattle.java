@@ -122,7 +122,6 @@ public class ScreenBattle extends LocalizableScreen {
     public void handleEvent(EventBus.Event event) {
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         if (event instanceof EventBus.RoundStartedEvent) {
-            System.out.println("ScreenBattle:" + event);
             gui.handleEvent(event);
         }
         if (event instanceof EventBus.RoundFinishedEvent) {

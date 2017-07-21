@@ -65,7 +65,7 @@ class AndroidBillingProvider implements IBillingProvider, PurchasesUpdatedListen
 
             @Override
             public void onBillingServiceDisconnected() {
-                System.out.println("Disconnected");
+                log("Billing", "Disconnected");
             }
         });
     }

@@ -89,6 +89,7 @@ public class Gui extends Actor {
     private final AnimInfo animFlare;
     private final AnimInfo animExplosion;
     private final AnimInfo animSmoke;
+    private final TextureRegion textureAntidote;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
     private float time = 0;
@@ -224,6 +225,9 @@ public class Gui extends Actor {
         }
         // fill offsets
         heightOffsets.add(BeamChunk.class);
+
+        // simple textures
+        textureAntidote = atlasEffects.findRegion("Antidote");
     }
 
     @Override
@@ -611,6 +615,18 @@ public class Gui extends Actor {
                                     texture.flip(true, false); // flip is not intensive operation (affects UV-mapping)
                                     batch.draw(texture, x, y);
                                     texture.flip(true, false);
+                                }
+                            }
+
+                            // draw antidote balloon
+                            if (obj.getEffect() == Model.Effect.Antidote) {
+                                float yy = y + CELL_SIZ_H / 2;
+                                if (anim.dirRight)
+                                    batch.draw(textureAntidote, x - textureAntidote.getRegionWidth() / 2, yy);
+                                else {
+                                    textureAntidote.flip(true, false);
+                                    batch.draw(textureAntidote, x + 10, yy);
+                                    textureAntidote.flip(true, false);
                                 }
                             }
                         }
