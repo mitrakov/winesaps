@@ -162,7 +162,6 @@ public class Gui extends Actor {
         }
         // animations
         for (Class clazz : new Class[]{Actor1.class, Actor2.class}) {
-            //ObjectMap<Model.Character, AnimationData> animations = new ObjectMap<Model.Character, AnimationData>(4);
             AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X);
             for (Model.Character character : Model.Character.values()) {
                 if (character != Model.Character.None) {
@@ -176,7 +175,6 @@ public class Gui extends Actor {
         for (int i = 0; i < 100; i++) {
             AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X_WOLF);
             data.add(Model.Character.None, assetManager.<TextureAtlas>get("pack/wolf.pack"), .09f);
-            //Animation<TextureRegion> anim = new Animation<TextureRegion>(.09f, framesWolf, Animation.PlayMode.LOOP);
             texturesAnimWolf.put(i, data);
         }
         // animated objects (waterfalls, antidotes, teleports)
@@ -371,14 +369,16 @@ public class Gui extends Actor {
 
     private boolean animatedUsesLadder(Field field, Cell cell) {
         // field != null (assert omitted)
-        CellObject actor = cell.getFirst(CellObjectAnimated.class);
-        if (actor == null) {
+        CellObject animated = cell.getFirst(CellObjectAnimated.class);
+        if (animated == null) { // maybe animatedObject is above?
             Cell cellAbove = cell.xy - Field.WIDTH >= 0 ? field.cells[cell.xy - Field.WIDTH] : null;
             if (cellAbove != null)
-                actor = cellAbove.getFirst(CellObjectAnimated.class);
+                animated = cellAbove.getFirst(CellObjectAnimated.class);
         }
-        if (actor != null) {
-            AnimationData anim = texturesAnim.get(actor.getClass()); // FIXME wolf
+        if (animated != null) {
+            AnimationData anim = animated instanceof CellObjectActor
+                    ? texturesAnim.get(animated.getClass())
+                    : texturesAnimWolf.get(animated.getNumber());
             if (anim != null)
                 return anim.getAnimation() == AnimationData.AnimationType.Ladder;
         }
@@ -514,14 +514,14 @@ public class Gui extends Actor {
                     // get current animation
                     Animation<TextureRegion> animation = animLadders.get(model.stylePack); // assert omitted
                     // find a texture region depending on ladder animation
-                    if (!animation.isAnimationFinished(t)) {     // play already started animation
+                    if (!animation.isAnimationFinished(t)) {      // play already started animation
                         t += Gdx.graphics.getDeltaTime();
                         animTime.set(idx, t);
                         texture = animation.getKeyFrame(t);
-                    } else if (animatedUsesLadder(field, cell)) {   // start animation here
+                    } else if (animatedUsesLadder(field, cell)) { // start animation here
                         animTime.set(idx, 0);
                         texture = animation.getKeyFrame(0);
-                    } else texture = animation.getKeyFrame(0);   // draw static texture
+                    } else texture = animation.getKeyFrame(0);    // draw static texture
                     // draw texture region
                     if (texture != null) {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
