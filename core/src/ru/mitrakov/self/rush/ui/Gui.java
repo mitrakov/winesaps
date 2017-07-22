@@ -294,7 +294,7 @@ public class Gui extends Actor {
             EventBus.ObjectRemovedEvent ev = (EventBus.ObjectRemovedEvent) event;
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
             if (ev.obj instanceof Mine && field != null) {
-                int xy = ev.obj.getXy();
+                int xy = ev.oldXy;
                 float botWidth = getBottomWidth(field.cells[xy]);
                 TextureRegion r = animExplosion.animation.getKeyFrame(0);
                 animExplosion.x = convertXFromModelToScreen(xy % Field.WIDTH) - (r.getRegionWidth() - botWidth) / 2;

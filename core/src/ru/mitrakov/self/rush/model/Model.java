@@ -885,7 +885,7 @@ public class Model {
             if (xy == Field.TRASH_CELL) {
                 CellObject obj = field.getObjectByNumber(number);
                 if (obj != null)
-                    bus.raise(new EventBus.ObjectRemovedEvent(obj));
+                    bus.raise(new EventBus.ObjectRemovedEvent(obj.xy, obj));
             }
             if (reset) {
                 if (curActor.getNumber() == number)

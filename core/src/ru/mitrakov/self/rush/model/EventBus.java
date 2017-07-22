@@ -176,8 +176,10 @@ public class EventBus {
         }
     }
     public static final class ObjectRemovedEvent extends Event {
+        public final int oldXy;
         public final CellObject obj;
-        ObjectRemovedEvent(CellObject obj) {
+        ObjectRemovedEvent(int oldXy, CellObject obj) {
+            this.oldXy = oldXy;
             this.obj = obj;
         }
     }
