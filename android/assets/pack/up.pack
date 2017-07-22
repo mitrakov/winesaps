@@ -297,3 +297,31 @@ Box
   orig: 14, 7
   offset: 0, 0
   index: -1
+Stair0
+  rotate: false
+  xy: 170, 62
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+Stair1
+  rotate: false
+  xy: 144, 32
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+Stair2
+  rotate: false
+  xy: 871, 119
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+Stair3
+  rotate: false
+  xy: 30, 7
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1

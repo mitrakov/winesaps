@@ -123,7 +123,7 @@ public class Gui extends Actor {
 
         // down textures (block, dias, water), each with 4 styles
         TextureAtlas atlasDown = assetManager.get("pack/down.pack");
-        for (Class clazz : new Class[]{Block.class, Dais.class, Water.class, Stair.class /*see note#6*/}) {
+        for (Class clazz : new Class[]{Block.class, Dais.class, Water.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -142,7 +142,7 @@ public class Gui extends Actor {
         // static up textures, each with 4 styles
         TextureAtlas atlasUp = assetManager.get("pack/up.pack");
         for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
-                DecorationStatic.class, DecorationWarning.class, /*Stair.class see note#6*/}) {
+                DecorationStatic.class, DecorationWarning.class, Stair.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -302,7 +302,6 @@ public class Gui extends Actor {
             }
         }
         if (event instanceof EventBus.RoundStartedEvent) {
-            System.out.println("Gui: " + event);
             CellObject me = model.curActor;
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
             if (field != null && me instanceof CellObjectActor) {
@@ -430,13 +429,11 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 TextureRegion texture = null;
-                if (cell.objectExists(Block.class))
+                if (cell.objectExists(Block.class) || cell.objectExists(Stair.class))
                     texture = texturesDownSolid.get(model.stylePack);
                 else {
                     Class key = null;
-                    if (cell.objectExists(Stair.class)) // see note#6 below
-                        key = Stair.class;
-                    else if (cell.bottom != null)
+                    if (cell.bottom != null)
                         key = cell.bottom.getClass();
                     else { // case: long RopeLine
                         Cell below = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
@@ -691,7 +688,4 @@ public class Gui extends Actor {
     }
 }
 
-// note#6 (@mitrakov, 2017-06-29): for stairs the server uses the following rule: "A stair is ON a bottom block".
-// Firstly I uses the same rule for drawing stairs BUT there are some unexpected "artifacts" (e.g. if a block (14x14)
-// has grass and a stair (14x7), that is above, has grass too, then we would get double grass on the same tile!)
-// So I've decided in such cases not to draw blocks at all and draw only stair of bigger size (14x21 instead of 14x7)
+// note#6 (@mitrakov, 2017-06-29): NOT ACTUAL ANYMORE (2017-07-22)

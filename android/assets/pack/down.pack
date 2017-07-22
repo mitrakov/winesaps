@@ -31,114 +31,86 @@ Dais3
   orig: 14, 28
   offset: 0, 0
   index: -1
-Stair0
-  rotate: false
-  xy: 66, 9
-  size: 14, 21
-  orig: 14, 21
-  offset: 0, 0
-  index: -1
-Stair1
-  rotate: false
-  xy: 82, 9
-  size: 14, 21
-  orig: 14, 21
-  offset: 0, 0
-  index: -1
-Stair2
-  rotate: false
-  xy: 98, 9
-  size: 14, 21
-  orig: 14, 21
-  offset: 0, 0
-  index: -1
-Stair3
-  rotate: false
-  xy: 114, 9
-  size: 14, 21
-  orig: 14, 21
-  offset: 0, 0
-  index: -1
 Block0
   rotate: false
-  xy: 130, 16
+  xy: 66, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block0solid
   rotate: false
-  xy: 130, 16
+  xy: 66, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block1
   rotate: false
-  xy: 146, 16
+  xy: 82, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block1solid
   rotate: false
-  xy: 162, 16
+  xy: 98, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block2
   rotate: false
-  xy: 178, 16
+  xy: 114, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block2solid
   rotate: false
-  xy: 178, 16
+  xy: 130, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block3
   rotate: false
-  xy: 194, 16
+  xy: 146, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Block3solid
   rotate: false
-  xy: 210, 16
+  xy: 162, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water0
   rotate: false
-  xy: 226, 16
+  xy: 178, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water1
   rotate: false
-  xy: 242, 16
+  xy: 194, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water2
   rotate: false
-  xy: 258, 16
+  xy: 210, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 Water3
   rotate: false
-  xy: 274, 16
+  xy: 226, 16
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
