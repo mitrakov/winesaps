@@ -224,15 +224,20 @@ public class Winesaps extends Game {
         assetManager.load("music/battle2.mp3", Music.class);
         assetManager.load("music/battle3.mp3", Music.class);
         assetManager.load("music/theme.mp3", Music.class);
+        assetManager.load("sfx/Afraid.wav", Sound.class);
+        assetManager.load("sfx/Antidote.wav", Sound.class);
         assetManager.load("sfx/AntidoteThing.wav", Sound.class);
+        assetManager.load("sfx/Beam.wav", Sound.class);
         assetManager.load("sfx/BeamThing.wav", Sound.class);
         assetManager.load("sfx/BoxThing.wav", Sound.class);
         assetManager.load("sfx/call.wav", Sound.class);
         assetManager.load("sfx/click.wav", Sound.class);
+        assetManager.load("sfx/Detector.wav", Sound.class);
         assetManager.load("sfx/DetectorThing.wav", Sound.class);
         assetManager.load("sfx/Devoured.wav", Sound.class);
         assetManager.load("sfx/die.wav", Sound.class);
         assetManager.load("sfx/Exploded.wav", Sound.class);
+        assetManager.load("sfx/Flashbang.wav", Sound.class);
         assetManager.load("sfx/FlashbangThing.wav", Sound.class);
         assetManager.load("sfx/food.wav", Sound.class);
         assetManager.load("sfx/game.wav", Sound.class);
@@ -242,6 +247,7 @@ public class Winesaps extends Game {
         assetManager.load("sfx/round.wav", Sound.class);
         assetManager.load("sfx/Soaked.wav", Sound.class);
         assetManager.load("sfx/Sunk.wav", Sound.class);
+        assetManager.load("sfx/Teleport.wav", Sound.class);
         assetManager.load("sfx/TeleportThing.wav", Sound.class);
         assetManager.load("sfx/thing.wav", Sound.class);
         assetManager.load("sfx/UmbrellaThing.wav", Sound.class);

@@ -290,14 +290,15 @@ public class Gui extends Actor {
                 animSmoke.t = 0; // start animation
             }
         }
-        if (event instanceof EventBus.MineExplodedEvent) {
-            EventBus.MineExplodedEvent ev = (EventBus.MineExplodedEvent) event;
+        if (event instanceof EventBus.ObjectRemovedEvent) {
+            EventBus.ObjectRemovedEvent ev = (EventBus.ObjectRemovedEvent) event;
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
-            if (field != null) {
-                float botWidth = getBottomWidth(field.cells[ev.xy]);
+            if (ev.obj instanceof Mine && field != null) {
+                int xy = ev.obj.getXy();
+                float botWidth = getBottomWidth(field.cells[xy]);
                 TextureRegion r = animExplosion.animation.getKeyFrame(0);
-                animExplosion.x = convertXFromModelToScreen(ev.xy % Field.WIDTH) - (r.getRegionWidth() - botWidth) / 2;
-                animExplosion.y = convertYFromModelToScreen(ev.xy / Field.WIDTH);
+                animExplosion.x = convertXFromModelToScreen(xy % Field.WIDTH) - (r.getRegionWidth() - botWidth) / 2;
+                animExplosion.y = convertYFromModelToScreen(xy / Field.WIDTH);
                 animExplosion.t = 0; // start animation
             }
         }

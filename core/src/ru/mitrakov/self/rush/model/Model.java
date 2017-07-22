@@ -113,7 +113,7 @@ public class Model {
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
 
-    public enum HurtCause {@SuppressWarnings("unused") Poisoned, Sunk, Soaked, Devoured, Exploded}
+    public enum HurtCause {@SuppressWarnings("unused")Poisoned, Sunk, Soaked, Devoured, Exploded}
 
     public enum Effect {None, Antidote, Dazzle, @SuppressWarnings("unused")Afraid, Attention}
 
@@ -884,8 +884,8 @@ public class Model {
         if (field != null) {
             if (xy == Field.TRASH_CELL) {
                 CellObject obj = field.getObjectByNumber(number);
-                if (obj instanceof Cells.Mine)
-                    bus.raise(new EventBus.MineExplodedEvent(obj.xy));
+                if (obj != null)
+                    bus.raise(new EventBus.ObjectRemovedEvent(obj));
             }
             if (reset) {
                 if (curActor.getNumber() == number)

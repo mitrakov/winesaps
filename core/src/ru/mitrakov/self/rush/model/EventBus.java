@@ -169,10 +169,10 @@ public class EventBus {
             this.enemyLives = enemyLives;
         }
     }
-    public static final class MineExplodedEvent extends Event {
-        public final int xy;
-        MineExplodedEvent(int xy) {
-            this.xy = xy;
+    public static final class ObjectRemovedEvent extends Event {
+        public final CellObject obj;
+        ObjectRemovedEvent(CellObject obj) {
+            this.obj = obj;
         }
     }
     public static final class ActorResetEvent extends Event {

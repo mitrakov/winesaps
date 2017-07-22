@@ -165,8 +165,13 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound(ev.cause.name());
             gui.handleEvent(event);
         }
-        if (event instanceof EventBus.MineExplodedEvent) {
-            audioManager.sound(Model.HurtCause.Exploded.name());
+        if (event instanceof EventBus.ObjectRemovedEvent) {
+            EventBus.ObjectRemovedEvent ev = (EventBus.ObjectRemovedEvent) event;
+            if (ev.obj instanceof Mine)
+                audioManager.sound(Model.HurtCause.Exploded.name());
+            else if (ev.obj instanceof Antidote || ev.obj instanceof Beam || ev.obj instanceof Detector
+                    || ev.obj instanceof Flashbang || ev.obj instanceof Teleport)
+                audioManager.sound(ev.obj.getClass().getSimpleName());
             gui.handleEvent(event);
         }
         if (event instanceof EventBus.ThingChangedEvent) {
