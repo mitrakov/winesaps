@@ -148,6 +148,15 @@ public class ScreenLogin extends LocalizableScreen {
 
         // set up layout
         // table.add(createLangTable(audioManager)).right(); table.row(); @mitrakov: removed after Newbie-Beta-Testing
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("shutdown")), audioManager) {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    Gdx.app.exit(); // NOTE! DO NOT use it on iOS (see javaDocs)
+                }
+            });
+        }}).left();
+        table.row();
         table.add(tableMain).expand();
         table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());
 

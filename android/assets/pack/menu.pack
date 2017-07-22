@@ -234,9 +234,16 @@ loss
   orig: 32, 32
   offset: 0, 0
   index: -1
-win
+shutdown
   rotate: false
   xy: 432, 25
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+win
+  rotate: false
+  xy: 473, 93
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
