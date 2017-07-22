@@ -11,10 +11,19 @@ import ru.mitrakov.self.rush.AudioManager;
  */
 @SuppressWarnings("WeakerAccess")
 public class ImageButtonFeat extends ImageButton {
-    public ImageButtonFeat(Drawable drawable, final AudioManager audioManager) {
+    public ImageButtonFeat(Drawable drawable, AudioManager audioManager) {
         super(drawable);
-        assert audioManager != null;
+        addSfx(audioManager);
+    }
 
+    public ImageButtonFeat(Drawable drawableOn, Drawable drawableOff, boolean checked, AudioManager audioManager) {
+        super(drawableOff, null, drawableOn);
+        setChecked(checked);
+        addSfx(audioManager); // add listener AFTER setChecked()!
+    }
+
+    private void addSfx(final AudioManager audioManager) {
+        assert audioManager != null;
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

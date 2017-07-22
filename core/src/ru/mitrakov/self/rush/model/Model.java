@@ -115,7 +115,7 @@ public class Model {
 
     public enum HurtCause {@SuppressWarnings("unused") Poisoned, Sunk, Soaked, Devoured, Exploded}
 
-    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
+    public enum Effect {None, Antidote, Dazzle, @SuppressWarnings("unused")Afraid, Attention}
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
@@ -199,6 +199,8 @@ public class Model {
 
     public volatile boolean notifyNewBattles = true;
     public volatile String language = "en";
+    public volatile boolean music = true;
+    public volatile boolean soundEffects = true;
 
     // ================================
     // === PRIVATE STATIC CONSTANTS ===
@@ -268,13 +270,15 @@ public class Model {
             String s = fileReader.read(SETTINGS_FILE);
             if (s != null) {
                 String[] settings = s.split(" ");
-                if (settings.length > 2) {
+                if (settings.length > 4) {
                     language = settings[0];
                     notifyNewBattles = settings[1].equals("1");
-                    name = settings[2];
+                    music = settings[2].equals("1");
+                    soundEffects = settings[3].equals("1");
+                    name = settings[4];
                     bus.raise(new EventBus.NameChangedEvent(name));
-                    if (settings.length > 3)
-                        hash = settings[3];
+                    if (settings.length > 5)
+                        hash = settings[5];
                 }
                 newbie = false;
             }
@@ -286,7 +290,8 @@ public class Model {
      */
     public void saveSettings() {
         if (fileReader != null) {
-            String s = String.format("%s %s %s %s", language, notifyNewBattles ? "1" : "0", name, hash);
+            String s = String.format("%s %s %s %s %s %s", language, notifyNewBattles ? "1" : "0", music ? "1" : "0",
+                    soundEffects ? "1" : "0", name, hash);
             fileReader.write(SETTINGS_FILE, s);
         }
     }

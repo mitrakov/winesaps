@@ -65,7 +65,6 @@ public class DialogSettings extends DialogFeat {
     @Override
     protected void result(Object object) {
         model.saveSettings();
-        game.updateLocale();
     }
 
     @Override
@@ -91,8 +90,8 @@ public class DialogSettings extends DialogFeat {
         }
     }
 
-    private void init(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, AudioManager audioManager) {
-        assert table != null;
+    private void init(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, final AudioManager audioManager) {
+        assert table != null && atlas != null;
         table.pad(20);
 
         // ....
@@ -110,6 +109,31 @@ public class DialogSettings extends DialogFeat {
         });
         new ButtonGroup<Button>(btnNotifyYes, btnNotifyNo);
 
+        final Drawable musicOn = new TextureRegionDrawable(atlas.findRegion("musicOn"));
+        final Drawable musicOff = new TextureRegionDrawable(atlas.findRegion("musicOff"));
+        final Drawable sfxOn = new TextureRegionDrawable(atlas.findRegion("sfxOn"));
+        final Drawable sfxOff = new TextureRegionDrawable(atlas.findRegion("sfxOff"));
+
+        final Button btnMusic = new ImageButtonFeat(musicOn, musicOff, model.music, audioManager);
+        btnMusic.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.music = !model.music;
+                audioManager.muteMusic(!model.music);
+                btnMusic.setChecked(model.music);
+            }
+        });
+
+        final Button btnSfx = new ImageButtonFeat(sfxOn, sfxOff, model.soundEffects, audioManager);
+        btnSfx.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                model.soundEffects = !model.soundEffects;
+                audioManager.muteSound(!model.soundEffects);
+                btnSfx.setChecked(model.soundEffects);
+            }
+        });
+
         Table tableLeft = new Table();
         Table tableRight = new Table();
 
@@ -117,13 +141,16 @@ public class DialogSettings extends DialogFeat {
         buildLangTable(tableLeft, skin, atlas, i18n, audioManager);
 
         // ....
-        tableRight.add(lblNotify).spaceTop(30);
+        tableRight.add(lblNotify).colspan(2).spaceTop(30);
         tableRight.row();
-        tableRight.add(btnNotifyYes).left();
+        tableRight.add(btnNotifyYes).colspan(2).left();
         tableRight.row();
-        tableRight.add(btnNotifyNo).left();
+        tableRight.add(btnNotifyNo).colspan(2).left();
         tableRight.row();
-        tableRight.add(btnSignOut).spaceTop(40).expandY();
+        tableRight.add(btnMusic).space(20);
+        tableRight.add(btnSfx).space(20);
+        tableRight.row();
+        tableRight.add(btnSignOut).colspan(2).spaceTop(30).expandY();
 
         // ....
         table.add(tableLeft).top().spaceRight(30);

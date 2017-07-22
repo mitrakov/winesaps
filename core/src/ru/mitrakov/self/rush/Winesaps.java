@@ -148,7 +148,7 @@ public class Winesaps extends Game {
         // Do NOT do it in constructor because Gdx would not be ready
         model.loadSettings();
 
-        audioManager = new AudioManager(assetManager);
+        audioManager = new AudioManager(assetManager, !model.music, !model.soundEffects);
         screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager);
         screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, audioManager);
         screenTutorial = new ScreenTraining(this, model, psObject, assetManager, audioManager);
@@ -168,7 +168,7 @@ public class Winesaps extends Game {
         psObject.setVisibleListener(new PsObject.VisibleListener() {
             @Override
             public void onVisibleChanged(boolean visible) {
-                audioManager.mute(!visible);
+                audioManager.muteAll(!visible);
             }
         });
 

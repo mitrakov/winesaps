@@ -10,18 +10,21 @@ import com.badlogic.gdx.assets.AssetManager;
 public class AudioManager {
 
     private final AssetManager assetManager;
-    private boolean muted = false;
+    private boolean musicMuted = false;
+    private boolean soundMuted = false;
     private Music curMusic;
     private String curMusicName = "";
 
-    public AudioManager(AssetManager assetManager) {
+    public AudioManager(AssetManager assetManager, boolean musicMuted, boolean soundMuted) {
         assert assetManager != null;
         this.assetManager = assetManager;
+        this.musicMuted = musicMuted;
+        this.soundMuted = soundMuted;
     }
 
     public synchronized void music(String name, boolean loop) {
         assert name != null;
-        if (!muted && !curMusicName.equals(name)) {
+        if (!curMusicName.equals(name)) {
             if (curMusic != null) {
                 /*curMusic.stop(); see note#7 below*/ curMusic.pause(); curMusic.setPosition(0);
             }
@@ -30,23 +33,33 @@ public class AudioManager {
                 curMusicName = name;
                 curMusic.setVolume(.3f);
                 curMusic.setLooping(loop);
-                curMusic.play();
+                if (!musicMuted)
+                    curMusic.play();
             }
         }
     }
 
     public void sound(String name) {
-        if (!muted)
+        if (!soundMuted)
             assetManager.<Sound>get(String.format("sfx/%s.wav", name)).play();
     }
 
-    public void mute(boolean value) {
-        muted = value;
+    public void muteMusic(boolean value) {
+        musicMuted = value;
         if (curMusic != null) {
-            if (muted)
+            if (musicMuted)
                 curMusic.pause();
             else curMusic.play();
         }
+    }
+
+    public void muteSound(boolean value) {
+        soundMuted = value;
+    }
+
+    public void muteAll(boolean value) {
+        muteMusic(value);
+        muteSound(value);
     }
 }
 
