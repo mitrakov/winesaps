@@ -74,6 +74,7 @@ public class Gui extends Actor {
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
     private final ObjectMap<Class, AnimationData<Model.Character>> texturesAnim =
             new ObjectMap<Class, AnimationData<Model.Character>>(2);
+    private final IntMap<TextureRegion> texturesDownSolid = new IntMap<TextureRegion>(STYLES_COUNT);
     private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
             new IntMap<AnimationData<Model.Character>>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
@@ -131,6 +132,12 @@ public class Gui extends Actor {
                     m.put(i, texture);
             }
             texturesDown.put(clazz, m);
+        }
+        // down solid textures (4 styles)
+        for (int i = 0; i < STYLES_COUNT; i++) {
+            TextureRegion texture = atlasDown.findRegion(String.format(Locale.getDefault(), "Block%dsolid", i));
+            if (texture != null)
+                texturesDownSolid.put(i, texture);
         }
         // static up textures, each with 4 styles
         TextureAtlas atlasUp = assetManager.get("pack/up.pack");
@@ -422,23 +429,27 @@ public class Gui extends Actor {
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
-                Class key = null;
-                if (cell.objectExists(Stair.class)) // see note#6 below
-                    key = Stair.class;
-                else if (cell.bottom != null)
-                    key = cell.bottom.getClass();
-                else { // case: long RopeLine
-                    Cell below = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
-                    if (below != null && cell.objectExists(RopeLine.class) && below.objectExists(RopeLine.class))
-                        key = Block.class;
-                }
-                if (key != null && texturesDown.containsKey(key)) {
-                    TextureRegion texture = texturesDown.get(key).get(model.stylePack);
-                    if (texture != null) {
-                        float x = convertXFromModelToScreen(i);
-                        float y = convertYFromModelToScreen(j);
-                        batch.draw(texture, x, y);
+                TextureRegion texture = null;
+                if (cell.objectExists(Block.class))
+                    texture = texturesDownSolid.get(model.stylePack);
+                else {
+                    Class key = null;
+                    if (cell.objectExists(Stair.class)) // see note#6 below
+                        key = Stair.class;
+                    else if (cell.bottom != null)
+                        key = cell.bottom.getClass();
+                    else { // case: long RopeLine
+                        Cell below = (j + 1 < Field.HEIGHT) ? field.cells[(j + 1) * Field.WIDTH + i] : null;
+                        if (below != null && cell.objectExists(RopeLine.class) && below.objectExists(RopeLine.class))
+                            key = Block.class;
                     }
+                    if (key != null && texturesDown.containsKey(key))
+                        texture = texturesDown.get(key).get(model.stylePack);
+                }
+                if (texture != null) {
+                    float x = convertXFromModelToScreen(i);
+                    float y = convertYFromModelToScreen(j);
+                    batch.draw(texture, x, y);
                 }
             }
         }
