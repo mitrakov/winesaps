@@ -173,6 +173,7 @@ public class Model {
     public volatile long roundStartTime = 0;
     public volatile Field field;
     public volatile CellObject curActor;
+    public volatile CellObject enemyActor;
 
     // ==================================================
     // === PUBLIC NON-VOLATILE CONCURRENT COLLECTIONS ===
@@ -828,7 +829,7 @@ public class Model {
 
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
                              int enemyLives) {
-        curThing = enemyThing = curActor = null;
+        curThing = enemyThing = curActor = enemyActor = null;
 
         Character[] characters = Character.values();
         if (0 <= character1 && character1 < characters.length)
@@ -853,6 +854,7 @@ public class Model {
         // assign curActor (be careful! if "fieldData" doesn't contain actors, curActor will become NULL! it may be
         // assigned later in appendObject() method)
         curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
+        enemyActor = field.getObjectById(aggressor ? DEFENDER_ID : AGGRESSOR_ID);
     }
 
     public void appendObject(int number, int id, int xy) {
@@ -862,8 +864,10 @@ public class Model {
         }
         if (field != null) {
             field.appendObject(number, id, xy);
-            if (id == AGGRESSOR_ID || id == DEFENDER_ID)
+            if (id == AGGRESSOR_ID || id == DEFENDER_ID) {
                 curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
+                enemyActor = field.getObjectById(aggressor ? DEFENDER_ID : AGGRESSOR_ID);
+            }
         }
     }
 
@@ -872,7 +876,7 @@ public class Model {
         bus.raise(new EventBus.StyleChangedEvent(pack));
     }
 
-    public void setXy(int number, int id, int xy) {
+    public void setXy(int number, int id, int xy, boolean reset) {
         Field field;
         synchronized (locker) {
             field = this.field;
@@ -882,6 +886,12 @@ public class Model {
                 CellObject obj = field.getObjectByNumber(number);
                 if (obj instanceof Cells.Mine)
                     bus.raise(new EventBus.MineExplodedEvent(obj.xy));
+            }
+            if (reset) {
+                if (curActor.getNumber() == number)
+                    bus.raise(new EventBus.ActorResetEvent(curActor));
+                else if (enemyActor.getNumber() == number)
+                    bus.raise(new EventBus.ActorResetEvent(enemyActor));
             }
             field.setXy(number, id, xy);
         }

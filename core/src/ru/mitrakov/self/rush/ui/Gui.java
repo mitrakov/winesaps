@@ -306,6 +306,15 @@ public class Gui extends Actor {
                 animAura.t = 0; // start animation
             }
         }
+        if (event instanceof EventBus.ActorResetEvent) {
+            EventBus.ActorResetEvent ev = (EventBus.ActorResetEvent) event;
+            CellObject actor = ev.obj;
+            if (actor != null) {
+                AnimationData anim = texturesAnim.get(actor.getClass());
+                if (anim != null)
+                    anim.reset = true;
+            }
+        }
     }
 
     public void setMovesAllowed(boolean value) {
@@ -568,7 +577,7 @@ public class Gui extends Actor {
                             // correct x-coordinate and direction adjusted for animation
                             float deltaX = x - anim.x;
                             boolean deltaX_equals_0 = abs(deltaX) < dx / 2;
-                            boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W;
+                            boolean out_of_sync = abs(deltaX) > 2 * CELL_SIZ_W || anim.reset;
                             if (deltaX_equals_0 || out_of_sync) {
                                 anim.x = x;
                                 anim.setAnimation(AnimationData.AnimationType.Run, false);
@@ -605,6 +614,9 @@ public class Gui extends Actor {
                                 anim.setAnimation(AnimationData.AnimationType.Ladder, false);
                                 anim.y += signum(deltaY) * dy;
                             }
+
+                            // "reset" is not actual anymore
+                            if (anim.reset) anim.reset = false;
 
                             // if direction == right then draw pure texture, else draw flipped texture
                             TextureRegion texture = anim.getFrame(key);

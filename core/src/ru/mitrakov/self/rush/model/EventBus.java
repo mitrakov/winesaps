@@ -175,6 +175,12 @@ public class EventBus {
             this.xy = xy;
         }
     }
+    public static final class ActorResetEvent extends Event {
+        public final CellObject obj;
+        ActorResetEvent(CellObject obj) {
+            this.obj = obj;
+        }
+    }
     public static final class ThingChangedEvent extends Event {
         public final CellObject oldThing;
         public final CellObject newThing;

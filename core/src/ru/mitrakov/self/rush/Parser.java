@@ -340,8 +340,8 @@ class Parser implements IHandler {
             int number = data.get(0);
             int id = data.get(1);
             int xy = data.get(2);
-            // int reset = data.get(3);       // not used for now
-            model.setXy(number, id, xy);
+            boolean reset = data.get(3) == 1;
+            model.setXy(number, id, xy, reset);
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect state changed format");

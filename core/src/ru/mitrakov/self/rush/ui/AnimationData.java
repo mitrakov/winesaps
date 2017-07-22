@@ -33,6 +33,7 @@ class AnimationData<T> {
     final float speedX;
     float x, y;
     boolean dirRight = true;
+    boolean reset = false;
 
     private final ObjectMap<T, AnimChar> animChars = new ObjectMap<T, AnimChar>();
     private AnimationType curType = AnimationType.Idle;
