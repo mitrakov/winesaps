@@ -165,6 +165,11 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.sound(ev.cause.name());
             gui.handleEvent(event);
         }
+        if (event instanceof EventBus.EffectAddedEvent) {
+            EventBus.EffectAddedEvent ev = (EventBus.EffectAddedEvent) event;
+            if (ev.effect == Model.Effect.Afraid)
+                audioManager.sound(ev.effect.name());
+        }
         if (event instanceof EventBus.ObjectRemovedEvent) {
             EventBus.ObjectRemovedEvent ev = (EventBus.ObjectRemovedEvent) event;
             if (ev.obj instanceof Mine)

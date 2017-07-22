@@ -934,8 +934,10 @@ public class Model {
         }
         if (field != null) {
             Effect[] effects = Effect.values();
-            if (0 <= effectId && effectId < effects.length)
+            if (0 <= effectId && effectId < effects.length) {
                 field.setEffect(objNumber, effects[effectId]);
+                bus.raise(new EventBus.EffectAddedEvent(effects[effectId]));
+            }
         }
     }
 

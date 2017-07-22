@@ -169,6 +169,12 @@ public class EventBus {
             this.enemyLives = enemyLives;
         }
     }
+    public static final class EffectAddedEvent extends Event {
+        public final Model.Effect effect;
+        EffectAddedEvent(Model.Effect effect) {
+            this.effect = effect;
+        }
+    }
     public static final class ObjectRemovedEvent extends Event {
         public final CellObject obj;
         ObjectRemovedEvent(CellObject obj) {
