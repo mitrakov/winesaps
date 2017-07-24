@@ -23,6 +23,8 @@ import ru.mitrakov.self.rush.model.Model;
 public class Winesaps extends Game {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
+    public static final int VERSION = 1 << 16; // 1.0.0
+    public static final String VERSION_STR = "1.0.0";
 
     private final PsObject psObject;
     private final Model model;

@@ -149,6 +149,9 @@ class Parser implements IHandler {
                     case EFFECT_CHANGED:
                         effectChanged(cmd, data.remove(0, 1));
                         break;
+                    case GET_CLIENT_VERSION:
+                        getClientVersion(cmd, data.remove(0, 1));
+                        break;
                     default:
                         if (data.length() > 1)
                             inspectError(cmd, data.get(1));
@@ -476,6 +479,12 @@ class Parser implements IHandler {
                 model.setAbilities(data);
             else inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect abilities format");
+    }
+
+    private void getClientVersion(Cmd cmd, IIntArray data) {
+        if (data.length() == 6)
+            model.setClientVersion(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5));
+        else throw new IllegalArgumentException("Incorrect client version format" + cmd);
     }
 
     private void inspectError(Cmd cmd, int code) {

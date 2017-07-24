@@ -30,18 +30,13 @@ class MsgSender implements Model.ISender {
     }
 
     @Override
-    public void send(Model.Cmd cmd, int arg) {
+    public void send(Model.Cmd cmd, int... arg) {
         try {
-            network.send(sendBuf.clear().add(cmd.ordinal()).add(arg));
-        } catch (Exception e) {
-            errorHandler.uncaughtException(Thread.currentThread(), e);
-        }
-    }
-
-    @Override
-    public void send(Model.Cmd cmd, int arg1, int arg2) {
-        try {
-            network.send(sendBuf.clear().add(cmd.ordinal()).add(arg1).add(arg2));
+            sendBuf.clear().add(cmd.ordinal());
+            for (int i : arg) {
+                sendBuf.add(i);
+            }
+            network.send(sendBuf);
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }

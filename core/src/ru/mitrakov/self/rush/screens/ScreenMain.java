@@ -81,6 +81,7 @@ public class ScreenMain extends LocalizableScreen {
     private final TextButton btnAddFriend;
     private final Button btnAddFriendOk;
     private final Button btnAddFriendCancel;
+    private final LinkedLabel lblNewVersion;
     private final LinkedLabel lblMore;
     private final Label lblName;
     private final Label lblCrystalsHeader;
@@ -307,6 +308,12 @@ public class ScreenMain extends LocalizableScreen {
         txtEnemyName = new TextFieldFeat("", skin, "default", btnInviteByNameOk);
         txtFriendName = new TextFieldFeat("", skin, "default", btnAddFriendOk);
 
+        lblNewVersion = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
+            @Override
+            public void run() {
+                Gdx.net.openURI("http://winesaps.com");
+            }
+        });
         lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override
             public void run() {
@@ -324,6 +331,8 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingScoreDiff = new Label("", skin, "default");
         lblRatingDots = new Label("", skin, "default");
         imgCharacter = new Image();
+
+        lblNewVersion.setVisible(false);
 
         loadTextures();
         initTables();
@@ -382,6 +391,8 @@ public class ScreenMain extends LocalizableScreen {
         btnGeneralRating.setText(bundle.format("rating.general"));
         btnWeeklyRating.setText(bundle.format("rating.weekly"));
         btnAddFriend.setText(bundle.format("friends.add"));
+        lblNewVersion.setText(bundle.format("dialog.about.new.version", model.curVersion),
+                bundle.format("dialog.about.update"), "");
         lblMore.setText(bundle.format("dialog.crystals.start"), bundle.format("dialog.crystals.link"), "");
         lblCrystalsHeader.setText(bundle.format("info.crystals"));
         lblAbilities.setText(bundle.format("info.abilities"));
@@ -513,6 +524,11 @@ public class ScreenMain extends LocalizableScreen {
                 infoDialog.getTitleLabel().setText(i18n.format("dialog.promocode.done.header"));
             infoDialog.setText(i18n.format("dialog.crystals.done", ev.gems)).show(stage);
             log("Coupon = ", ev.coupon);
+        }
+        if (event instanceof EventBus.NewVersionAvailableEvent) {
+            lblNewVersion.setText(i18n.format("dialog.about.new.version", model.curVersion),
+                    i18n.format("dialog.about.update"), "");
+            lblNewVersion.setVisible(true);
         }
     }
 
@@ -690,7 +706,9 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.row();
                 tableRightContent.add(btnBuyAbilities).colspan(2).minWidth(217).height(50); // minWidth for French Lang
                 tableRightContent.row();
-                tableRightContent.add(lblMore).colspan(2).height(53).spaceTop(20);
+                tableRightContent.add(lblMore).colspan(2).spaceTop(20);
+                tableRightContent.row();
+                tableRightContent.add(lblNewVersion).colspan(2);
                 break;
             case Rating:
                 tableRightContent.add(tableRightContentRatingBtns).pad(8);

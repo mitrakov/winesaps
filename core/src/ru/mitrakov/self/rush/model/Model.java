@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.concurrent.*;
 
 import ru.mitrakov.self.rush.PsObject;
+import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
@@ -37,9 +38,7 @@ public class Model {
     public interface ISender {
         void send(Cmd cmd);
 
-        void send(Cmd cmd, int arg);
-
-        void send(Cmd cmd, int arg1, int arg2);
+        void send(Cmd cmd, int ... arg);
 
         void send(Cmd cmd, String arg);
 
@@ -108,14 +107,16 @@ public class Model {
         CHECK_PROMOCODE,   // 36
         PROMOCODE_DONE,    // 37
         GET_SKU_GEMS,      // 38
-        CHECK_PURCHASE     // 39
+        CHECK_PURCHASE,    // 39
+        GET_CLIENT_VERSION // 40
     }
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
 
-    public enum HurtCause {@SuppressWarnings("unused")Poisoned, Sunk, Soaked, Devoured, Exploded}
+    @SuppressWarnings("unused")
+    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
 
-    public enum Effect {None, Antidote, Dazzle, @SuppressWarnings("unused")Afraid, Attention}
+    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
@@ -160,6 +161,7 @@ public class Model {
     public volatile String name = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
+    public volatile String curVersion = "";
     public volatile Character character = Character.None;
     public volatile Character character1 = Character.None;
     public volatile Character character2 = Character.None;
@@ -324,6 +326,12 @@ public class Model {
     // ==============================
     // Feel free to call these methods from anywhere
     // ==============================
+
+    public void checkVersion() {
+        if (connected && sender != null) {
+            sender.send(GET_CLIENT_VERSION);
+        }
+    }
 
     public void signIn() {
         assert name != null && hash != null;
@@ -599,7 +607,10 @@ public class Model {
             connected = true;  // we must change it before calling getUserInfo() or signIn()
             if (authorized)
                 getUserInfo(); // connected, but already authorized? possibly the server has been restarted: see note#4
-            else signIn();     // connected and not authorized: try to sign in using stored credentials
+            else {
+                checkVersion();
+                signIn();     // connected and not authorized: try to sign in using stored credentials
+            }
         }
         connected = value;
         bus.raise(new EventBus.ConnectedChangeEvent(connected));
@@ -990,6 +1001,18 @@ public class Model {
             }
         }
         bus.raise(new EventBus.AbilitiesChangedEvent(abilities));
+    }
+
+    public void setClientVersion(int minVersionH, int minVersionM, int minVersionL,
+                                 int curVersionH, int curVersionM, int curVersionL) {
+        String minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
+        curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
+        boolean versionAllowed = Winesaps.VERSION >= ((minVersionH << 16) | (minVersionM << 8) | minVersionL);
+        boolean newVersionAvailable = Winesaps.VERSION < ((curVersionH << 16) | (curVersionM << 8) | curVersionL);
+        if (!versionAllowed)
+            bus.raise(new EventBus.VersionNotAllowedEvent(minVersion));
+        if (newVersionAvailable)
+            bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
     }
 
     public void setUserBusy(boolean aggressor) {
