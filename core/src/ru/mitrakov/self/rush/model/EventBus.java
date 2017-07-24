@@ -25,6 +25,7 @@ public class EventBus {
     public static final class SignUpErrorEvent extends Event {}
     public static final class ServerGonnaStopEvent extends Event {}
     public static final class BattleNotFoundEvent extends Event {}
+    public static final class UnsupportedProtocolEvent extends Event {}
     public static final class VersionNotAllowedEvent extends Event {
         public final String minVersion;
         VersionNotAllowedEvent(String minVersion) {

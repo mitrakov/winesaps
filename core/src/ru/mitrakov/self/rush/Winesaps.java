@@ -48,6 +48,8 @@ public class Winesaps extends Game {
                 @Override
                 public void uncaughtException(Thread t, Throwable e) {
                     e.printStackTrace();
+                    if (e instanceof UnsupportedOperationException)
+                        model.setUnsupportedProtocol();
                 }
             };
             String host = "winesaps.ru"; // TODO move to config

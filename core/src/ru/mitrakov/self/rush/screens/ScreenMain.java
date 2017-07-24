@@ -391,8 +391,6 @@ public class ScreenMain extends LocalizableScreen {
         btnGeneralRating.setText(bundle.format("rating.general"));
         btnWeeklyRating.setText(bundle.format("rating.weekly"));
         btnAddFriend.setText(bundle.format("friends.add"));
-        lblNewVersion.setText(bundle.format("dialog.about.new.version", model.curVersion),
-                bundle.format("dialog.about.update"), "");
         lblMore.setText(bundle.format("dialog.crystals.start"), bundle.format("dialog.crystals.link"), "");
         lblCrystalsHeader.setText(bundle.format("info.crystals"));
         lblAbilities.setText(bundle.format("info.abilities"));
@@ -526,7 +524,8 @@ public class ScreenMain extends LocalizableScreen {
             log("Coupon = ", ev.coupon);
         }
         if (event instanceof EventBus.NewVersionAvailableEvent) {
-            lblNewVersion.setText(i18n.format("dialog.about.new.version", model.curVersion),
+            EventBus.NewVersionAvailableEvent ev = (EventBus.NewVersionAvailableEvent) event;
+            lblNewVersion.setText(i18n.format("dialog.about.new.version", ev.newVersion),
                     i18n.format("dialog.about.update"), "");
             lblNewVersion.setVisible(true);
         }

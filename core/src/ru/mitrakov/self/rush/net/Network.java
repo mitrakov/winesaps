@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
+import java.util.Locale;
 import java.io.IOException;
 
 import ru.mitrakov.self.rush.*;
@@ -18,6 +19,7 @@ public final class Network extends Thread implements IHandler {
     private static final int BUF_SIZ_RECV = 1024;
     private static final int HEADER_SIZ = 7;
     private static final int FLAGS = 0;
+    private static final int PROTOCOL_VERSION = 0;
 
     // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
     // otherwise new DatagramSocket() throws PermissionDeniedException
@@ -83,6 +85,14 @@ public final class Network extends Thread implements IHandler {
         if (data.length() > HEADER_SIZ) try {
             int inSid = data.get(0) * 256 + data.get(1);
             long inToken = (data.get(2) << 24) | (data.get(3) << 16) | (data.get(4) << 8) | data.get(5);
+            int flags = data.get(6);
+            int protocolVersion = (flags & 0x70) >> 4;
+
+            if (protocolVersion != PROTOCOL_VERSION) {
+                String msg = String.format(Locale.getDefault(), "Unsupported protocol version (cur: %d, required: %d)",
+                        PROTOCOL_VERSION, protocolVersion);
+                throw new UnsupportedOperationException(msg);
+            }
             if (sid * token == 0) {
                 sid = inSid;
                 token = inToken;

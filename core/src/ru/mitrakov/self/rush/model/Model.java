@@ -38,7 +38,7 @@ public class Model {
     public interface ISender {
         void send(Cmd cmd);
 
-        void send(Cmd cmd, int ... arg);
+        void send(Cmd cmd, int... arg);
 
         void send(Cmd cmd, String arg);
 
@@ -114,7 +114,9 @@ public class Model {
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
 
     @SuppressWarnings("unused")
-    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
+    public enum HurtCause {
+        Poisoned, Sunk, Soaked, Devoured, Exploded
+    }
 
     public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
 
@@ -161,8 +163,6 @@ public class Model {
     public volatile String name = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
-    public volatile String minVersion = "";
-    public volatile String curVersion = "";
     public volatile Character character = Character.None;
     public volatile Character character1 = Character.None;
     public volatile Character character2 = Character.None;
@@ -1006,14 +1006,18 @@ public class Model {
 
     public void setClientVersion(int minVersionH, int minVersionM, int minVersionL,
                                  int curVersionH, int curVersionM, int curVersionL) {
-        minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
-        curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
+        String minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
+        String curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
         boolean versionAllowed = Winesaps.VERSION >= ((minVersionH << 16) | (minVersionM << 8) | minVersionL);
         boolean newVersionAvailable = Winesaps.VERSION < ((curVersionH << 16) | (curVersionM << 8) | curVersionL);
         if (!versionAllowed)
             bus.raise(new EventBus.VersionNotAllowedEvent(minVersion));
         if (newVersionAvailable)
             bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
+    }
+
+    public void setUnsupportedProtocol() {
+        bus.raise(new EventBus.UnsupportedProtocolEvent());
     }
 
     public void setUserBusy(boolean aggressor) {

@@ -67,11 +67,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
                         if (game.getScreen() == self)
                             handleEvent(event);
                         handleEventBackground(event);
-                        if (event instanceof EventBus.VersionNotAllowedEvent) { // this event is for ALL screens
-                            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                            String msg = i18n.format("dialog.info.unsupported", Winesaps.VERSION_STR, model.minVersion);
-                            infoDialog.setText(msg).show(stage);
-                        }
+                        handleImportantEvents(event); // handle the most important events right here (for ALL screens)
                     }
                 });
             }
@@ -123,6 +119,18 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         if (infoDialog.getTitleLabel() != null)
             infoDialog.getTitleLabel().setText(bundle.format("error"));
         connectingDialog.setText(bundle.format("dialog.connecting"));
+    }
+
+    private void handleImportantEvents(EventBus.Event event) {
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        if (event instanceof EventBus.VersionNotAllowedEvent) {
+            EventBus.VersionNotAllowedEvent ev = (EventBus.VersionNotAllowedEvent) event;
+            String msg = i18n.format("dialog.info.unsupported.version", Winesaps.VERSION_STR, ev.minVersion);
+            infoDialog.setText(msg).show(stage);
+        }
+        if (event instanceof EventBus.UnsupportedProtocolEvent) {
+            infoDialog.setText(i18n.format("dialog.info.unsupported.protocol")).show(stage);
+        }
     }
 
     public abstract void handleEvent(EventBus.Event event);
