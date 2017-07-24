@@ -226,6 +226,7 @@ public class Model {
     private boolean aggressor = true;
     private CellObject curThing;
     private CellObject enemyThing;
+    private transient int battleNotFoundGuardCounter;
     public /*private*/ IFileReader fileReader; // public for debug purposes only!
     public /*private*/ String hash = "";       // public for debug purposes only!
 
@@ -830,6 +831,7 @@ public class Model {
     public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
                              int enemyLives) {
         curThing = enemyThing = curActor = enemyActor = null;
+        battleNotFoundGuardCounter = 0;
 
         Character[] characters = Character.values();
         if (0 <= character1 && character1 < characters.length)
@@ -992,6 +994,16 @@ public class Model {
 
     public void setUserBusy(boolean aggressor) {
         bus.raise(aggressor ? new EventBus.AggressorBusyEvent() : new EventBus.DefenderBusyEvent());
+    }
+
+    public void setBattleNotFound() {
+        // IMPORTANT! this error is possible on a battle finish in case of slow network (when a user sends MOVE, the
+        // battle still exists, but when the server receives it (in 40-50ms), the battle is already done)
+        // so we make a guard function (if it happens >10 times => ring the alarm)
+        if (++battleNotFoundGuardCounter >= 10) {
+            battleNotFoundGuardCounter = 0;
+            bus.raise(new EventBus.BattleNotFoundEvent());
+        }
     }
 
     public void setEnemyNotFound() {

@@ -50,7 +50,7 @@ class Parser implements IHandler {
         // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
         while (data.length() > 2) {
-            int len = data.get(0)*256 + data.get(1);
+            int len = data.get(0) * 256 + data.get(1);
             processMsg(accessorial.copyFrom(data.remove(0, 2), len));
             data.remove(0, len);
         }
@@ -480,9 +480,11 @@ class Parser implements IHandler {
 
     private void inspectError(Cmd cmd, int code) {
         switch (code) {
-            case 0: // no error
-            case ERR_BATTLE_NOT_FOUND: // it is possible on a battle finish in case of slow network... just skip
+            case 0:
+                break; // no error
+            case ERR_BATTLE_NOT_FOUND:
             case ERR_BATTLE_NOT_FOUND2:
+                model.setBattleNotFound();
                 break;
             case ERR_SIGNIN_INCORRECT_PASSWORD:
                 model.setIncorrectCredentials();

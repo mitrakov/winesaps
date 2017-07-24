@@ -148,6 +148,18 @@ public class ScreenBattle extends LocalizableScreen {
             }).show(stage);
             audioManager.music("theme", false);
         }
+        if (event instanceof EventBus.BattleNotFoundEvent) {
+            String h = i18n.format("battle.out.of.sync");
+            String msg = i18n.format("battle.out.of.sync.exit");
+            finishedDialog.setPicture(true, false).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
+            finishedDialog.setOnResultAction(new Runnable() {
+                @Override
+                public void run() {
+                    game.setNextScreen();
+                }
+            }).show(stage);
+            audioManager.music("theme", false);
+        }
         if (event instanceof EventBus.ScoreChangedEvent) {
             EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
             lblScore.setText(i18n.format("battle.score", ev.score1, ev.score2));
