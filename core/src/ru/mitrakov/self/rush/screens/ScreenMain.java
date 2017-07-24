@@ -311,7 +311,7 @@ public class ScreenMain extends LocalizableScreen {
         lblNewVersion = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override
             public void run() {
-                Gdx.net.openURI("http://winesaps.com");
+                Gdx.net.openURI(Winesaps.URL);
             }
         });
         lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {

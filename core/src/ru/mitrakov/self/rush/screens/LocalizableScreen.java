@@ -1,16 +1,16 @@
 package ru.mitrakov.self.rush.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.dialogs.DialogLock;
+import ru.mitrakov.self.rush.dialogs.*;
 
 /**
  * Created by mitrakov on 11.04.2017
@@ -25,6 +25,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     protected final Stage stage = new Stage(new FitViewport(Winesaps.WIDTH, Winesaps.HEIGHT));
     protected final Table table = new Table();
     protected final DialogLock connectingDialog;
+    protected final DialogInfo infoDialog;
 
     protected float glClearR;
     protected float glClearG;
@@ -32,7 +33,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
-    LocalizableScreen(final Winesaps game, Model model, PsObject psObject, AssetManager assetManager,
+    LocalizableScreen(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
                       AudioManager audioManager) {
         assert game != null && model != null && psObject != null && assetManager != null && audioManager != null;
         this.game = game;
@@ -40,10 +41,20 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         this.psObject = psObject;
         this.assetManager = assetManager;
         this.audioManager = audioManager;
-        connectingDialog = new DialogLock(assetManager.<Skin>get("skin/uiskin.json"), "panel-lock");
+
+        Skin skin = assetManager.get("skin/uiskin.json");
+        connectingDialog = new DialogLock(skin, "panel-lock");
+        infoDialog = new DialogInfo("", skin, "default");
 
         table.setFillParent(true);
         stage.addActor(table);
+        infoDialog.setOnResultAction(new Runnable() {
+            @Override
+            public void run() {
+                Gdx.net.openURI(Winesaps.URL);
+                Gdx.app.exit(); // NOTE! DO NOT use it on iOS (see javaDocs)
+            }
+        });
 
         // adding event bus listener (subclasses must implement handleEvent() method)
         final Screen self = this;
@@ -56,6 +67,11 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
                         if (game.getScreen() == self)
                             handleEvent(event);
                         handleEventBackground(event);
+                        if (event instanceof EventBus.VersionNotAllowedEvent) { // this event is for ALL screens
+                            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+                            String msg = i18n.format("dialog.info.unsupported", Winesaps.VERSION_STR, model.minVersion);
+                            infoDialog.setText(msg).show(stage);
+                        }
                     }
                 });
             }
@@ -103,6 +119,9 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
+
+        if (infoDialog.getTitleLabel() != null)
+            infoDialog.getTitleLabel().setText(bundle.format("error"));
         connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 

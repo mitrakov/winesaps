@@ -161,6 +161,7 @@ public class Model {
     public volatile String name = "";
     public volatile String enemy = "";
     public volatile String promocode = "";
+    public volatile String minVersion = "";
     public volatile String curVersion = "";
     public volatile Character character = Character.None;
     public volatile Character character1 = Character.None;
@@ -1005,7 +1006,7 @@ public class Model {
 
     public void setClientVersion(int minVersionH, int minVersionM, int minVersionL,
                                  int curVersionH, int curVersionM, int curVersionL) {
-        String minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
+        minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
         curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
         boolean versionAllowed = Winesaps.VERSION >= ((minVersionH << 16) | (minVersionM << 8) | minVersionL);
         boolean newVersionAvailable = Winesaps.VERSION < ((curVersionH << 16) | (curVersionM << 8) | curVersionL);
