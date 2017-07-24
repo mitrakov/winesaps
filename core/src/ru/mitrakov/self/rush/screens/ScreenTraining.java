@@ -23,6 +23,7 @@ public class ScreenTraining extends LocalizableScreen {
     private final TextButton btnSkip;
     private final DialogFinished finishedDialog;
     private final DialogTutorial trainingDialog;
+    private final DialogInfo infoDialog;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
     private final Queue<Window> curtains = new Queue<Window>(3);
@@ -37,6 +38,7 @@ public class ScreenTraining extends LocalizableScreen {
         Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         trainingDialog = new DialogTutorial(skin, "panel-maroon");
+        infoDialog = new DialogInfo("", skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
             addListener(new ChangeListener() {
                 @Override
@@ -74,7 +76,10 @@ public class ScreenTraining extends LocalizableScreen {
 
         btnSkip.setText(bundle.format("tutorial.skip"));
         finishedDialog.setText(bundle.format("tutorial.msgX.text"), bundle.format("tutorial.msgX.action"));
+        infoDialog.setText(bundle.format("dialog.info.server.stop"));
+
         finishedDialog.onLocaleChanged(bundle);
+        infoDialog.onLocaleChanged(bundle);
         addContent(bundle);
     }
 
@@ -120,6 +125,14 @@ public class ScreenTraining extends LocalizableScreen {
                 // 3) forbid moving to make a user use the umbrella (note#1)
                 gui.setMovesAllowed(ev.newThing == null);
             }
+        }
+        if (event instanceof EventBus.ServerGonnaStopEvent) {
+            infoDialog.setOnResultAction(new Runnable() {
+                @Override
+                public void run() {
+                    game.setNextScreen();
+                }
+            }).show(stage);
         }
     }
 

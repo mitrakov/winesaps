@@ -31,6 +31,7 @@ class Parser implements IHandler {
     private static final int ERR_INCORRECT_NAME = 249;
     private static final int ERR_INCORRECT_EMAIL = 251;
     private static final int ERR_DUPLICATE_NAME = 252;
+    private static final int ERR_SERVER_GONNA_STOP = 254;
 
     private final Model model;
     private final PsObject psObject;
@@ -526,6 +527,9 @@ class Parser implements IHandler {
                 break;
             case ERR_DUPLICATE_NAME:
                 model.setDuplicateName();
+                break;
+            case ERR_SERVER_GONNA_STOP:
+                model.setServerGonnaStop();
                 break;
             default:
                 String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);

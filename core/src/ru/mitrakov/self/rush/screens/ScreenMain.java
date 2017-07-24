@@ -434,6 +434,10 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
         }
+        if (event instanceof EventBus.ServerGonnaStopEvent) {
+            dialupDialog.hide();
+            infoDialog.setText(i18n.format("dialog.info.server.stop")).show(stage);
+        }
     }
 
     @Override

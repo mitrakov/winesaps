@@ -23,6 +23,7 @@ public class EventBus {
     public static final class IncorrectEmailEvent extends Event {}
     public static final class DuplicateNameEvent extends Event {}
     public static final class SignUpErrorEvent extends Event {}
+    public static final class ServerGonnaStopEvent extends Event {}
     public static final class NameChangedEvent extends Event {
         public final String name;
         NameChangedEvent(String name) {

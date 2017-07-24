@@ -1033,6 +1033,10 @@ public class Model {
     public void setSignUpError() {
         bus.raise(new EventBus.SignUpErrorEvent());
     }
+
+    public void setServerGonnaStop() {
+        bus.raise(new EventBus.ServerGonnaStopEvent());
+    }
 }
 
 // note#2 (@mitrakov, 2017-04-03): it'd be better use SkipListMap, but it's not supported by Android API 8
