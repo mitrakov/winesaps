@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
@@ -15,7 +16,6 @@ public class DialogAbout extends DialogFeat {
     private final Label lblCreated;
     private final Label lblCreatedTxt;
     private final Label lblVersion;
-    private final Label lblVersionTxt;
     private final Label lblSupport;
     private final Label lblSupportTxt;
     private final Label lblWebSite;
@@ -36,7 +36,7 @@ public class DialogAbout extends DialogFeat {
         table.add(lblCreatedTxt = new Label("", skin, "default")).left().spaceLeft(20);
         table.row();
         table.add(lblVersion = new Label("", skin, "default")).left();
-        table.add(lblVersionTxt = new Label("", skin, "default")).left().spaceLeft(20);
+        table.add(new Label(Winesaps.VERSION_STR, skin, "default")).left().spaceLeft(20);
         table.row();
         table.add(lblSupport = new Label("", skin, "default")).left();
         table.add(lblSupportTxt = new Label("", skin, "default")).left().spaceLeft(20);
@@ -55,7 +55,6 @@ public class DialogAbout extends DialogFeat {
         lblCreated.setText(bundle.format("dialog.about.created"));
         lblCreatedTxt.setText(bundle.format("dialog.about.created.txt"));
         lblVersion.setText(bundle.format("dialog.about.version"));
-        lblVersionTxt.setText(bundle.format("dialog.about.version.txt"));
         lblSupport.setText(bundle.format("dialog.about.support"));
         lblSupportTxt.setText(bundle.format("dialog.about.support.txt"));
         lblWebSite.setText(bundle.format("dialog.about.web"));
