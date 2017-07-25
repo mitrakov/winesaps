@@ -27,6 +27,9 @@ public class Winesaps extends Game {
     public static final String VERSION_STR = "1.0.0 beta";
     public static final String URL = "http://winesaps.com";
 
+    private static final String HOST = "winesaps.ru";
+    private static final int PORT = 33996;
+
     private final PsObject psObject;
     private final Model model;
     private /*final*/ Network network;
@@ -52,10 +55,8 @@ public class Winesaps extends Game {
                         model.setUnsupportedProtocol();
                 }
             };
-            String host = "winesaps.ru"; // TODO move to config
-            int port = 33996;
-            network = new Network(psObject, new Parser(model, psObject), errorHandler, host, port);
-            network.setProtocol(new SwUDP(psObject, network.getSocket(), host, port, network));
+            network = new Network(psObject, new Parser(model, psObject), errorHandler, HOST, PORT);
+            network.setProtocol(new SwUDP(psObject, network.getSocket(), HOST, PORT, network));
 
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
