@@ -168,8 +168,6 @@ public class Model {
     public volatile Character character2 = Character.None;
     public volatile boolean connected = true;
     public volatile boolean newbie = true;
-    public volatile int totalScore1 = 0;
-    public volatile int totalScore2 = 0;
     public volatile int roundLengthSec = 60;
     public volatile int stylePack = 0;
     public volatile long abilityExpireTime = 0;
@@ -960,12 +958,10 @@ public class Model {
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
-        this.totalScore1 = totalScore1;
-        this.totalScore2 = totalScore2;
-        bus.raise(new EventBus.RoundFinishedEvent(winner));
+        bus.raise(new EventBus.RoundFinishedEvent(winner, totalScore1, totalScore2));
     }
 
-    public void gameFinished(boolean winner) {
+    public void gameFinished(boolean winner, int totalScore1, int totalScore2, int reward) {
         // updating history
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training/Tutorial Level
             // building a history item
@@ -987,7 +983,7 @@ public class Model {
 
         // reset reference to a field
         field = null;
-        bus.raise(new EventBus.GameFinishedEvent(winner));
+        bus.raise(new EventBus.GameFinishedEvent(winner, totalScore1, totalScore2, reward));
     }
 
     public void setAbilities(IIntArray ids) {

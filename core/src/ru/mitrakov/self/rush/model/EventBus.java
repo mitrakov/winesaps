@@ -110,14 +110,24 @@ public class EventBus {
     }
     public static final class RoundFinishedEvent extends Event {
         public final boolean winner;
-        RoundFinishedEvent(boolean winner) {
+        public final int totalScore1;
+        public final int totalScore2;
+        RoundFinishedEvent(boolean winner, int totalScore1, int totalScore2) {
             this.winner = winner;
+            this.totalScore1 = totalScore1;
+            this.totalScore2 = totalScore2;
         }
     }
     public static final class GameFinishedEvent extends Event {
-        public boolean winner;
-        GameFinishedEvent(boolean winner) {
+        public final boolean winner;
+        public final int totalScore1;
+        public final int totalScore2;
+        public final int reward;
+        GameFinishedEvent(boolean winner, int totalScore1, int totalScore2, int reward) {
             this.winner = winner;
+            this.totalScore1 = totalScore1;
+            this.totalScore2 = totalScore2;
+            this.reward = reward;
         }
     }
     public static final class PromocodeDoneEvent extends Event {

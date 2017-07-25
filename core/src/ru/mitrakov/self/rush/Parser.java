@@ -374,19 +374,19 @@ class Parser implements IHandler {
     }
 
     private void finished(Cmd cmd, IIntArray data) {
-        if (data.length() > 1) {
+        if (data.length() > 3) {
             boolean roundFinished = data.get(0) == 0; // 0 = finished round, 1 = finished game
             boolean gameFinished = data.get(0) == 1;
             boolean winner = data.get(1) > 0;
-            if (gameFinished)
-                model.gameFinished(winner);
-            else if (roundFinished) {
-                if (data.length() == 4) {
-                    int score1 = data.get(2);
-                    int score2 = data.get(3);
-                    model.roundFinished(winner, score1, score2);
-                } else throw new IllegalArgumentException("Incorrect finished round format");
-            } else inspectError(cmd, data.get(0));
+            int score1 = data.get(2);
+            int score2 = data.get(3);
+            if (roundFinished)
+                model.roundFinished(winner, score1, score2);
+            else if (gameFinished) {
+                int reward = data.length() == 8
+                        ? (data.get(4) << 24) | (data.get(5) << 16) |(data.get(6) << 8) | data.get(7) : 0;
+                model.gameFinished(winner, score1, score2, reward);
+            } else throw new IllegalArgumentException("Incorrect finished format!");
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect finished format");

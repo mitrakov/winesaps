@@ -128,19 +128,19 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
             audioManager.sound("round");
             reset();
-            String h = i18n.format("dialog.finished.header.round");
+            String header = i18n.format("dialog.finished.header.round");
             String msg = i18n.format(ev.winner ? "dialog.finished.win.round" : "dialog.finished.lose.round");
-            finishedDialog.setPicture(false, ev.winner).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
+            finishedDialog.setPicture(false, ev.winner).setText(header, msg).setScore(ev.totalScore1, ev.totalScore2);
             finishedDialog.setReward(0).setOnResultAction(null).show(stage);
         }
         if (event instanceof EventBus.GameFinishedEvent) {
             EventBus.GameFinishedEvent ev = (EventBus.GameFinishedEvent) event;
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
-            String h = i18n.format("dialog.finished.header.battle");
+            String header = i18n.format("dialog.finished.header.battle");
             String msg = i18n.format(ev.winner ? "dialog.finished.win.battle" : "dialog.finished.lose.battle");
-            finishedDialog.setPicture(true, ev.winner).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
-            finishedDialog.setReward(ev.winner ? 1 : 0).setOnResultAction(new Runnable() {
+            finishedDialog.setPicture(true, ev.winner).setText(header, msg).setScore(ev.totalScore1, ev.totalScore2);
+            finishedDialog.setReward(ev.reward).setOnResultAction(new Runnable() {
                 @Override
                 public void run() {
                     game.setNextScreen();
@@ -149,10 +149,10 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.music("theme", false);
         }
         if (event instanceof EventBus.BattleNotFoundEvent) {
-            String h = i18n.format("battle.out.of.sync");
+            String header = i18n.format("battle.out.of.sync");
             String msg = i18n.format("battle.out.of.sync.exit");
-            finishedDialog.setPicture(true, false).setText(h, msg).setScore(model.totalScore1, model.totalScore2);
-            finishedDialog.setOnResultAction(new Runnable() {
+            finishedDialog.setPicture(true, false).setText(header, msg).setScore(0, 0);
+            finishedDialog.setReward(0).setOnResultAction(new Runnable() {
                 @Override
                 public void run() {
                     game.setNextScreen();
