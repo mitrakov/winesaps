@@ -159,28 +159,6 @@ public class ScreenLogin extends LocalizableScreen {
         table.row();
         table.add(tableMain).expand();
         table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());
-
-        // only for Android: handling show/hide OnScreenKeyboard
-        psObject.setRatioListener(new PsObject.RatioListener() {
-            @Override
-            public void onRatioChanged(final float ratio) {
-                Gdx.app.postRunnable(new Runnable() { // @mitrakov: it is necessary to avoid OutOfSync exceptions!
-                    @Override
-                    public void run() {
-                        shiftedByKeyboard = ratio > 2;
-                        switch (curDialog) {
-                            case SignIn:
-                                setSignInDialog();
-                                break;
-                            case SignUp:
-                                setSignUpDialog(chkPromocode.isChecked());
-                                break;
-                            default:
-                        }
-                    }
-                });
-            }
-        });
     }
 
     @Override
@@ -236,6 +214,19 @@ public class ScreenLogin extends LocalizableScreen {
         if (event instanceof EventBus.PromocodeValidChangedEvent) {
             EventBus.PromocodeValidChangedEvent ev = (EventBus.PromocodeValidChangedEvent) event;
             imgValid.setDrawable(ev.valid ? textureValid : textureInvalid);
+        }
+    }
+
+    public void setRatio(float ratio) {
+        shiftedByKeyboard = ratio > 2;
+        switch (curDialog) {
+            case SignIn:
+                setSignInDialog();
+                break;
+            case SignUp:
+                setSignUpDialog(chkPromocode.isChecked());
+                break;
+            default:
         }
     }
 

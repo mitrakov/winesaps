@@ -109,6 +109,17 @@ public class Winesaps extends Game {
         stage.dispose();
     }
 
+    public void mute(boolean value) {
+        if (audioManager != null)
+            audioManager.muteAll(value);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setRatio(float ratio) {
+        if (screenLogin instanceof ScreenLogin)
+            ((ScreenLogin) screenLogin).setRatio(ratio);
+    }
+
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
@@ -169,14 +180,6 @@ public class Winesaps extends Game {
         // catch Android buttons
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
-
-        // stop music on hide
-        psObject.setVisibleListener(new PsObject.VisibleListener() {
-            @Override
-            public void onVisibleChanged(boolean visible) {
-                audioManager.muteAll(!visible);
-            }
-        });
 
         // start Google Play Billing service
         IBillingProvider provider = psObject.getBillingProvider();

@@ -202,9 +202,10 @@ class Parser implements IHandler {
             int sidH = data.get(0);
             int sidL = data.get(1);
             int sid = sidH * 256 + sidL;
-            model.attacked(sid, data.remove(0, 2).toUTF8());
+            String aggressor = data.remove(0, 2).toUTF8();
+            model.attacked(sid, aggressor);
             if (model.notifyNewBattles)
-                psObject.activate();
+                psObject.pushNotification(aggressor + " wants to attack you!"); // TODO i18n
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect call format");

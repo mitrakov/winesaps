@@ -36,35 +36,30 @@ public class DesktopLauncher extends JFrame {
         }
 
         // create platform specific object
-        final PsObject obj = new PsObject(null) {
-            @Override
-            public void activate() {
-                setVisible(true);
-            }
-        };
+        URL url = getClass().getResource("/icon.png"); // to get resource inside a FAT jar
+        ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
+        final Winesaps game = new Winesaps(new DesktopPsObject(null, this, icon));
 
         // set up JFrame
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         Container container = getContentPane();
-        container.add(new LwjglAWTCanvas(new Winesaps(obj), config).getCanvas(), BorderLayout.CENTER);
+        container.add(new LwjglAWTCanvas(game, config).getCanvas(), BorderLayout.CENTER);
         container.setPreferredSize(new Dimension(config.width, config.height));
         setResizable(false); // this must be BEFORE pack()!
         pack();
         setTitle("Winesaps");
-        URL url = getClass().getResource("/icon.png"); // to get resource inside a FAT jar
-        ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
         setIconImage(icon.getImage());
         setVisible(true);
         setLocationRelativeTo(null);
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                obj.raiseVisibleChanged(true);
+                game.mute(false);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                obj.raiseVisibleChanged(false);
+                game.mute(true);
             }
         });
     }

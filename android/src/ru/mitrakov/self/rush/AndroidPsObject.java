@@ -28,23 +28,8 @@ class AndroidPsObject extends PsObject {
         activity.moveTaskToBack(true);
     }
 
-    //@Override
-    public void activate() {
-        Intent intent = new Intent(activity, AndroidLauncher.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        try {
-            PendingIntent.getActivity(activity, 0, intent, 0).send();
-        } catch (PendingIntent.CanceledException ignored) {
-        }
-    }
-
     @Override
-    public void setActive(boolean value) {
-        active = value;
-    }
-
-    @Override
-    public void notifyMsg(String msg) {
+    public void pushNotification(String msg) {
         if (!active) { // if the app is active => no need to push notifications
             NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent intent = new Intent(activity, activity.getClass());
@@ -80,6 +65,10 @@ class AndroidPsObject extends PsObject {
     @Override
     public void runTask(int delayMsec, Runnable f) {
         handler.postDelayed(f, delayMsec); // @mitrakov 2017-07-17: https://stackoverflow.com/questions/20330355
+    }
+
+    void setActive(boolean value) {
+        active = value;
     }
 
     @SuppressWarnings("unused")
