@@ -16,14 +16,15 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 public class SwUDP implements IProtocol {
     final static int N = 256;
     final static int SYN = 0;
-    final static int MAX_ATTEMPTS = 8;
+    final static int ERRACK = 1;
+    final static int MAX_ATTEMPTS = 7;
     final static int PERIOD = 10;
     final static int MAX_PENDING = 5;
     final static int MIN_SRTT = 2;
     final static int DEFAULT_SRTT = 6;
     final static int MAX_SRTT = 12;
     final static float RC = .8f;
-    final static float AC = 2.5f;
+    final static float AC = 2.2f;
 
     @SuppressWarnings("unused")
     static class Item {
@@ -55,7 +56,8 @@ public class SwUDP implements IProtocol {
 
     static int next(int n) {
         int result = (n + 1) % N;
-        return result != SYN ? result : next(result);
+        boolean ok = result != SYN && result != ERRACK;
+        return ok ? result : next(result);
     }
 
     static boolean after(int x, int y) {

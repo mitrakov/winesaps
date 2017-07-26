@@ -74,6 +74,11 @@ class Receiver {
                     protocol.connectionFailed();
                 }
             }
+        } else {
+            ack.clear().add(ERRACK);
+            ack.add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF).add(crcid & 0xFF);
+            log("Ack : ", ack);
+            socket.send(getPacket(ack.toByteArray(), ack.length()));
         }
     }
 

@@ -95,6 +95,12 @@ class Sender {
         if (ack == SYN) {
             connected = true;
             protocol.onSenderConnected();
+        } else if (ack == ERRACK) {
+            connected = false;
+            for (int j = 0; j < buffer.length; j++) {
+                buffer[j].clear();
+            }
+            protocol.connectionFailed();
         }
     }
 
