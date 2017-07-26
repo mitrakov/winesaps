@@ -34,15 +34,13 @@ class Parser implements IHandler {
     private static final int ERR_SERVER_GONNA_STOP = 254;
 
     private final Model model;
-    private final PsObject psObject;
     private final Cmd[] commands = Cmd.values();
     private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
-    Parser(Model model, PsObject psObject) {
-        assert model != null && psObject != null;
+    Parser(Model model) {
+        assert model != null;
         this.model = model;
-        this.psObject = psObject;
     }
 
     @Override
@@ -204,8 +202,6 @@ class Parser implements IHandler {
             int sid = sidH * 256 + sidL;
             String aggressor = data.remove(0, 2).toUTF8();
             model.attacked(sid, aggressor);
-            if (model.notifyNewBattles)
-                psObject.pushNotification(aggressor + " wants to attack you!"); // TODO i18n
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect call format");

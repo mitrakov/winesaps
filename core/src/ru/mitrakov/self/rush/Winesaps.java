@@ -14,8 +14,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.net.*;
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.screens.*;
-import ru.mitrakov.self.rush.model.Model;
 
 /**
  * Entry point
@@ -55,7 +55,7 @@ public class Winesaps extends Game {
                         model.setUnsupportedProtocol();
                 }
             };
-            network = new Network(psObject, new Parser(model, psObject), errorHandler, HOST, PORT);
+            network = new Network(psObject, new Parser(model), errorHandler, HOST, PORT);
             network.setProtocol(new SwUDP(psObject, network.getSocket(), HOST, PORT, network));
 
             // set up model
@@ -191,6 +191,18 @@ public class Winesaps extends Game {
                 }
             });
         }
+
+        // ....
+        model.bus.addListener(new EventBus.Listener() {
+            @Override
+            public void OnEvent(EventBus.Event event) {
+                if (event instanceof EventBus.InviteEvent && model.notifyNewBattles) {
+                    EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
+                    I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+                    psObject.pushNotification(i18n.format("dialog.incoming.notification", ev.enemy));
+                }
+            }
+        });
 
         // set default locale
         updateLocale();
