@@ -78,6 +78,7 @@ public class Gui extends Actor {
     private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
             new IntMap<AnimationData<Model.Character>>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
+    private final IntMap<Animation<TextureRegion>> decorations = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
     private final ObjectSet<Class> heightOffsets = new ObjectSet<Class>(1);
     private final Animation<TextureRegion> animWaterfall;
@@ -214,10 +215,14 @@ public class Gui extends Actor {
         animFlare = new AnimInfo(new Animation<TextureRegion>(.09f, framesFlare));
         //
         TextureAtlas atlasLadder = assetManager.get("pack/ladder.pack");
+        TextureAtlas atlasDecors = assetManager.get("pack/decor.pack");
         for (int i = 0; i < STYLES_COUNT; i++) {
             // ladderBottom animations
             Array<TextureAtlas.AtlasRegion> frames = atlasLadder.findRegions(LadderBottom.class.getSimpleName() + i);
             animLadders.put(i, new Animation<TextureRegion>(.05f, frames));
+            // dynamic decorations
+            Array<TextureAtlas.AtlasRegion> frms = atlasDecors.findRegions(DecorationDynamic.class.getSimpleName() + i);
+            decorations.put(i, new Animation<TextureRegion>(.07f, frms, Animation.PlayMode.LOOP));
             // backgrounds
             backgrounds.add(assetManager.<Texture>get(String.format(Locale.getDefault(), "back/battle%d.jpg", i)));
         }
@@ -254,22 +259,24 @@ public class Gui extends Actor {
             drawBottom(field, batch);
             // draw 2-nd layer (static objects)
             drawObjects(field, batch);
-            // draw 3-rd layer (LadderBottom objects)
+            // draw 3-rd layer (dynamic decorations)
+            drawDynamicDecorations(field, batch);
+            // draw 4-rd layer (LadderBottom objects)
             drawLadderBottom(field, batch);
-            // draw 4-th layer (waterfalls)
+            // draw 5-th layer (waterfalls)
             drawWaterfalls(field, batch);
-            // draw 5-th layer (collectible objects)
+            // draw 6-th layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 6-th layer (antidotes, teleports)
+            // draw 7-th layer (antidotes, teleports)
             drawAnim(field, batch, Antidote.class, animAntidote);
             drawAnim(field, batch, Teleport.class, animTeleport);
             drawAnim(field, batch, Flashbang.class, animFlashbang);
             drawAnim(field, batch, Detector.class, animDetector);
-            // draw 7-th layer (animated characters)
+            // draw 8-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
-            // draw 8-th layer (all overlaying objects like Umbrella)
+            // draw 9-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 9-th layer (smokes, explosions, aura)
+            // draw 10-th layer (smokes, explosions, aura)
             drawSingleAnim(animExplosion, batch, dt);
             drawSingleAnim(animSmoke, batch, dt);
             drawSingleAnim(animAura, batch, dt);
@@ -492,6 +499,28 @@ public class Gui extends Actor {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                         float y = convertYFromModelToScreen(j) + bottomHeight;
                         batch.draw(texture, x, y);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawDynamicDecorations(Field field, Batch batch) {
+        // field != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                CellObject obj = cell.getFirst(DecorationDynamic.class);
+                if (obj != null) {
+                    Animation<TextureRegion> animation = decorations.get(model.stylePack);
+                    if (animation != null) {
+                        TextureRegion texture = animation.getKeyFrame(time);
+                        if (texture != null) {
+                            float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                            float y = convertYFromModelToScreen(j) + bottomHeight;
+                            batch.draw(texture, x, y);
+                        }
                     }
                 }
             }

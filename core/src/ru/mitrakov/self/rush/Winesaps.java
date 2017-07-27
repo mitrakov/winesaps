@@ -226,6 +226,7 @@ public class Winesaps extends Game {
         assetManager.load("pack/aura.pack", TextureAtlas.class);
         assetManager.load("pack/cat.pack", TextureAtlas.class);
         assetManager.load("pack/char.pack", TextureAtlas.class);
+        assetManager.load("pack/decor.pack", TextureAtlas.class);
         assetManager.load("pack/down.pack", TextureAtlas.class);
         assetManager.load("pack/effects.pack", TextureAtlas.class);
         assetManager.load("pack/flare.pack", TextureAtlas.class);
