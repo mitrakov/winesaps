@@ -5,239 +5,239 @@ filter: Nearest,Nearest
 repeat: none
 DecorationDynamic0
   rotate: false
-  xy: 2, 54
+  xy: 2, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 0
 DecorationDynamic0
   rotate: false
-  xy: 2, 54
+  xy: 2, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 1
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 2
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 3
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 4
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 5
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 6
 DecorationDynamic0
   rotate: false
-  xy: 54, 54
+  xy: 54, 56
   size: 50, 70
   orig: 50, 70
   offset: 0, 0
   index: 7
 DecorationDynamic1
   rotate: false
-  xy: 2, 2
+  xy: 2, 4
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 0
 DecorationDynamic1
   rotate: false
-  xy: 106, 74
+  xy: 106, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 1
 DecorationDynamic1
   rotate: false
-  xy: 40, 2
+  xy: 40, 4
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 2
 DecorationDynamic1
   rotate: false
-  xy: 144, 74
+  xy: 144, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 3
 DecorationDynamic1
   rotate: false
-  xy: 182, 74
+  xy: 182, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 4
 DecorationDynamic1
   rotate: false
-  xy: 220, 74
+  xy: 220, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 5
 DecorationDynamic1
   rotate: false
-  xy: 258, 74
+  xy: 258, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 6
 DecorationDynamic1
   rotate: false
-  xy: 296, 74
+  xy: 296, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 7
 DecorationDynamic1
   rotate: false
-  xy: 334, 74
+  xy: 334, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 8
 DecorationDynamic1
   rotate: false
-  xy: 372, 74
+  xy: 372, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 9
 DecorationDynamic1
   rotate: false
-  xy: 410, 74
+  xy: 410, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 10
 DecorationDynamic1
   rotate: false
-  xy: 448, 74
+  xy: 448, 76
   size: 36, 50
   orig: 36, 50
   offset: 0, 0
   index: 11
-DecorationDynamic3
-  rotate: false
-  xy: 78, 14
-  size: 42, 38
-  orig: 42, 38
-  offset: 0, 0
-  index: 0
 DecorationDynamic2
   rotate: false
-  xy: 486, 54
+  xy: 486, 56
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 0
 DecorationDynamic3
   rotate: false
-  xy: 122, 34
-  size: 42, 38
-  orig: 42, 38
+  xy: 78, 29
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: 0
+DecorationDynamic3
+  rotate: false
+  xy: 78, 2
+  size: 28, 25
+  orig: 28, 25
   offset: 0, 0
   index: 1
-DecorationDynamic3
-  rotate: false
-  xy: 166, 34
-  size: 42, 38
-  orig: 42, 38
-  offset: 0, 0
-  index: 2
-DecorationDynamic3
-  rotate: false
-  xy: 210, 34
-  size: 42, 38
-  orig: 42, 38
-  offset: 0, 0
-  index: 3
-DecorationDynamic3
-  rotate: false
-  xy: 254, 34
-  size: 42, 38
-  orig: 42, 38
-  offset: 0, 0
-  index: 4
-DecorationDynamic3
-  rotate: false
-  xy: 298, 34
-  size: 42, 38
-  orig: 42, 38
-  offset: 0, 0
-  index: 5
 DecorationDynamic2
   rotate: false
-  xy: 342, 2
+  xy: 108, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 1
 DecorationDynamic2
   rotate: false
-  xy: 357, 2
+  xy: 123, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 2
 DecorationDynamic2
   rotate: false
-  xy: 372, 2
+  xy: 138, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 3
 DecorationDynamic2
   rotate: false
-  xy: 387, 2
+  xy: 153, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 4
 DecorationDynamic2
   rotate: false
-  xy: 402, 2
+  xy: 168, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 5
 DecorationDynamic2
   rotate: false
-  xy: 417, 2
+  xy: 183, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 6
 DecorationDynamic2
   rotate: false
-  xy: 432, 2
+  xy: 198, 4
   size: 13, 70
   orig: 13, 70
   offset: 0, 0
   index: 7
+DecorationDynamic3
+  rotate: false
+  xy: 213, 49
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: 2
+DecorationDynamic3
+  rotate: false
+  xy: 213, 22
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: 3
+DecorationDynamic3
+  rotate: false
+  xy: 243, 49
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: 4
+DecorationDynamic3
+  rotate: false
+  xy: 243, 22
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: 5
