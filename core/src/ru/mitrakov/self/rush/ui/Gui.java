@@ -437,8 +437,8 @@ public class Gui extends Actor {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
                 TextureRegion texture = null;
-                if (cell.objectExists(Block.class) || cell.objectExists(Stair.class))
-                    texture = texturesDownSolid.get(model.stylePack);
+                if (cell.bottom instanceof Block && (cell.objectExists(Block.class) || cell.objectExists(Stair.class)))
+                    texture = texturesDownSolid.get(model.stylePack); // to avoid "grass-on-grass" artifacts
                 else {
                     Class key = null;
                     if (cell.bottom != null)
