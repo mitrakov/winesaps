@@ -185,18 +185,18 @@ DecorationWarning3
   orig: 36, 40
   offset: 0, 0
   index: -1
-DecorationWarning1
-  rotate: false
-  xy: 779, 91
-  size: 38, 35
-  orig: 38, 35
-  offset: 0, 0
-  index: -1
 DecorationWarning2
   rotate: false
-  xy: 40, 17
+  xy: 779, 91
   size: 33, 35
   orig: 33, 35
+  offset: 0, 0
+  index: -1
+DecorationWarning1
+  rotate: false
+  xy: 40, 22
+  size: 33, 30
+  orig: 33, 30
   offset: 0, 0
   index: -1
 AntidoteThing
@@ -208,7 +208,7 @@ AntidoteThing
   index: -1
 BeamThing
   rotate: false
-  xy: 819, 98
+  xy: 814, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
@@ -220,16 +220,9 @@ BoxThing
   orig: 28, 28
   offset: 0, 0
   index: -1
-DecorationStatic0
-  rotate: false
-  xy: 75, 2
-  size: 26, 20
-  orig: 26, 20
-  offset: 0, 0
-  index: -1
 DetectorThing
   rotate: false
-  xy: 849, 98
+  xy: 844, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
@@ -243,37 +236,51 @@ FlashbangThing
   index: -1
 MineThing
   rotate: false
-  xy: 879, 98
+  xy: 874, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 TeleportThing
   rotate: false
-  xy: 909, 98
+  xy: 904, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 UmbrellaThing
   rotate: false
-  xy: 939, 98
+  xy: 934, 98
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
+DecorationStatic0
+  rotate: false
+  xy: 75, 2
+  size: 26, 20
+  orig: 26, 20
+  offset: 0, 0
+  index: -1
 Apple
   rotate: false
-  xy: 969, 98
+  xy: 964, 98
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Carrot
   rotate: false
-  xy: 995, 98
+  xy: 990, 98
   size: 24, 28
   orig: 24, 28
+  offset: 0, 0
+  index: -1
+Beam
+  rotate: false
+  xy: 1016, 81
+  size: 6, 45
+  orig: 6, 45
   offset: 0, 0
   index: -1
 Meat
@@ -304,13 +311,6 @@ Pear
   orig: 24, 28
   offset: 0, 0
   index: -1
-Beam
-  rotate: false
-  xy: 809, 44
-  size: 6, 45
-  orig: 6, 45
-  offset: 0, 0
-  index: -1
 BeamChunk
   rotate: false
   xy: 2, 4
@@ -320,35 +320,35 @@ BeamChunk
   index: -1
 Box
   rotate: false
-  xy: 103, 15
+  xy: 40, 13
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair0
   rotate: false
-  xy: 248, 62
+  xy: 103, 15
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair1
   rotate: false
-  xy: 103, 6
+  xy: 248, 62
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair2
   rotate: false
-  xy: 119, 15
+  xy: 56, 13
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair3
   rotate: false
-  xy: 248, 53
+  xy: 103, 6
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
