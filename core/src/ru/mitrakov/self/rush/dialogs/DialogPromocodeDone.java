@@ -21,7 +21,7 @@ public class DialogPromocodeDone extends DialogFeat {
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center, Align.center);
-        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).minWidth(350); // here getContentTable != null
 
         button("OK"); // text will be replaced in onLocaleChanged()
     }
@@ -53,6 +53,7 @@ public class DialogPromocodeDone extends DialogFeat {
         String s1 = i18n.format("dialog.promocode.done.inviter", name, crystals);
         String s2 = i18n.format("dialog.promocode.done.winner", name, crystals);
         lblMessage.setText(inviter ? s1 : s2);
+        pack();
         return this;
     }
 }
