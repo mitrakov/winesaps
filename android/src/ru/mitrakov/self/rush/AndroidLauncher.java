@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.*;
 
 public class AndroidLauncher extends AndroidApplication {
-    private /*final*/ AndroidPsObject obj;
+    private /*final*/ PsObject obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

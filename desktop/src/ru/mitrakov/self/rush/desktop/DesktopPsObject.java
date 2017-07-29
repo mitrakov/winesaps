@@ -14,6 +14,7 @@ import ru.mitrakov.self.rush.*;
 class DesktopPsObject extends PsObject {
     private final JFrame parent;
     private final Icon icon;
+    private JDialog dialog;
 
     DesktopPsObject(IBillingProvider billingProvider, JFrame parent, Icon icon) {
         super(billingProvider);
@@ -26,10 +27,18 @@ class DesktopPsObject extends PsObject {
     }
 
     @Override
+    public void setActive(boolean value) {
+        if (value && dialog != null) {
+            dialog.dispose();
+            dialog = null;
+        }
+    }
+
+    @Override
     public void pushNotification(String msg) {
         if (!parent.isVisible()) { // if the app is active => no need to push notifications
             JOptionPane pane = new JOptionPane(msg, QUESTION_MESSAGE, OK_CANCEL_OPTION, icon);
-            JDialog dialog = pane.createDialog(null, "Winesaps");
+            dialog = pane.createDialog(null, "Winesaps");
             locateToRightBottom(dialog);
             Object sound = Toolkit.getDefaultToolkit().getDesktopProperty("win.sound.default"); //TODO only on Windows?
             if (sound instanceof Runnable)

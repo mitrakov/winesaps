@@ -29,6 +29,15 @@ class AndroidPsObject extends PsObject {
     }
 
     @Override
+    public void setActive(boolean value) {
+        active = value;
+        if (active) {
+            NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.cancel(1); // cancel our notification with ID=1
+        }
+    }
+
+    @Override
     public void pushNotification(String msg) {
         if (!active) { // if the app is active => no need to push notifications
             NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -42,7 +51,6 @@ class AndroidPsObject extends PsObject {
                 builder.setContentText(msg);
                 builder.setSmallIcon(R.drawable.winesaps);
                 builder.setDefaults(Notification.DEFAULT_ALL); // default sound, vibrate pattern and lights
-                builder.setAutoCancel(true);                   // hide notification after a user clicked it
                 manager.notify(1, builder.getNotification()); //"getNotification()" deprecated but "build()" uses API 16
             } else try {
                 pIntent.send();
@@ -65,10 +73,6 @@ class AndroidPsObject extends PsObject {
     @Override
     public void runTask(int delayMsec, Runnable f) {
         handler.postDelayed(f, delayMsec); // @mitrakov 2017-07-17: https://stackoverflow.com/questions/20330355
-    }
-
-    void setActive(boolean value) {
-        active = value;
     }
 
     @SuppressWarnings("unused")

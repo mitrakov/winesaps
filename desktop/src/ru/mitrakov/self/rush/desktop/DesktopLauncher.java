@@ -38,7 +38,8 @@ public class DesktopLauncher extends JFrame {
         // create platform specific object
         URL url = getClass().getResource("/icon.png"); // to get resource inside a FAT jar
         ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
-        final Winesaps game = new Winesaps(new DesktopPsObject(null, this, icon));
+        final PsObject obj = new DesktopPsObject(null, this, icon);
+        final Winesaps game = new Winesaps(obj);
 
         // set up JFrame
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -55,11 +56,13 @@ public class DesktopLauncher extends JFrame {
             @Override
             public void componentShown(ComponentEvent e) {
                 game.mute(false);
+                obj.setActive(true);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
                 game.mute(true);
+                obj.setActive(false);
             }
         });
     }

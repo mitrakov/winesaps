@@ -19,6 +19,8 @@ public abstract class PsObject {
 
     public abstract void hide();
 
+    public abstract void setActive(boolean value);
+
     public abstract void pushNotification(String msg);
 
     public void runDaemon(int delayMsec, int periodMsec, final Runnable f) {
