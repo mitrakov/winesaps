@@ -309,16 +309,13 @@ public class Gui extends Actor {
                 animExplosion.t = 0; // start animation
             }
         }
-        if (event instanceof EventBus.RoundStartedEvent) {
-            CellObject me = model.curActor;
-            Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
-            if (field != null && me instanceof CellObjectActor) {
-                float bottomHeight = getBottomHeight(field.cells[me.getXy()]);
-                TextureRegion r = animExplosion.animation.getKeyFrame(0);
-                animAura.x = convertXFromModelToScreen(me.getX()) - (r.getRegionWidth() / 2);
-                animAura.y = convertYFromModelToScreen(me.getY()) - CELL_SIZ_H / 2 + bottomHeight;
-                animAura.t = 0; // start animation
-            }
+        if (event instanceof EventBus.NewFieldEvent) {
+            EventBus.NewFieldEvent ev = (EventBus.NewFieldEvent) event;
+            float bottomHeight = getBottomHeight(ev.field.cells[ev.actor.getXy()]); // ev.field, ev.actor != null
+            TextureRegion r = animExplosion.animation.getKeyFrame(0);
+            animAura.x = convertXFromModelToScreen(ev.actor.getX()) - (r.getRegionWidth() / 2);
+            animAura.y = convertYFromModelToScreen(ev.actor.getY()) - CELL_SIZ_H / 2 + bottomHeight;
+            animAura.t = 0; // start animation
         }
         if (event instanceof EventBus.ActorResetEvent) {
             EventBus.ActorResetEvent ev = (EventBus.ActorResetEvent) event;

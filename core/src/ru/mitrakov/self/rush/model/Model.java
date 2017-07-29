@@ -867,6 +867,7 @@ public class Model {
         // assigned later in appendObject() method)
         curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
         enemyActor = field.getObjectById(aggressor ? DEFENDER_ID : AGGRESSOR_ID);
+        bus.raise(new EventBus.NewFieldEvent(curActor, field));
     }
 
     public void appendObject(int number, int id, int xy) {
