@@ -812,9 +812,9 @@ public class Model {
         bus.raise(new EventBus.PromocodeValidChangedEvent(valid));
     }
 
-    public void setPromocodeDone(String name, boolean inviter, int crystals) {
+    public void setPromocodeDone(String name, boolean inviter, int gems) {
         assert name != null;
-        bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, crystals));
+        bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, gems));
     }
 
     public void setSkuGems(IIntArray data) {

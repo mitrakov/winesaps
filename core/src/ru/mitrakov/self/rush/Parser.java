@@ -427,8 +427,8 @@ class Parser implements IHandler {
     private void promocodeDone(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
             boolean inviter = data.get(0) == 1;
-            int crystals = data.get(1);
-            model.setPromocodeDone(data.remove(0, 2).toUTF8(), inviter, crystals);
+            int gems = (data.get(1) << 24) | (data.get(2) << 16) | (data.get(3) << 8) | data.get(4);
+            model.setPromocodeDone(data.remove(0, 5).toUTF8(), inviter, gems);
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
