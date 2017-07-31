@@ -3,11 +3,9 @@ package ru.mitrakov.self.rush.ui;
 import com.badlogic.gdx.Input.Keys;
 
 import ru.mitrakov.self.rush.model.*;
-import ru.mitrakov.self.rush.net.Network;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 
 import static com.badlogic.gdx.Gdx.input;
-import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
  * Created by mitrakov on 27.02.2017
@@ -35,10 +33,10 @@ class InputController {
         else if (input.isKeyJustPressed(Keys.NUM_8)) model.useAbility(7);
         else if (input.isKeyJustPressed(Keys.NUM_9)) model.useAbility(8);
         else if (input.isKeyJustPressed(Keys.NUM_0)) model.useAbility(9);
-        else if (input.isKeyJustPressed(Keys.P)) {
+        /* @note uncomment only for debug! else if (input.isKeyJustPressed(Keys.P)) {
             Network.TMP_NO_CONNECTION = !Network.TMP_NO_CONNECTION;
             log("TMP_NO_CONNECTION = ", Network.TMP_NO_CONNECTION);
-        }
+        }*/
     }
 
     boolean checkMovement(int mouseButton, float x, float y) {

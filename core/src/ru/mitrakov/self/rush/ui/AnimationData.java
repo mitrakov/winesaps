@@ -90,6 +90,7 @@ class AnimationData<T> {
                     t = 0;
                 }
                 break;
+            default:
         }
     }
 }

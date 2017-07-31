@@ -313,7 +313,7 @@ public class Gui extends Actor {
             EventBus.NewFieldEvent ev = (EventBus.NewFieldEvent) event;
             float bottomHeight = getBottomHeight(ev.field.cells[ev.actor.getXy()]); // ev.field, ev.actor != null
             TextureRegion r = animExplosion.animation.getKeyFrame(0);
-            animAura.x = convertXFromModelToScreen(ev.actor.getX()) - (r.getRegionWidth() / 2);
+            animAura.x = convertXFromModelToScreen(ev.actor.getX()) - (.5f * r.getRegionWidth());
             animAura.y = convertYFromModelToScreen(ev.actor.getY()) - CELL_SIZ_H / 2 + bottomHeight;
             animAura.t = 0; // start animation
         }
@@ -669,7 +669,7 @@ public class Gui extends Actor {
                             if (obj.getEffect() == Model.Effect.Antidote) {
                                 float yy = y + CELL_SIZ_H / 2;
                                 if (anim.dirRight)
-                                    batch.draw(textureAntidote, x - textureAntidote.getRegionWidth() / 2, yy);
+                                    batch.draw(textureAntidote, x - (.5f * textureAntidote.getRegionWidth()), yy);
                                 else {
                                     textureAntidote.flip(true, false);
                                     batch.draw(textureAntidote, x + 10, yy);

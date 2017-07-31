@@ -82,7 +82,7 @@ public final class GcResistantIntArray implements IIntArray {
         for (int i = 0; i < Math.min(bytes.length, array.size) ; i++) {
             bytes[i] = (byte) array.get(i);
         }
-        return bytes;
+        return bytes; // it's OK (please add an exception for FindBugs and DO NOT create a copy as it suggests)
     }
 
     @Override

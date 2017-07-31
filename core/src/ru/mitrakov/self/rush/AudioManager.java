@@ -22,7 +22,7 @@ public class AudioManager {
         this.soundMuted = soundMuted;
     }
 
-    public synchronized void music(String name, boolean loop) {
+    public void music(String name, boolean loop) {
         assert name != null;
         if (!curMusicName.equals(name)) {
             if (curMusic != null) {

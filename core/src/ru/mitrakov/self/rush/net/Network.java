@@ -13,7 +13,7 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
  * Created by mitrakov on 23.02.2017
  */
 public final class Network extends Thread implements IHandler {
-    public static boolean TMP_NO_CONNECTION = false; // REMOVE ME IN A FUTURE
+    // @note uncomment only for debug! public static boolean TMP_NO_CONNECTION = false;
 
     public static final int BUF_SIZ_SEND = 768;
     private static final int BUF_SIZ_RECV = 1024;
@@ -68,7 +68,7 @@ public final class Network extends Thread implements IHandler {
         while (true) {
             try {
                 socket.receive(datagram);
-                if (TMP_NO_CONNECTION) continue;
+                // @note uncomment only for debug! if (TMP_NO_CONNECTION) continue;
                 if (protocol != null) {
                     recvData.fromByteArray(datagram.getData(), datagram.getLength());
                     log("Recv: ", recvData);
@@ -123,7 +123,7 @@ public final class Network extends Thread implements IHandler {
     }
 
     public void send(IIntArray data) throws IOException {
-        if (TMP_NO_CONNECTION) return;
+        // @note uncomment only for debug! if (TMP_NO_CONNECTION) return;
 
         // concatenate a header and data
         int h0 = sid / 256;

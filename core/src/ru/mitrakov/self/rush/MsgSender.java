@@ -4,6 +4,7 @@ import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
+import static ru.mitrakov.self.rush.utils.Utils.getBytes;
 import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 
 /**
@@ -45,7 +46,7 @@ class MsgSender implements Model.ISender {
     @Override
     public void send(Model.Cmd cmd, String arg) {
         try {
-            network.send(sendBuf.fromByteArray(arg.getBytes(), arg.length()).prepend(cmd.ordinal()));
+            network.send(sendBuf.fromByteArray(getBytes(arg), arg.length()).prepend(cmd.ordinal()));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
