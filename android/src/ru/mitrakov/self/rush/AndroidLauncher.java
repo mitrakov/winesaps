@@ -7,6 +7,8 @@ import android.graphics.Rect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.*;
 
+import ru.mitrakov.self.rush.stat.Stat;
+
 public class AndroidLauncher extends AndroidApplication {
     private /*final*/ PsObject obj;
 
@@ -15,6 +17,7 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
         final Winesaps game = new Winesaps(obj = new AndroidPsObject(this));
+        // final Stat game = new Stat(obj = new AndroidPsObject(this));
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useCompass = false;

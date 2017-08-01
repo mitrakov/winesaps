@@ -144,9 +144,9 @@ public final class Network extends Thread implements IHandler {
         else socket.send(getPacket(data.toByteArray(), data.length()));
     }
 
-    public void reset() {
-        sid = 0;
-        token = 0;
+    public void reset(int sid, long token) {
+        this.sid = sid;
+        this.token = token;
     }
 
     public DatagramSocket getSocket() {

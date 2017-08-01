@@ -166,7 +166,7 @@ public class Model {
     public volatile Character character = Character.None;
     public volatile Character character1 = Character.None;
     public volatile Character character2 = Character.None;
-    public volatile boolean connected = true;
+    public volatile boolean connected = false;
     public volatile boolean newbie = true;
     public volatile int roundLengthSec = 60;
     public volatile int stylePack = 0;

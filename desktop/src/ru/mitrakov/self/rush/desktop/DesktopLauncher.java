@@ -10,6 +10,7 @@ import javax.swing.*;
 import com.badlogic.gdx.backends.lwjgl.*;
 
 import ru.mitrakov.self.rush.*;
+import ru.mitrakov.self.rush.stat.Stat;
 
 public class DesktopLauncher extends JFrame {
     public static void main(String[] arg) {
@@ -40,6 +41,7 @@ public class DesktopLauncher extends JFrame {
         ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
         final PsObject obj = new DesktopPsObject(null, this, icon);
         final Winesaps game = new Winesaps(obj);
+        // final Stat game = new Stat(obj);
 
         // set up JFrame
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);

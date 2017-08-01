@@ -54,6 +54,6 @@ class MsgSender implements Model.ISender {
 
     @Override
     public void reset() {
-        network.reset();
+        network.reset(0, 0);
     }
 }

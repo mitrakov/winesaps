@@ -61,7 +61,6 @@ public class Winesaps extends Game {
             // set up model
             model.setSender(new MsgSender(network, errorHandler));
             model.setFileReader(new FileReader());
-            model.connected = false; // it's true by default because no Protocols provided, but now we have SwUDP
         } catch (SocketException e) {
             e.printStackTrace();
         }

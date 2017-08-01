@@ -45,7 +45,6 @@ class Parser implements IHandler {
 
     @Override
     public synchronized void onReceived(IIntArray data) {
-        // @mitrakov: on Android copyOfRange requires minSdkVersion=9
         assert data != null;
         while (data.length() > 2) {
             int len = data.get(0) * 256 + data.get(1);
