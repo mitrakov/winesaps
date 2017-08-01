@@ -51,7 +51,6 @@ public class Stat extends Game {
         Gdx.input.setCatchMenuKey(true);
 
         network.start();
-        //query.add(0).add(0).add(0x21).add(0x39).add(0xFF).add(0xB2).add(0).add(0).add(1).add(0xF0);
         psObject.runDaemon(2000, 2000, new Runnable() {
             @Override
             public void run() {
