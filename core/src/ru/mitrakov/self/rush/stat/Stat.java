@@ -29,6 +29,7 @@ public class Stat extends Game {
         }
     };
     private /*final*/ Network network;
+    private /*final*/ SwUDP protocol;
     private /*final*/ ScreenStat screen;
 
     public Stat(PsObject psObject) {
@@ -36,8 +37,9 @@ public class Stat extends Game {
         this.psObject = psObject;
         try {
             network = new Network(psObject, parser, errorHandler, HOST, PORT);
-            network.setProtocol(new SwUDP(psObject, network.getSocket(), HOST, PORT, network));
-
+            protocol = new SwUDP(psObject, network.getSocket(), HOST, PORT, network);
+            network.setProtocol(protocol);
+            network.reset(0, 0);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -57,6 +59,7 @@ public class Stat extends Game {
                 try {
                     query.clear().add(0xF0);
                     network.send(query);
+                    screen.setSrtt(protocol.getSrtt());
                 } catch (IOException e) {
                     errorHandler.uncaughtException(Thread.currentThread(), e);
                 }

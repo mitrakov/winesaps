@@ -120,4 +120,8 @@ public class SwUDP implements IProtocol {
     public boolean isConnected() {
         return sender.connected && receiver.connected;
     }
+
+    public int getSrtt() {
+        return sender.srtt;
+    }
 }

@@ -24,7 +24,8 @@ class Sender {
     private final IIntArray startMsg = new GcResistantIntArray(6);
     private /*final*/ DatagramPacket packet;
 
-    private int id = 0, expectedAck = 0, srtt = 0, totalTicks = 0, crcid = 0;
+    private int id = 0, expectedAck = 0, totalTicks = 0, crcid = 0;
+    int srtt = 0;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
     Sender(PsObject psObject, DatagramSocket socket, String host, int port, IProtocol protocol) {

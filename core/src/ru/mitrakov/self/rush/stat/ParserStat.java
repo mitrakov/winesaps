@@ -25,7 +25,7 @@ class ParserStat implements IHandler {
 
     @Override
     public void onChanged(boolean connected) {
-        System.out.println("Connected = " + connected);
+        screen.setConnected(connected);
     }
 
     void setScreen(ScreenStat screen) {

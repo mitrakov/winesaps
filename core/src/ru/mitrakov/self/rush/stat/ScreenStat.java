@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.stat;
 
+import java.util.Locale;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +41,8 @@ class ScreenStat extends ScreenAdapter {
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
     private final Label lblStatus = new Label("", skin, "white");
+    private final Label lblSrtt = new Label("", skin, "white");
+    private final Label lblConnected = new Label("", skin, "white");
     private final IntMap<Label> lblValues = new IntMap<Label>(16);
 
     private transient int status = 0;
@@ -48,8 +52,8 @@ class ScreenStat extends ScreenAdapter {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.add(tableLeft).space(20);
-        table.add(tableRight).space(20);
+        table.add(tableLeft).space(40);
+        table.add(tableRight).space(40);
         stage.addActor(table);
     }
 
@@ -89,7 +93,11 @@ class ScreenStat extends ScreenAdapter {
             tableLeft.add(value).right();
             tableLeft.row();
         }
-        tableRight.add(lblStatus).width(50);
+        tableRight.add(lblStatus);
+        tableRight.row();
+        tableRight.add(lblSrtt);
+        tableRight.row();
+        tableRight.add(lblConnected);
         return this;
     }
 
@@ -102,5 +110,13 @@ class ScreenStat extends ScreenAdapter {
         Label label = lblValues.get(category);
         if (label != null)
             label.setText(String.valueOf(value));
+    }
+
+    void setSrtt(int srtt) {
+        lblSrtt.setText(String.format(Locale.getDefault(), "SRTT = %d", srtt));
+    }
+
+    void setConnected(boolean value) {
+        lblConnected.setText(value ? "Connected" : "Disconnected");
     }
 }
