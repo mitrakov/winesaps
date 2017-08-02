@@ -91,7 +91,7 @@ public class ScreenLogin extends LocalizableScreen {
                 public void changed(ChangeEvent event, Actor actor) {
                     String name = txtLogin.getText();
                     if (name.startsWith("#!")) {
-                        infoDialog.setText(game.getDebugInfo(name)).show(stage);
+                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
                         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
                     } else {
                         connectingDialog.show(stage);
@@ -110,7 +110,10 @@ public class ScreenLogin extends LocalizableScreen {
                         connectingDialog.show(stage);
                         model.signUp(txtLogin.getText(), password, txtEmail.getText(), txtPromocode.getText());
                     }
-                    else infoDialog.setText(i18n.format("dialog.info.incorrect.password")).show(stage);
+                    else {
+                        infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.password"));
+                        infoDialog.show(stage);
+                    }
                 }
             });
         }};
@@ -191,21 +194,23 @@ public class ScreenLogin extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        String error = i18n.format("error");
+
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
             if (ev.authorized)
                 game.setNextScreen();
         }
         if (event instanceof EventBus.IncorrectCredentialsEvent)
-            infoDialog.setText(i18n.format("dialog.info.incorrect.credentials")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.incorrect.credentials")).show(stage);
         if (event instanceof EventBus.IncorrectNameEvent)
-            infoDialog.setText(i18n.format("dialog.info.incorrect.name")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.incorrect.name")).show(stage);
         if (event instanceof EventBus.IncorrectEmailEvent)
-            infoDialog.setText(i18n.format("dialog.info.incorrect.email")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.incorrect.email")).show(stage);
         if (event instanceof EventBus.DuplicateNameEvent)
-            infoDialog.setText(i18n.format("dialog.info.duplicate.name")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.duplicate.name")).show(stage);
         if (event instanceof EventBus.SignUpErrorEvent)
-            infoDialog.setText(i18n.format("dialog.info.incorrect.signup")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.incorrect.signup")).show(stage);
     }
 
     @Override

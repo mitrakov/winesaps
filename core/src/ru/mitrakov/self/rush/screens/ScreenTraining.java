@@ -76,7 +76,7 @@ public class ScreenTraining extends LocalizableScreen {
 
         btnSkip.setText(bundle.format("tutorial.skip"));
         finishedDialog.setText(bundle.format("tutorial.msgX.text"), bundle.format("tutorial.msgX.action"));
-        infoDialog.setText(bundle.format("dialog.info.server.stop"));
+        infoDialog.setText(bundle.format("dialog.warning"), bundle.format("dialog.info.server.stop"));
 
         finishedDialog.onLocaleChanged(bundle);
         infoDialog.onLocaleChanged(bundle);

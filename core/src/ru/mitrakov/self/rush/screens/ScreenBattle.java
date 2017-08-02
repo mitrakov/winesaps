@@ -113,9 +113,7 @@ public class ScreenBattle extends LocalizableScreen {
         finishedDialog.onLocaleChanged(bundle);
         infoDialog.onLocaleChanged(bundle);
 
-        infoDialog.setText(bundle.format("battle.out.of.sync.text"));
-        if (infoDialog.getTitleLabel() != null)
-            infoDialog.getTitleLabel().setText(bundle.format("dialog.warning"));
+        infoDialog.setText(bundle.format("dialog.warning"), bundle.format("battle.out.of.sync.text"));
     }
 
     @Override

@@ -115,9 +115,6 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-
-        if (infoDialog.getTitleLabel() != null)
-            infoDialog.getTitleLabel().setText(bundle.format("error"));
         connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
@@ -126,10 +123,10 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         if (event instanceof EventBus.VersionNotAllowedEvent) {
             EventBus.VersionNotAllowedEvent ev = (EventBus.VersionNotAllowedEvent) event;
             String msg = i18n.format("dialog.info.unsupported.version", Winesaps.VERSION_STR, ev.minVersion);
-            infoDialog.setText(msg).show(stage);
+            infoDialog.setText(i18n.format("error"), msg).show(stage);
         }
         if (event instanceof EventBus.UnsupportedProtocolEvent) {
-            infoDialog.setText(i18n.format("dialog.info.unsupported.protocol")).show(stage);
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.unsupported.protocol")).show(stage);
         }
     }
 

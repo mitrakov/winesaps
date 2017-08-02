@@ -17,7 +17,7 @@ public class DialogInfo extends DialogFeat {
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center);
-        getContentTable().pad(20).add(lblMessage).width(400); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).minWidth(400); // here getContentTable != null
 
         button("OK"); // text will be replaced in onLocaleChanged()
     }
@@ -37,7 +37,9 @@ public class DialogInfo extends DialogFeat {
         }
     }
 
-    public Dialog setText(String text) {
+    public Dialog setText(String header, String text) {
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(header);
         lblMessage.setText(text);
         return this;
     }

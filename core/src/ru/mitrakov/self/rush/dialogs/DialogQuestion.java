@@ -19,7 +19,7 @@ public class DialogQuestion extends DialogFeat {
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center);
-        getContentTable().pad(20).add(lblMessage).width(400); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).minWidth(400); // here getContentTable != null
 
         button("Yes", true); // text will be replaced in onLocaleChanged()
         button("No");        // text will be replaced in onLocaleChanged()
@@ -51,7 +51,9 @@ public class DialogQuestion extends DialogFeat {
         }
     }
 
-    public DialogQuestion setText(String text) {
+    public DialogQuestion setText(String header, String text) {
+        if (getTitleLabel() != null)
+            getTitleLabel().setText(header);
         lblMessage.setText(text);
         return this;
     }

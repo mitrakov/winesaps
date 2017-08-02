@@ -187,7 +187,7 @@ public class ScreenMain extends LocalizableScreen {
                 public void changed(ChangeEvent event, Actor actor) {
                     String name = txtEnemyName.getText();
                     if (name.startsWith("#!")) {
-                        infoDialog.setText(game.getDebugInfo(name)).show(stage);
+                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
                         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
                     } else if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
                         inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
@@ -374,11 +374,6 @@ public class ScreenMain extends LocalizableScreen {
         questionDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
 
-        if (infoDialog.getTitleLabel() != null)
-            infoDialog.getTitleLabel().setText(bundle.format("dialog.info"));
-        if (questionDialog.getTitleLabel() != null)
-            questionDialog.getTitleLabel().setText(bundle.format("dialog.question"));
-
         btnTraining.setText(bundle.format("opponent.none"));
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnQuickBattle.setText(bundle.format("opponent.quick"));
@@ -406,6 +401,9 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        String error = i18n.format("error");
+        String info = i18n.format("dialog.info");
+
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
             if (!ev.authorized)
@@ -421,37 +419,39 @@ public class ScreenMain extends LocalizableScreen {
             incomingDialog.setArguments(ev.enemy, ev.enemySid).show(stage);
         }
         if (event instanceof EventBus.AddFriendErrorEvent)
-            infoDialog.setText(i18n.format("dialog.info.add.friend.error")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.add.friend.error")).show(stage);
         if (event instanceof EventBus.NoCrystalsEvent)
-            infoDialog.setText(i18n.format("dialog.info.no.crystals")).show(stage);
+            infoDialog.setText(info, i18n.format("dialog.info.no.crystals")).show(stage);
         if (event instanceof EventBus.AggressorBusyEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.aggressor.busy")).show(stage);
+            infoDialog.setText(info, i18n.format("dialog.info.aggressor.busy")).show(stage);
         }
         if (event instanceof EventBus.DefenderBusyEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.busy")).show(stage);
+            infoDialog.setText(info, i18n.format("dialog.info.busy")).show(stage);
         }
         if (event instanceof EventBus.EnemyNotFoundEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.no.enemy")).show(stage);
+            infoDialog.setText(info, i18n.format("dialog.info.no.enemy")).show(stage);
         }
         if (event instanceof EventBus.WaitingForEnemyEvent) {
             lockDialog.setText(i18n.format("dialog.waiting")).show(stage);
         }
         if (event instanceof EventBus.AttackedYourselfEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.yourself")).show(stage);
+            infoDialog.setText(error, i18n.format("dialog.info.yourself")).show(stage);
         }
         if (event instanceof EventBus.ServerGonnaStopEvent) {
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("dialog.info.server.stop")).show(stage);
+            infoDialog.setText(i18n.format("dialog.warning"), i18n.format("dialog.info.server.stop")).show(stage);
         }
     }
 
     @Override
     public void handleEventBackground(EventBus.Event event) {
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        String info = i18n.format("dialog.info");
+
         if (event instanceof EventBus.NameChangedEvent) {
             EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
             String txt = ev.name.length() <= 18 ? ev.name : String.format("%s...", ev.name.substring(0, 15));
@@ -492,17 +492,17 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.StopCallRejectedEvent) {
             EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
+            infoDialog.setText(info, i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
         }
         if (event instanceof EventBus.StopCallMissedEvent) {
             EventBus.StopCallMissedEvent ev = (EventBus.StopCallMissedEvent) event;
             incomingDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
+            infoDialog.setText(info, i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
         }
         if (event instanceof EventBus.StopCallExpiredEvent) {
             EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(i18n.format("stopcall.expired", ev.defenderName)).show(stage);
+            infoDialog.setText(info, i18n.format("stopcall.expired", ev.defenderName)).show(stage);
         }
         if (event instanceof EventBus.SkuGemsUpdatedEvent) {
             IBillingProvider provider = psObject.getBillingProvider();
@@ -518,9 +518,8 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.PaymentDoneEvent) {
             EventBus.PaymentDoneEvent ev = (EventBus.PaymentDoneEvent) event;
             DialogFeat.hideAll(stage);
-            if (infoDialog.getTitleLabel() != null)
-                infoDialog.getTitleLabel().setText(i18n.format("dialog.promocode.done.header"));
-            infoDialog.setText(i18n.format("dialog.crystals.done", ev.gems)).show(stage);
+            String header = i18n.format("dialog.promocode.done.header");
+            infoDialog.setText(header, i18n.format("dialog.crystals.done", ev.gems)).show(stage);
             log("Coupon = ", ev.coupon);
         }
         if (event instanceof EventBus.NewVersionAvailableEvent) {
@@ -841,7 +840,6 @@ public class ScreenMain extends LocalizableScreen {
 
     private void adjustFriendsTable() {
         final Skin skin = assetManager.get("skin/uiskin.json");
-        final I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
 
         int curFriendsCount = tableRightContentFriends.getRows();
         int modelFriendsCount = model.friends.size();
@@ -865,9 +863,10 @@ public class ScreenMain extends LocalizableScreen {
                 addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
                         final String name = label.getText().toString();
                         String txt = i18n.format("dialog.friends.remove.text", name);
-                        questionDialog.setText(txt).setRunnable(new Runnable() {
+                        questionDialog.setText(i18n.format("dialog.warning"), txt).setRunnable(new Runnable() {
                             @Override
                             public void run() {
                                 model.removeFriend(name);
