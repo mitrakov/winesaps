@@ -10,7 +10,7 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 		file: small_rus.fnt
 	}
 	font-title: {
-		file: big_rus.fnt
+		file: big.fnt
 	}
 	font-score: {
 		file: score.fnt
