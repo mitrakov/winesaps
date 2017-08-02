@@ -99,13 +99,20 @@ public class Winesaps extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        screenLogin.dispose();
-        screenCharacter.dispose();
-        screenTutorial.dispose();
-        screenMain.dispose();
-        screenBattle.dispose();
-        assetManager.dispose();
-        stage.dispose();
+        if (screenLogin != null)
+            screenLogin.dispose();
+        if (screenCharacter != null)
+            screenCharacter.dispose();
+        if (screenTutorial != null)
+            screenTutorial.dispose();
+        if (screenMain != null)
+            screenMain.dispose();
+        if (screenBattle != null)
+            screenBattle.dispose();
+        if (assetManager != null)
+            assetManager.dispose();
+        if (stage != null)
+            stage.dispose();
     }
 
     public void mute(boolean value) {
@@ -154,7 +161,7 @@ public class Winesaps extends Game {
         if (key.equals("#!settings")) return model.fileReader.read(Model.SETTINGS_FILE).replaceAll(" ", "\n");
         if (key.equals("#!products")) {
             if (psObject.getBillingProvider() != null)
-                return psObject.getBillingProvider().getProducts().toString().replaceAll(",",",\n");
+                return psObject.getBillingProvider().getProducts().toString().replaceAll(",", ",\n");
         }
         return "";
     }
