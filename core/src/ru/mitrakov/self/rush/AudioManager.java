@@ -31,7 +31,7 @@ public class AudioManager {
             curMusic = assetManager.get(String.format("music/%s.mp3", name));
             if (curMusic != null) {
                 curMusicName = name;
-                curMusic.setVolume(.3f);
+                curMusic.setVolume(.4f);
                 curMusic.setLooping(loop);
                 if (!musicMuted)
                     curMusic.play();
