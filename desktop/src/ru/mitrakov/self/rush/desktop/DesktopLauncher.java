@@ -40,7 +40,9 @@ public class DesktopLauncher extends JFrame {
         URL url = getClass().getResource("/icon.png"); // to get resource inside a FAT jar
         ImageIcon icon = url != null ? new ImageIcon(url) : new ImageIcon("icon.png");
         final PsObject obj = new DesktopPsObject(null, this, icon);
+
         final Winesaps game = new Winesaps(obj);
+        // for Stat application: uncomment line below and (optionally) remove call to registerInstance() above
         // final Stat game = new Stat(obj);
 
         // set up JFrame
