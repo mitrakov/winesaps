@@ -1,11 +1,13 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.ui.DialogFeat;
+import ru.mitrakov.self.rush.ui.LinkedLabel;
 
 /**
  * Created by mitrakov on 05.03.2017
@@ -19,7 +21,9 @@ public class DialogAbout extends DialogFeat {
     private final Label lblSupport;
     private final Label lblSupportTxt;
     private final Label lblWebSite;
-    private final Label lblWebSiteTxt;
+    private final LinkedLabel lblWebSiteTxt;
+    private final Label lblPlatforms;
+    private final Label lblPlatformsTxt;
 
     public DialogAbout(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
@@ -42,7 +46,15 @@ public class DialogAbout extends DialogFeat {
         table.add(lblSupportTxt = new Label("", skin, "default")).left().spaceLeft(20);
         table.row();
         table.add(lblWebSite = new Label("", skin, "default")).left();
-        table.add(lblWebSiteTxt = new Label("", skin, "default")).left().spaceLeft(20);
+        table.add(lblWebSiteTxt = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
+            @Override
+            public void run() {
+                Gdx.net.openURI(Winesaps.URL);
+            }
+        })).left().spaceLeft(20);
+        table.row();
+        table.add(lblPlatforms = new Label("", skin, "default")).left();
+        table.add(lblPlatformsTxt = new Label("", skin, "default")).left().spaceLeft(20);
 
         button("Close"); // text will be replaced in onLocaleChanged()
     }
@@ -58,7 +70,9 @@ public class DialogAbout extends DialogFeat {
         lblSupport.setText(bundle.format("dialog.about.support"));
         lblSupportTxt.setText(bundle.format("dialog.about.support.txt"));
         lblWebSite.setText(bundle.format("dialog.about.web"));
-        lblWebSiteTxt.setText(bundle.format("dialog.about.web.txt"));
+        lblWebSiteTxt.setText("", bundle.format("dialog.about.web.txt"), "");
+        lblPlatforms.setText(bundle.format("dialog.about.platforms"));
+        lblPlatformsTxt.setText(bundle.format("dialog.about.platforms.txt"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.about.header"));
