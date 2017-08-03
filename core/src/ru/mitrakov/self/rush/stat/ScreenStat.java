@@ -17,6 +17,7 @@ import ru.mitrakov.self.rush.PsObject;
 class ScreenStat extends ScreenAdapter {
     private static final String[] categories = new String[]{
             "Time elapsed:      ",
+            "RPS:               ",
             "Current used SIDs: ",
             "Current battles:   ",
             "Current users:     ",
