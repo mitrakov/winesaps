@@ -24,7 +24,7 @@ public class Winesaps extends Game {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
     public static final int VERSION = 1 << 16; // 1.0.0
-    public static final String VERSION_STR = "1.0.0 beta";
+    public static final String VERSION_STR = "1.0.0";
     public static final String URL = "http://winesaps.com";
 
     private static final String HOST = "winesaps.ru";
