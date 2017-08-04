@@ -24,6 +24,7 @@ class Parser implements IHandler {
     private static final int ERR_NO_CRYSTALS = 215;
     private static final int ERR_ADD_FRIEND = 223;
     private static final int ERR_NOT_HANDLED = 240;
+    private static final int ERR_NOT_ENOUGH_ARGS = 242;
     private static final int ERR_USER_NOT_FOUND = 245;
     private static final int ERR_INCORRECT_TOKEN = 246;
     private static final int ERR_ENEMY_NOT_FOUND = 247;
@@ -526,6 +527,7 @@ class Parser implements IHandler {
             case ERR_WAIT_FOR_ENEMY:
                 model.setWaitingForEnemy();
                 break;
+            case ERR_NOT_ENOUGH_ARGS: // it may happen when non-Latin characters are used as a username
             case ERR_INCORRECT_NAME:
                 model.setIncorrectName();
                 break;
