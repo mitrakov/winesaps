@@ -27,93 +27,94 @@ public class EventBus {
     public static final class BattleNotFoundEvent extends Event {}
     public static final class UnsupportedProtocolEvent extends Event {}
     public static final class VersionNotAllowedEvent extends Event {
-        public final String minVersion;
+        public String minVersion;
         VersionNotAllowedEvent(String minVersion) {
             this.minVersion = minVersion;
         }
     }
     public static final class NewVersionAvailableEvent extends Event {
-        public final String newVersion;
+        public String newVersion;
         NewVersionAvailableEvent(String newVersion) {
             this.newVersion = newVersion;
         }
     }
     public static final class NameChangedEvent extends Event {
-        public final String name;
+        public String name;
         NameChangedEvent(String name) {
             this.name = name;
         }
     }
     public static final class CrystalChangedEvent extends Event {
-        public final int crystals;
+        public int crystals;
         CrystalChangedEvent(int crystals) {
             this.crystals = crystals;
         }
     }
     public static final class AbilitiesExpireUpdatedEvent extends Event {
-        public final Iterable<Model.Ability> items;
+        public Iterable<Model.Ability> items;
         AbilitiesExpireUpdatedEvent(Iterable<Model.Ability> items) {
             this.items = items;
         }
     }
     public static final class FriendListUpdatedEvent extends Event {
-        public final Collection<FriendItem> items;
+        public Collection<FriendItem> items;
         FriendListUpdatedEvent(Collection<FriendItem> items) {
             this.items = items;
         }
     }
     public static final class FriendAddedEvent extends Event {
-        public final FriendItem name;
+        public FriendItem name;
         FriendAddedEvent(FriendItem name) {
             this.name = name;
         }
     }
     public static final class FriendRemovedEvent extends Event {
-        public final String name;
+        public String name;
         FriendRemovedEvent(String name) {
             this.name = name;
         }
     }
     public static final class InviteEvent extends Event {
-        public final String enemy;
-        public final int enemySid;
+        public String enemy;
+        public int enemySid;
         InviteEvent(String enemy, int enemySid) {
             this.enemy = enemy;
             this.enemySid = enemySid;
         }
     }
     public static final class StopCallRejectedEvent extends Event {
-        public final String cowardName;
+        public String cowardName;
         StopCallRejectedEvent(String cowardName) {
             this.cowardName = cowardName;
         }
     }
     public static final class StopCallMissedEvent extends Event {
-        public final String aggressorName;
+        public String aggressorName;
         StopCallMissedEvent(String aggressorName) {
             this.aggressorName = aggressorName;
         }
     }
     public static final class StopCallExpiredEvent extends Event {
-        public final String defenderName;
+        public String defenderName;
         StopCallExpiredEvent(String defenderName) {
             this.defenderName = defenderName;
         }
     }
+    @SuppressWarnings("WeakerAccess")
     public static final class RatingUpdatedEvent extends Event {
-        final Model.RatingType type;
-        public final Iterable<RatingItem> items;
+        public Model.RatingType type;
+        public Iterable<RatingItem> items;
         RatingUpdatedEvent(Model.RatingType type, Iterable<RatingItem> items) {
             this.type = type;
             this.items = items;
         }
     }
     public static final class RoundFinishedEvent extends Event {
-        public final boolean winner;
-        public final String detractor1;
-        public final String detractor2;
-        public final int totalScore1;
-        public final int totalScore2;
+        public boolean winner;
+        public String detractor1;
+        public String detractor2;
+        public int totalScore1;
+        public int totalScore2;
         RoundFinishedEvent(boolean winner, String detractor1, String detractor2, int totalScore1, int totalScore2) {
             this.winner = winner;
             this.detractor1 = detractor1;
@@ -123,12 +124,12 @@ public class EventBus {
         }
     }
     public static final class GameFinishedEvent extends Event {
-        public final boolean winner;
-        public final String detractor1;
-        public final String detractor2;
-        public final int totalScore1;
-        public final int totalScore2;
-        public final int reward;
+        public boolean winner;
+        public String detractor1;
+        public String detractor2;
+        public int totalScore1;
+        public int totalScore2;
+        public int reward;
         GameFinishedEvent(boolean winner, String d1, String d2, int totalScore1, int totalScore2, int reward) {
             this.winner = winner;
             this.detractor1 = d1;
@@ -139,9 +140,9 @@ public class EventBus {
         }
     }
     public static final class PromocodeDoneEvent extends Event {
-        public final String name;
-        public final boolean inviter;
-        public final int crystals;
+        public String name;
+        public boolean inviter;
+        public int crystals;
         PromocodeDoneEvent(String name, boolean inviter, int crystals) {
             this.name = name;
             this.inviter = inviter;
@@ -149,40 +150,40 @@ public class EventBus {
         }
     }
     public static final class StyleChangedEvent extends Event {
-        public final int stylePack;
+        public int stylePack;
         StyleChangedEvent(int stylePack) {
             this.stylePack = stylePack;
         }
     }
     public static final class CharacterChangedEvent extends Event {
-        public final Model.Character character;
+        public Model.Character character;
         CharacterChangedEvent(Model.Character character) {
             this.character = character;
         }
     }
     public static final class AbilitiesChangedEvent extends Event {
-        public final Iterable<Model.Ability> items;
+        public Iterable<Model.Ability> items;
         AbilitiesChangedEvent(Iterable<Model.Ability> items) {
             this.items = items;
         }
     }
     public static final class RoundStartedEvent extends Event {
-        public final int number;
+        public int number;
         RoundStartedEvent(int number) {
             this.number = number;
         }
     }
     public static final class NewFieldEvent extends Event {
-        public final CellObject actor;
-        public final Field field;
+        public CellObject actor;
+        public Field field;
         NewFieldEvent(CellObject actor, Field field) {
             this.actor = actor;
             this.field = field;
         }
     }
     public static final class ScoreChangedEvent extends Event {
-        public final int score1;
-        public final int score2;
+        public int score1;
+        public int score2;
         ScoreChangedEvent(int score1, int score2) {
             this.score1 = score1;
             this.score2 = score2;
@@ -190,8 +191,8 @@ public class EventBus {
     }
     @SuppressWarnings("WeakerAccess")
     public static final class LivesChangedEvent extends Event {
-        public final int myLives;
-        public final int enemyLives;
+        public int myLives;
+        public int enemyLives;
         LivesChangedEvent(int myLives, int enemyLives) {
             this.myLives = myLives;
             this.enemyLives = enemyLives;
@@ -199,10 +200,10 @@ public class EventBus {
     }
     @SuppressWarnings("WeakerAccess")
     public static final class PlayerWoundedEvent extends Event {
-        public final int xy;
-        public final Model.HurtCause cause;
-        public final int myLives;
-        public final int enemyLives;
+        public int xy;
+        public Model.HurtCause cause;
+        public int myLives;
+        public int enemyLives;
         PlayerWoundedEvent(int xy, Model.HurtCause cause, int myLives, int enemyLives) {
             this.xy = xy;
             this.cause = cause;
@@ -211,29 +212,29 @@ public class EventBus {
         }
     }
     public static final class EffectAddedEvent extends Event {
-        public final Model.Effect effect;
+        public Model.Effect effect;
         EffectAddedEvent(Model.Effect effect) {
             this.effect = effect;
         }
     }
     public static final class ObjectRemovedEvent extends Event {
-        public final int oldXy;
-        public final CellObject obj;
+        public int oldXy;
+        public CellObject obj;
         ObjectRemovedEvent(int oldXy, CellObject obj) {
             this.oldXy = oldXy;
             this.obj = obj;
         }
     }
     public static final class ActorResetEvent extends Event {
-        public final CellObject obj;
+        public CellObject obj;
         ActorResetEvent(CellObject obj) {
             this.obj = obj;
         }
     }
     public static final class ThingChangedEvent extends Event {
-        public final CellObject oldThing;
-        public final CellObject newThing;
-        public final boolean mine;
+        public CellObject oldThing;
+        public CellObject newThing;
+        public boolean mine;
         ThingChangedEvent(CellObject oldThing, CellObject newThing, boolean mine) {
             this.oldThing = oldThing;
             this.newThing = newThing;
@@ -241,32 +242,32 @@ public class EventBus {
         }
     }
     public static final class AuthorizedChangedEvent extends Event {
-        public final boolean authorized;
+        public boolean authorized;
         AuthorizedChangedEvent(boolean authorized) {
             this.authorized = authorized;
         }
     }
     public static final class ConnectedChangeEvent extends Event {
-        public final boolean connected;
+        public boolean connected;
         ConnectedChangeEvent(boolean connected) {
             this.connected = connected;
         }
     }
     public static final class PromocodeValidChangedEvent extends Event {
-        public final boolean valid;
+        public boolean valid;
         PromocodeValidChangedEvent(boolean valid) {
             this.valid = valid;
         }
     }
     public static final class SkuGemsUpdatedEvent extends Event {
-        public final Map<String, Integer> skuGems;
+        public Map<String, Integer> skuGems;
         SkuGemsUpdatedEvent(Map<String, Integer> skuGems) {
             this.skuGems = skuGems;
         }
     }
     public static final class PaymentDoneEvent extends Event {
-        public final int gems;
-        public final String coupon;
+        public int gems;
+        public String coupon;
         PaymentDoneEvent(int gems, String coupon) {
             this.gems = gems;
             this.coupon = coupon;

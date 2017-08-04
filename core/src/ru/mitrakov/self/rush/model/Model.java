@@ -118,7 +118,7 @@ public class Model {
         Poisoned, Sunk, Soaked, Devoured, Exploded
     }
 
-    public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused") Attention}
+    public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused")Attention}
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
@@ -215,6 +215,26 @@ public class Model {
     private static final int PROMOCODE_LEN = 5;
     private static final String HISTORY_PREFIX = "history/";
     public /*private*/ static final String SETTINGS_FILE = "settings"; // public for debug purposes only!
+
+    // ======================
+    // === PRIVATE EVENTS ===
+    // ======================
+    // these events are extracted to fields ONLY FOR DECREASING GC PRESSURE during a battle!
+    // the other events can be emitted over usual "new EventBus.XxxEvent(...)" notation
+    // ==================================================
+
+    private final EventBus.NewFieldEvent newFieldEvent = new EventBus.NewFieldEvent(null, null);
+    private final EventBus.ActorResetEvent actorResetEvent = new EventBus.ActorResetEvent(null);
+    private final EventBus.EffectAddedEvent effectAddedEvent = new EventBus.EffectAddedEvent(Effect.None);
+    private final EventBus.RoundStartedEvent roundStartedEvent = new EventBus.RoundStartedEvent(0);
+    private final EventBus.ScoreChangedEvent scoreChangedEvent = new EventBus.ScoreChangedEvent(0, 0);
+    private final EventBus.LivesChangedEvent livesChangedEvent = new EventBus.LivesChangedEvent(0, 0);
+    private final EventBus.ThingChangedEvent thingChangedEvent = new EventBus.ThingChangedEvent(null, null, false);
+    private final EventBus.StyleChangedEvent styleChangedEvent = new EventBus.StyleChangedEvent(0);
+    private final EventBus.ObjectRemovedEvent objectRemovedEvent = new EventBus.ObjectRemovedEvent(0, null);
+    private final EventBus.RoundFinishedEvent roundFinishedEvent = new EventBus.RoundFinishedEvent(false, "", "", 0, 0);
+    private final EventBus.PlayerWoundedEvent playerWoundedEvent = new EventBus.PlayerWoundedEvent(0, null, 0, 0);
+
 
     // ============================
     // === USUAL PRIVATE FIELDS ===
@@ -853,11 +873,17 @@ public class Model {
         this.aggressor = aggressor;
         roundStartTime = System.currentTimeMillis();
 
-        bus.raise(new EventBus.RoundStartedEvent(number));
-        bus.raise(new EventBus.ScoreChangedEvent(0, 0));
-        bus.raise(new EventBus.LivesChangedEvent(myLives, enemyLives));
-        bus.raise(new EventBus.ThingChangedEvent(null, null, true));
-        bus.raise(new EventBus.ThingChangedEvent(null, null, false));
+        // generate initial events
+        roundStartedEvent.number = number;
+        scoreChangedEvent.score1 = scoreChangedEvent.score2 = 0;
+        livesChangedEvent.myLives = myLives;
+        livesChangedEvent.enemyLives = enemyLives;
+        thingChangedEvent.oldThing = thingChangedEvent.newThing = null;
+        thingChangedEvent.mine = true;
+        bus.raise(roundStartedEvent);
+        bus.raise(scoreChangedEvent);
+        bus.raise(livesChangedEvent);
+        bus.raise(thingChangedEvent);
     }
 
     public void setNewField(IIntArray fieldData) {
@@ -867,7 +893,9 @@ public class Model {
         // assigned later in appendObject() method)
         curActor = field.getObjectById(aggressor ? AGGRESSOR_ID : DEFENDER_ID);
         enemyActor = field.getObjectById(aggressor ? DEFENDER_ID : AGGRESSOR_ID);
-        bus.raise(new EventBus.NewFieldEvent(curActor, field));
+        newFieldEvent.actor = curActor;
+        newFieldEvent.field = field;
+        bus.raise(newFieldEvent);
     }
 
     public void appendObject(int number, int id, int xy) {
@@ -886,7 +914,8 @@ public class Model {
 
     public void setStylePack(int pack) {
         stylePack = pack;
-        bus.raise(new EventBus.StyleChangedEvent(pack));
+        styleChangedEvent.stylePack = pack;
+        bus.raise(styleChangedEvent);
     }
 
     public void setXy(int number, int id, int xy, boolean reset) {
@@ -897,33 +926,47 @@ public class Model {
         if (field != null) {
             if (xy == Field.TRASH_CELL) {
                 CellObject obj = field.getObjectByNumber(number);
-                if (obj != null)
-                    bus.raise(new EventBus.ObjectRemovedEvent(obj.xy, obj));
+                if (obj != null) {
+                    objectRemovedEvent.oldXy = obj.xy;
+                    objectRemovedEvent.obj = obj;
+                    bus.raise(objectRemovedEvent);
+                }
             }
             if (reset) {
-                if (curActor.getNumber() == number)
-                    bus.raise(new EventBus.ActorResetEvent(curActor));
-                else if (enemyActor.getNumber() == number)
-                    bus.raise(new EventBus.ActorResetEvent(enemyActor));
+                if (curActor.getNumber() == number) {
+                    actorResetEvent.obj = curActor;
+                    bus.raise(actorResetEvent);
+                } else if (enemyActor.getNumber() == number) {
+                    actorResetEvent.obj = enemyActor;
+                    bus.raise(actorResetEvent);
+                }
             }
             field.setXy(number, id, xy);
         }
     }
 
     public void setScore(int score1, int score2) {
-        bus.raise(new EventBus.ScoreChangedEvent(score1, score2));
+        scoreChangedEvent.score1 = score1;
+        scoreChangedEvent.score2 = score2;
+        bus.raise(scoreChangedEvent);
     }
 
     public void setThing(int thingId) {
         CellObject oldThing = curThing;
         curThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
-        bus.raise(new EventBus.ThingChangedEvent(oldThing, curThing, true));
+        thingChangedEvent.oldThing = oldThing;
+        thingChangedEvent.newThing = curThing;
+        thingChangedEvent.mine = true;
+        bus.raise(thingChangedEvent);
     }
 
     public void setEnemyThing(int thingId) {
         CellObject oldThing = enemyThing;
         enemyThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
-        bus.raise(new EventBus.ThingChangedEvent(oldThing, enemyThing, false));
+        thingChangedEvent.oldThing = oldThing;
+        thingChangedEvent.newThing = enemyThing;
+        thingChangedEvent.mine = false;
+        bus.raise(thingChangedEvent);
     }
 
     public void setPlayerWounded(boolean me, int cause, int myLives, int enemyLives) {
@@ -935,8 +978,13 @@ public class Model {
             CellObject actor = field.getObjectById(me == aggressor ? AGGRESSOR_ID : DEFENDER_ID);
             assert actor != null;
             HurtCause[] causes = HurtCause.values();
-            if (0 <= cause && cause < causes.length)
-                bus.raise(new EventBus.PlayerWoundedEvent(actor.xy, causes[cause], myLives, enemyLives));
+            if (0 <= cause && cause < causes.length) {
+                playerWoundedEvent.xy = actor.xy;
+                playerWoundedEvent.cause = causes[cause];
+                playerWoundedEvent.myLives = myLives;
+                playerWoundedEvent.enemyLives = enemyLives;
+                bus.raise(playerWoundedEvent);
+            }
         }
     }
 
@@ -949,7 +997,8 @@ public class Model {
             Effect[] effects = Effect.values();
             if (0 <= effectId && effectId < effects.length) {
                 field.setEffect(objNumber, effects[effectId]);
-                bus.raise(new EventBus.EffectAddedEvent(effects[effectId]));
+                effectAddedEvent.effect = effects[effectId];
+                bus.raise(effectAddedEvent);
             }
         }
     }
@@ -959,8 +1008,12 @@ public class Model {
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
-        bus.raise(new EventBus.RoundFinishedEvent(winner, aggressor ? name : enemy, aggressor ? enemy : name,
-                totalScore1, totalScore2));
+        roundFinishedEvent.winner = winner;
+        roundFinishedEvent.detractor1 = aggressor ? name : enemy;
+        roundFinishedEvent.detractor2 = aggressor ? enemy : name;
+        roundFinishedEvent.totalScore1 = totalScore1;
+        roundFinishedEvent.totalScore2 = totalScore2;
+        bus.raise(roundFinishedEvent);
     }
 
     public void gameFinished(boolean winner, int totalScore1, int totalScore2, int reward) {
