@@ -279,7 +279,9 @@ public class ScreenBattle extends LocalizableScreen {
         lblCountdown.setVisible(pause);
         gui.setMovesAllowed(!pause);
         if (pause) {
-            lblVersus.setText(String.format("%s vs %s", model.name, model.enemy));
+            String s1 = model.name.length() <= 10 ? model.name : model.name.substring(0, 10);
+            String s2 = model.enemy.length() <= 10 ? model.enemy : model.enemy.substring(0, 10);
+            lblVersus.setText(model.enemy.length() > 0 ? String.format("%s vs %s", s1, s2) : "");
             lblVersus.pack();
             lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
             lblCountdown.setText(String.valueOf(Math.max(3 - sec, 0)));

@@ -754,8 +754,9 @@ public class ScreenMain extends LocalizableScreen {
         int i = 0;
         for (RatingItem item : items) {
             if (i + 4 < ratingLabels.size) {
+                String txt = item.name.length() <= 18 ? item.name : String.format("%s...", item.name.substring(0, 15));
                 ratingLabels.get(i++).setText(model.name.equals(item.name) ? "•" : "");
-                ratingLabels.get(i++).setText(item.name);
+                ratingLabels.get(i++).setText(txt);
                 ratingLabels.get(i++).setText(String.valueOf(item.victories));
                 ratingLabels.get(i++).setText(String.valueOf(item.defeats));
                 ratingLabels.get(i++).setText(String.valueOf(item.score_diff));

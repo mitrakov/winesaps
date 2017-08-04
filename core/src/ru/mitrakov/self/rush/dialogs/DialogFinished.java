@@ -82,7 +82,9 @@ public class DialogFinished extends DialogFeat {
 
     public DialogFinished setScore(String detractor1, String detractor2, int score1, int score2) {
         boolean empty = detractor1.length() == 0 || detractor2.length() == 0;
-        lblDetractors.setText(empty ? "" : String.format("%s-%s", detractor1, detractor2));
+        String txt1 = detractor1.length() <= 10 ? detractor1 : detractor1.substring(0, 10);
+        String txt2 = detractor2.length() <= 10 ? detractor2 : detractor2.substring(0, 10);
+        lblDetractors.setText(empty ? "" : String.format("%s-%s", txt1, txt2));
         lblScore.setText(String.format(Locale.getDefault(), "%d-%d", score1, score2));
         return this;
     }
