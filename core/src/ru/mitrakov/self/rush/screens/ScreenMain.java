@@ -599,13 +599,14 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRatingBtns.add(btnWeeklyRating);
 
         tableRightContentRating.row().spaceLeft(20);
+        tableRightContentRating.add();
         tableRightContentRating.add(lblRatingName);
         tableRightContentRating.add(lblRatingWins);
         tableRightContentRating.add(lblRatingLosses);
         tableRightContentRating.add(lblRatingScoreDiff);
 
         // === Ratings ===
-        final int RATING_COLUMNS = 4;
+        final int RATING_COLUMNS = 5;
         tableRightContentRating.row();
         tableRightContentRating.add(new Image(skin, "splitpane")).colspan(RATING_COLUMNS).width(351).height(2);
 
@@ -618,7 +619,7 @@ public class ScreenMain extends LocalizableScreen {
             }
         }
         tableRightContentRating.row().spaceLeft(20);
-        tableRightContentRating.add(lblRatingDots).colspan(4);
+        tableRightContentRating.add(lblRatingDots).colspan(RATING_COLUMNS);
         tableRightContentRating.row().spaceLeft(20);
         for (int j = 0; j < RATING_COLUMNS; j++) {
             Label label = new Label("", skin, "small");
@@ -752,8 +753,8 @@ public class ScreenMain extends LocalizableScreen {
 
         int i = 0;
         for (RatingItem item : items) {
-            if (i + 3 < ratingLabels.size) {
-                ratingLabels.get(i).setColor(model.name.equals(item.name) ? Color.GREEN : Color.BLACK);
+            if (i + 4 < ratingLabels.size) {
+                ratingLabels.get(i++).setText(model.name.equals(item.name) ? "•" : "");
                 ratingLabels.get(i++).setText(item.name);
                 ratingLabels.get(i++).setText(String.valueOf(item.victories));
                 ratingLabels.get(i++).setText(String.valueOf(item.defeats));

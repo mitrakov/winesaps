@@ -18,7 +18,6 @@ public class DialogFinished extends DialogFeat {
     private final Table rewardTable = new Table();
     private final Image imgHeader;
     private final Label lblMessage;
-    private final Label lblTotalScore;
     private final Label lblDetractors;
     private final Label lblScore;
     private final Label lblRewardIs;
@@ -35,8 +34,7 @@ public class DialogFinished extends DialogFeat {
 
         imgHeader = new Image();
         lblMessage = new Label("", skin, "default");
-        lblTotalScore = new Label("", skin, "default");
-        lblDetractors = new Label("", skin, "default");
+        lblDetractors = new Label("", skin, "score");
         lblScore = new Label("", skin, "score");
         lblRewardIs = new Label("", skin, "default");
         lblReward = new Label("", skin, "default");
@@ -58,7 +56,6 @@ public class DialogFinished extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        lblTotalScore.setText(bundle.format("dialog.finished.total.score"));
         lblRewardIs.setText(bundle.format("dialog.finished.reward"));
         if (getButtonTable() != null) {
             Array<Actor> buttons = getButtonTable().getChildren();
@@ -85,7 +82,7 @@ public class DialogFinished extends DialogFeat {
 
     public DialogFinished setScore(String detractor1, String detractor2, int score1, int score2) {
         boolean empty = detractor1.length() == 0 || detractor2.length() == 0;
-        lblDetractors.setText(empty ? "" : String.format("%s - %s", detractor1, detractor2));
+        lblDetractors.setText(empty ? "" : String.format("%s-%s", detractor1, detractor2));
         lblScore.setText(String.format(Locale.getDefault(), "%d-%d", score1, score2));
         return this;
     }
@@ -99,15 +96,13 @@ public class DialogFinished extends DialogFeat {
     private void rebuildTable(Table table, boolean showReward) {
         assert table != null;
 
-        table.pad(16).clear();
+        table.pad(10).clear();
         table.row();
-        table.add(imgHeader).spaceTop(8);
+        table.add(imgHeader);
         table.row();
-        table.add(lblMessage).spaceTop(8);
+        table.add(lblMessage);
         table.row();
-        table.add(lblTotalScore).spaceTop(8);
-        table.row();
-        table.add(lblDetractors).spaceTop(8);
+        table.add(lblDetractors);
         table.row();
         table.add(lblScore);
         if (showReward) {
