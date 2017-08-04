@@ -5,8 +5,8 @@ import java.util.*;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.assets.AssetManager;
@@ -753,6 +753,7 @@ public class ScreenMain extends LocalizableScreen {
         int i = 0;
         for (RatingItem item : items) {
             if (i + 3 < ratingLabels.size) {
+                ratingLabels.get(i).setColor(model.name.equals(item.name) ? Color.GREEN : Color.BLACK);
                 ratingLabels.get(i++).setText(item.name);
                 ratingLabels.get(i++).setText(String.valueOf(item.victories));
                 ratingLabels.get(i++).setText(String.valueOf(item.defeats));

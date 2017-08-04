@@ -118,7 +118,7 @@ public class Model {
         Poisoned, Sunk, Soaked, Devoured, Exploded
     }
 
-    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
+    public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused") Attention}
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
@@ -959,7 +959,8 @@ public class Model {
     }
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
-        bus.raise(new EventBus.RoundFinishedEvent(winner, totalScore1, totalScore2));
+        bus.raise(new EventBus.RoundFinishedEvent(winner, aggressor ? name : enemy, aggressor ? enemy : name,
+                totalScore1, totalScore2));
     }
 
     public void gameFinished(boolean winner, int totalScore1, int totalScore2, int reward) {
@@ -984,7 +985,8 @@ public class Model {
 
         // reset reference to a field
         field = null;
-        bus.raise(new EventBus.GameFinishedEvent(winner, totalScore1, totalScore2, reward));
+        bus.raise(new EventBus.GameFinishedEvent(winner, aggressor ? name : enemy, aggressor ? enemy : name,
+                totalScore1, totalScore2, reward));
     }
 
     public void setAbilities(IIntArray ids) {

@@ -94,7 +94,7 @@ public class ScreenTraining extends LocalizableScreen {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
                 model.newbie = false;
                 trainingDialog.remove();
-                finishedDialog.setScore(1, 0).setOnResultAction(new Runnable() {
+                finishedDialog.setScore("", "", 1, 0).setOnResultAction(new Runnable() {
                     @Override
                     public void run() {
                         game.setNextScreen();

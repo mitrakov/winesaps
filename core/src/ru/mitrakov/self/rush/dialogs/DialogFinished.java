@@ -19,6 +19,7 @@ public class DialogFinished extends DialogFeat {
     private final Image imgHeader;
     private final Label lblMessage;
     private final Label lblTotalScore;
+    private final Label lblDetractors;
     private final Label lblScore;
     private final Label lblRewardIs;
     private final Label lblReward;
@@ -35,6 +36,7 @@ public class DialogFinished extends DialogFeat {
         imgHeader = new Image();
         lblMessage = new Label("", skin, "default");
         lblTotalScore = new Label("", skin, "default");
+        lblDetractors = new Label("", skin, "default");
         lblScore = new Label("", skin, "score");
         lblRewardIs = new Label("", skin, "default");
         lblReward = new Label("", skin, "default");
@@ -81,7 +83,9 @@ public class DialogFinished extends DialogFeat {
         return this;
     }
 
-    public DialogFinished setScore(int score1, int score2) {
+    public DialogFinished setScore(String detractor1, String detractor2, int score1, int score2) {
+        boolean empty = detractor1.length() == 0 || detractor2.length() == 0;
+        lblDetractors.setText(empty ? "" : String.format("%s - %s", detractor1, detractor2));
         lblScore.setText(String.format(Locale.getDefault(), "%d-%d", score1, score2));
         return this;
     }
@@ -102,6 +106,8 @@ public class DialogFinished extends DialogFeat {
         table.add(lblMessage).spaceTop(8);
         table.row();
         table.add(lblTotalScore).spaceTop(8);
+        table.row();
+        table.add(lblDetractors).spaceTop(8);
         table.row();
         table.add(lblScore);
         if (showReward) {

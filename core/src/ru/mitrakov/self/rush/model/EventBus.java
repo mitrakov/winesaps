@@ -110,21 +110,29 @@ public class EventBus {
     }
     public static final class RoundFinishedEvent extends Event {
         public final boolean winner;
+        public final String detractor1;
+        public final String detractor2;
         public final int totalScore1;
         public final int totalScore2;
-        RoundFinishedEvent(boolean winner, int totalScore1, int totalScore2) {
+        RoundFinishedEvent(boolean winner, String detractor1, String detractor2, int totalScore1, int totalScore2) {
             this.winner = winner;
+            this.detractor1 = detractor1;
+            this.detractor2 = detractor2;
             this.totalScore1 = totalScore1;
             this.totalScore2 = totalScore2;
         }
     }
     public static final class GameFinishedEvent extends Event {
         public final boolean winner;
+        public final String detractor1;
+        public final String detractor2;
         public final int totalScore1;
         public final int totalScore2;
         public final int reward;
-        GameFinishedEvent(boolean winner, int totalScore1, int totalScore2, int reward) {
+        GameFinishedEvent(boolean winner, String d1, String d2, int totalScore1, int totalScore2, int reward) {
             this.winner = winner;
+            this.detractor1 = d1;
+            this.detractor2 = d2;
             this.totalScore1 = totalScore1;
             this.totalScore2 = totalScore2;
             this.reward = reward;
