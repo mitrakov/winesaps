@@ -340,6 +340,14 @@ public class Model {
         return false;
     }
 
+    public String getDetractor1() {
+        return aggressor ? name : enemy;
+    }
+
+    public String getDetractor2() {
+        return aggressor ? enemy : name;
+    }
+
     // ==============================
     // === SERVER REQUEST METHODS ===
     // ==============================
@@ -718,7 +726,8 @@ public class Model {
     }
 
     public void setEnemyName(String name) {
-        enemy = name;
+        if (name.length() > 0) // server can send empty name as a response of Quick Attack
+            enemy = name;
     }
 
     public void attacked(int sid, String aggressorName) {
@@ -1009,8 +1018,8 @@ public class Model {
 
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
         roundFinishedEvent.winner = winner;
-        roundFinishedEvent.detractor1 = aggressor ? name : enemy;
-        roundFinishedEvent.detractor2 = aggressor ? enemy : name;
+        roundFinishedEvent.detractor1 = getDetractor1();
+        roundFinishedEvent.detractor2 = getDetractor2();
         roundFinishedEvent.totalScore1 = totalScore1;
         roundFinishedEvent.totalScore2 = totalScore2;
         bus.raise(roundFinishedEvent);
@@ -1020,8 +1029,8 @@ public class Model {
         // updating history
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training/Tutorial Level
             // building a history item
-            HistoryItem item = new HistoryItem(new Date(), winner, aggressor ? name : enemy, aggressor ? enemy : name,
-                    character1, character2, totalScore1, totalScore2);
+            HistoryItem item = new HistoryItem(new Date(), winner, getDetractor1(), getDetractor2(), character1,
+                    character2, totalScore1, totalScore2);
 
             // prepend the item into the current history (and delete old items if necessary)
             List<HistoryItem> lst = new LinkedList<HistoryItem>(history);
@@ -1038,8 +1047,8 @@ public class Model {
 
         // reset reference to a field
         field = null;
-        bus.raise(new EventBus.GameFinishedEvent(winner, aggressor ? name : enemy, aggressor ? enemy : name,
-                totalScore1, totalScore2, reward));
+        bus.raise(new EventBus.GameFinishedEvent(winner, getDetractor1(), getDetractor2(), totalScore1, totalScore2,
+                reward));
     }
 
     public void setAbilities(IIntArray ids) {
