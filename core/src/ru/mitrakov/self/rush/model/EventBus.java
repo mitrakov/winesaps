@@ -1,7 +1,7 @@
 package ru.mitrakov.self.rush.model;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 
@@ -289,7 +289,7 @@ public class EventBus {
         void OnEvent(Event event);
     }
 
-    private final Collection<Listener> listeners = new ConcurrentLinkedQueue<Listener>();
+    private final List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
 
     public void addListener(Listener listener) {
         assert listener != null;
@@ -298,7 +298,8 @@ public class EventBus {
 
     void raise(Event event) {
         assert event != null;
-        for (Listener listener : listeners) {
+        for (int i = 0; i < listeners.size(); i++) { // do NOT use iterators! They produces excessive work for GC
+            Listener listener = listeners.get(i); assert listener != null;
             listener.OnEvent(event);
         }
     }

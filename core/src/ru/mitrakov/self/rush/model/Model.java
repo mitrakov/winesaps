@@ -121,6 +121,7 @@ public class Model {
     public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused")Attention}
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
+    private final List<MoveDirection> moveDirections = Arrays.asList(MoveDirection.values());
 
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
@@ -564,7 +565,7 @@ public class Model {
             } else if (direction == MoveDirection.RightUp) {
                 if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
             }
-            sender.send(MOVE, direction.ordinal());
+            sender.send(MOVE, moveDirections.indexOf(direction)); // use indexOf() instead of direction.ordinal() (GC)
         }
     }
 
