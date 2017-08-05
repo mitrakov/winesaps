@@ -168,7 +168,7 @@ public class Model {
     public volatile Character character2 = Character.None;
     public volatile boolean connected = false;
     public volatile boolean newbie = true;
-    public volatile int roundLengthSec = 60;
+    public volatile int roundLengthSec = 90;
     public volatile int stylePack = 0;
     public volatile long abilityExpireTime = 0;
     public volatile long roundStartTime = 0;
@@ -550,25 +550,19 @@ public class Model {
     public void move(MoveDirection direction) {
         if (connected && sender != null && curActor != null) {
             // simple checks to relieve the server
-            switch (direction) {
-                case LeftDown:
-                    if (curActor.getX() == 0 && curActor.getY() == Field.HEIGHT - 1) return;
-                    break;
-                case Left:
-                    if (curActor.getX() == 0) return;
-                    break;
-                case LeftUp:
-                    if (curActor.getX() == 0 && curActor.getY() == 0) return;
-                    break;
-                case RightDown:
-                    if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == Field.HEIGHT - 1) return;
-                    break;
-                case Right:
-                    if (curActor.getX() == Field.WIDTH - 1) return;
-                    break;
-                case RightUp:
-                    if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
-                    break;
+            // DO NOT use switch(direction)!!! It causes call MoveDirection.values() that produces work for GC!
+            if (direction == MoveDirection.LeftDown) {
+                if (curActor.getX() == 0 && curActor.getY() == Field.HEIGHT - 1) return;
+            } else if (direction == MoveDirection.Left) {
+                if (curActor.getX() == 0) return;
+            } else if (direction == MoveDirection.LeftUp) {
+                if (curActor.getX() == 0 && curActor.getY() == 0) return;
+            } else if (direction == MoveDirection.RightDown) {
+                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == Field.HEIGHT - 1) return;
+            } else if (direction == MoveDirection.Right) {
+                if (curActor.getX() == Field.WIDTH - 1) return;
+            } else if (direction == MoveDirection.RightUp) {
+                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
             }
             sender.send(MOVE, direction.ordinal());
         }

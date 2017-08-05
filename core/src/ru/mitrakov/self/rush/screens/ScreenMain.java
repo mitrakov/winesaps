@@ -400,9 +400,8 @@ public class ScreenMain extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-        String error = i18n.format("error");
-        String info = i18n.format("dialog.info");
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
@@ -418,39 +417,49 @@ public class ScreenMain extends LocalizableScreen {
             EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
             incomingDialog.setArguments(ev.enemy, ev.enemySid).show(stage);
         }
-        if (event instanceof EventBus.AddFriendErrorEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.add.friend.error")).show(stage);
-        if (event instanceof EventBus.NoCrystalsEvent)
-            infoDialog.setText(info, i18n.format("dialog.info.no.crystals")).show(stage);
+        if (event instanceof EventBus.AddFriendErrorEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.add.friend.error")).show(stage);
+        }
+        if (event instanceof EventBus.NoCrystalsEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.no.crystals")).show(stage);
+        }
         if (event instanceof EventBus.AggressorBusyEvent) {
             dialupDialog.hide();
-            infoDialog.setText(info, i18n.format("dialog.info.aggressor.busy")).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.aggressor.busy")).show(stage);
         }
         if (event instanceof EventBus.DefenderBusyEvent) {
             dialupDialog.hide();
-            infoDialog.setText(info, i18n.format("dialog.info.busy")).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.busy")).show(stage);
         }
         if (event instanceof EventBus.EnemyNotFoundEvent) {
             dialupDialog.hide();
-            infoDialog.setText(info, i18n.format("dialog.info.no.enemy")).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.no.enemy")).show(stage);
         }
         if (event instanceof EventBus.WaitingForEnemyEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             lockDialog.setText(i18n.format("dialog.waiting")).show(stage);
         }
         if (event instanceof EventBus.AttackedYourselfEvent) {
             dialupDialog.hide();
-            infoDialog.setText(error, i18n.format("dialog.info.yourself")).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.yourself")).show(stage);
         }
         if (event instanceof EventBus.ServerGonnaStopEvent) {
             dialupDialog.hide();
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             infoDialog.setText(i18n.format("dialog.warning"), i18n.format("dialog.info.server.stop")).show(stage);
         }
     }
 
     @Override
     public void handleEventBackground(EventBus.Event event) {
-        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-        String info = i18n.format("dialog.info");
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
         if (event instanceof EventBus.NameChangedEvent) {
             EventBus.NameChangedEvent ev = (EventBus.NameChangedEvent) event;
@@ -487,22 +496,29 @@ public class ScreenMain extends LocalizableScreen {
         }
         if (event instanceof EventBus.PromocodeDoneEvent) {
             EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
         }
         if (event instanceof EventBus.StopCallRejectedEvent) {
             EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(info, i18n.format("stopcall.rejected", ev.cowardName)).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("stopcall.rejected", ev.cowardName));
+            infoDialog.show(stage);
         }
         if (event instanceof EventBus.StopCallMissedEvent) {
             EventBus.StopCallMissedEvent ev = (EventBus.StopCallMissedEvent) event;
             incomingDialog.hide();
-            infoDialog.setText(info, i18n.format("stopcall.missed", ev.aggressorName)).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("stopcall.missed", ev.aggressorName));
+            infoDialog.show(stage);
         }
         if (event instanceof EventBus.StopCallExpiredEvent) {
             EventBus.StopCallExpiredEvent ev = (EventBus.StopCallExpiredEvent) event;
             dialupDialog.hide();
-            infoDialog.setText(info, i18n.format("stopcall.expired", ev.defenderName)).show(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("stopcall.expired", ev.defenderName));
+            infoDialog.show(stage);
         }
         if (event instanceof EventBus.SkuGemsUpdatedEvent) {
             IBillingProvider provider = psObject.getBillingProvider();
@@ -512,20 +528,23 @@ public class ScreenMain extends LocalizableScreen {
                     if (ev.skuGems.containsKey(sku.id))
                         sku.value = ev.skuGems.get(sku.id);
                 }
+                I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
                 purchaseDialog.updateSkuButtons(provider, model.name, i18n, assetManager, audioManager);
             }
         }
         if (event instanceof EventBus.PaymentDoneEvent) {
             EventBus.PaymentDoneEvent ev = (EventBus.PaymentDoneEvent) event;
             DialogFeat.hideAll(stage);
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("dialog.promocode.done.header");
             infoDialog.setText(header, i18n.format("dialog.crystals.done", ev.gems)).show(stage);
             log("Coupon = ", ev.coupon);
         }
         if (event instanceof EventBus.NewVersionAvailableEvent) {
             EventBus.NewVersionAvailableEvent ev = (EventBus.NewVersionAvailableEvent) event;
-            lblNewVersion.setText(i18n.format("dialog.about.new.version", ev.newVersion),
-                    i18n.format("dialog.about.update"), "");
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            String start = i18n.format("dialog.about.new.version", ev.newVersion);
+            lblNewVersion.setText(start, i18n.format("dialog.about.update"), "");
             lblNewVersion.setVisible(true);
         }
     }

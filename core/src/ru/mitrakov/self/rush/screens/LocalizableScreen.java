@@ -119,13 +119,17 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     }
 
     private void handleImportantEvents(EventBus.Event event) {
-        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
+
         if (event instanceof EventBus.VersionNotAllowedEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             EventBus.VersionNotAllowedEvent ev = (EventBus.VersionNotAllowedEvent) event;
             String msg = i18n.format("dialog.info.unsupported.version", Winesaps.VERSION_STR, ev.minVersion);
             infoDialog.setText(i18n.format("error"), msg).show(stage);
         }
         if (event instanceof EventBus.UnsupportedProtocolEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.unsupported.protocol")).show(stage);
         }
     }

@@ -14,7 +14,7 @@ public class LinkedLabel extends Table {
 
     public LinkedLabel(String txtBefore, String txtLink, String txtAfter, Skin skin, String style, String styleLink,
                        final Runnable f) {
-        assert txtBefore != null && txtLink != null && txtAfter != null && style != null && styleLink != null;
+        assert style != null && styleLink != null;
 
         add(lblBefore = new Label(txtBefore, skin, style)).bottom();
         add(lblLink = new Label(txtLink, skin, styleLink) {{
@@ -30,7 +30,6 @@ public class LinkedLabel extends Table {
     }
 
     public void setText(String txtBefore, String txtLink, String txtAfter) {
-        assert txtBefore != null && txtLink != null && txtAfter != null;
         lblBefore.setText(txtBefore);
         lblLink.setText(txtLink);
         lblAfter.setText(txtAfter);

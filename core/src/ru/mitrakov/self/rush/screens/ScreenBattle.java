@@ -35,6 +35,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
+    private final LongMap<String> seconds = new LongMap<String>(255);
 
     private String outOfSyncStr = "";
     private transient boolean outOfSync = false;
@@ -85,6 +86,11 @@ public class ScreenBattle extends LocalizableScreen {
 
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
         outOfSyncStr = i18n.format("battle.out.of.sync");
+
+        // init seconds map (to decrease GC pressure)
+        for (int i = 0; i < 255; i++) {
+            seconds.put(i, String.valueOf(i));
+        }
     }
 
     @Override
@@ -93,7 +99,8 @@ public class ScreenBattle extends LocalizableScreen {
 
         // update time
         long t = (TimeUtils.millis() - model.roundStartTime) / 1000;
-        lblTime.setText(outOfSync ? outOfSyncStr : String.valueOf(Math.max(model.roundLengthSec - t, 0)));
+        String sec = seconds.get(Math.max(model.roundLengthSec - t, 0), "");
+        lblTime.setText(outOfSync ? outOfSyncStr : sec);
         draw321(t);
     }
 
@@ -118,7 +125,8 @@ public class ScreenBattle extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
         if (event instanceof EventBus.NewFieldEvent || event instanceof EventBus.ActorResetEvent) {
             gui.handleEvent(event);
@@ -137,6 +145,7 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
             audioManager.sound("round");
             reset();
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("dialog.finished.header.round");
             String msg = i18n.format(ev.winner ? "dialog.finished.win.round" : "dialog.finished.lose.round");
             finishedDialog.setPicture(false, ev.winner).setText(header, msg);
@@ -147,6 +156,7 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.GameFinishedEvent ev = (EventBus.GameFinishedEvent) event;
             gui.setMovesAllowed(false); // forbid moving to restrict sending useless messages to the server
             audioManager.sound("game");
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("dialog.finished.header.battle");
             String msg = i18n.format(ev.winner ? "dialog.finished.win.battle" : "dialog.finished.lose.battle");
             finishedDialog.setPicture(true, ev.winner).setText(header, msg);
@@ -160,6 +170,7 @@ public class ScreenBattle extends LocalizableScreen {
             audioManager.music("theme", false);
         }
         if (event instanceof EventBus.BattleNotFoundEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("battle.out.of.sync");
             String msg = i18n.format("battle.out.of.sync.exit");
             finishedDialog.setPicture(true, false).setText(header, msg).setScore("", "", 0, 0);
@@ -173,6 +184,7 @@ public class ScreenBattle extends LocalizableScreen {
         }
         if (event instanceof EventBus.ScoreChangedEvent) {
             EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             lblScore.setText(i18n.format("battle.score", ev.score1, ev.score2));
             if (ev.score1 + ev.score2 > 0)
                 audioManager.sound("food");
@@ -290,6 +302,6 @@ public class ScreenBattle extends LocalizableScreen {
         lblCountdown.setVisible(pause);
         gui.setMovesAllowed(!pause);
         if (pause)
-            lblCountdown.setText(String.valueOf(Math.max(3 - sec, 0)));
+            lblCountdown.setText(seconds.get(Math.max(3 - sec, 0), ""));
     }
 }

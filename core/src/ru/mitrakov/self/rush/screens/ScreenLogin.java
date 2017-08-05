@@ -193,24 +193,34 @@ public class ScreenLogin extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
-        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-        String error = i18n.format("error");
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
         if (event instanceof EventBus.AuthorizedChangedEvent) {
             EventBus.AuthorizedChangedEvent ev = (EventBus.AuthorizedChangedEvent) event;
             if (ev.authorized)
                 game.setNextScreen();
         }
-        if (event instanceof EventBus.IncorrectCredentialsEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.incorrect.credentials")).show(stage);
-        if (event instanceof EventBus.IncorrectNameEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.incorrect.name")).show(stage);
-        if (event instanceof EventBus.IncorrectEmailEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.incorrect.email")).show(stage);
-        if (event instanceof EventBus.DuplicateNameEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.duplicate.name")).show(stage);
-        if (event instanceof EventBus.SignUpErrorEvent)
-            infoDialog.setText(error, i18n.format("dialog.info.incorrect.signup")).show(stage);
+        if (event instanceof EventBus.IncorrectCredentialsEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.credentials")).show(stage);
+        }
+        if (event instanceof EventBus.IncorrectNameEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.name")).show(stage);
+        }
+        if (event instanceof EventBus.IncorrectEmailEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.email")).show(stage);
+        }
+        if (event instanceof EventBus.DuplicateNameEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.duplicate.name")).show(stage);
+        }
+        if (event instanceof EventBus.SignUpErrorEvent) {
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.signup")).show(stage);
+        }
     }
 
     @Override

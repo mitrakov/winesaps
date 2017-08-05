@@ -85,6 +85,9 @@ public class ScreenTraining extends LocalizableScreen {
 
     @Override
     public void handleEvent(EventBus.Event event) {
+        // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
+        // excessive work for GC on each event during a battle (because all screens are subscribed to events)
+
         if (event instanceof EventBus.RoundStartedEvent) {
             EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
             if (ev.number == 0)
