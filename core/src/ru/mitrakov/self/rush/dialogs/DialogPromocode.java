@@ -49,7 +49,7 @@ public class DialogPromocode extends DialogFeat {
                     event.cancel();
                 }
             });
-        }}).width(250);
+        }}).minWidth(250);
         table.row().spaceTop(10);
         table.add(labelCopied = new Label("", skin, "default") {{
             setVisible(false);

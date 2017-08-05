@@ -15,8 +15,6 @@ public class DialogInvite extends DialogFeat {
     public enum InviteType {Training, ByName, Quick, Latest}
 
     private final Model model;
-    private final Dialog dialup;
-    private final Stage stage;
     private final Label lblQuestion;
     // private final CheckBox chkAddToFriends; @mitrakov (2017-07-19): decided to remove this possibility
 
@@ -24,12 +22,10 @@ public class DialogInvite extends DialogFeat {
     private String name = "";
     private I18NBundle i18n;
 
-    public DialogInvite(Model model, Skin skin, String windowStyleName, Dialog dialup, Stage stage, I18NBundle i18n) {
-        super("", skin, windowStyleName);
-        assert model != null && dialup != null && stage != null && i18n != null;
+    public DialogInvite(Model model, Skin skin, String styleName, I18NBundle i18n) {
+        super("", skin, styleName);
+        assert model != null && i18n != null;
         this.model = model;
-        this.dialup = dialup;
-        this.stage = stage;
         this.i18n = i18n;
 
         lblQuestion = new Label("", skin, "default");
@@ -63,7 +59,6 @@ public class DialogInvite extends DialogFeat {
                     break;
                 default:
             }
-            dialup.show(stage);
         }
     }
 
@@ -116,5 +111,6 @@ public class DialogInvite extends DialogFeat {
                 break;
             default:
         }
+        pack();
     }
 }

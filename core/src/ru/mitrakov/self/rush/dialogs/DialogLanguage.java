@@ -51,7 +51,7 @@ public class DialogLanguage extends DialogFeat {
                             I18NBundle i18n, AudioManager manager) {
         assert game != null && model != null && table != null && atlas != null && i18n != null && manager != null;
 
-        table.pad(16).add(lblLang).width(250).colspan(2);
+        table.pad(16).add(lblLang).minWidth(250).colspan(2);
 
         table.row().space(20);
         table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("en")), manager) {{

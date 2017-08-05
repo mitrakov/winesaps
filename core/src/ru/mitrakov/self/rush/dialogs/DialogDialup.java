@@ -1,7 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -14,25 +13,17 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 public class DialogDialup extends DialogFeat {
     private final Model model;
     private final Label lblMessage;
-    private I18NBundle i18n;
 
-    public DialogDialup(Model model, Skin skin, String windowStyleName, I18NBundle i18n) {
+    public DialogDialup(Model model, Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
-        assert model != null && i18n != null;
+        assert model != null;
         this.model = model;
-        this.i18n = i18n;
 
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center);
-        getContentTable().pad(20).add(lblMessage).width(250); // here getContentTable != null
+        getContentTable().pad(20).add(lblMessage).minWidth(350); // here getContentTable != null
 
         button("Cancel"); // text will be replaced in onLocaleChanged()
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        lblMessage.setText(i18n.format("dialog.dialup.text", model.enemy)); // here i18n != NULL (assert omitted)
-        super.draw(batch, parentAlpha);
     }
 
     @Override
@@ -43,7 +34,6 @@ public class DialogDialup extends DialogFeat {
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-        this.i18n = bundle;
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.dialup.header"));
@@ -56,5 +46,11 @@ public class DialogDialup extends DialogFeat {
                     ((TextButton) actor).setText(bundle.format("cancel"));
             }
         }
+    }
+
+    public Dialog setText(String text) {
+        lblMessage.setText(text);
+        pack();
+        return this;
     }
 }

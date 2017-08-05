@@ -134,8 +134,8 @@ public class ScreenMain extends LocalizableScreen {
         buyAbilitiesDialog = new DialogBuyAbilities(model, assetManager, skin, "default", audioManager, i18n);
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
-        dialupDialog = new DialogDialup(model, skin, "default", i18n);
-        inviteDialog = new DialogInvite(model, skin, "default", dialupDialog, stage, i18n);
+        dialupDialog = new DialogDialup(model, skin, "default");
+        inviteDialog = new DialogInvite(model, skin, "default", i18n);
         questionDialog = new DialogQuestion("", skin, "default");
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
 
@@ -412,6 +412,11 @@ public class ScreenMain extends LocalizableScreen {
             dialupDialog.hide();
             lockDialog.remove();
             game.setNextScreen();
+        }
+        if (event instanceof EventBus.EnemyNameChangedEvent) {
+            EventBus.EnemyNameChangedEvent ev = (EventBus.EnemyNameChangedEvent) event;
+            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+            dialupDialog.setText(i18n.format("dialog.dialup.text", ev.enemy)).show(stage);
         }
         if (event instanceof EventBus.InviteEvent) {
             EventBus.InviteEvent ev = (EventBus.InviteEvent) event;

@@ -17,7 +17,6 @@ public class DialogIncoming extends DialogFeat {
 
     private final Model model;
     private final Label lblQuestion;
-    private final CheckBox chkAddToFriends;
     private final AudioManager audioManager;
 
     private String enemy = "";
@@ -33,7 +32,6 @@ public class DialogIncoming extends DialogFeat {
 
         lblQuestion = new Label("", skin, "default");
         lblQuestion.setAlignment(Align.center, Align.center);
-        chkAddToFriends = new CheckBox("", skin, "default"); // not checked by default
 
         button("Accept", Result.Accept); // text will be replaced in onLocaleChanged()
         button("Reject", Result.Reject); // text will be replaced in onLocaleChanged()
@@ -41,16 +39,14 @@ public class DialogIncoming extends DialogFeat {
 
         Table table = getContentTable();
 
-        table.pad(10).add(lblQuestion).width(300);
-        table.row().space(20);
-        table.add(chkAddToFriends);
+        table.pad(10).add(lblQuestion);
     }
 
     @Override
     public Dialog show(Stage stage) {
         audioManager.sound("call");
-        chkAddToFriends.setVisible(!model.friendExists(enemy));
         lblQuestion.setText(i18n.format("dialog.incoming.text", enemy)); // i18n != NULL (assert omitted)
+        pack();
         return super.show(stage);
     }
 
@@ -60,8 +56,6 @@ public class DialogIncoming extends DialogFeat {
         switch ((Result) object) {
             case Accept:
                 model.accept(enemySid);
-                if (chkAddToFriends.isChecked())
-                    model.addFriend(enemy);
                 break;
             case Reject:
                 model.reject(enemySid);
@@ -74,8 +68,6 @@ public class DialogIncoming extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
         this.i18n = bundle;
-
-        chkAddToFriends.setText(bundle.format("dialog.friends.add"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.incoming.header"));
