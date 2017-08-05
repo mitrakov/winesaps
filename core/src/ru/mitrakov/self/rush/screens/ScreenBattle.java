@@ -94,7 +94,7 @@ public class ScreenBattle extends LocalizableScreen {
         // update time
         long t = (TimeUtils.millis() - model.roundStartTime) / 1000;
         lblTime.setText(outOfSync ? outOfSyncStr : String.valueOf(Math.max(model.roundLengthSec - t, 0)));
-        updateLabels(t);
+        draw321(t);
     }
 
     @Override
@@ -131,6 +131,7 @@ public class ScreenBattle extends LocalizableScreen {
             lblVersus.setText(model.enemy.length() > 0 ? String.format("%s vs %s", s1, s2) : "");
             lblVersus.pack();
             lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
+            lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);
         }
         if (event instanceof EventBus.RoundFinishedEvent) {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
@@ -283,16 +284,12 @@ public class ScreenBattle extends LocalizableScreen {
         infoDialog.hide();
     }
 
-    private void updateLabels(long sec) {
+    private void draw321(long sec) {
         boolean pause = sec < 3;
         lblVersus.setVisible(pause);
         lblCountdown.setVisible(pause);
         gui.setMovesAllowed(!pause);
-        if (pause) {
-            // lblVersus.setText(...) @mitrakov (2017-08-05): do NOT manipulate strings inside render()!
+        if (pause)
             lblCountdown.setText(String.valueOf(Math.max(3 - sec, 0)));
-            lblCountdown.pack();
-            lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);
-        }
     }
 }

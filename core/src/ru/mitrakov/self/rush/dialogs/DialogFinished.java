@@ -44,7 +44,7 @@ public class DialogFinished extends DialogFeat {
         battleWin = new TextureRegionDrawable(atlas.findRegion("battleWin"));
         battleLoss = new TextureRegionDrawable(atlas.findRegion("battleLoss"));
 
-        rewardTable.add(lblRewardIs).expand();
+        rewardTable.add(lblRewardIs).expand().right().spaceRight(20);
         rewardTable.add(lblReward);
         rewardTable.add(new Image(atlas.findRegion("gem")));
 

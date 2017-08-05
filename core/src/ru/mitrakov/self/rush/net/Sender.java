@@ -131,9 +131,6 @@ class Sender {
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
                     IIntArray msg = buffer[i].msg; // already contains "crcid" and "id"
-                    log("Sendd ", msg + ";ticks=" + buffer[i].ticks + ";attempt=" +
-                            buffer[i].attempt + ";nextR=" + buffer[i].nextRepeat + ";rtt=" +
-                            (totalTicks - buffer[i].startRtt + 1) + ";srtt=" + srtt);
                     buffer[i].startRtt = totalTicks;
                     socket.send(getPacket(msg.toByteArray(), msg.length()));
                 }
