@@ -34,6 +34,7 @@ public class ScreenBattle extends LocalizableScreen {
     private final Drawable lives2;
 
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
+    private final ObjectMap<Class, String> simpleNames = new ObjectMap<Class, String>(16);
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final LongMap<String> seconds = new LongMap<String>(255);
 
@@ -211,7 +212,7 @@ public class ScreenBattle extends LocalizableScreen {
                 audioManager.sound(Model.HurtCause.Exploded.name());
             else if (ev.obj instanceof Antidote || ev.obj instanceof Beam || ev.obj instanceof Detector
                     || ev.obj instanceof Flashbang || ev.obj instanceof Teleport)
-                audioManager.sound(ev.obj.getClass().getSimpleName());
+                audioManager.sound(getSimpleName(ev.obj.getClass()));
             gui.handleEvent(event);
         }
         if (event instanceof EventBus.ThingChangedEvent) {
@@ -225,7 +226,7 @@ public class ScreenBattle extends LocalizableScreen {
             }
             // 2) play the sound
             if (ev.oldThing != null && ev.newThing == null)
-                audioManager.sound(ev.oldThing.getClass().getSimpleName());
+                audioManager.sound(getSimpleName(ev.oldThing.getClass()));
             else if (ev.newThing != null)
                 audioManager.sound("thing");
         }
@@ -303,5 +304,15 @@ public class ScreenBattle extends LocalizableScreen {
         gui.setMovesAllowed(!pause);
         if (pause)
             lblCountdown.setText(seconds.get(Math.max(3 - sec, 0), ""));
+    }
+
+    private String getSimpleName(Class clazz) {
+        // designed to decrease GC pressure
+        String simpleName = simpleNames.get(clazz);
+        if (simpleName == null) {
+            simpleName = clazz.getSimpleName();
+            simpleNames.put(clazz, simpleName);
+        }
+        return simpleName;
     }
 }

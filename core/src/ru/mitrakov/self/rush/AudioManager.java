@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush;
 
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.assets.AssetManager;
 
 /**
@@ -10,6 +11,7 @@ import com.badlogic.gdx.assets.AssetManager;
 public class AudioManager {
 
     private final AssetManager assetManager;
+    private final ObjectMap<String, String> soundNames = new ObjectMap<String, String>(16); // to decrease GC pressure
     private boolean musicMuted = false;
     private boolean soundMuted = false;
     private Music curMusic;
@@ -40,8 +42,14 @@ public class AudioManager {
     }
 
     public void sound(String name) {
-        if (!soundMuted)
-            assetManager.<Sound>get(String.format("sfx/%s.wav", name)).play();
+        if (!soundMuted) {
+            String path = soundNames.get(name);
+            if (path == null) {
+                path = String.format("sfx/%s.wav", name);
+                soundNames.put(name, path);
+            }
+            assetManager.<Sound>get(path).play();
+        }
     }
 
     public void muteMusic(boolean value) {

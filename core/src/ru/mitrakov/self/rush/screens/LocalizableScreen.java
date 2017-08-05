@@ -61,7 +61,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         model.bus.addListener(new EventBus.Listener() {
             @Override
             public void OnEvent(final EventBus.Event event) {
-                Gdx.app.postRunnable(new Runnable() {
+                Gdx.app.postRunnable(new Runnable() { // see note#8 below
                     @Override
                     public void run() {
                         if (game.getScreen() == self)
@@ -137,3 +137,8 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
     public abstract void handleEvent(EventBus.Event event);
     public abstract void handleEventBackground(EventBus.Event event);
 }
+
+// note#8 (@mitrakov, 2017-08-05): unfortunately it's not possible to extract "new Runnable{...}" to a single field and
+// substitute a new value of EventBus.Event each time an event appears (that would be very good for GC!).
+// Gdx.app.postRunnable() stores different (!) Runnable instances inside itself, and calls all of them one-by-one
+// when OpenGL cycle is ready to render
