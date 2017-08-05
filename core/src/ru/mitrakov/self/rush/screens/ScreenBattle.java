@@ -119,8 +119,18 @@ public class ScreenBattle extends LocalizableScreen {
     @Override
     public void handleEvent(EventBus.Event event) {
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+
         if (event instanceof EventBus.NewFieldEvent || event instanceof EventBus.ActorResetEvent) {
             gui.handleEvent(event);
+        }
+        if (event instanceof EventBus.RoundStartedEvent || event instanceof EventBus.EnemyNameChangedEvent) {
+            String d1 = model.getDetractor1();
+            String d2 = model.getDetractor2();
+            String s1 = d1.length() <= 10 ? d1 : d1.substring(0, 10);
+            String s2 = d2.length() <= 10 ? d2 : d2.substring(0, 10);
+            lblVersus.setText(model.enemy.length() > 0 ? String.format("%s vs %s", s1, s2) : "");
+            lblVersus.pack();
+            lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
         }
         if (event instanceof EventBus.RoundFinishedEvent) {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
@@ -279,13 +289,7 @@ public class ScreenBattle extends LocalizableScreen {
         lblCountdown.setVisible(pause);
         gui.setMovesAllowed(!pause);
         if (pause) {
-            String d1 = model.getDetractor1();
-            String d2 = model.getDetractor2();
-            String s1 = d1.length() <= 10 ? d1 : d1.substring(0, 10);
-            String s2 = d2.length() <= 10 ? d2 : d2.substring(0, 10);
-            lblVersus.setText(model.enemy.length() > 0 ? String.format("%s vs %s", s1, s2) : "");
-            lblVersus.pack();
-            lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
+            // lblVersus.setText(...) @mitrakov (2017-08-05): do NOT manipulate strings inside render()!
             lblCountdown.setText(String.valueOf(Math.max(3 - sec, 0)));
             lblCountdown.pack();
             lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);

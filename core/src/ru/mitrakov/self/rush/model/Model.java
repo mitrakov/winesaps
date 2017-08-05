@@ -726,8 +726,10 @@ public class Model {
     }
 
     public void setEnemyName(String name) {
-        if (name.length() > 0) // server can send empty name as a response of Quick Attack
+        if (name.length() > 0) { // server can send empty name as a response of Quick Attack
             enemy = name;
+            bus.raise(new EventBus.EnemyNameChangedEvent(name));
+        }
     }
 
     public void attacked(int sid, String aggressorName) {

@@ -167,6 +167,12 @@ public class EventBus {
             this.items = items;
         }
     }
+    public static final class EnemyNameChangedEvent extends Event {
+        public String enemy;
+        EnemyNameChangedEvent(String enemy) {
+            this.enemy = enemy;
+        }
+    }
     public static final class RoundStartedEvent extends Event {
         public int number;
         RoundStartedEvent(int number) {
