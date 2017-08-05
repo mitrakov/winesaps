@@ -157,6 +157,7 @@ public class Winesaps extends Game {
         // Java-6 doesn't support switch on strings (https://stackoverflow.com/questions/338206)
         if (key.equals("#!name")) return model.name;
         if (key.equals("#!hash")) return model.hash;
+        if (key.equals("#!enemy")) return model.enemy;
         if (key.equals("#!connected")) return model.connected + "";
         if (key.equals("#!settings")) return model.fileReader.read(Model.SETTINGS_FILE).replaceAll(" ", "\n");
         if (key.equals("#!products")) {

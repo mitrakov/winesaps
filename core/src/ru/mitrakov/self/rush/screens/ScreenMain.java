@@ -774,19 +774,19 @@ public class ScreenMain extends LocalizableScreen {
             if (COLUMNS * i + 7 < cells.size) {
                 Label lblDate = (Label) cells.get(COLUMNS * i);
                 Image imgChar1 = (Image) cells.get(COLUMNS * i + 1);
-                Label lblName1 = (Label) cells.get(COLUMNS * i + 2);
+                Label lblUsr1 = (Label) cells.get(COLUMNS * i + 2);
                 Label lblVs = (Label) cells.get(COLUMNS * i + 3);
                 Image imgChar2 = (Image) cells.get(COLUMNS * i + 4);
-                Label lblName2 = (Label) cells.get(COLUMNS * i + 5);
+                Label lblUsr2 = (Label) cells.get(COLUMNS * i + 5);
                 Label lblScore = (Label) cells.get(COLUMNS * i + 6);
                 Image imgWin = (Image) cells.get(COLUMNS * i + 7);
 
                 lblDate.setText(dateFmt.format(it.date));
                 imgChar1.setDrawable(characters.get(it.character1));
-                lblName1.setText(it.name1);
+                lblUsr1.setText(it.name1.length() <= 11 ? it.name1 : String.format("%s...", it.name1.substring(0, 8)));
                 lblVs.setText("-");
                 imgChar2.setDrawable(characters.get(it.character2));
-                lblName2.setText(it.name2);
+                lblUsr2.setText(it.name2.length() <= 11 ? it.name2 : String.format("%s...", it.name2.substring(0, 8)));
                 lblScore.setText(String.format(Locale.getDefault(), "%d-%d", it.score1, it.score2));
                 imgWin.setDrawable(it.win ? drawableWin : drawableLoss);
             }
