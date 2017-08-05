@@ -814,12 +814,12 @@ public class ScreenMain extends LocalizableScreen {
         for (FriendItem item : items) {
             if (COLUMNS * i + 3 < cells.size) {
                 Image imgChar = (Image) cells.get(COLUMNS * i);
-                Label lblName = (Label) cells.get(COLUMNS * i + 1);
+                Label lbl = (Label) cells.get(COLUMNS * i + 1);
                 ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * i + 2);
                 ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * i + 3);
 
                 imgChar.setDrawable(characters.get(item.character));
-                lblName.setText(item.name);
+                lbl.setText(item.name.length() <= 27 ? item.name : String.format("%s...", item.name.substring(0, 24)));
                 btnInvite.setVisible(true);
                 btnRemove.setVisible(true);
             }
