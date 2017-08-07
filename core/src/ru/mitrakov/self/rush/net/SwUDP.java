@@ -22,7 +22,7 @@ public class SwUDP implements IProtocol {
     final static int MAX_PENDING = 5;
     final static float MIN_SRTT = 2f;
     final static float DEFAULT_SRTT = 5f;
-    final static float MAX_SRTT = 12f;
+    final static float MAX_SRTT = 12.5f;
     final static float RC = .8f;
     final static float AC = 2.2f;
 
