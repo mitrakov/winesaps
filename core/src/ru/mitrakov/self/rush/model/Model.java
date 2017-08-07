@@ -74,6 +74,7 @@ public class Model {
     /**
      * server-specific commands; for more details see docs to the protocol
      */
+    @SuppressWarnings("unused")
     public enum Cmd {
         UNSPEC_ERROR,      // 0
         SIGN_UP,           // 1
@@ -278,6 +279,7 @@ public class Model {
                     getUserInfo();
             }
         });
+        // @note: for debugging the protocol comment runDaemon above and run debugProtocol(psObject);
     }
 
     // ==========================
@@ -1145,26 +1147,25 @@ public class Model {
         bus.raise(new EventBus.ServerGonnaStopEvent());
     }
 
+    @SuppressWarnings("unused")
     private void debugProtocol(PsObject psObject) {
-        if (sender != null) {
-            psObject.runDaemon(8000, 200, new Runnable() {
-                @Override
-                public void run() {
-                    if (++debugCounter > 10000) System.exit(0);
-                    long t0 = System.currentTimeMillis();
-                    sender.send(0xF2, debugCounter / 256, debugCounter % 256,
-                            (int) ((t0 >> 56) & 0xFF),
-                            (int) ((t0 >> 48) & 0xFF),
-                            (int) ((t0 >> 40) & 0xFF),
-                            (int) ((t0 >> 32) & 0xFF),
-                            (int) ((t0 >> 24) & 0xFF),
-                            (int) ((t0 >> 16) & 0xFF),
-                            (int) ((t0 >> 8) & 0xFF),
-                            (int) (t0 & 0xFF),
-                            11, 22, 33, 44, 55, 66, 77); // 7b of fake data to reach total 32 bytes;
-                }
-            });
-        }
+        psObject.runDaemon(8000, 200, new Runnable() {
+            @Override
+            public void run() {
+                if (++debugCounter > 2500) System.exit(0);
+                long t0 = System.currentTimeMillis();
+                sender.send(0xF2, debugCounter / 256, debugCounter % 256,
+                        (int) ((t0 >> 56) & 0xFF),
+                        (int) ((t0 >> 48) & 0xFF),
+                        (int) ((t0 >> 40) & 0xFF),
+                        (int) ((t0 >> 32) & 0xFF),
+                        (int) ((t0 >> 24) & 0xFF),
+                        (int) ((t0 >> 16) & 0xFF),
+                        (int) ((t0 >> 8) & 0xFF),
+                        (int) (t0 & 0xFF),
+                        11, 22, 33, 44, 55, 66, 77); // 7b of fake data to reach total 32 bytes;
+            }
+        });
     }
 }
 
