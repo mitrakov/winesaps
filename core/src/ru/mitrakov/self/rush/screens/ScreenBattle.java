@@ -266,7 +266,7 @@ public class ScreenBattle extends LocalizableScreen {
         }
 
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
-        for (final Model.Ability ability : Model.Ability.values()) {
+        for (final Model.Ability ability : model.abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
                 ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{

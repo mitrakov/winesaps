@@ -98,7 +98,7 @@ public class DialogBuyAbilities extends DialogFeat {
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
         TextureAtlas atlasGoods = assetManager.get("pack/goods.pack");
 
-        for (final Model.Ability ability : Model.Ability.values()) {
+        for (final Model.Ability ability : model.abilityValues) {
             // == buttons ==
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {

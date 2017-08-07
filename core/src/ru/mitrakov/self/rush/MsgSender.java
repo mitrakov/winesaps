@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush;
 
+import java.util.Arrays;
+
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.Network;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
@@ -23,8 +25,13 @@ class MsgSender implements Model.ISender {
 
     @Override
     public void send(Model.Cmd cmd) {
+        send(Arrays.binarySearch(Model.cmdValues, cmd)); // don't use "cmd.ordinal()" (GC pressure)
+    }
+
+    @Override
+    public void send(int cmd) {
         try {
-            network.send(sendBuf.clear().add(cmd.ordinal()));
+            network.send(sendBuf.clear().add(cmd));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
@@ -32,8 +39,13 @@ class MsgSender implements Model.ISender {
 
     @Override
     public void send(Model.Cmd cmd, int... arg) {
+        send(Arrays.binarySearch(Model.cmdValues, cmd), arg);
+    }
+
+    @Override
+    public void send(int cmd, int... arg) {
         try {
-            sendBuf.clear().add(cmd.ordinal());
+            sendBuf.clear().add(cmd);
             for (int i : arg) {
                 sendBuf.add(i);
             }
@@ -45,8 +57,13 @@ class MsgSender implements Model.ISender {
 
     @Override
     public void send(Model.Cmd cmd, String arg) {
+        send(Arrays.binarySearch(Model.cmdValues, cmd), arg);
+    }
+
+    @Override
+    public void send(int cmd, String arg) {
         try {
-            network.send(sendBuf.fromByteArray(getBytes(arg), arg.length()).prepend(cmd.ordinal()));
+            network.send(sendBuf.fromByteArray(getBytes(arg), arg.length()).prepend(cmd));
         } catch (Exception e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }

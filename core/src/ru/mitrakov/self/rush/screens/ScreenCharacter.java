@@ -65,10 +65,10 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     private Array<Actor> init(Skin skin) {
-        Array<Actor> result = new Array<Actor>(Model.Character.values().length);
+        Array<Actor> result = new Array<Actor>(model.characterValues.length);
 
         TextureAtlas atlasCharacter = assetManager.get("pack/char.pack");
-        for (Model.Character character : Model.Character.values()) {
+        for (Model.Character character : model.characterValues) {
             if (character != Model.Character.None) {
                 // create checkboxes
                 final TextButton btn = new CheckBox("", skin, "default");

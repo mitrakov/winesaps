@@ -35,13 +35,14 @@ public class Model {
     /**
      * interface to send commands to the server
      */
+    @SuppressWarnings("unused")
     public interface ISender {
         void send(Cmd cmd);
-
+        void send(int cmd);
         void send(Cmd cmd, int... arg);
-
+        void send(int cmd, int... arg);
         void send(Cmd cmd, String arg);
-
+        void send(int cmd, String arg);
         void reset();
     }
 
@@ -110,18 +111,20 @@ public class Model {
         CHECK_PURCHASE,    // 39
         GET_CLIENT_VERSION // 40
     }
+    public static final Cmd[] cmdValues = Cmd.values();
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
+    public final Character[] characterValues = Character.values();
 
     @SuppressWarnings("unused")
-    public enum HurtCause {
-        Poisoned, Sunk, Soaked, Devoured, Exploded
-    }
+    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
+    private final HurtCause[] hurtCauseValues = HurtCause.values();
 
     public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused")Attention}
+    private final Effect[] effectValues = Effect.values();
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
-    private final List<MoveDirection> moveDirections = Arrays.asList(MoveDirection.values());
+    private final MoveDirection[] moveDirectionValues = MoveDirection.values();
 
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
@@ -132,6 +135,7 @@ public class Model {
         a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32,
         Miner, Builder, Shaman, Grenadier, Spy
     }
+    public final Ability[] abilityValues = Ability.values();
 
     /**
      * rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server
@@ -333,6 +337,7 @@ public class Model {
         return res;
     }
 
+    @SuppressWarnings("unused")
     public boolean friendExists(String name) {
         for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
             if (item.name.equals(name))
@@ -565,7 +570,7 @@ public class Model {
             } else if (direction == MoveDirection.RightUp) {
                 if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
             }
-            sender.send(MOVE, moveDirections.indexOf(direction)); // use indexOf() instead of direction.ordinal() (GC)
+            sender.send(MOVE, Arrays.binarySearch(moveDirectionValues, direction)); // avoid "direction.ordinal()" (GC)
         }
     }
 
@@ -586,8 +591,9 @@ public class Model {
     public void useAbility(Ability ability) {
         assert ability != null;
         if (connected && sender != null) {
-            if (ability.ordinal() > SKILL_OFFSET) // only skills may be used
-                sender.send(USE_SKILL, ability.ordinal());
+            int code = Arrays.binarySearch(abilityValues, ability); // don't use "ability.ordinal()" (GC pressure)
+            if (code > SKILL_OFFSET) // only skills may be used
+                sender.send(USE_SKILL, code);
         }
     }
 
@@ -674,10 +680,9 @@ public class Model {
         i++;
 
         // parse character
-        Character[] characters = Character.values();
         int ch = data.get(i++);
-        if (0 <= ch && ch < characters.length && character != characters[ch]) {
-            character = characters[ch];
+        if (0 <= ch && ch < characterValues.length && character != characterValues[ch]) {
+            character = characterValues[ch];
             bus.raise(new EventBus.CharacterChangedEvent(character));
         }
 
@@ -689,7 +694,6 @@ public class Model {
         i += 4;
 
         // parse abilities
-        Ability[] array = Ability.values();
         synchronized (locker) {
             abilityExpireMap.clear();
             int abilitiesCnt = data.get(i++);
@@ -697,8 +701,8 @@ public class Model {
                 if (i + 2 < data.length()) {
                     int id = data.get(i);
                     int minutes = data.get(i + 1) * 256 + data.get(i + 2);
-                    if (0 <= id && id < array.length)
-                        abilityExpireMap.put(array[id], minutes);
+                    if (0 <= id && id < abilityValues.length)
+                        abilityExpireMap.put(abilityValues[id], minutes);
                 }
             }
         }
@@ -746,7 +750,6 @@ public class Model {
 
     public void setFriendList(IIntArray data, boolean append) {
         assert data != null;
-        Character[] characters = Character.values();
 
         synchronized (locker) {
             if (!append)
@@ -755,8 +758,8 @@ public class Model {
             if (s.length() > 0) { // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
                 for (String item : s.split("\0")) {
                     byte ch = (byte) item.charAt(0);
-                    if (0 <= ch && ch < characters.length) {
-                        friends.add(new FriendItem(characters[ch], item.substring(1)));
+                    if (0 <= ch && ch < characterValues.length) {
+                        friends.add(new FriendItem(characterValues[ch], item.substring(1)));
                     }
                 }
             }
@@ -765,9 +768,8 @@ public class Model {
     }
 
     public void friendAdded(int character, String name) {
-        Character[] characters = Character.values();
-        if (0 <= character && character < characters.length) {
-            FriendItem item = new FriendItem(characters[character], name);
+        if (0 <= character && character < characterValues.length) {
+            FriendItem item = new FriendItem(characterValues[character], name);
             friends.add(item);
             bus.raise(new EventBus.FriendAddedEvent(item));
         }
@@ -787,15 +789,14 @@ public class Model {
 
     public void setRangeOfProducts(IIntArray data) {
         assert data != null;
-        Ability[] abs = Ability.values();
         synchronized (locker) {
             products.clear();
             for (int i = 0; i + 2 < data.length(); i += 3) {
                 int id = data.get(i);
                 int days = data.get(i + 1);
                 int cost = data.get(i + 2);
-                if (0 <= id && id < abs.length)
-                    products.add(new Product(abs[id], days, cost));
+                if (0 <= id && id < abilityValues.length)
+                    products.add(new Product(abilityValues[id], days, cost));
             }
         }
     }
@@ -869,11 +870,10 @@ public class Model {
         curThing = enemyThing = curActor = enemyActor = null;
         battleNotFoundGuardCounter = 0;
 
-        Character[] characters = Character.values();
-        if (0 <= character1 && character1 < characters.length)
-            this.character1 = characters[character1];
-        if (0 <= character2 && character2 < characters.length)
-            this.character2 = characters[character2];
+        if (0 <= character1 && character1 < characterValues.length)
+            this.character1 = characterValues[character1];
+        if (0 <= character2 && character2 < characterValues.length)
+            this.character2 = characterValues[character2];
 
         roundLengthSec = timeSec;
         this.aggressor = aggressor;
@@ -983,10 +983,9 @@ public class Model {
         if (field != null) {
             CellObject actor = field.getObjectById(me == aggressor ? AGGRESSOR_ID : DEFENDER_ID);
             assert actor != null;
-            HurtCause[] causes = HurtCause.values();
-            if (0 <= cause && cause < causes.length) {
+            if (0 <= cause && cause < hurtCauseValues.length) {
                 playerWoundedEvent.xy = actor.xy;
-                playerWoundedEvent.cause = causes[cause];
+                playerWoundedEvent.cause = hurtCauseValues[cause];
                 playerWoundedEvent.myLives = myLives;
                 playerWoundedEvent.enemyLives = enemyLives;
                 bus.raise(playerWoundedEvent);
@@ -1000,10 +999,9 @@ public class Model {
             field = this.field;
         }
         if (field != null) {
-            Effect[] effects = Effect.values();
-            if (0 <= effectId && effectId < effects.length) {
-                field.setEffect(objNumber, effects[effectId]);
-                effectAddedEvent.effect = effects[effectId];
+            if (0 <= effectId && effectId < effectValues.length) {
+                field.setEffect(objNumber, effectValues[effectId]);
+                effectAddedEvent.effect = effectValues[effectId];
                 bus.raise(effectAddedEvent);
             }
         }
@@ -1052,11 +1050,10 @@ public class Model {
         assert ids != null;
         synchronized (locker) {
             abilities.clear();
-            Ability[] array = Ability.values();
             for (int i = 0; i < ids.length(); i++) {
                 int id = ids.get(i);
-                if (0 <= id && id < array.length)
-                    abilities.add(array[id]);
+                if (0 <= id && id < abilityValues.length)
+                    abilities.add(abilityValues[id]);
             }
         }
         bus.raise(new EventBus.AbilitiesChangedEvent(abilities));

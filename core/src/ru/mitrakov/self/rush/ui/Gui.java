@@ -171,7 +171,7 @@ public class Gui extends Actor {
         // animations
         for (Class clazz : new Class[]{Actor1.class, Actor2.class}) {
             AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X);
-            for (Model.Character character : Model.Character.values()) {
+            for (Model.Character character : model.characterValues) {
                 if (character != Model.Character.None) {
                     String filename = String.format("pack/%s.pack", character.name().toLowerCase());
                     data.add(character, assetManager.<TextureAtlas>get(filename), .07f);

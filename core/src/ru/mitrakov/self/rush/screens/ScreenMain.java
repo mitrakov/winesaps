@@ -556,7 +556,7 @@ public class ScreenMain extends LocalizableScreen {
 
     private void loadTextures() {
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
-        for (final Model.Ability ability : Model.Ability.values()) {
+        for (final Model.Ability ability : model.abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
                 ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
@@ -582,7 +582,7 @@ public class ScreenMain extends LocalizableScreen {
         }
 
         TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
-        for (Model.Character character : Model.Character.values()) {
+        for (Model.Character character : model.characterValues) {
             TextureRegion region = atlasIcons.findRegion(String.format("%s48", character));
             if (region != null)
                 characters.put(character, new TextureRegionDrawable(region));

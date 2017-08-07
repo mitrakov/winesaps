@@ -35,7 +35,6 @@ class Parser implements IHandler {
     private static final int ERR_SERVER_GONNA_STOP = 254;
 
     private final Model model;
-    private final Cmd[] commands = Cmd.values();
     private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
@@ -64,8 +63,8 @@ class Parser implements IHandler {
         log("Precessing:", data);
         if (data.length() > 0) {
             int code = data.get(0);
-            if (0 <= code && code < commands.length) {
-                Cmd cmd = commands[code];
+            if (0 <= code && code < Model.cmdValues.length) {
+                Cmd cmd = Model.cmdValues[code];
                 switch (cmd) {
                     case SIGN_IN:
                     case SIGN_UP:
