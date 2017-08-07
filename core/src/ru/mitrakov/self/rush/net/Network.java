@@ -71,7 +71,8 @@ public final class Network extends Thread implements IHandler {
                 // @note uncomment only for debug! if (TMP_NO_CONNECTION) continue;
                 if (protocol != null) {
                     recvData.fromByteArray(datagram.getData(), datagram.getLength());
-                    log("Recv: ", recvData);
+                    if (recvData.length() > 5)
+                        log("Recv: ", recvData);
                     protocol.onReceived(recvData);
                 } else onReceived(recvData.fromByteArray(datagram.getData(), datagram.getLength()));
             } catch (Exception e) {

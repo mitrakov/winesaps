@@ -155,7 +155,19 @@ class Parser implements IHandler {
                         else throw new IllegalArgumentException("Unhandled command code");
                 }
             } else {
-                throw new IllegalArgumentException("Incorrect command code");
+                if (code == 0xF2) {
+                    int num = data.get(1) * 256 + data.get(2);
+                    long t0 = ((long) data.get(3) << 56) |
+                            ((long) data.get(4) << 48) |
+                            ((long) data.get(5) << 40) |
+                            ((long) data.get(6) << 32) |
+                            ((long) data.get(7) << 24) |
+                            ((long) data.get(8) << 16) |
+                            ((long) data.get(9) << 8) |
+                            ((long) data.get(10));
+                    String s = String.format(Locale.getDefault(), "%d: %d msec", num, System.currentTimeMillis() - t0);
+                    log("DATA ", s);
+                } else throw new IllegalArgumentException("Incorrect command code");
             }
         } else throw new IllegalArgumentException("Empty data");
     }

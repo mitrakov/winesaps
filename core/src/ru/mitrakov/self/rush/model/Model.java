@@ -38,11 +38,17 @@ public class Model {
     @SuppressWarnings("unused")
     public interface ISender {
         void send(Cmd cmd);
+
         void send(int cmd);
+
         void send(Cmd cmd, int... arg);
+
         void send(int cmd, int... arg);
+
         void send(Cmd cmd, String arg);
+
         void send(int cmd, String arg);
+
         void reset();
     }
 
@@ -111,9 +117,11 @@ public class Model {
         CHECK_PURCHASE,    // 39
         GET_CLIENT_VERSION // 40
     }
+
     public static final Cmd[] cmdValues = Cmd.values();
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
+
     public final Character[] characterValues = Character.values();
 
     @SuppressWarnings("unused")
@@ -121,9 +129,11 @@ public class Model {
     private final HurtCause[] hurtCauseValues = HurtCause.values();
 
     public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused")Attention}
+
     private final Effect[] effectValues = Effect.values();
 
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
+
     private final MoveDirection[] moveDirectionValues = MoveDirection.values();
 
     /**
@@ -135,6 +145,7 @@ public class Model {
         a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32,
         Miner, Builder, Shaman, Grenadier, Spy
     }
+
     public final Ability[] abilityValues = Ability.values();
 
     /**
@@ -253,6 +264,7 @@ public class Model {
     private CellObject curThing;
     private CellObject enemyThing;
     private transient int battleNotFoundGuardCounter;
+    private transient int debugCounter;
     public /*private*/ IFileReader fileReader; // public for debug purposes only!
     public /*private*/ String hash = "";       // public for debug purposes only!
 
@@ -1131,6 +1143,28 @@ public class Model {
 
     public void setServerGonnaStop() {
         bus.raise(new EventBus.ServerGonnaStopEvent());
+    }
+
+    private void debugProtocol(PsObject psObject) {
+        if (sender != null) {
+            psObject.runDaemon(8000, 200, new Runnable() {
+                @Override
+                public void run() {
+                    if (++debugCounter > 10000) System.exit(0);
+                    long t0 = System.currentTimeMillis();
+                    sender.send(0xF2, debugCounter / 256, debugCounter % 256,
+                            (int) ((t0 >> 56) & 0xFF),
+                            (int) ((t0 >> 48) & 0xFF),
+                            (int) ((t0 >> 40) & 0xFF),
+                            (int) ((t0 >> 32) & 0xFF),
+                            (int) ((t0 >> 24) & 0xFF),
+                            (int) ((t0 >> 16) & 0xFF),
+                            (int) ((t0 >> 8) & 0xFF),
+                            (int) (t0 & 0xFF),
+                            11, 22, 33, 44, 55, 66, 77); // 7b of fake data to reach total 32 bytes;
+                }
+            });
+        }
     }
 }
 
