@@ -15,7 +15,6 @@ class ParserStat implements IHandler {
 
     @Override
     public synchronized void onReceived(IIntArray data) {
-        screen.onReceived();
         while (data.length() > 2) {
             int len = data.get(0) * 256 + data.get(1);
             processMsg(accessorial.copyFrom(data.remove(0, 2), len));
