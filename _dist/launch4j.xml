@@ -15,13 +15,13 @@
   <manifest></manifest>
   <icon>icon.ico</icon>
   <jre>
-    <path></path>
+    <path>jre_x86</path>
     <bundledJre64Bit>false</bundledJre64Bit>
-    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <bundledJreAsFallback>true</bundledJreAsFallback>
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <runtimeBits>64/32</runtimeBits>
+    <runtimeBits>32/64</runtimeBits>
   </jre>
   <versionInfo>
     <fileVersion>1.0.0.0</fileVersion>
