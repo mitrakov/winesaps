@@ -27,8 +27,8 @@ public class Winesaps extends Game {
     public static final String VERSION_STR = "1.0.0";
     public static final String URL = "http://winesaps.com";
 
-    private static final String HOST = "winesaps.ru";
-    private static final int PORT = 33996;
+    public static final String HOST = "winesaps.ru";
+    public static final int PORT = 33996;
 
     private final PsObject psObject;
     private final Model model;

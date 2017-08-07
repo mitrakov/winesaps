@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.PsObject;
 
+import static ru.mitrakov.self.rush.Winesaps.*;
+
 /**
  * Created by mitrakov on 01.03.2017
  */
@@ -38,15 +40,12 @@ class ScreenStat extends ScreenAdapter {
 
     private final PsObject psObject;
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-    private final Stage stage = new Stage(new FitViewport(Stat.WIDTH, Stat.HEIGHT));
+    private final Stage stage = new Stage(new FitViewport(WIDTH, HEIGHT));
     private final Table tableLeft = new Table();
     private final Table tableRight = new Table();
-    private final Label lblStatus = new Label("", skin, "white");
     private final Label lblSrtt = new Label("", skin, "white");
     private final Label lblConnected = new Label("", skin, "white");
     private final IntMap<Label> lblValues = new IntMap<Label>(16);
-
-    private transient int status = 0;
 
     ScreenStat(PsObject psObject) {
         this.psObject = psObject;
@@ -94,17 +93,11 @@ class ScreenStat extends ScreenAdapter {
             tableLeft.add(value).right();
             tableLeft.row();
         }
-        tableRight.add(lblStatus);
         tableRight.row();
         tableRight.add(lblSrtt);
         tableRight.row();
         tableRight.add(lblConnected);
         return this;
-    }
-
-    void onReceived() {
-        status = (status + 1) % 4;
-        lblStatus.setText(status == 1 ? "." : status == 2 ? ".." : status == 3 ? "..." : "");
     }
 
     void setValue(int category, int value) {

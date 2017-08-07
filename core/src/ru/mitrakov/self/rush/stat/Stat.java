@@ -9,16 +9,12 @@ import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
+import static ru.mitrakov.self.rush.Winesaps.*;
+
 /**
  * Entry point
  */
 public class Stat extends Game {
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 480;
-
-    private static final String HOST = "winesaps.com";
-    private static final int PORT = 33996;
-
     private final PsObject psObject;
     private final ParserStat parser = new ParserStat();
     private final IIntArray query = new GcResistantIntArray(32);
