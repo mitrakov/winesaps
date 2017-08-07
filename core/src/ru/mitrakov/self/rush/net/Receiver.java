@@ -45,7 +45,6 @@ class Receiver {
         ack.clear();
         ack.add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF).add(crcid & 0xFF);
         if (id == SYN) {
-            log("Ack : ", ack);
             socket.send(getPacket(ack.toByteArray(), ack.length()));
             for (int j = 0; j < buffer.length; j++) {
                 buffer[j].clear();
@@ -55,7 +54,6 @@ class Receiver {
             pending = 0;
             protocol.onReceiverConnected();
         } else if (connected) {
-            log("Ack : ", ack);
             socket.send(getPacket(ack.toByteArray(), ack.length()));
             if (id == expected) {
                 handler.onReceived(msg);
@@ -77,7 +75,6 @@ class Receiver {
         } else {
             ack.clear().add(ERRACK);
             ack.add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF).add(crcid & 0xFF);
-            log("Ack : ", ack);
             socket.send(getPacket(ack.toByteArray(), ack.length()));
         }
     }

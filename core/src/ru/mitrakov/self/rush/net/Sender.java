@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
+import java.util.Locale;
 import java.io.IOException;
 
 import ru.mitrakov.self.rush.*;
@@ -130,6 +131,7 @@ class Sender {
                 buffer[i].attempt++;
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
+                    log("REPEAT ", String.format(Locale.getDefault(), "#%d (id=%d)", buffer[i].attempt, i));
                     IIntArray msg = buffer[i].msg; // already contains "crcid" and "id"
                     buffer[i].startRtt = totalTicks;
                     socket.send(getPacket(msg.toByteArray(), msg.length()));

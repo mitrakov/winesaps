@@ -154,7 +154,9 @@ class Parser implements IHandler {
                             inspectError(cmd, data.get(1));
                         else throw new IllegalArgumentException("Unhandled command code");
                 }
-            } else throw new IllegalArgumentException("Incorrect command code");
+            } else {
+                throw new IllegalArgumentException("Incorrect command code");
+            }
         } else throw new IllegalArgumentException("Empty data");
     }
 
@@ -380,7 +382,7 @@ class Parser implements IHandler {
                 model.roundFinished(winner, score1, score2);
             else if (gameFinished) {
                 int reward = data.length() == 8
-                        ? (data.get(4) << 24) | (data.get(5) << 16) |(data.get(6) << 8) | data.get(7) : 0;
+                        ? (data.get(4) << 24) | (data.get(5) << 16) | (data.get(6) << 8) | data.get(7) : 0;
                 model.gameFinished(winner, score1, score2, reward);
             } else throw new IllegalArgumentException("Incorrect finished format!");
         } else if (data.length() == 1) {
