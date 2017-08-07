@@ -26,7 +26,7 @@ class Sender {
     private /*final*/ DatagramPacket packet;
 
     private int id = 0, expectedAck = 0, totalTicks = 0, crcid = 0;
-    int srtt = 0;
+    float srtt = .0f;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
     Sender(PsObject psObject, DatagramSocket socket, String host, int port, IProtocol protocol) {
@@ -89,7 +89,7 @@ class Sender {
             buffer[ack].ack = true;
             if (ack == expectedAck) {
                 int rtt = totalTicks - buffer[ack].startRtt + 1;
-                int newSrtt = (int) (RC * srtt + (1 - RC) * rtt);
+                float newSrtt = RC * srtt + (1 - RC) * rtt;
                 srtt = min(max(newSrtt, MIN_SRTT), MAX_SRTT);
                 accept();
             }

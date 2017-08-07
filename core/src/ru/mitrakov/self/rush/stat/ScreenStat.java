@@ -113,8 +113,8 @@ class ScreenStat extends ScreenAdapter {
             label.setText(String.valueOf(value));
     }
 
-    void setSrtt(int srtt) {
-        lblSrtt.setText(String.format(Locale.getDefault(), "SRTT = %d", srtt));
+    void setSrtt(float srtt) {
+        lblSrtt.setText(String.format(Locale.getDefault(), "SRTT = %.2f", srtt));
     }
 
     void setConnected(boolean value) {

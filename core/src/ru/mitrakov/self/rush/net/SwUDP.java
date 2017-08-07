@@ -20,9 +20,9 @@ public class SwUDP implements IProtocol {
     final static int MAX_ATTEMPTS = 8;
     final static int PERIOD = 10;
     final static int MAX_PENDING = 5;
-    final static int MIN_SRTT = 2;
-    final static int DEFAULT_SRTT = 6;
-    final static int MAX_SRTT = 12;
+    final static float MIN_SRTT = 2f;
+    final static float DEFAULT_SRTT = 5f;
+    final static float MAX_SRTT = 12f;
     final static float RC = .8f;
     final static float AC = 2.2f;
 
@@ -121,7 +121,7 @@ public class SwUDP implements IProtocol {
         return sender.connected && receiver.connected;
     }
 
-    public int getSrtt() {
+    public float getSrtt() {
         return sender.srtt;
     }
 }
