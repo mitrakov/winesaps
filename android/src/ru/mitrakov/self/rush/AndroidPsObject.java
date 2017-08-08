@@ -3,6 +3,7 @@ package ru.mitrakov.self.rush;
 import android.os.*;
 import android.app.*;
 import android.content.*;
+import android.provider.Settings;
 
 import java.util.Locale;
 
@@ -66,6 +67,11 @@ class AndroidPsObject extends PsObject {
             } catch (PendingIntent.CanceledException ignored) {
             }
         }
+    }
+
+    @Override
+    public String getKeyboardVendor() {
+        return Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
     }
 
     @Override

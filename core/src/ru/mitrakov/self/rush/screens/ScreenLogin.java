@@ -117,13 +117,13 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        txtLogin = new TextFieldFeat("", skin, "default", null); // ....
-        txtPassword = new TextFieldFeat("", skin, "default", null) {{
+        txtLogin = new TextFieldFeat("", skin, "default", psObject, null); // ....
+        txtPassword = new TextFieldFeat("", skin, "default", psObject, null) {{
             setPasswordMode(true);
             setPasswordCharacter('*');
         }};
-        txtEmail = new TextFieldFeat("", skin, "default", btnOkSignUp);
-        txtPromocode = new TextFieldFeat("", skin, "default", btnOkSignUp) {{
+        txtEmail = new TextFieldFeat("", skin, "default", psObject, btnOkSignUp);
+        txtPromocode = new TextFieldFeat("", skin, "default", psObject, btnOkSignUp) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

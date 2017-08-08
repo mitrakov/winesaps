@@ -305,8 +305,8 @@ public class ScreenMain extends LocalizableScreen {
             });
         }};
 
-        txtEnemyName = new TextFieldFeat("", skin, "default", btnInviteByNameOk);
-        txtFriendName = new TextFieldFeat("", skin, "default", btnAddFriendOk);
+        txtEnemyName = new TextFieldFeat("", skin, "default", psObject, btnInviteByNameOk);
+        txtFriendName = new TextFieldFeat("", skin, "default", psObject, btnAddFriendOk);
 
         lblNewVersion = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override

@@ -60,6 +60,11 @@ class DesktopPsObject extends PsObject {
         }
     }
 
+    @Override
+    public String getKeyboardVendor() {
+        return "";
+    }
+
     /**
      * See http://stackoverflow.com/questions/9753722
      *

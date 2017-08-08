@@ -25,6 +25,8 @@ public abstract class PsObject {
 
     public abstract void pushNotification(String msg);
 
+    public abstract String getKeyboardVendor();
+
     public void runDaemon(int delayMsec, int periodMsec, final Runnable f) {
         new Timer(true).schedule(new TimerTask() {
             @Override
