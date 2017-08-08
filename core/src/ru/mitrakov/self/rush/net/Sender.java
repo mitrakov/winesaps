@@ -131,7 +131,7 @@ class Sender {
                 buffer[i].attempt++;
                 buffer[i].nextRepeat += AC * srtt * buffer[i].attempt;
                 if (buffer[i].attempt > 1) {
-                    log("REPEAT ", String.format(Locale.getDefault(), "#%d (id=%d)", buffer[i].attempt, i));
+                    log("REPEAT ", buffer[i].attempt);
                     IIntArray msg = buffer[i].msg; // already contains "crcid" and "id"
                     buffer[i].startRtt = totalTicks;
                     socket.send(getPacket(msg.toByteArray(), msg.length()));
