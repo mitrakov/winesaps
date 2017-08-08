@@ -17,6 +17,8 @@ public abstract class PsObject {
         return billingProvider;
     }
 
+    public abstract String getPlatform();
+
     public abstract void hide();
 
     public abstract void setActive(boolean value);

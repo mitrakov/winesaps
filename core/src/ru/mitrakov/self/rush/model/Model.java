@@ -258,6 +258,7 @@ public class Model {
     // === USUAL PRIVATE FIELDS ===
     // ============================
 
+    private final PsObject psObject;
     private final Object locker = new Object();
     private final Collection<Ability> abilities = new LinkedList<Ability>();
     private ISender sender;
@@ -272,6 +273,7 @@ public class Model {
 
     public Model(PsObject psObject) {
         assert psObject != null;
+        this.psObject = psObject;
         // create timer to ping the server (otherwise the server will make "signOut due to inaction")
         psObject.runDaemon(PING_PERIOD_MSEC, PING_PERIOD_MSEC, new Runnable() {
             @Override
@@ -361,6 +363,11 @@ public class Model {
         return false;
     }
 
+    public String getAgentInfo() {
+        String os = System.getProperty("os.name");
+        return String.format("1.%s.%s.%s.%s", language, Winesaps.VERSION_STR, psObject.getPlatform(), os);
+    }
+
     public String getDetractor1() {
         return aggressor ? name : enemy;
     }
@@ -385,7 +392,7 @@ public class Model {
         assert name != null && hash != null;
         if (name.length() > 0 && hash.length() > 0 && connected && sender != null) { // don't use method 'isEmpty()'
             sender.reset();
-            sender.send(SIGN_IN, String.format("\1%s\0%s", name, hash)); // \1 = Local auth
+            sender.send(SIGN_IN, String.format("\1%s\0%s\0%s", name, hash, getAgentInfo())); // \1 = Local auth
         }
     }
 
@@ -399,7 +406,7 @@ public class Model {
         if (connected && sender != null) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_IN, String.format("\1%s\0%s", login, hash)); // \1 = Local auth
+            sender.send(SIGN_IN, String.format("\1%s\0%s\0%s", login, hash, getAgentInfo())); // \1 = Local auth
         }
     }
 
@@ -415,7 +422,7 @@ public class Model {
         if (connected && sender != null && password.length() >= 4) {
             hash = md5(password);
             sender.reset();
-            sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s", login, hash, email, promocode));
+            sender.send(SIGN_UP, String.format("%s\0%s\0%s\0%s\0%s", login, hash, getAgentInfo(), email, promocode));
         }
     }
 

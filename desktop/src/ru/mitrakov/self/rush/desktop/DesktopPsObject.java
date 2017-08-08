@@ -1,12 +1,15 @@
 package ru.mitrakov.self.rush.desktop;
 
 import java.awt.*;
+import java.util.Locale;
 
 import javax.swing.*;
 
-import static javax.swing.JOptionPane.*;
+import com.badlogic.gdx.Gdx;
 
 import ru.mitrakov.self.rush.*;
+
+import static javax.swing.JOptionPane.*;
 
 /**
  * Created by mitrakov on 26.07.2017
@@ -20,6 +23,11 @@ class DesktopPsObject extends PsObject {
         super(billingProvider);
         this.parent = parent;
         this.icon = icon;
+    }
+
+    @Override
+    public String getPlatform() {
+        return String.format(Locale.getDefault(), "W.%s.%d", Gdx.app.getType(), Gdx.app.getVersion());
     }
 
     @Override

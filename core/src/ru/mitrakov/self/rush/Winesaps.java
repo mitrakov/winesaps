@@ -158,6 +158,7 @@ public class Winesaps extends Game {
         if (key.equals("#!name")) return model.name;
         if (key.equals("#!hash")) return model.hash;
         if (key.equals("#!enemy")) return model.enemy;
+        if (key.equals("#!agent")) return model.getAgentInfo();
         if (key.equals("#!connected")) return model.connected + "";
         if (key.equals("#!settings")) return model.fileReader.read(Model.SETTINGS_FILE).replaceAll(" ", "\n");
         if (key.equals("#!products")) {

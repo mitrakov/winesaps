@@ -4,6 +4,10 @@ import android.os.*;
 import android.app.*;
 import android.content.*;
 
+import java.util.Locale;
+
+import com.badlogic.gdx.Gdx;
+
 /**
  * Created by mitrakov on 17.07.2017
  */
@@ -21,6 +25,11 @@ class AndroidPsObject extends PsObject {
         thread = new HandlerThread("psObject"); // https://stackoverflow.com/questions/18856376
         thread.start();
         handler = new Handler(thread.getLooper());
+    }
+
+    @Override
+    public String getPlatform() {
+        return String.format(Locale.getDefault(), "W.%s.%d", Gdx.app.getType(), Gdx.app.getVersion());
     }
 
     @Override
