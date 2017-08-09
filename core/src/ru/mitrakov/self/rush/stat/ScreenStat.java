@@ -18,7 +18,8 @@ import static ru.mitrakov.self.rush.Winesaps.*;
  */
 class ScreenStat extends ScreenAdapter {
     private static final String[] categories = new String[]{
-            "Time elapsed:      ",
+            "Time elapsed (µs): ",
+            "Uptime (min):      ",
             "RPS:               ",
             "Current used SIDs: ",
             "Current battles:   ",
@@ -27,7 +28,7 @@ class ScreenStat extends ScreenAdapter {
             "Total users:       ",
             "Senders count:     ",
             "Receivers count:   ",
-            "Current AI count:  ",
+            "Fake SIDs count:   ",
             "Total AI spawned:  ",
             "Battle refs up:    ",
             "Battle refs down:  ",
@@ -36,12 +37,14 @@ class ScreenStat extends ScreenAdapter {
             "Field refs up:     ",
             "Field refs down:   ",
             "Current env size:  ",
+            "                   ",
     };
 
     private final PsObject psObject;
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Stage stage = new Stage(new FitViewport(WIDTH, HEIGHT));
     private final Table tableLeft = new Table();
+    private final Table tableMid = new Table();
     private final Table tableRight = new Table();
     private final Label lblSrtt = new Label("", skin, "white");
     private final Label lblConnected = new Label("", skin, "white");
@@ -53,6 +56,7 @@ class ScreenStat extends ScreenAdapter {
         Table table = new Table();
         table.setFillParent(true);
         table.add(tableLeft).space(40);
+        table.add(tableMid).space(40);
         table.add(tableRight).space(40);
         stage.addActor(table);
     }
@@ -89,9 +93,10 @@ class ScreenStat extends ScreenAdapter {
             Label category = new Label(categories[i], skin, "white");
             Label value = new Label("0", skin, "white");
             lblValues.put(i, value);
-            tableLeft.add(category).left();
-            tableLeft.add(value).right();
-            tableLeft.row();
+            Table table = i < categories.length / 2 ? tableLeft : tableMid;
+            table.add(category).left();
+            table.add(value).right();
+            table.row();
         }
         tableRight.row();
         tableRight.add(lblSrtt);
