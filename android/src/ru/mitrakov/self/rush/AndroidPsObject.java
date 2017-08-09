@@ -30,6 +30,7 @@ class AndroidPsObject extends PsObject {
 
     @Override
     public String getPlatform() {
+        // G = Google Play, W = Web
         return String.format(Locale.getDefault(), "W.%s.%d", Gdx.app.getType(), Gdx.app.getVersion());
     }
 
