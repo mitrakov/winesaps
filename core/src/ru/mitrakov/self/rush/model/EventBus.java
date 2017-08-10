@@ -175,8 +175,10 @@ public class EventBus {
     }
     public static final class RoundStartedEvent extends Event {
         public int number;
-        RoundStartedEvent(int number) {
+        public String levelName;
+        RoundStartedEvent(int number, String levelName) {
             this.number = number;
+            this.levelName = levelName;
         }
     }
     public static final class NewFieldEvent extends Event {

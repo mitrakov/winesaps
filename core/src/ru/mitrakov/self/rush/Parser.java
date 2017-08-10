@@ -295,8 +295,8 @@ class Parser implements IHandler {
             int character2 = data.get(4);
             int myLives = data.get(5);
             int enemyLives = data.get(6);
-            // String fieldName = data.remove(0, 6).toUTF8(); // not used for now
-            model.setRoundInfo(number, timeSec, aggressor, character1, character2, myLives, enemyLives);
+            String fieldName = data.remove(0, 7).toUTF8();
+            model.setRoundInfo(number, timeSec, fieldName, aggressor, character1, character2, myLives, enemyLives);
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect round info format");

@@ -244,7 +244,7 @@ public class Model {
     private final EventBus.NewFieldEvent newFieldEvent = new EventBus.NewFieldEvent(null, null);
     private final EventBus.ActorResetEvent actorResetEvent = new EventBus.ActorResetEvent(null);
     private final EventBus.EffectAddedEvent effectAddedEvent = new EventBus.EffectAddedEvent(Effect.None);
-    private final EventBus.RoundStartedEvent roundStartedEvent = new EventBus.RoundStartedEvent(0);
+    private final EventBus.RoundStartedEvent roundStartedEvent = new EventBus.RoundStartedEvent(0, "");
     private final EventBus.ScoreChangedEvent scoreChangedEvent = new EventBus.ScoreChangedEvent(0, 0);
     private final EventBus.LivesChangedEvent livesChangedEvent = new EventBus.LivesChangedEvent(0, 0);
     private final EventBus.ThingChangedEvent thingChangedEvent = new EventBus.ThingChangedEvent(null, null, false);
@@ -887,8 +887,8 @@ public class Model {
         bus.raise(new EventBus.PaymentDoneEvent(gems, coupon));
     }
 
-    public void setRoundInfo(int number, int timeSec, boolean aggressor, int character1, int character2, int myLives,
-                             int enemyLives) {
+    public void setRoundInfo(int number, int timeSec, String levelName, boolean aggressor, int character1,
+                             int character2, int myLives, int enemyLives) {
         curThing = enemyThing = curActor = enemyActor = null;
         battleNotFoundGuardCounter = 0;
 
@@ -903,6 +903,7 @@ public class Model {
 
         // generate initial events
         roundStartedEvent.number = number;
+        roundStartedEvent.levelName = levelName;
         scoreChangedEvent.score1 = scoreChangedEvent.score2 = 0;
         livesChangedEvent.myLives = myLives;
         livesChangedEvent.enemyLives = enemyLives;
