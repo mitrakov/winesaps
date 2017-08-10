@@ -16,6 +16,7 @@ public class DialogNoButtons extends Window {
         lblMessage = new Label("", skin, "default");
         lblMessage.setAlignment(Align.center);
         pad(20).add(lblMessage).minWidth(400); // here getContentTable != null
+        setMovable(false);
     }
 
     public DialogNoButtons setText(String text) {
