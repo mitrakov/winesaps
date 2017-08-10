@@ -10,6 +10,7 @@ import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.Winesaps.*;
+import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
  * Entry point
@@ -18,6 +19,7 @@ public class Stat extends Game {
     private final PsObject psObject;
     private final ParserStat parser = new ParserStat();
     private final IIntArray query = new GcResistantIntArray(32);
+    private final IIntArray query2 = new GcResistantIntArray(32);
     private final Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
@@ -43,7 +45,7 @@ public class Stat extends Game {
 
     @Override
     public void create() {
-        setScreen(screen = new ScreenStat(psObject).init());
+        setScreen(screen = new ScreenStat(this, psObject).init());
         parser.setScreen(screen);
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setCatchMenuKey(true);
@@ -67,6 +69,15 @@ public class Stat extends Game {
     public void dispose() {
         super.dispose();
         screen.dispose();
+    }
+
+    void sendCmd(String arg) {
+        try {
+            query2.fromByteArray(getBytes(arg), arg.length()).prepend(0xF1);
+            network.send(query2);
+        } catch (IOException e) {
+            errorHandler.uncaughtException(Thread.currentThread(), e);
+        }
     }
 
     public void mute(boolean value) {

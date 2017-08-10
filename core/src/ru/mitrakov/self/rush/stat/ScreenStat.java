@@ -5,8 +5,9 @@ import java.util.Locale;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ru.mitrakov.self.rush.PsObject;
@@ -41,6 +42,7 @@ class ScreenStat extends ScreenAdapter {
     };
 
     private final PsObject psObject;
+    private final Stat stat;
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
     private final Stage stage = new Stage(new FitViewport(WIDTH, HEIGHT));
     private final Table tableLeft = new Table();
@@ -50,7 +52,9 @@ class ScreenStat extends ScreenAdapter {
     private final Label lblConnected = new Label("", skin, "white");
     private final IntMap<Label> lblValues = new IntMap<Label>(16);
 
-    ScreenStat(PsObject psObject) {
+    ScreenStat(Stat stat, PsObject psObject) {
+        assert stat != null && psObject != null;
+        this.stat = stat;
         this.psObject = psObject;
 
         Table table = new Table();
@@ -102,6 +106,24 @@ class ScreenStat extends ScreenAdapter {
         tableRight.add(lblSrtt);
         tableRight.row();
         tableRight.add(lblConnected);
+        tableRight.row();
+        tableRight.add(new TextButton("Call Function", skin, "default") {{
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    Gdx.input.getTextInput(new Input.TextInputListener() {
+                        @Override
+                        public void input(String text) {
+                            stat.sendCmd(text);
+                        }
+
+                        @Override
+                        public void canceled() {
+                        }
+                    }, "", "", "");
+                }
+            });
+        }});
         return this;
     }
 
@@ -109,6 +131,10 @@ class ScreenStat extends ScreenAdapter {
         Label label = lblValues.get(category);
         if (label != null)
             label.setText(String.valueOf(value));
+    }
+
+    void showMessage(String message) {
+        new Dialog("", skin, "default").text(message).button("OK").show(stage);
     }
 
     void setSrtt(float srtt) {

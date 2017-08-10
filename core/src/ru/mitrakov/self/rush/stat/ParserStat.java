@@ -44,6 +44,8 @@ class ParserStat implements IHandler {
                         screen.setValue(category, value);
                     }
                 } else throw new RuntimeException("Statistics error: " + error);
+            } else if (code == 0xF1) {
+                screen.showMessage("Server responded with code " + error);
             }
         } else throw new IllegalArgumentException("Data too short");
     }
