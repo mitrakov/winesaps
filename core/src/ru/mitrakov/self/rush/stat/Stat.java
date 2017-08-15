@@ -37,7 +37,7 @@ public class Stat extends Game {
             network = new Network(psObject, parser, errorHandler, HOST, PORT);
             protocol = new SwUDP(psObject, network.getSocket(), HOST, PORT, network);
             network.setProtocol(protocol);
-            network.reset(0, 0);
+            network.reset(0, 0x00000000);
         } catch (SocketException e) {
             e.printStackTrace();
         }

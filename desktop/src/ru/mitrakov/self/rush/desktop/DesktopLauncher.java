@@ -42,8 +42,9 @@ public class DesktopLauncher extends JFrame {
         final PsObject obj = new DesktopPsObject(null, this, icon);
 
         final Winesaps game = new Winesaps(obj);
-        // for Stat application: uncomment line below and (optionally) remove call to registerInstance() above, change
-        // arg of setDefaultCloseOperation() to EXIT_ON_CLOSE, change title below
+        // for Stat application: uncomment line below, change token in network.reset() in Stat.java, and (optionally)
+        // remove call to registerInstance() above, change arg of setDefaultCloseOperation() to EXIT_ON_CLOSE,
+        // change title below
         // final Stat game = new Stat(obj);
 
         // set up JFrame

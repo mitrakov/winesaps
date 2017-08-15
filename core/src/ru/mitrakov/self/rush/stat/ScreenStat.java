@@ -38,7 +38,7 @@ class ScreenStat extends ScreenAdapter {
             "Field refs up:     ",
             "Field refs down:   ",
             "Current env size:  ",
-            "                   ",
+            "Waiting count:     ",
     };
 
     private final PsObject psObject;
