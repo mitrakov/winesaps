@@ -208,7 +208,7 @@ public class Winesaps extends Game {
                 if (event instanceof EventBus.InviteEvent && model.notifyNewBattles) {
                     EventBus.InviteEvent ev = (EventBus.InviteEvent) event;
                     I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                    psObject.pushNotification(i18n.format("dialog.incoming.notification", ev.enemy));
+                    psObject.pushNotification(i18n.format("dialog.incoming.notification", ev.enemy), false);
                 }
             }
         });

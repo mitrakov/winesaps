@@ -18,7 +18,7 @@ public class AndroidLauncher extends AndroidApplication {
 
         final Winesaps game = new Winesaps(obj = new AndroidPsObject(this));
         // for Stat application: uncomment line below, change token in network.reset() in Stat.java, change
-        // applicationId in android/build.gradle and (optionally) activity.android:label in manifest
+        // applicationId in android/build.gradle and (optionally) 2 android:labels in manifest
         // final Stat game = new Stat(obj = new AndroidPsObject(this));
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();

@@ -49,8 +49,8 @@ class AndroidPsObject extends PsObject {
     }
 
     @Override
-    public void pushNotification(String msg) {
-        if (!active) { // if the app is active => no need to push notifications
+    public void pushNotification(String msg, boolean force) {
+        if (!active || force) { // if the app is active => no need to push notifications
             NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent intent = new Intent(activity, activity.getClass());
             PendingIntent pIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

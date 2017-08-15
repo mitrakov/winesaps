@@ -43,8 +43,8 @@ class DesktopPsObject extends PsObject {
     }
 
     @Override
-    public void pushNotification(String msg) {
-        if (!parent.isVisible()) { // if the app is active => no need to push notifications
+    public void pushNotification(String msg, boolean force) {
+        if (!parent.isVisible() || force) { // if the app is active => no need to push notifications
             JOptionPane pane = new JOptionPane(msg, QUESTION_MESSAGE, OK_CANCEL_OPTION, icon);
             dialog = pane.createDialog(null, "Winesaps");
             locateToRightBottom(dialog);

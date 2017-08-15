@@ -131,6 +131,8 @@ class ScreenStat extends ScreenAdapter {
         Label label = lblValues.get(category);
         if (label != null)
             label.setText(String.valueOf(value));
+        if (category == 19 && value > 0) // 19 is "Waiting count", sorry for hardcode
+            psObject.pushNotification("Someone is waiting for enemy!", true);
     }
 
     void showMessage(String message) {

@@ -23,7 +23,7 @@ public abstract class PsObject {
 
     public abstract void setActive(boolean value);
 
-    public abstract void pushNotification(String msg);
+    public abstract void pushNotification(String msg, boolean force);
 
     public abstract String getKeyboardVendor();
 
