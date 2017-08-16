@@ -1,7 +1,7 @@
 # WINESAPS
 Winesaps client
 
-![Winesaps](https://winesaps.com/winesaps.png)
+![Winesaps](https://winesaps.com/img/winesaps.png)
 
 **Winesaps client** is an official open source GUI for **Winesaps** - online multiplayer game for Windows, Linux and Android.
 
