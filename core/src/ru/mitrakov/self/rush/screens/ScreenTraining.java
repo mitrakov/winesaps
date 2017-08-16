@@ -20,7 +20,7 @@ public class ScreenTraining extends LocalizableScreen {
 
     private final Gui gui;
     private final ImageButton btnThing;
-    private final TextButton btnSkip;
+    // private final TextButton btnSkip; @mitrakov (2017-08-16) removed Skip button to make new users pass the tutorial
     private final DialogFinished finishedDialog;
     private final DialogTutorial trainingDialog;
     private final DialogInfo infoDialog;
@@ -47,16 +47,6 @@ public class ScreenTraining extends LocalizableScreen {
                 }
             });
         }};
-        btnSkip = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.newbie = false;
-                    model.giveUp();
-                    game.setNextScreen();
-                }
-            });
-        }};
 
         initComponents();
     }
@@ -74,7 +64,6 @@ public class ScreenTraining extends LocalizableScreen {
         super.onLocaleChanged(bundle);
         assert bundle != null;
 
-        btnSkip.setText(bundle.format("tutorial.skip"));
         finishedDialog.setText(bundle.format("tutorial.msgX.text"), bundle.format("tutorial.msgX.action"));
         infoDialog.setText(bundle.format("dialog.warning"), bundle.format("dialog.info.server.stop"));
 
@@ -154,10 +143,9 @@ public class ScreenTraining extends LocalizableScreen {
 
     private void initComponents() {
         // building table
-        table.add(gui).colspan(2);
+        table.add(gui);
         table.row();
         table.add(btnThing).align(Align.left).padLeft(2);
-        table.add(btnSkip).align(Align.right).padRight(2).width(200).height(btnThing.getHeight());
 
         // initialize curtains windows
         Skin skin = assetManager.get("skin/uiskin.json");
