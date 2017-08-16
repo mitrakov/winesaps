@@ -84,7 +84,6 @@ public class ScreenTraining extends LocalizableScreen {
         }
         if (event instanceof EventBus.RoundFinishedEvent || event instanceof EventBus.BattleNotFoundEvent) {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
-                model.newbie = false;
                 trainingDialog.remove();
                 finishedDialog.setScore("", "", 1, 0).setOnResultAction(new Runnable() {
                     @Override

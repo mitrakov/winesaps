@@ -354,6 +354,15 @@ public class ScreenMain extends LocalizableScreen {
         model.getUserInfo();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
+        if (model.newbie) {
+            model.newbie = false;
+            psObject.runTask(2500, new Runnable() {
+                @Override
+                public void run() {
+                    inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
+                }
+            });
+        }
     }
 
     @Override
