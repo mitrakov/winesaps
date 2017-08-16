@@ -17,7 +17,7 @@ public class SwUDP implements IProtocol {
     final static int N = 256;
     final static int SYN = 0;
     final static int ERRACK = 1;
-    final static int MAX_ATTEMPTS = 8;
+    final static int MAX_ATTEMPTS = 9;
     final static int PERIOD = 10;
     final static int MAX_PENDING = 5;
     final static float MIN_SRTT = 2f;

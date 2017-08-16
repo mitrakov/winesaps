@@ -22,7 +22,7 @@ public class ScreenLogin extends LocalizableScreen {
     private final Table tableMain;
     private final TextFieldFeat txtLogin;
     private final TextFieldFeat txtPassword;
-    private final TextFieldFeat txtEmail;
+    // private final TextFieldFeat txtEmail; @mitrakov (2017-08-16) removed optional e-mail not to confuse new users
     private final TextFieldFeat txtPromocode;
     private final TextButton btnSignIn;
     private final TextButton btnSignUp;
@@ -33,10 +33,7 @@ public class ScreenLogin extends LocalizableScreen {
     private final DialogLanguage langDialog;
     private final DialogInfo infoDialog;
     private final Label lblName;
-    private final Label lblNameAsterisk;
     private final Label lblPassword;
-    private final Label lblPasswordAsterisk;
-    private final Label lblEmail;
     private final Image imgValid;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
@@ -108,7 +105,7 @@ public class ScreenLogin extends LocalizableScreen {
                     String password = txtPassword.getText();
                     if (password.length() >= 4) {
                         connectingDialog.show(stage);
-                        model.signUp(txtLogin.getText(), password, txtEmail.getText(), txtPromocode.getText());
+                        model.signUp(txtLogin.getText(), password, "", txtPromocode.getText());
                     }
                     else {
                         infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.password"));
@@ -122,7 +119,6 @@ public class ScreenLogin extends LocalizableScreen {
             setPasswordMode(true);
             setPasswordCharacter('*');
         }};
-        txtEmail = new TextFieldFeat("", skin, "default", psObject, btnOkSignUp);
         txtPromocode = new TextFieldFeat("", skin, "default", psObject, btnOkSignUp) {{
             addListener(new ChangeListener() {
                 @Override
@@ -142,10 +138,7 @@ public class ScreenLogin extends LocalizableScreen {
         langDialog = new DialogLanguage(game, model, "", skin, "default", atlasMenu, i18n, audioManager);
         infoDialog = new DialogInfo("", skin, "default");
         lblName = new Label("", skin, "default");
-        lblNameAsterisk = new Label("*", skin, "default");
         lblPassword = new Label("", skin, "default");
-        lblPasswordAsterisk = new Label("*", skin, "default");
-        lblEmail = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
         connectingDialog = new DialogLock(skin, "panel-lock");
 
@@ -187,7 +180,6 @@ public class ScreenLogin extends LocalizableScreen {
         chkPromocode.setText(bundle.format("sign.promocode"));
         lblName.setText(bundle.format("sign.name"));
         lblPassword.setText(bundle.format("sign.password"));
-        lblEmail.setText(bundle.format("sign.email"));
         connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
@@ -295,30 +287,22 @@ public class ScreenLogin extends LocalizableScreen {
         buttons.add(btnBack).width(120).height(46).space(20);
         buttons.add(btnOkSignUp).width(120).height(46).space(20);
 
-        final int txtHeight = shiftedByKeyboard ? 40 : 50; // make textboxes smaller when OnScreen Keyboard is visible
-
         tableMain.clear();
         tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(lblNameAsterisk).width(10);
         tableMain.add(lblName).expandX().align(Align.left);
-        tableMain.add(txtLogin).width(305).height(txtHeight).colspan(2);
+        tableMain.add(txtLogin).width(305).height(50).colspan(2);
 
         tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(lblPasswordAsterisk).width(10);
         tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(305).height(txtHeight).colspan(2);
+        tableMain.add(txtPassword).width(305).height(50).colspan(2);
 
         tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(lblEmail).align(Align.left).colspan(2);
-        tableMain.add(txtEmail).width(305).height(txtHeight).colspan(2);
-
-        tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(chkPromocode).colspan(2);
-        tableMain.add(txtPromocode).expandX().fillX().height(txtHeight);
+        tableMain.add(chkPromocode);
+        tableMain.add(txtPromocode).expandX().fillX().height(50);
         tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
 
         tableMain.row().spaceTop(30);
-        tableMain.add(buttons).colspan(4);
+        tableMain.add(buttons).colspan(3);
         if (shiftedByKeyboard)
             shiftUp();
 
