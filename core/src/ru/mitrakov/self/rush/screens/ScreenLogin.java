@@ -18,31 +18,29 @@ import ru.mitrakov.self.rush.dialogs.*;
  * Created by mitrakov on 01.03.2017
  */
 public class ScreenLogin extends LocalizableScreen {
+    // see note#10 below
 
     private final Table tableMain;
     private final TextFieldFeat txtLogin;
     private final TextFieldFeat txtPassword;
-    // private final TextFieldFeat txtEmail; @mitrakov (2017-08-16) removed optional e-mail not to confuse new users
     private final TextFieldFeat txtPromocode;
-    private final TextButton btnSignIn;
-    private final TextButton btnSignUp;
+
+    private final TextButton btnOk;
     private final TextButton btnBack;
-    private final TextButton btnOkSignIn;
-    private final TextButton btnOkSignUp;
     private final CheckBox chkPromocode;
     private final DialogLanguage langDialog;
     private final DialogInfo infoDialog;
     private final Label lblName;
     private final Label lblPassword;
+    private final Label lblDuplicateName;
+    private final LinkedLabel lblHaveAccount;
     private final Image imgValid;
     private final Drawable textureValid;
     private final Drawable textureInvalid;
     private final DialogLock connectingDialog;
 
-    private enum CurDialog {Start, SignIn, SignUp}
-
-    private CurDialog curDialog = CurDialog.Start;
-    private boolean shiftedByKeyboard = false;
+    private transient boolean shiftedByKeyboard = false;
+    private transient boolean signInMode = false;
 
     public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
                        AudioManager audioManager) {
@@ -58,19 +56,23 @@ public class ScreenLogin extends LocalizableScreen {
         tableMain = new Table(skin).pad(20);
         tableMain.setBackground("panel-maroon");
 
-        btnSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
+        btnOk = new TextButtonFeat("", skin, "default", audioManager) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignInDialog();
-                }
-            });
-        }};
-        btnSignUp = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    setSignUpDialog(false);
+                    Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                    String name = txtLogin.getText();
+                    if (name.startsWith("#!")) {
+                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
+                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                    } else if (signInMode) {
+                        connectingDialog.show(stage);
+                        model.signIn(name, txtPassword.getText());
+                    } else { // signUpMode
+                        connectingDialog.show(stage);
+                        model.signUp(txtLogin.getText(), "1234", "", txtPromocode.getText());
+                        rebuildDialog(chkPromocode.isChecked(), false);
+                    }
                 }
             });
         }};
@@ -78,48 +80,16 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setStartDialog();
+                    rebuildDialog(chkPromocode.isChecked(), false);
                 }
             });
         }};
-        btnOkSignIn = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    String name = txtLogin.getText();
-                    if (name.startsWith("#!")) {
-                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
-                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
-                    } else {
-                        connectingDialog.show(stage);
-                        model.signIn(name, txtPassword.getText());
-                    }
-                }
-            });
-        }};
-        btnOkSignUp = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                    String password = txtPassword.getText();
-                    if (password.length() >= 4) {
-                        connectingDialog.show(stage);
-                        model.signUp(txtLogin.getText(), password, "", txtPromocode.getText());
-                    }
-                    else {
-                        infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.password"));
-                        infoDialog.show(stage);
-                    }
-                }
-            });
-        }};
-        txtLogin = new TextFieldFeat("", skin, "default", psObject, null); // ....
-        txtPassword = new TextFieldFeat("", skin, "default", psObject, null) {{
+        txtLogin = new TextFieldFeat("", skin, "default", psObject, btnOk); // ....
+        txtPassword = new TextFieldFeat("", skin, "default", psObject, btnOk) {{
             setPasswordMode(true);
             setPasswordCharacter('*');
         }};
-        txtPromocode = new TextFieldFeat("", skin, "default", psObject, btnOkSignUp) {{
+        txtPromocode = new TextFieldFeat("", skin, "default", psObject, btnOk) {{
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -131,10 +101,20 @@ public class ScreenLogin extends LocalizableScreen {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    setSignUpDialog(chkPromocode.isChecked());
+                    rebuildDialog(chkPromocode.isChecked(), false);
                 }
             });
         }};
+        lblDuplicateName = new Label("", skin, "white") {{
+            setColor(1, 0, 0, 1);
+            setAlignment(Align.center);
+        }};
+        lblHaveAccount = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
+            @Override
+            public void run() {
+                rebuildDialogPassword();
+            }
+        });
         langDialog = new DialogLanguage(game, model, "", skin, "default", atlasMenu, i18n, audioManager);
         infoDialog = new DialogInfo("", skin, "default");
         lblName = new Label("", skin, "default");
@@ -160,7 +140,7 @@ public class ScreenLogin extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
-        setStartDialog();
+        rebuildDialog(false, false);
         if (model.newbie)
             langDialog.show(stage);
     }
@@ -172,14 +152,12 @@ public class ScreenLogin extends LocalizableScreen {
 
         langDialog.onLocaleChanged(bundle);
 
-        btnSignIn.setText(bundle.format("sign.in"));
-        btnSignUp.setText(bundle.format("sign.up"));
+        btnOk.setText(bundle.format("ok"));
         btnBack.setText(bundle.format("back"));
-        btnOkSignIn.setText(bundle.format("ok"));
-        btnOkSignUp.setText(bundle.format("ok"));
         chkPromocode.setText(bundle.format("sign.promocode"));
-        lblName.setText(bundle.format("sign.name"));
+        lblName.setText(bundle.format("sign.prompt"));
         lblPassword.setText(bundle.format("sign.password"));
+        lblDuplicateName.setText(bundle.format("dialog.info.duplicate.name"));
         connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
@@ -206,8 +184,7 @@ public class ScreenLogin extends LocalizableScreen {
             infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.incorrect.email")).show(stage);
         }
         if (event instanceof EventBus.DuplicateNameEvent) {
-            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-            infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.duplicate.name")).show(stage);
+            rebuildDialog(chkPromocode.isChecked(), true);
         }
         if (event instanceof EventBus.SignUpErrorEvent) {
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
@@ -226,87 +203,77 @@ public class ScreenLogin extends LocalizableScreen {
 
     public void setRatio(float ratio) {
         shiftedByKeyboard = ratio > 2;
-        switch (curDialog) {
-            case SignIn:
-                setSignInDialog();
-                break;
-            case SignUp:
-                setSignUpDialog(chkPromocode.isChecked());
-                break;
-            default:
-        }
+        if (signInMode)
+            rebuildDialogPassword();
+        else rebuildDialog(chkPromocode.isChecked(), false);
     }
 
-    private void setStartDialog() {
-        curDialog = CurDialog.Start;
-        chkPromocode.setChecked(false);              // clear checking
-        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+    private void rebuildDialog(boolean havePromocode, boolean showDuplicateNameError) {
+        Actor focused = stage.getKeyboardFocus();
+        signInMode = false;
+
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        lblName.setText(i18n.format("sign.prompt"));
 
         tableMain.clear();
-        tableMain.add(btnSignIn).width(222).height(85).space(30);
+        tableMain.add(lblName).colspan(2).space(8);
         tableMain.row();
-        tableMain.add(btnSignUp).width(222).height(85);
-    }
+        tableMain.add(txtLogin).colspan(2).width(305).height(50).space(8);
 
-    private void setSignInDialog() {
-        curDialog = CurDialog.SignIn;
-        Actor focused = stage.getKeyboardFocus();
+        if (showDuplicateNameError) {
+            lblHaveAccount.setText(i18n.format("sign.have.account"), txtLogin.getText(), "");
+            tableMain.row();
+            tableMain.add(lblDuplicateName).colspan(2).space(8);
+            tableMain.row();
+            tableMain.add(lblHaveAccount).colspan(2).left().space(8);
+        }
 
-        txtLogin.setOnEnterActor(btnOkSignIn);
-        txtPassword.setOnEnterActor(btnOkSignIn);
+        tableMain.row();
+        tableMain.add(chkPromocode).colspan(2).left().space(8);
 
-        Table buttons = new Table();
-        buttons.add(btnBack).width(120).height(46).space(20);
-        buttons.add(btnOkSignIn).width(120).height(46).space(20);
+        if (havePromocode) {
+            tableMain.row();
+            tableMain.add(txtPromocode).expandX().fillX().height(50).space(8);
+            tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
+        }
 
-        tableMain.clear();
-        tableMain.row().space(20);
-        tableMain.add(lblName).align(Align.left);
-        tableMain.add(txtLogin).width(305).height(50);
-        tableMain.row().space(20);
-        tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(305).height(50);
-        tableMain.row().spaceTop(30);
-        tableMain.add(buttons).colspan(2);
+        tableMain.row();
+        tableMain.add(btnOk).colspan(2).minWidth(131).height(50).spaceTop(30);
+
         if (shiftedByKeyboard)
             shiftUp();
 
         stage.setKeyboardFocus(focused != null ? focused : txtLogin);
     }
 
-    private void setSignUpDialog(boolean havePromocode) {
-        curDialog = CurDialog.SignUp;
+    private void rebuildDialogPassword() {
         Actor focused = stage.getKeyboardFocus();
+        signInMode = true;
 
-        txtLogin.setOnEnterActor(btnOkSignUp);
-        txtPassword.setOnEnterActor(btnOkSignUp);
-        txtPromocode.setVisible(havePromocode);
-        imgValid.setVisible(havePromocode);
+        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+        lblName.setText(i18n.format("sign.name"));
 
         Table buttons = new Table();
-        buttons.add(btnBack).width(120).height(46).space(20);
-        buttons.add(btnOkSignUp).width(120).height(46).space(20);
+        buttons.add(btnBack).width(131).height(50).space(20);
+        buttons.add(btnOk).width(131).height(50).space(20);
 
         tableMain.clear();
-        tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(lblName).expandX().align(Align.left);
-        tableMain.add(txtLogin).width(305).height(50).colspan(2);
+        tableMain.add(lblName).colspan(2).space(8);
+        tableMain.row();
+        tableMain.add(txtLogin).colspan(2).width(305).height(50).space(8);
 
-        tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(lblPassword).align(Align.left);
-        tableMain.add(txtPassword).width(305).height(50).colspan(2);
+        tableMain.row();
+        tableMain.add(lblPassword).colspan(2).space(8);
+        tableMain.row();
+        tableMain.add(txtPassword).colspan(2).width(305).height(50).space(8);
 
-        tableMain.row().spaceTop(10).spaceLeft(5);
-        tableMain.add(chkPromocode);
-        tableMain.add(txtPromocode).expandX().fillX().height(50);
-        tableMain.add(imgValid).width(imgValid.getWidth()).height(imgValid.getHeight());
+        tableMain.row();
+        tableMain.add(buttons).colspan(2).spaceTop(30);
 
-        tableMain.row().spaceTop(30);
-        tableMain.add(buttons).colspan(3);
         if (shiftedByKeyboard)
             shiftUp();
 
-        stage.setKeyboardFocus(focused != null ? focused : txtLogin);
+        stage.setKeyboardFocus(focused != null ? focused : txtPassword);
     }
 
     private void shiftUp() {
@@ -314,3 +281,8 @@ public class ScreenLogin extends LocalizableScreen {
         tableMain.add(new Image());  // 'blank' image to fill space taken by on-screen keyboard
     }
 }
+
+// note#10 (@mitrakov, 2017-08-16): I decided to replace usual registration (Login/Password) with a "soft" one
+// (only ask for Name, Password is always default); after several battles the game will suggest to provide a new
+// password; I hope it'll help to decrease the number of registration-scared newbies
+//

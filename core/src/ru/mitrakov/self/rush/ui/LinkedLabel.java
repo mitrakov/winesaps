@@ -25,7 +25,7 @@ public class LinkedLabel extends Table {
                     return super.touchDown(event, x, y, pointer, button);
                 }
             });
-        }});
+        }}).spaceLeft(3).spaceRight(3);
         add(lblAfter = new Label(txtAfter, skin, style)).bottom();
     }
 
