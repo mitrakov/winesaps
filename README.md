@@ -1,11 +1,11 @@
 # WINESAPS
 Winesaps client
 
-![Winesaps](http://winesaps.com/winesaps.png)
+![Winesaps](https://winesaps.com/winesaps.png)
 
-**Winesaps client** is an official open source GUI for **Winesaps** - online multiplayer game for Android devices and desktops.
+**Winesaps client** is an official open source GUI for **Winesaps** - online multiplayer game for Windows, Linux and Android.
 
-Web page: <http://winesaps.com>
+Web page: <https://winesaps.com>
 
 ## Information ##
 Tools:
@@ -13,7 +13,7 @@ Tools:
 * Client is written in [Java](https://www.java.com) with [LibGDX](https://libgdx.badlogicgames.com) game library
 
 Supported platforms:
-* Android (v.2.2.x+)
+* Android (v.2.2+)
 * Windows (x86, x64)
 * Linux (x86, x64)
 
