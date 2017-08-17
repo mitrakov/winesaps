@@ -28,9 +28,9 @@ public class DialogMoreCrystals extends DialogFeat {
     private final LinkedLabel lblText4;
 
     public DialogMoreCrystals(Model model, Skin skin, String style, AssetManager assetManager, AudioManager audioMgr,
-                              final Dialog promoDialog, final Dialog purchaseDialog, final Stage stage) {
+                              final Dialog promoDialog, final Dialog purchaseDialog) {
         super("", skin, style);
-        assert model != null && assetManager != null && promoDialog != null && stage != null;
+        assert model != null && assetManager != null && promoDialog != null;
         this.model = model;
 
         lblOverview = new Label("", skin, "default");
@@ -40,7 +40,7 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText2 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
-                promoDialog.show(stage);
+                promoDialog.show(getStage());
             }
         });
         lblText2extra = new Label("", skin, "small") {{ setAlignment(Align.center, Align.center);}};
@@ -50,11 +50,11 @@ public class DialogMoreCrystals extends DialogFeat {
         lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
-                purchaseDialog.show(stage);
+                purchaseDialog.show(getStage());
             }
         });
 
-        init(getContentTable(), assetManager, audioMgr, skin, promoDialog, purchaseDialog, stage);
+        init(getContentTable(), assetManager, audioMgr, skin, promoDialog, purchaseDialog);
         button("Close"); // text will be replaced in onLocaleChanged()
     }
 
@@ -94,7 +94,7 @@ public class DialogMoreCrystals extends DialogFeat {
     }
 
     private void init(Table table, AssetManager assetManager, AudioManager audioManager, Skin skin,
-                      final Dialog promoDialog, final Dialog purchaseDialog, final Stage stage) {
+                      final Dialog promoDialog, final Dialog purchaseDialog) {
         assert table != null && assetManager != null && audioManager != null;
         TextureAtlas atlas = assetManager.get("pack/menu.pack");
         //table.setDebug(true);
@@ -121,7 +121,7 @@ public class DialogMoreCrystals extends DialogFeat {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    promoDialog.show(stage);
+                    promoDialog.show(getStage());
                 }
             });
         }}).expand();
@@ -142,7 +142,7 @@ public class DialogMoreCrystals extends DialogFeat {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    purchaseDialog.show(stage);
+                    purchaseDialog.show(getStage());
                 }
             });
         }}).expand();

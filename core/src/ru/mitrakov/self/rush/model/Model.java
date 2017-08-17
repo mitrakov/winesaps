@@ -19,7 +19,7 @@ import static ru.mitrakov.self.rush.model.Model.Cmd.*;
  *
  * @author mitrakov
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Model {
     /**
      * size of the rating list (defined by server)
@@ -35,7 +35,6 @@ public class Model {
     /**
      * interface to send commands to the server
      */
-    @SuppressWarnings("unused")
     public interface ISender {
         void send(Cmd cmd);
 
@@ -74,49 +73,49 @@ public class Model {
     /**
      * server-specific commands; for more details see docs to the protocol
      */
-    @SuppressWarnings("unused")
     public enum Cmd {
-        UNSPEC_ERROR,      // 0
-        SIGN_UP,           // 1
-        SIGN_IN,           // 2
-        SIGN_OUT,          // 3
-        USER_INFO,         // 4
-        CHANGE_CHARACTER,  // 5
-        ATTACK,            // 6
-        CALL,              // 7
-        ACCEPT,            // 8
-        REJECT,            // 9
-        STOPCALL,          // 10
-        CANCEL_CALL,       // 11
-        RECEIVE_LEVEL,     // 12
-        RANGE_OF_PRODUCTS, // 13
-        BUY_PRODUCT,       // 14
-        ENEMY_NAME,        // 15
-        FULL_STATE,        // 16
-        ROUND_INFO,        // 17
-        ABILITY_LIST,      // 18
-        MOVE,              // 19
-        USE_THING,         // 20
-        USE_SKILL,         // 21
-        GIVE_UP,           // 22
-        STATE_CHANGED,     // 23
-        SCORE_CHANGED,     // 24
-        EFFECT_CHANGED,    // 25
-        PLAYER_WOUNDED,    // 26
-        THING_TAKEN,       // 27
-        OBJECT_APPENDED,   // 28
-        FINISHED,          // 29
-        RESERVED_1E,       // 30
-        RESERVED_1F,       // 31
-        RATING,            // 32
-        FRIEND_LIST,       // 33
-        ADD_FRIEND,        // 34
-        REMOVE_FRIEND,     // 35
-        CHECK_PROMOCODE,   // 36
-        PROMOCODE_DONE,    // 37
-        GET_SKU_GEMS,      // 38
-        CHECK_PURCHASE,    // 39
-        GET_CLIENT_VERSION // 40
+        UNSPEC_ERROR,       // 0
+        SIGN_UP,            // 1
+        SIGN_IN,            // 2
+        SIGN_OUT,           // 3
+        USER_INFO,          // 4
+        CHANGE_CHARACTER,   // 5
+        ATTACK,             // 6
+        CALL,               // 7
+        ACCEPT,             // 8
+        REJECT,             // 9
+        STOPCALL,           // 10
+        CANCEL_CALL,        // 11
+        RECEIVE_LEVEL,      // 12
+        RANGE_OF_PRODUCTS,  // 13
+        BUY_PRODUCT,        // 14
+        ENEMY_NAME,         // 15
+        FULL_STATE,         // 16
+        ROUND_INFO,         // 17
+        ABILITY_LIST,       // 18
+        MOVE,               // 19
+        USE_THING,          // 20
+        USE_SKILL,          // 21
+        GIVE_UP,            // 22
+        STATE_CHANGED,      // 23
+        SCORE_CHANGED,      // 24
+        EFFECT_CHANGED,     // 25
+        PLAYER_WOUNDED,     // 26
+        THING_TAKEN,        // 27
+        OBJECT_APPENDED,    // 28
+        FINISHED,           // 29
+        RESERVED_1E,        // 30
+        RESERVED_1F,        // 31
+        RATING,             // 32
+        FRIEND_LIST,        // 33
+        ADD_FRIEND,         // 34
+        REMOVE_FRIEND,      // 35
+        CHECK_PROMOCODE,    // 36
+        PROMOCODE_DONE,     // 37
+        GET_SKU_GEMS,       // 38
+        CHECK_PURCHASE,     // 39
+        GET_CLIENT_VERSION, // 40
+        CHANGE_PASSWORD,    // 41
     }
 
     public static final Cmd[] cmdValues = Cmd.values();
@@ -125,11 +124,10 @@ public class Model {
 
     public final Character[] characterValues = Character.values();
 
-    @SuppressWarnings("unused")
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
     private final HurtCause[] hurtCauseValues = HurtCause.values();
 
-    public enum Effect {None, Antidote, Dazzle, Afraid, @SuppressWarnings("unused")Attention}
+    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
 
     private final Effect[] effectValues = Effect.values();
 
@@ -140,7 +138,6 @@ public class Model {
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
      */
-    @SuppressWarnings("unused")
     public enum Ability {
         None, Snorkel, ClimbingShoes, SouthWester, VoodooMask, Snowshoes, Sunglasses,
         a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19,
@@ -261,6 +258,7 @@ public class Model {
     private final PsObject psObject;
     private final Object locker = new Object();
     private final Collection<Ability> abilities = new LinkedList<Ability>();
+
     private ISender sender;
     private boolean authorized = false;
     private boolean aggressor = true;
@@ -354,7 +352,6 @@ public class Model {
         return res;
     }
 
-    @SuppressWarnings("unused")
     public boolean friendExists(String name) {
         for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
             if (item.name.equals(name))
@@ -646,6 +643,15 @@ public class Model {
         }
     }
 
+    public void changePassword(String newPassword) {
+        if (connected && sender != null && newPassword.length() >= 4) {
+            String newHash = md5(newPassword);
+            sender.send(CHANGE_PASSWORD, String.format("%s\0%s", hash, newHash));
+            hash = newHash;
+            saveSettings();
+        }
+    }
+
     // ===============================
     // === SERVER RESPONSE METHODS ===
     // ===============================
@@ -851,7 +857,11 @@ public class Model {
                 score_diff = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
                 i += 4;
             }
+            // add item to table
             rating.add(new RatingItem(name.toString(), wins, losses, score_diff));
+            // additionally check if the user has a weak password (we will ping him if he's got 5 wins!)
+            if (name.toString().equals(this.name))
+                checkWeakPassword(wins);
         }
 
         bus.raise(new EventBus.RatingUpdatedEvent(type, rating));
@@ -1156,7 +1166,12 @@ public class Model {
         bus.raise(new EventBus.ServerGonnaStopEvent());
     }
 
-    @SuppressWarnings("unused")
+    private void checkWeakPassword(int winsCount) {
+        boolean passwordIs1234 = hash.equals("81dc9bdb52d04dc20036dbd8313ed055");
+        if (passwordIs1234 && winsCount >= 5)
+            bus.raise(new EventBus.WeakPasswordEvent());
+    }
+
     private void debugProtocol(PsObject psObject) {
         psObject.runDaemon(8000, 200, new Runnable() {
             @Override

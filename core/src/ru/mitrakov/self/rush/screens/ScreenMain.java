@@ -57,6 +57,7 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogInvite inviteDialog;
     private final DialogQuestion questionDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
+    private final DialogPassword passwordDialog;
 
     private final ScrollPane tableHistoryScroll;
     private final ScrollPane tableFriendsScroll;
@@ -127,7 +128,7 @@ public class ScreenMain extends LocalizableScreen {
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default", i18n);
         moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", assetManager, audioManager, promocodeDialog,
-                purchaseDialog, stage);
+                purchaseDialog);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", atlasMenu, i18n, audioManager);
         aboutDialog = new DialogAbout(skin, "default");
@@ -138,6 +139,7 @@ public class ScreenMain extends LocalizableScreen {
         inviteDialog = new DialogInvite(model, skin, "default", i18n);
         questionDialog = new DialogQuestion("", skin, "default");
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
+        passwordDialog = new DialogPassword(model, "", skin, "default", psObject, assetManager);
 
         tableRight = new Table(skin);
         tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
@@ -382,6 +384,7 @@ public class ScreenMain extends LocalizableScreen {
         inviteDialog.onLocaleChanged(bundle);
         questionDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
+        passwordDialog.onLocaleChanged(bundle);
 
         btnTraining.setText(bundle.format("opponent.none"));
         btnInviteByName.setText(bundle.format("opponent.find"));
@@ -560,6 +563,9 @@ public class ScreenMain extends LocalizableScreen {
             String start = i18n.format("dialog.about.new.version", ev.newVersion);
             lblNewVersion.setText(start, i18n.format("dialog.about.update"), "");
             lblNewVersion.setVisible(true);
+        }
+        if (event instanceof EventBus.WeakPasswordEvent) {
+            passwordDialog.show(stage);
         }
     }
 
