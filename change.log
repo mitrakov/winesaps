@@ -1,0 +1,10 @@
+[1.0.1, 2016-08-17]
+* Added statuses to Friend List (online/offline)
+* Increased SwUDP MAX_ATTEMPT parameter
+* Removed Skip button from the tutorial
+* Added training dialog for newbies
+* Changed URLs from "http://winesaps.com" to "https://winesaps.com"
+* Simplified registration process
+
+[1.0.0, 2016-08-11]
+* Initial build
