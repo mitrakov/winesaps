@@ -504,7 +504,7 @@ public class Model {
      */
     public void getFriends() {
         if (connected && sender != null) {
-            sender.send(FRIEND_LIST);
+            sender.send(FRIEND_LIST, 1); // 1 = show_statuses (Server API 1.2.0+ supports statuses)
         }
     }
 
@@ -782,12 +782,13 @@ public class Model {
         synchronized (locker) {
             if (!append)
                 friends.clear();
-            String s = data.toUTF8();  // example: \3Tommy\0\2Bobby\0\3Billy\0
+            String s = data.toUTF8();  // example: \1\3Tommy\0\1\2Bobby\0\1\3Billy\0
             if (s.length() > 0) { // be careful! if s == "", then s.split("\0") returns Array("") instead of Array()
                 for (String item : s.split("\0")) {
-                    byte ch = (byte) item.charAt(0);
+                    byte status = (byte) item.charAt(0); // Server API 1.2.0+ supports statuses
+                    byte ch = (byte) item.charAt(1);
                     if (0 <= ch && ch < characterValues.length) {
-                        friends.add(new FriendItem(characterValues[ch], item.substring(1)));
+                        friends.add(new FriendItem(characterValues[ch], item.substring(2), status));
                     }
                 }
             }
@@ -797,7 +798,7 @@ public class Model {
 
     public void friendAdded(int character, String name) {
         if (0 <= character && character < characterValues.length) {
-            FriendItem item = new FriendItem(characterValues[character], name);
+            FriendItem item = new FriendItem(characterValues[character], name, 0);
             friends.add(item);
             bus.raise(new EventBus.FriendAddedEvent(item));
         }

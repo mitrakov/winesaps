@@ -9,18 +9,20 @@ import java.io.Serializable;
 public final class FriendItem implements Serializable {
     public final Model.Character character;
     public final String name;
+    public final int status; // Server API 1.2.0+ supports statuses
 
-    public FriendItem(Model.Character character, String name) {
+    public FriendItem(Model.Character character, String name, int status) {
         assert character != null && name != null;
         this.character = character;
         this.name = name;
+        this.status = status;
     }
 
     // GENERATED CODE
 
     @Override
     public String toString() {
-        return "FriendItem{" + "character=" + character + ", name='" + name + '\'' + '}';
+        return "FriendItem{" + "character=" + character + ", name='" + name + '\'' + ", status=" + status + '}';
     }
 
     @Override
@@ -30,13 +32,14 @@ public final class FriendItem implements Serializable {
 
         FriendItem that = (FriendItem) o;
 
-        return character == that.character && name.equals(that.name);
+        return status == that.status && character == that.character && name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
         int result = character.hashCode();
         result = 31 * result + name.hashCode();
+        result = 31 * result + status;
         return result;
     }
 }

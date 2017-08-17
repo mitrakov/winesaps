@@ -100,6 +100,8 @@ public class ScreenMain extends LocalizableScreen {
     private final Drawable drawableLoss;
     private final Drawable drawableInvite;
     private final Drawable drawableRemove;
+    private final Drawable drawableStatusOn; // Server API 1.2.0+ supports statuses
+    private final Drawable drawableStatusOff; // Server API 1.2.0+ supports statuses
 
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
@@ -121,6 +123,8 @@ public class ScreenMain extends LocalizableScreen {
         drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("loss"));
         drawableInvite = new TextureRegionDrawable(atlasMenu.findRegion("invite"));
         drawableRemove = new TextureRegionDrawable(atlasMenu.findRegion("remove"));
+        drawableStatusOn = new TextureRegionDrawable(atlasMenu.findRegion("statusOn"));
+        drawableStatusOff = new TextureRegionDrawable(atlasMenu.findRegion("statusOff"));
 
         Skin skin = assetManager.get("skin/uiskin.json");
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
@@ -846,17 +850,19 @@ public class ScreenMain extends LocalizableScreen {
         adjustFriendsTable();
         Array<Actor> cells = tableRightContentFriends.getChildren();
         assert cells != null;
-        final int COLUMNS = 4;
+        final int COLUMNS = 5;
 
         int i = 0;
         // fill the rows with friends
         for (FriendItem item : items) {
-            if (COLUMNS * i + 3 < cells.size) {
-                Image imgChar = (Image) cells.get(COLUMNS * i);
-                Label lbl = (Label) cells.get(COLUMNS * i + 1);
-                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * i + 2);
-                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * i + 3);
+            if (COLUMNS * i + 4 < cells.size) {
+                Image imgStatus = (Image) cells.get(COLUMNS * i);
+                Image imgChar = (Image) cells.get(COLUMNS * i + 1);
+                Label lbl = (Label) cells.get(COLUMNS * i + 2);
+                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * i + 3);
+                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * i + 4);
 
+                imgStatus.setDrawable(item.status > 1 ? drawableStatusOn : drawableStatusOff);
                 imgChar.setDrawable(characters.get(item.character));
                 lbl.setText(item.name.length() <= 27 ? item.name : String.format("%s...", item.name.substring(0, 24)));
                 btnInvite.setVisible(true);
@@ -866,12 +872,14 @@ public class ScreenMain extends LocalizableScreen {
         }
         // fill the rest of rows with blank values
         for (int j = i; j < tableRightContentFriends.getRows(); j++) {
-            if (COLUMNS * j + 3 < cells.size) {
-                Image imgChar = (Image) cells.get(COLUMNS * j);
-                Label lblName = (Label) cells.get(COLUMNS * j + 1);
-                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * j + 2);
-                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * j + 3);
+            if (COLUMNS * j + 4 < cells.size) {
+                Image imgStatus = (Image) cells.get(COLUMNS * j);
+                Image imgChar = (Image) cells.get(COLUMNS * j + 1);
+                Label lblName = (Label) cells.get(COLUMNS * j + 2);
+                ImageButton btnInvite = (ImageButton) cells.get(COLUMNS * j + 3);
+                ImageButton btnRemove = (ImageButton) cells.get(COLUMNS * j + 4);
 
+                imgStatus.setDrawable(null);
                 imgChar.setDrawable(null);
                 lblName.setText("");
                 btnInvite.setVisible(false);
@@ -891,6 +899,7 @@ public class ScreenMain extends LocalizableScreen {
 
             tableRightContentFriends.row().padTop(2);
             tableRightContentFriends.add(new Image());
+            tableRightContentFriends.add(new Image()).spaceLeft(5);
             tableRightContentFriends.add(label).expandX().left().spaceLeft(5);
             tableRightContentFriends.add(new ImageButtonFeat(drawableInvite, audioManager) {{
                 addListener(new ChangeListener() {

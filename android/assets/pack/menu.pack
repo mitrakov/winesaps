@@ -283,3 +283,24 @@ win
   orig: 32, 32
   offset: 0, 0
   index: -1
+statusMid
+  rotate: false
+  xy: 184, 41
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+statusOff
+  rotate: false
+  xy: 267, 128
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+statusOn
+  rotate: false
+  xy: 451, 233
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
