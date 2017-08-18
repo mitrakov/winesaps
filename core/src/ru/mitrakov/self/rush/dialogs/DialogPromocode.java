@@ -55,17 +55,15 @@ public class DialogPromocode extends DialogFeat {
             setVisible(false);
         }});
         table.row();
-        table.add(btnCopy = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    btnCopy.setVisible(false);
-                    Gdx.app.getClipboard().setContents(model.promocode);
-                    labelCopied.addAction(
-                            sequence(fadeIn(.1f), Actions.show(), fadeOut(2, Interpolation.fade), Actions.hide()));
-                }
-            });
-        }});
+        table.add(btnCopy = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                btnCopy.setVisible(false);
+                Gdx.app.getClipboard().setContents(model.promocode);
+                labelCopied.addAction(
+                        sequence(fadeIn(.1f), Actions.show(), fadeOut(2, Interpolation.fade), Actions.hide()));
+            }
+        }));
 
         button("OK"); // text will be replaced in onLocaleChanged()
     }

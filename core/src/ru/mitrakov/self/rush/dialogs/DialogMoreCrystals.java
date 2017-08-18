@@ -97,7 +97,8 @@ public class DialogMoreCrystals extends DialogFeat {
                       final Dialog promoDialog, final Dialog purchaseDialog) {
         assert table != null && assetManager != null && audioManager != null;
         TextureAtlas atlas = assetManager.get("pack/menu.pack");
-        //table.setDebug(true);
+        TextureRegionDrawable drawablePromo = new TextureRegionDrawable(atlas.findRegion("more2"));
+        TextureRegionDrawable drawablePurchase = new TextureRegionDrawable(atlas.findRegion("more4"));
 
         Table table1 = new Table(skin);
         Table table2 = new Table(skin);
@@ -117,14 +118,13 @@ public class DialogMoreCrystals extends DialogFeat {
 
         table2.add(lblWay2);
         table2.row();
-        table2.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("more2")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    promoDialog.show(getStage());
-                }
-            });
-        }}).expand();
+
+        table2.add(new ImageButtonFeat(drawablePromo, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                promoDialog.show(getStage());
+            }
+        })).expand();
         table2.row();
         table2.add(lblText2);
         table2.row();
@@ -138,14 +138,12 @@ public class DialogMoreCrystals extends DialogFeat {
 
         table4.add(lblWay4);
         table4.row();
-        table4.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("more4")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    purchaseDialog.show(getStage());
-                }
-            });
-        }}).expand();
+        table4.add(new ImageButtonFeat(drawablePurchase, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                purchaseDialog.show(getStage());
+            }
+        })).expand();
         table4.row();
         table4.add(lblText4);
 

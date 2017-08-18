@@ -22,6 +22,9 @@ public class DialogSettings extends DialogFeat {
     private final Label lblLang;
     private final Label lblNotify;
 
+    private /*final*/ Button btnMusic;
+    private /*final*/ Button btnSfx;
+
     public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, TextureAtlas atlas,
                           I18NBundle i18n, AudioManager audioManager) {
         super("", skin, styleName);
@@ -36,15 +39,13 @@ public class DialogSettings extends DialogFeat {
 
         btnNotifyYes = new CheckBox("", skin, style);
         btnNotifyNo = new CheckBox("", skin, style);
-        btnSignOut = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    hide();
-                    model.signOut();
-                }
-            });
-        }};
+        btnSignOut = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                hide();
+                model.signOut();
+            }
+        });
         lblLang = new Label("", skin, "default");
         lblLang.setAlignment(Align.center);
         lblNotify = new Label("", skin, "default");
@@ -114,20 +115,18 @@ public class DialogSettings extends DialogFeat {
         final Drawable sfxOn = new TextureRegionDrawable(atlas.findRegion("sfxOn"));
         final Drawable sfxOff = new TextureRegionDrawable(atlas.findRegion("sfxOff"));
 
-        final Button btnMusic = new ImageButtonFeat(musicOn, musicOff, model.music, audioManager);
-        btnMusic.addListener(new ChangeListener() {
+        btnMusic = new ImageButtonFeat(musicOn, musicOff, model.music, audioManager, new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void run() {
                 model.music = !model.music;
                 audioManager.muteMusic(!model.music);
                 btnMusic.setChecked(model.music);
             }
         });
 
-        final Button btnSfx = new ImageButtonFeat(sfxOn, sfxOff, model.soundEffects, audioManager);
-        btnSfx.addListener(new ChangeListener() {
+        btnSfx = new ImageButtonFeat(sfxOn, sfxOff, model.soundEffects, audioManager, new Runnable() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void run() {
                 model.soundEffects = !model.soundEffects;
                 audioManager.muteSound(!model.soundEffects);
                 btnSfx.setChecked(model.soundEffects);
@@ -165,16 +164,14 @@ public class DialogSettings extends DialogFeat {
         table.add(lblLang).colspan(2);
 
         table.row().space(20);
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("en")), manager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "en";
-                    game.updateLocale();
-                    self.pack();
-                }
-            });
-        }}).right();
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("en")), manager, new Runnable() {
+            @Override
+            public void run() {
+                model.language = "en";
+                game.updateLocale();
+                self.pack();
+            }
+        })).right();
         table.add(new Label(i18n.format("dialog.settings.lang.english"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -187,16 +184,14 @@ public class DialogSettings extends DialogFeat {
             });
         }}).left();
         table.row().space(20);
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("ru")), manager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "ru";
-                    game.updateLocale();
-                    self.pack();
-                }
-            });
-        }}).right();
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("ru")), manager, new Runnable() {
+            @Override
+            public void run() {
+                model.language = "ru";
+                game.updateLocale();
+                self.pack();
+            }
+        })).right();
         table.add(new Label(i18n.format("dialog.settings.lang.russian"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -209,16 +204,14 @@ public class DialogSettings extends DialogFeat {
             });
         }}).left();
         table.row().space(20);
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("es")), manager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "es";
-                    game.updateLocale();
-                    self.pack();
-                }
-            });
-        }}).right();
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("es")), manager, new Runnable() {
+            @Override
+            public void run() {
+                model.language = "es";
+                game.updateLocale();
+                self.pack();
+            }
+        })).right();
         table.add(new Label(i18n.format("dialog.settings.lang.spanish"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -231,16 +224,14 @@ public class DialogSettings extends DialogFeat {
             });
         }}).left();
         table.row().space(20);
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("pt")), manager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "pt";
-                    game.updateLocale();
-                    self.pack();
-                }
-            });
-        }}).right();
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("pt")), manager, new Runnable() {
+            @Override
+            public void run() {
+                model.language = "pt";
+                game.updateLocale();
+                self.pack();
+            }
+        })).right();
         table.add(new Label(i18n.format("dialog.settings.lang.portuguese"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
@@ -253,16 +244,14 @@ public class DialogSettings extends DialogFeat {
             });
         }}).left();
         table.row().space(20);
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("fr")), manager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.language = "fr";
-                    game.updateLocale();
-                    self.pack();
-                }
-            });
-        }}).right();
+        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlas.findRegion("fr")), manager, new Runnable() {
+            @Override
+            public void run() {
+                model.language = "fr";
+                game.updateLocale();
+                self.pack();
+            }
+        })).right();
         table.add(new Label(i18n.format("dialog.settings.lang.french"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override

@@ -13,7 +13,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
@@ -115,9 +114,12 @@ public class ScreenMain extends LocalizableScreen {
         super(game, model, psObject, assetManager, audioManager);
 
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
-        TextureRegionDrawable drawable = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
+        TextureRegionDrawable valid = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
         TextureRegionDrawable back = new TextureRegionDrawable(atlasMenu.findRegion("back"));
         TextureRegionDrawable cancel = new TextureRegionDrawable(atlasMenu.findRegion("back"));
+        TextureRegionDrawable settings = new TextureRegionDrawable(atlasMenu.findRegion("settings"));
+        TextureRegionDrawable about = new TextureRegionDrawable(atlasMenu.findRegion("about"));
+        TextureRegionDrawable add = new TextureRegionDrawable(atlasMenu.findRegion("add"));
 
         drawableWin = new TextureRegionDrawable(atlasMenu.findRegion("win"));
         drawableLoss = new TextureRegionDrawable(atlasMenu.findRegion("loss"));
@@ -154,162 +156,126 @@ public class ScreenMain extends LocalizableScreen {
         }};
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
 
-        btnTraining = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
-                }
-            });
-        }};
+        btnTraining = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
+            }
+        });
 
-        btnInviteByName = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildLeftTable(true);
-                }
-            });
-        }};
-        btnQuickBattle = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    inviteDialog.setArguments(DialogInvite.InviteType.Quick, "").show(stage);
-                }
-            });
-        }};
-        btnInviteLatest = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    inviteDialog.setArguments(DialogInvite.InviteType.Latest, "").show(stage);
-                }
-            });
-        }};
-        btnInviteByNameOk = new ImageButtonFeat(drawable, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    String name = txtEnemyName.getText();
-                    if (name.startsWith("#!")) {
-                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
-                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
-                    } else if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
-                        inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
-                        rebuildLeftTable(false);
-                    }
-                }
-            });
-        }};
-        btnInviteByNameCancel = new ImageButtonFeat(back, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+        btnInviteByName = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildLeftTable(true);
+            }
+        });
+        btnQuickBattle = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                inviteDialog.setArguments(DialogInvite.InviteType.Quick, "").show(stage);
+            }
+        });
+        btnInviteLatest = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                inviteDialog.setArguments(DialogInvite.InviteType.Latest, "").show(stage);
+            }
+        });
+        btnInviteByNameOk = new ImageButtonFeat(valid, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                String name = txtEnemyName.getText();
+                if (name.startsWith("#!")) {
+                    infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
+                    Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                } else if (name.length() > 0) { // use 'length() > 0' instead of 'isEmpty()' (Android API 8)
+                    inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
                     rebuildLeftTable(false);
                 }
-            });
-        }};
-        btnSettings = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("settings")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    settingsDialog.show(stage);
-                }
-            });
-        }};
-        btnAbout = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("about")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    aboutDialog.show(stage);
-                }
-            });
-        }};
-        btnInfo = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildRightTable(CurDisplayMode.Info);
-                }
-            });
-        }};
-        btnRating = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildRightTable(CurDisplayMode.Rating);
-                }
-            });
-        }};
-        btnHistory = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildRightTable(CurDisplayMode.History);
-                }
-            });
-        }};
-        btnFriends = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildRightTable(CurDisplayMode.Friends);
-                }
-            });
-        }};
-        btnBuyAbilities = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    buyAbilitiesDialog.show(stage);
-                }
-            });
-        }};
-        btnGeneralRating = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.getRating(Model.RatingType.General);
-                }
-            });
-        }};
-        btnWeeklyRating = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.getRating(Model.RatingType.Weekly);
-                }
-            });
-        }};
-        btnAddFriend = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    rebuildFriendsButtons(true);
-                }
-            });
-        }};
-        btnAddFriendOk = new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("add")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    String name = txtFriendName.getText();
-                    if (name.length() > 0) {
-                        model.addFriend(name);
-                        rebuildFriendsButtons(false);
-                    }
-                }
-            });
-        }};
-        btnAddFriendCancel = new ImageButtonFeat(cancel, audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+            }
+        });
+        btnInviteByNameCancel = new ImageButtonFeat(back, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildLeftTable(false);
+            }
+        });
+        btnSettings = new ImageButtonFeat(settings, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                settingsDialog.show(stage);
+            }
+        });
+        btnAbout = new ImageButtonFeat(about, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                aboutDialog.show(stage);
+            }
+        });
+        btnInfo = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildRightTable(CurDisplayMode.Info);
+            }
+        });
+        btnRating = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildRightTable(CurDisplayMode.Rating);
+            }
+        });
+        btnHistory = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildRightTable(CurDisplayMode.History);
+            }
+        });
+        btnFriends = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildRightTable(CurDisplayMode.Friends);
+            }
+        });
+        btnBuyAbilities = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                buyAbilitiesDialog.show(stage);
+            }
+        });
+        btnGeneralRating = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                model.getRating(Model.RatingType.General);
+            }
+        });
+        btnWeeklyRating = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                model.getRating(Model.RatingType.Weekly);
+            }
+        });
+        btnAddFriend = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildFriendsButtons(true);
+            }
+        });
+        btnAddFriendOk = new ImageButtonFeat(add, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                String name = txtFriendName.getText();
+                if (name.length() > 0) {
+                    model.addFriend(name);
                     rebuildFriendsButtons(false);
                 }
-            });
-        }};
+            }
+        });
+        btnAddFriendCancel = new ImageButtonFeat(cancel, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildFriendsButtons(false);
+            }
+        });
 
         txtEnemyName = new TextFieldFeat("", skin, "default", psObject, btnInviteByNameOk);
         txtFriendName = new TextFieldFeat("", skin, "default", psObject, btnAddFriendOk);
@@ -578,25 +544,23 @@ public class ScreenMain extends LocalizableScreen {
         for (final Model.Ability ability : model.abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
-                    addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                            Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
-                            if (minutes != null) {
-                                long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
-                                if (minLeft < 0) // if server's expire checking period is too large, value may be < 0
-                                    minLeft = 0;
-                                lblAbilityExpireTime.setText(i18n.format("abilities.time", minLeft / 60, minLeft % 60));
-                                lblAbilityExpireTime.clearActions();
-                                lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
-                                        fadeOut(2, Interpolation.fade), Actions.hide()));
-                            }
+                ImageButton btn = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
+                    @Override
+                    public void run() {
+                        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+                        Integer minutes = model.abilityExpireMap.get(ability); // count of minutes at INITIAL time!
+                        if (minutes != null) {
+                            long minLeft = minutes - (TimeUtils.millis() - model.abilityExpireTime) / 60000;
+                            if (minLeft < 0) // if server's expire checking period is too large, value may be < 0
+                                minLeft = 0;
+                            lblAbilityExpireTime.setText(i18n.format("abilities.time", minLeft / 60, minLeft % 60));
+                            lblAbilityExpireTime.clearActions();
+                            lblAbilityExpireTime.addAction(sequence(fadeIn(.1f), Actions.show(),
+                                    fadeOut(2, Interpolation.fade), Actions.hide()));
                         }
-                    });
-                }};
-                abilities.put(ability, imageButton);
+                    }
+                });
+                abilities.put(ability, btn);
             }
         }
 
@@ -611,6 +575,7 @@ public class ScreenMain extends LocalizableScreen {
     private void initTables() {
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         Skin skin = assetManager.get("skin/uiskin.json");
+        Drawable gem = new TextureRegionDrawable(atlasMenu.findRegion("gem"));
 
         table.add(tableLeft).pad(4).width(222).fill();
         table.add(tableRight).pad(4).expand().fill();
@@ -687,14 +652,12 @@ public class ScreenMain extends LocalizableScreen {
 
         // === Gems Data ===
         tableGemsData.add(lblCrystalsData).spaceRight(5);
-        tableGemsData.add(new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("gem")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    moreCrystalsDialog.show(stage);
-                }
-            });
-        }});
+        tableGemsData.add(new ImageButtonFeat(gem, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                moreCrystalsDialog.show(stage);
+            }
+        }));
     }
 
     private void rebuildLeftTable(boolean showInputName) {
@@ -901,31 +864,27 @@ public class ScreenMain extends LocalizableScreen {
             tableRightContentFriends.add(new Image());
             tableRightContentFriends.add(new Image()).spaceLeft(5);
             tableRightContentFriends.add(label).expandX().left().spaceLeft(5);
-            tableRightContentFriends.add(new ImageButtonFeat(drawableInvite, audioManager) {{
-                addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        final String name = label.getText().toString();
-                        inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
-                    }
-                });
-            }});
-            tableRightContentFriends.add(new ImageButtonFeat(drawableRemove, audioManager) {{
-                addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                        final String name = label.getText().toString();
-                        String txt = i18n.format("dialog.friends.remove.text", name);
-                        questionDialog.setText(i18n.format("dialog.warning"), txt).setRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                model.removeFriend(name);
-                            }
-                        }).show(stage);
-                    }
-                });
-            }}).spaceLeft(20);
+            tableRightContentFriends.add(new ImageButtonFeat(drawableInvite, audioManager, new Runnable() {
+                @Override
+                public void run() {
+                    final String name = label.getText().toString();
+                    inviteDialog.setArguments(DialogInvite.InviteType.ByName, name).show(stage);
+                }
+            }));
+            tableRightContentFriends.add(new ImageButtonFeat(drawableRemove, audioManager, new Runnable() {
+                @Override
+                public void run() {
+                    I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+                    final String name = label.getText().toString();
+                    String txt = i18n.format("dialog.friends.remove.text", name);
+                    questionDialog.setText(i18n.format("dialog.warning"), txt).setRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            model.removeFriend(name);
+                        }
+                    }).show(stage);
+                }
+            })).spaceLeft(20);
         }
     }
 }

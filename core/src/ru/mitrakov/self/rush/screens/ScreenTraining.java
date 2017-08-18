@@ -39,14 +39,12 @@ public class ScreenTraining extends LocalizableScreen {
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         trainingDialog = new DialogTutorial(skin, "panel-maroon");
         infoDialog = new DialogInfo("", skin, "panel-maroon");
-        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.useThing();
-                }
-            });
-        }};
+        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager, new Runnable() {
+            @Override
+            public void run() {
+                model.useThing();
+            }
+        });
 
         initComponents();
     }

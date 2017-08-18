@@ -102,15 +102,12 @@ public class DialogBuyAbilities extends DialogFeat {
             // == buttons ==
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
-                    addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            rebuildContent(ability);
-                        }
-                    });
-                }};
-                res.add(imageButton);
+                res.add(new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
+                    @Override
+                    public void run() {
+                        rebuildContent(ability);
+                    }
+                }));
             }
             // == images ==
             region = atlasGoods.findRegion(ability.name());

@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
@@ -69,14 +68,12 @@ public class ScreenBattle extends LocalizableScreen {
             }
         });
 
-        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    model.useThing();
-                }
-            });
-        }};
+        btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager, new Runnable() {
+            @Override
+            public void run() {
+                model.useThing();
+            }
+        });
 
         stage.addActor(lblVersus = new Label("", skin, "score"));
         stage.addActor(lblCountdown = new Label("", skin, "score"));
@@ -278,15 +275,13 @@ public class ScreenBattle extends LocalizableScreen {
         for (final Model.Ability ability : model.abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
-                ImageButton imageButton = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
-                    addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            model.useAbility(ability);
-                        }
-                    });
-                }};
-                abilities.put(ability, imageButton);
+                ImageButton btn = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
+                    @Override
+                    public void run() {
+                        model.useAbility(ability);
+                    }
+                });
+                abilities.put(ability, btn);
             }
         }
     }

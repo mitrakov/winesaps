@@ -11,7 +11,7 @@ import ru.mitrakov.self.rush.AudioManager;
  */
 @SuppressWarnings("WeakerAccess")
 public class TextButtonFeat extends TextButton {
-    public TextButtonFeat(String text, Skin skin, String styleName, final AudioManager audioManager) {
+    public TextButtonFeat(String text, Skin skin, String styleName, final AudioManager audioManager, final Runnable f) {
         super(text, skin, styleName);
         assert audioManager != null;
 
@@ -19,6 +19,8 @@ public class TextButtonFeat extends TextButton {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 audioManager.sound("click");
+                if (f != null)
+                    f.run();
             }
         });
     }

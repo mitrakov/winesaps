@@ -49,6 +49,7 @@ public class ScreenLogin extends LocalizableScreen {
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         textureValid = new TextureRegionDrawable(atlasMenu.findRegion("valid"));
         textureInvalid = new TextureRegionDrawable(atlasMenu.findRegion("invalid"));
+        Drawable textureShutdown = new TextureRegionDrawable(atlasMenu.findRegion("shutdown"));
 
         Skin skin = assetManager.get("skin/uiskin.json");
         I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
@@ -56,34 +57,29 @@ public class ScreenLogin extends LocalizableScreen {
         tableMain = new Table(skin).pad(20);
         tableMain.setBackground("panel-maroon");
 
-        btnOk = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
-                    String name = txtLogin.getText();
-                    if (name.startsWith("#!")) {
-                        infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
-                        Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
-                    } else if (signInMode) {
-                        connectingDialog.show(stage);
-                        model.signIn(name, txtPassword.getText());
-                    } else { // signUpMode
-                        connectingDialog.show(stage);
-                        model.signUp(txtLogin.getText(), "1234", "", txtPromocode.getText());
-                        rebuildDialog(chkPromocode.isChecked(), false);
-                    }
-                }
-            });
-        }};
-        btnBack = new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+        btnOk = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
+                String name = txtLogin.getText();
+                if (name.startsWith("#!")) {
+                    infoDialog.setText(name, game.getDebugInfo(name)).show(stage);
+                } else if (signInMode) {
+                    connectingDialog.show(stage);
+                    model.signIn(name, txtPassword.getText());
+                } else { // signUpMode
+                    connectingDialog.show(stage);
+                    model.signUp(txtLogin.getText(), "1234", "", txtPromocode.getText());
                     rebuildDialog(chkPromocode.isChecked(), false);
                 }
-            });
-        }};
+            }
+        });
+        btnBack = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                rebuildDialog(chkPromocode.isChecked(), false);
+            }
+        });
         txtLogin = new TextFieldFeat("", skin, "default", psObject, btnOk); // ....
         txtPassword = new TextFieldFeat("", skin, "default", psObject, btnOk) {{
             setPasswordMode(true);
@@ -124,14 +120,12 @@ public class ScreenLogin extends LocalizableScreen {
 
         // set up layout
         // table.add(createLangTable(audioManager)).right(); table.row(); @mitrakov: removed after Newbie-Beta-Testing
-        table.add(new ImageButtonFeat(new TextureRegionDrawable(atlasMenu.findRegion("shutdown")), audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    Gdx.app.exit(); // NOTE! DO NOT use it on iOS (see javaDocs)
-                }
-            });
-        }}).left();
+        table.add(new ImageButtonFeat(textureShutdown, audioManager, new Runnable() {
+            @Override
+            public void run() {
+                Gdx.app.exit(); // NOTE! DO NOT use it on iOS (see javaDocs)
+            }
+        })).left();
         table.row();
         table.add(tableMain).expand();
         table.setBackground(new Image(assetManager.<Texture>get("back/login.jpg")).getDrawable());

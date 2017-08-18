@@ -73,14 +73,12 @@ public class DialogPurchase extends DialogFeat {
         for (final IBillingProvider.Sku sku : products) {
             TextureRegion texture = atlas.findRegion(sku.id);
             if (texture != null) {
-                table.add(new ImageButtonFeat(new TextureRegionDrawable(texture), audioManager) {{
-                    addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            provider.purchaseProduct(sku, username);
-                        }
-                    });
-                }}).spaceLeft(20);
+                table.add(new ImageButtonFeat(new TextureRegionDrawable(texture), audioManager, new Runnable() {
+                    @Override
+                    public void run() {
+                        provider.purchaseProduct(sku, username);
+                    }
+                })).spaceLeft(20);
             }
         }
 

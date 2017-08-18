@@ -78,14 +78,12 @@ public class ScreenCharacter extends LocalizableScreen {
                 // create pictures
                 TextureRegion region = atlasCharacter.findRegion(character.name());
                 if (region != null) {
-                    result.add(new ImageButtonFeat(new TextureRegionDrawable(region), audioManager) {{
-                        addListener(new ChangeListener() {
-                            @Override
-                            public void changed(ChangeEvent event, Actor actor) {
-                                btn.setChecked(!btn.isChecked());
-                            }
-                        });
-                    }});
+                    result.add(new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
+                        @Override
+                        public void run() {
+                            btn.setChecked(!btn.isChecked());
+                        }
+                    }));
                 }
             }
         }
@@ -99,22 +97,20 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     private TextButton createButton(Skin skin) {
-        return new TextButtonFeat("", skin, "default", audioManager) {{
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    for (TextButton btn : checkboxes) {
-                        if (btn.isChecked()) {
-                            Object obj = btn.getUserObject();
-                            if (obj instanceof Model.Character) { // stackoverflow.com/questions/2950319
-                                model.changeCharacter((Model.Character) obj);
-                                dialog.setCharacter((Model.Character) obj).show(stage);
-                            }
+        return new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+            @Override
+            public void run() {
+                for (TextButton btn : checkboxes) {           // in Java 8 may be replaced with lambda
+                    if (btn.isChecked()) {
+                        Object obj = btn.getUserObject();
+                        if (obj instanceof Model.Character) { // stackoverflow.com/questions/2950319
+                            model.changeCharacter((Model.Character) obj);
+                            dialog.setCharacter((Model.Character) obj).show(stage);
                         }
                     }
                 }
-            });
-        }};
+            }
+        });
     }
 
     private DialogFood createFoodDialog(Skin skin) {
