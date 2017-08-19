@@ -23,8 +23,8 @@ import ru.mitrakov.self.rush.screens.*;
 public class Winesaps extends Game {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 480;
-    public static final int VERSION = (1 << 16) | 1; // 1.0.1
-    public static final String VERSION_STR = "1.0.1";
+    public static final int VERSION = (1 << 16) | 2; // 1.0.2
+    public static final String VERSION_STR = "1.0.2";
     public static final String URL = "https://winesaps.com";
 
     public static final String HOST = "winesaps.ru";
