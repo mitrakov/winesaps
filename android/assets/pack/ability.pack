@@ -31,21 +31,21 @@ Miner
   orig: 45, 45
   offset: 0, 0
   index: -1
-Shaman
+SapperShoes
   rotate: false
   xy: 190, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
-Snorkel
+Shaman
   rotate: false
   xy: 237, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
-Snowshoes
+Snorkel
   rotate: false
   xy: 284, 2
   size: 45, 45
@@ -59,14 +59,14 @@ SouthWester
   orig: 45, 45
   offset: 0, 0
   index: -1
-Spy
+Sunglasses
   rotate: false
   xy: 378, 2
   size: 45, 45
   orig: 45, 45
   offset: 0, 0
   index: -1
-Sunglasses
+TeleportMan
   rotate: false
   xy: 425, 2
   size: 45, 45
