@@ -15,7 +15,8 @@ import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * Created by mitrakov on 01.03.2017
+ * ScreenBattle shows a battle field with UseThing button, abilities, lives icon, score and timer
+ * @author mitrakov
  */
 public class ScreenBattle extends LocalizableScreen {
     private final Gui gui;
@@ -41,6 +42,14 @@ public class ScreenBattle extends LocalizableScreen {
     private String outOfSyncStr = "";
     private transient boolean outOfSync = false;
 
+    /**
+     * Creates a new instance of ScreenBattle
+     * @param game - instance of Winesaps (NON-NULL)
+     * @param model - model (NON-NULL)
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param assetManager - asset manager (NON-NULL)
+     * @param audioManager - audio manager (NON-NULL)
+     */
     public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                         final AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
@@ -260,6 +269,9 @@ public class ScreenBattle extends LocalizableScreen {
         }
     }
 
+    /**
+     * Prepares the textures
+     */
     private void loadTextures() {
         Class[] classes = new Class[]{CellObject.class, UmbrellaThing.class, MineThing.class, AntidoteThing.class,
                 BeamThing.class, FlashbangThing.class, TeleportThing.class, DetectorThing.class, BoxThing.class};
@@ -286,6 +298,9 @@ public class ScreenBattle extends LocalizableScreen {
         }
     }
 
+    /**
+     * Builds main content table
+     */
     private void buildTable() {
         table.add(gui).colspan(5);
         table.row().spaceRight(50);
@@ -296,12 +311,19 @@ public class ScreenBattle extends LocalizableScreen {
         table.add(lblTime).padRight(10);
     }
 
+    /**
+     * Resets the screen's state
+     */
     private void reset() {
         outOfSync = false;
         infoDialog.hide();
         hintDialog.remove();
     }
 
+    /**
+     * Draws starting pause labels(3, 2, 1, go!)
+     * @param sec - time to start (sec.)
+     */
     private void draw321(long sec) {
         boolean pause = sec < 3;
         lblVersus.setVisible(pause);
@@ -311,8 +333,12 @@ public class ScreenBattle extends LocalizableScreen {
             lblCountdown.setText(seconds.get(Math.max(3 - sec, 0), ""));
     }
 
+    /**
+     * Analog of clazz.getSimpleName(). Designed to decrease GC pressure because usual way produces new String
+     * @param clazz - class
+     * @return simple name of a class
+     */
     private String getSimpleName(Class clazz) {
-        // designed to decrease GC pressure
         String simpleName = simpleNames.get(clazz);
         if (simpleName == null) {
             simpleName = clazz.getSimpleName();

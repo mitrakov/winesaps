@@ -15,7 +15,7 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.DialogFood;
 
 /**
- * Created by mitrakov on 01.03.2017
+ * ScreenCharacter shows 4 characters to choose after successful registration
  */
 public class ScreenCharacter extends LocalizableScreen {
 
@@ -23,15 +23,22 @@ public class ScreenCharacter extends LocalizableScreen {
     private final TextButton btnNext;
     private final DialogFood dialog;
 
+    /**
+     * Creates a new instance of ScreenCharacter
+     * @param game - instance of Winesaps (NON-NULL)
+     * @param model - model (NON-NULL)
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param assetManager - asset manager (NON-NULL)
+     * @param audioManager - audio manager (NON-NULL)
+     */
     public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                            AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
         Skin skin = assetManager.get("skin/uiskin.json");
 
-        Array<Actor> images = init(skin);
         btnNext = createButton(skin);
         dialog = createFoodDialog(skin);
-        buildTable(images, skin);
+        buildTable(skin);
     }
 
     @Override
@@ -64,7 +71,11 @@ public class ScreenCharacter extends LocalizableScreen {
     public void handleEventBackground(EventBus.Event event) {
     }
 
-    private Array<Actor> init(Skin skin) {
+    /**
+     * @param skin - skin
+     * @return array of 4 images with characters: Rabbit, Squirrel, Hedgehog and Cat
+     */
+    private Array<Actor> loadImages(Skin skin) {
         Array<Actor> result = new Array<Actor>(model.characterValues.length);
 
         TextureAtlas atlasCharacter = assetManager.get("pack/char.pack");
@@ -96,6 +107,10 @@ public class ScreenCharacter extends LocalizableScreen {
         return result;
     }
 
+    /**
+     * @param skin - skin
+     * @return "Next" button
+     */
     private TextButton createButton(Skin skin) {
         return new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
             @Override
@@ -113,6 +128,10 @@ public class ScreenCharacter extends LocalizableScreen {
         });
     }
 
+    /**
+     * @param skin - skin
+     * @return food dialog ("these food items are OK and those ones are danger")
+     */
     private DialogFood createFoodDialog(Skin skin) {
         DialogFood dialog = new DialogFood("", skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         dialog.setOnResultAction(new Runnable() {
@@ -124,7 +143,11 @@ public class ScreenCharacter extends LocalizableScreen {
         return dialog;
     }
 
-    private void buildTable(Array<Actor> images, Skin skin) {
+    /**
+     * Arranges the content table
+     * @param skin - skin
+     */
+    private void buildTable(Skin skin) {
         Table tableMain = new Table(skin);
         tableMain.pad(20).setBackground("panel-maroon");
 
@@ -133,7 +156,7 @@ public class ScreenCharacter extends LocalizableScreen {
         table.add(btnNext).colspan(checkboxes.size).width(200).height(50).right();
         table.setBackground(new Image(assetManager.<Texture>get("back/main.jpg")).getDrawable());
 
-        for (Actor img : images) {
+        for (Actor img : loadImages(skin)) {
             tableMain.add(img).bottom().space(20);
         }
         tableMain.row();

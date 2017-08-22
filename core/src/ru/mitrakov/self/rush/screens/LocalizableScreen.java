@@ -13,7 +13,8 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.*;
 
 /**
- * Created by mitrakov on 11.04.2017
+ * Superclass for all screens. Also supports localization for other languages
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class LocalizableScreen extends ScreenAdapter implements Localizable {
@@ -33,6 +34,14 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     private boolean connected;
 
+    /**
+     * Constructor
+     * @param game - instance of Winesaps (NON-NULL)
+     * @param model - model (NON-NULL)
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param assetManager - asset manager (NON-NULL)
+     * @param audioManager - audio manager (NON-NULL)
+     */
     LocalizableScreen(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
                       AudioManager audioManager) {
         assert game != null && model != null && psObject != null && assetManager != null && audioManager != null;
@@ -118,6 +127,10 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         connectingDialog.setText(bundle.format("dialog.connecting"));
     }
 
+    /**
+     * Handler for the most important events (for ALL screens). Please do not trespass on this method!
+     * @param event - model's event from Event Bus
+     */
     private void handleImportantEvents(EventBus.Event event) {
         // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
         // excessive work for GC on each event during a battle (because all screens are subscribed to events)
@@ -134,7 +147,16 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
         }
     }
 
+    /**
+     * Handles new events if and only if the current screen is active
+     * @param event - model's event from Event Bus
+     */
     public abstract void handleEvent(EventBus.Event event);
+
+    /**
+     * Handles new events in any way (no matter whether the screen is active or not)
+     * @param event - model's event from Event Bus
+     */
     public abstract void handleEventBackground(EventBus.Event event);
 }
 

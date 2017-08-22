@@ -24,7 +24,8 @@ import ru.mitrakov.self.rush.dialogs.*;
 
 
 /**
- * Created by mitrakov on 03.03.2017
+ * ScreenMain shows the main screen and comprises tabs (Info, Rating, History, Friends), buttons to fight, "Settings"
+ * button, "About" button and so on
  */
 public class ScreenMain extends LocalizableScreen {
 
@@ -109,6 +110,14 @@ public class ScreenMain extends LocalizableScreen {
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
 
+    /**
+     * Creates a new instance of ScreenMain
+     * @param game - instance of Winesaps (NON-NULL)
+     * @param model - model (NON-NULL)
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param assetManager - asset manager (NON-NULL)
+     * @param audioManager - audio manager (NON-NULL)
+     */
     public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                       AudioManager audioManager) {
         super(game, model, psObject, assetManager, audioManager);
@@ -539,6 +548,9 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Prepares textures
+     */
     private void loadTextures() {
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
         for (final Model.Ability ability : model.abilityValues) {
@@ -572,6 +584,9 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Initializes the content tables
+     */
     private void initTables() {
         TextureAtlas atlasMenu = assetManager.get("pack/menu.pack");
         Skin skin = assetManager.get("skin/uiskin.json");
@@ -660,6 +675,10 @@ public class ScreenMain extends LocalizableScreen {
         }));
     }
 
+    /**
+     * Rebuilds left table with 4 buttons ("Training", "Find enemy", "Quick fight", "Latest enemy")
+     * @param showInputName - true to show text box, false to show only 4 buttons
+     */
     private void rebuildLeftTable(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "invite enemy by name")
         tableLeftInvite.clear();
@@ -689,6 +708,10 @@ public class ScreenMain extends LocalizableScreen {
         tableLeftToolbar.add(btnAbout);
     }
 
+    /**
+     * Rebuilds right table with 4 tabs ("Info", "Rating", "History", "Friends")
+     * @param mode - current tab to show
+     */
     private void rebuildRightTable(CurDisplayMode mode) {
         tableRightContent.clear();
 
@@ -738,6 +761,10 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Rebuilds friends buttons
+     * @param showInputName - true to show text box, false to show a button ("Add friend")
+     */
     private void rebuildFriendsButtons(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "add friend")
         tableFriendsControl.clear();
@@ -752,6 +779,10 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Updates the rating content
+     * @param items - collection of rating items
+     */
     private void updateRating(Iterable<RatingItem> items) {
         for (Label label : ratingLabels) {
             label.setText("");
@@ -770,6 +801,9 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Updates the history content
+     */
     private void updateHistory() {
         Array<Actor> cells = tableRightContentHistory.getChildren();
         assert cells != null;
@@ -800,6 +834,10 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Updates the ability list in "Info" tab
+     * @param abilityList - ability list
+     */
     private void updateAbilities(Iterable<Model.Ability> abilityList) {
         tableRightContentAbilities.clear();
         for (Model.Ability ability : abilityList) {
@@ -809,6 +847,10 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Updates the friends content
+     * @param items - collection of friend items
+     */
     private void updateFriends(Collection<? extends FriendItem> items) {
         adjustFriendsTable();
         Array<Actor> cells = tableRightContentFriends.getChildren();
@@ -851,6 +893,9 @@ public class ScreenMain extends LocalizableScreen {
         }
     }
 
+    /**
+     * Appends new items to the friends content table (if necessary)
+     */
     private void adjustFriendsTable() {
         final Skin skin = assetManager.get("skin/uiskin.json");
 
