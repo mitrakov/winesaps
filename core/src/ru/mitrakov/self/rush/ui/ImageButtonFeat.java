@@ -16,7 +16,7 @@ public class ImageButtonFeat extends ImageButton {
      * Creates a new instance of ImageButtonFeat with a usual drawable
      * @param drawable - drawable
      * @param audioManager - audio manager
-     * @param f - onClick function
+     * @param f - onClick function (may be NULL)
      */
     public ImageButtonFeat(Drawable drawable, AudioManager audioManager, Runnable f) {
         super(drawable);

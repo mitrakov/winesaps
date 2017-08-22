@@ -20,9 +20,18 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * Created by mitrakov on 23.02.2017
+ * Gui is the main class to render battle field on the screen
+ * Remember 2 golden rules:
+ * 1) render() method MUST been calculated less than 16 ms (to provide 60 FPS)
+ * 2) render() method MUST NOT create new objects to decrease excessive Garbage Collection
+ * Also remember that it's just an actor, so that different screens should create their own instances
+ * @author mitrakov
  */
 public class Gui extends Actor {
+    /**
+     * MyClickListener is a simple wrapper over ClickListener that also provides touched XY-coordinates
+     * @author mitrakov
+     */
     static private final class MyClickListener extends ClickListener {
         float x, y = 0;
 
@@ -41,6 +50,9 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * AnimInfo is a simple wrapper over Animation[T] that also stores time t and XY-coordinates
+     */
     static private class AnimInfo {
         float x, y;
         float t = BIG_VALUE;
@@ -112,6 +124,11 @@ public class Gui extends Actor {
         return (int) (Field.HEIGHT - y / CELL_SIZ_H);
     }
 
+    /**
+     * Creates a new instance of Gui
+     * @param model - model (NON-NULL)
+     * @param assetManager - asset manager (NON-NULL)
+     */
     public Gui(Model model, AssetManager assetManager) {
         assert model != null && assetManager != null;
         this.model = model;
@@ -285,6 +302,10 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Handles model's events from the Event Bus
+     * @param event - event (may be NULL)
+     */
     public void handleEvent(EventBus.Event event) {
         if (event instanceof EventBus.PlayerWoundedEvent) {
             EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
@@ -328,10 +349,18 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Turns movements input listening on/off
+     * @param value - true to allow movemnents
+     */
     public void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);
     }
 
+    /**
+     * @param cell - cell (NON-NULL)
+     * @return bottom's texture width (default is CELL_SIZ_W)
+     */
     private float getBottomWidth(Cell cell) {
         // cell != null (assert omitted because it's called inside 'render()')
         float bottomWidth = CELL_SIZ_W;
@@ -346,6 +375,10 @@ public class Gui extends Actor {
         return bottomWidth;
     }
 
+    /**
+     * @param cell - cell (NON-NULL)
+     * @return bottom's texture height (default is CELL_SIZ_W)
+     */
     private float getBottomHeight(Cell cell) {
         // cell != null (assert omitted because it's called inside 'render()')
         float bottomHeight = CELL_SIZ_W;
@@ -361,12 +394,22 @@ public class Gui extends Actor {
         return bottomHeight;
     }
 
+    /**
+     * @param field - battle field (NON-NULL)
+     * @param cell - cell to check (NON-NULL)
+     * @return true, if the cell below has a rope line
+     */
     private boolean isRopeBelow(Field field, Cell cell) {
         // field != NULL, cell != NULL
         Cell cellBelow = cell.xy + Field.WIDTH < Field.WIDTH * Field.HEIGHT ? field.cells[cell.xy + Field.WIDTH] : null;
         return cellBelow != null && cellBelow.objectExists(RopeLine.class);
     }
 
+    /**
+     * @param field - battle field (NON-NULL)
+     * @param cell - cell to check (NON-NULL)
+     * @return true, if the cell has a LadderBottom object
+     */
     private boolean ladderBottomExists(Field field, Cell cell) {
         // field != NULL, cell != NULL
         Cell cellBelow = cell.xy + Field.WIDTH < Field.WIDTH * Field.HEIGHT ? field.cells[cell.xy + Field.WIDTH] : null;
@@ -377,6 +420,11 @@ public class Gui extends Actor {
         return false;
     }
 
+    /**
+     * @param field - battle field (NON-NULL)
+     * @param cell - cell to check (NON-NULL)
+     * @return true, if the cell has a LadderTop object
+     */
     private boolean ladderTopExists(Field field, Cell cell) {
         // field != NULL, cell != NULL
         Cell cellAbove = cell.xy - Field.WIDTH >= 0 ? field.cells[cell.xy - Field.WIDTH] : null;
@@ -387,6 +435,11 @@ public class Gui extends Actor {
         return false;
     }
 
+    /**
+     * @param field - battle field (NON-NULL)
+     * @param cell - cell to check (NON-NULL)
+     * @return true, if the animated object (Actor1, Actor2 or Wolf) uses a ladder (moves up or down)
+     */
     private boolean animatedUsesLadder(Field field, Cell cell) {
         // field != null (assert omitted)
         CellObject animated = cell.getFirst(CellObjectAnimated.class);
@@ -405,6 +458,12 @@ public class Gui extends Actor {
         return false;
     }
 
+    /**
+     * Draws static objects according to a given map (NOT CONSIDER Style Packs)
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param map - map that matches object classes to their textures
+     */
     private void drawObjects(Field field, Batch batch, ObjectMap<Class, TextureRegion> map) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -428,6 +487,11 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws cells bottom (block, water, dais)
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     */
     private void drawBottom(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -457,6 +521,11 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws static objects according to texturesStat map and considering the current Style Pack
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     */
     private void drawObjects(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -481,6 +550,11 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws animated waterfalls
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     */
     private void drawWaterfalls(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -502,6 +576,11 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws animated decorations according to the current Style Pack
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     */
     private void drawDynamicDecorations(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -524,14 +603,20 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draw the given animation considering current "time" variable
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param clazz - CellObject class
+     * @param anim - animation
+     */
     private void drawAnim(Field field, Batch batch, Class<? extends CellObject> clazz, Animation<TextureRegion> anim) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = 0; i < Field.WIDTH; i++) {
                 Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
-                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
-                CellObject obj = cell.getFirst(clazz);
-                if (obj != null) {
+                if (cell.objectExists(clazz)) {
+                    float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
                     TextureRegion texture = anim.getKeyFrame(time);
                     if (texture != null) {
                         float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
@@ -543,7 +628,11 @@ public class Gui extends Actor {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
+    /**
+     * Draws animated LadderBottom objects
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     */
     private void drawLadderBottom(Field field, Batch batch) {
         // field != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
@@ -577,6 +666,12 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws animated objects (Actor1, Actor2, Wolf)
+     * @param field - battle field (NON-NULL)
+     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param dt - current delta time
+     */
     @SuppressWarnings("ConstantConditions")
     private void drawAnimatedObjects(Field field, Batch batch, float dt) {
         // field != null (assert omitted)
@@ -683,6 +778,12 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws single animation from the beginning up to the end
+     * @param anim - animation
+     * @param batch - OpenGL sprite batch
+     * @param dt - current delta time
+     */
     private void drawSingleAnim(AnimInfo anim, Batch batch, float dt) {
         // anim != null && batch != null (assert omitted)
         Animation<TextureRegion> animation = anim.animation; // animation != NULL (assert omitted)
@@ -694,6 +795,11 @@ public class Gui extends Actor {
         }
     }
 
+    /**
+     * Draws full screen flare effect (ensure it is drawn after all other layers)
+     * @param batch - OpenGL sprite batch
+     * @param dt - current delta time
+     */
     private void drawFlare(Batch batch, float dt) {
         Animation<TextureRegion> animation = animFlare.animation; // animation != NULL (assert omitted)
         CellObject actor = model.curActor;

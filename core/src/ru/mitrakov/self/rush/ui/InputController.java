@@ -8,7 +8,9 @@ import ru.mitrakov.self.rush.model.Cells.CellObject;
 import static com.badlogic.gdx.Gdx.input;
 
 /**
- * Created by mitrakov on 27.02.2017
+ * InputController is responsible for mouse, touch screen or keyboard input
+ * This class is a [logical] part of Gui class (just extracted to reduce the source file size)
+ * @author mitrakov
  */
 class InputController {
 
@@ -16,11 +18,18 @@ class InputController {
     private boolean curDirRight = true;
     private boolean movesAllowed = true;
 
+    /**
+     * Creates a new instance of InputController
+     * @param model - model (NON-NULL)
+     */
     InputController(Model model) {
         assert model != null;
         this.model = model;
     }
 
+    /**
+     * Checks SPACE or 1234567890 input (only keyboard)
+     */
     void checkInput() {
         if (input.isKeyJustPressed(Keys.SPACE)) model.useThing();
         else if (input.isKeyJustPressed(Keys.NUM_1)) model.useAbility(0);
@@ -39,6 +48,13 @@ class InputController {
         }*/
     }
 
+    /**
+     * Checks movement (mouse, touch screen, keyboard)
+     * @param mouseButton - current pressed mouse button
+     * @param x - x mouse position
+     * @param y - y mouse position
+     * @return true, if a movement registered
+     */
     boolean checkMovement(int mouseButton, float x, float y) {
         CellObject actor = model.curActor; // copy to local to avoid Null-Exceptions
         if (actor != null) {
@@ -79,50 +95,86 @@ class InputController {
         return false;
     }
 
+    /**
+     * Allows or denies movement input listening (doesn't affect UseThing or UseAbility input listening)
+     * @param movesAllowed - true to turn on input listening
+     */
     void setMovesAllowed(boolean movesAllowed) {
         this.movesAllowed = movesAllowed;
     }
 
+    /**
+     * Moves down
+     * @return true
+     */
     private boolean moveDown() {
         model.move(curDirRight ? Model.MoveDirection.RightDown : Model.MoveDirection.LeftDown);
         return true;
     }
 
+    /**
+     * Moves up
+     * @return true
+     */
     private boolean moveUp() {
         model.move(curDirRight ? Model.MoveDirection.RightUp : Model.MoveDirection.LeftUp);
         return true;
     }
 
+    /**
+     * Moves left
+     * @return true
+     */
     private boolean moveLeft() {
         curDirRight = false;
         model.move(Model.MoveDirection.Left);
         return true;
     }
 
+    /**
+     * Moves right
+     * @return true
+     */
     private boolean moveRight() {
         curDirRight = true;
         model.move(Model.MoveDirection.Right);
         return true;
     }
 
+    /**
+     * Moves down (if impossible, then left)
+     * @return true
+     */
     private boolean moveLeftDown() {
         curDirRight = false;
         model.move(Model.MoveDirection.LeftDown);
         return true;
     }
 
+    /**
+     * Moves up (if impossible, then left)
+     * @return true
+     */
     private boolean moveLeftUp() {
         curDirRight = false;
         model.move(Model.MoveDirection.LeftUp);
         return true;
     }
 
+    /**
+     * Moves down (if impossible, then right)
+     * @return true
+     */
     private boolean moveRightDown() {
         curDirRight = true;
         model.move(Model.MoveDirection.RightDown);
         return true;
     }
 
+    /**
+     * Moves up (if impossible, then right)
+     * @return true
+     */
     private boolean moveRightUp() {
         curDirRight = true;
         model.move(Model.MoveDirection.RightUp);

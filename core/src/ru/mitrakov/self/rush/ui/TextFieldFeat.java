@@ -9,14 +9,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ru.mitrakov.self.rush.PsObject;
 
 /**
- * Created by mitrakov on 27.03.2017
+ * Gdx single line text box with extra features added
+ * @see com.badlogic.gdx.scenes.scene2d.ui.TextField
+ * @author mitrakov
  */
 public class TextFieldFeat extends TextField {
-    private Actor onEnterActor;
-    public TextFieldFeat(String text, Skin skin, String styleName, PsObject psObject, Actor onEnterPressedActor) {
+
+    /**
+     * Creates a new instance of TextFieldFeat
+     * @param text - current text (default is "")
+     * @param skin - skin
+     * @param styleName - style name (default is "default")
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param onEnterActor - actor that is programmatically "pushed" when a user presses ENTER key (may be NULL)
+     */
+    public TextFieldFeat(String text, Skin skin, String styleName, PsObject psObject, final Actor onEnterActor) {
         super(text, skin, styleName);
         assert psObject != null;
-        onEnterActor = onEnterPressedActor;
 
         // add 'enter-pressed' feature
         addListener(new InputListener() {
@@ -44,17 +53,6 @@ public class TextFieldFeat extends TextField {
                 }
             });
         }
-    }
-
-    // GENERATED CODE
-
-    @SuppressWarnings("unused")
-    public Actor getOnEnterActor() {
-        return onEnterActor;
-    }
-
-    public void setOnEnterActor(Actor onEnterActor) {
-        this.onEnterActor = onEnterActor;
     }
 }
 

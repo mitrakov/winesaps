@@ -7,10 +7,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ru.mitrakov.self.rush.AudioManager;
 
 /**
- * Created by mitrakov on 27.03.2017
+ * Gdx text button with extra features added
+ * @see com.badlogic.gdx.scenes.scene2d.ui.TextButton
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public class TextButtonFeat extends TextButton {
+    /**
+     * Creates a new instance of TextButtonFeat
+     * @param text - text
+     * @param skin - skin
+     * @param styleName - style name (default is "default")
+     * @param audioManager - audio manager
+     * @param f - onClick function (may be NULL)
+     */
     public TextButtonFeat(String text, Skin skin, String styleName, final AudioManager audioManager, final Runnable f) {
         super(text, skin, styleName);
         assert audioManager != null;
