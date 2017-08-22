@@ -10,7 +10,9 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**
- * Created by mitrakov on 23.02.2017
+ * Parser is used to parse input messages from the network
+ * This class is intended to have a single instance
+ * @author mitrakov
  */
 class Parser implements IHandler {
     private static final int ERR_SIGNIN_INCORRECT_PASSWORD = 31;
@@ -38,6 +40,10 @@ class Parser implements IHandler {
     private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
+    /**
+     * Creates a new instance of Parser
+     * @param model - model (NON-NULL)
+     */
     Parser(Model model) {
         assert model != null;
         this.model = model;
@@ -46,6 +52,7 @@ class Parser implements IHandler {
     @Override
     public synchronized void onReceived(IIntArray data) {
         assert data != null;
+        // divide the byte array into several single messages
         while (data.length() > 2) {
             int len = data.get(0) * 256 + data.get(1);
             processMsg(accessorial.copyFrom(data.remove(0, 2), len));
@@ -58,6 +65,11 @@ class Parser implements IHandler {
         model.setConnected(connected);
     }
 
+    /**
+     * Parses a single message (note that the input byte array may consist of several single messages) and calls the
+     * corresponding method of Model
+     * @param data - single message byte array
+     */
     private void processMsg(IIntArray data) {
         assert data != null;
         log("Precessing:", data);
@@ -172,6 +184,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Empty data");
     }
 
+    /**
+     * Parses SIGN_IN command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void signIn(Cmd cmd, IIntArray data) {
         if (data.length() == 1) {
             int error = data.get(0);
@@ -181,6 +198,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect sign-in format");
     }
 
+    /**
+     * Parses SIGN_OUT command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void signOut(Cmd cmd, IIntArray data) {
         if (data.length() == 1) {
             int error = data.get(0);
@@ -190,6 +212,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect sign-out format");
     }
 
+    /**
+     * Parses USER_INFO command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void userInfo(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
@@ -199,6 +226,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect user info format");
     }
 
+    /**
+     * Parses ATTACK command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void attack(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
@@ -208,6 +240,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect attack format");
     }
 
+    /**
+     * Parses CALL command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void call(Cmd cmd, IIntArray data) {
         if (data.length() > 3) {
             int sidH = data.get(0);
@@ -220,6 +257,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect call format");
     }
 
+    /**
+     * Parses STOP_CALL command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void stopCall(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             boolean rejected = data.get(0) == 0;
@@ -235,6 +277,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect stopCall format");
     }
 
+    /**
+     * Parses FRIEND_LIST command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void friendList(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
             int error = data.get(0);
@@ -247,6 +294,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect friend list format");
     }
 
+    /**
+     * Parses ADD_FRIEND command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void addFriend(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
@@ -259,6 +311,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect add friend format");
     }
 
+    /**
+     * Parses REMOVE_FRIEND command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void removeFriend(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
@@ -268,6 +325,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect remove friend format");
     }
 
+    /**
+     * Parses RANGE_OF_PRODUCTS command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void rangeOfProducts(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
@@ -280,12 +342,22 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect range-of-products format");
     }
 
+    /**
+     * Parses ENEMY_NAME command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void enemyName(Cmd cmd, IIntArray data) {
         if (data.length() > 0)
             model.setEnemyName(data.toUTF8());
         else throw new IllegalArgumentException("Incorrect range-of-products format" + cmd);
     }
 
+    /**
+     * Parses ROUND_INFO command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void roundInfo(Cmd cmd, IIntArray data) {
         if (data.length() > 6) {
             int number = data.get(0);
@@ -302,6 +374,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect round info format");
     }
 
+    /**
+     * Parses RATING command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void rating(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
             int error = data.get(0);
@@ -315,6 +392,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect rating format");
     }
 
+    /**
+     * Parses FULL_STATE command
+     * @param cmd - command
+     * @param state - arguments
+     */
     private void fullState(Cmd cmd, IIntArray state) {
         int n = Field.HEIGHT * Field.WIDTH;
         if (state.length() >= n) {
@@ -349,6 +431,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect field size");
     }
 
+    /**
+     * Parses STATE_CHANGED command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void stateChanged(Cmd cmd, IIntArray data) {
         if (data.length() == 4) {
             int number = data.get(0);
@@ -361,6 +448,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect state changed format");
     }
 
+    /**
+     * Parses SCORE_CHANGED command
+     * @param cmd - command
+     * @param score - arguments
+     */
     private void scoreChanged(Cmd cmd, IIntArray score) {
         if (score.length() == 2) {
             int score1 = score.get(0);
@@ -371,6 +463,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect score format");
     }
 
+    /**
+     * Parses PLAYER_WOUNDED command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void playerWounded(Cmd cmd, IIntArray data) {
         if (data.length() == 4) {
             boolean me = data.get(0) == 1;
@@ -383,6 +480,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect lives format");
     }
 
+    /**
+     * Parses FINISHED command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void finished(Cmd cmd, IIntArray data) {
         if (data.length() > 3) {
             boolean roundFinished = data.get(0) == 0; // 0 = finished round, 1 = finished game
@@ -402,6 +504,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect finished format");
     }
 
+    /**
+     * Parses THING_TAKEN command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void thingTaken(Cmd cmd, IIntArray data) {
         if (data.length() == 2) {
             boolean me = data.get(0) != 0;
@@ -414,6 +521,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect thing format");
     }
 
+    /**
+     * Parses OBJECT_APPENDED command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void objectAppended(Cmd cmd, IIntArray data) {
         if (data.length() == 3) {
             int id = data.get(0);
@@ -425,6 +537,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect object format");
     }
 
+    /**
+     * Parses CHECK_PROMOCODE command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void checkPromocode(Cmd cmd, IIntArray data) {
         if (data.length() == 2) {
             int error = data.get(0);
@@ -437,6 +554,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect checkPromocode format");
     }
 
+    /**
+     * Parses PROMOCODE_DONE command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void promocodeDone(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
             boolean inviter = data.get(0) == 1;
@@ -447,6 +569,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect 'promocode done' format");
     }
 
+    /**
+     * Parses GET_SKU_GEMS command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void getSkuGems(Cmd cmd, IIntArray data) {
         if (data.length() > 1)
             model.setSkuGems(data);
@@ -455,6 +582,11 @@ class Parser implements IHandler {
         else throw new IllegalArgumentException("Incorrect SKU gems format");
     }
 
+    /**
+     * Parses CHECK_PURCHASE command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void checkPurchase(Cmd cmd, IIntArray data) {
         if (data.length() > 5) {
             int error = data.get(0);
@@ -468,6 +600,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect 'check purchase' format");
     }
 
+    /**
+     * Parses EFFECT_CHANGED command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void effectChanged(Cmd cmd, IIntArray data) {
         if (data.length() == 3) {
             int effectId = data.get(0);
@@ -481,6 +618,11 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect effect format");
     }
 
+    /**
+     * Parses ABILITY_LIST command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void abilitiesList(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int count = data.get(0);
@@ -491,12 +633,22 @@ class Parser implements IHandler {
         } else throw new IllegalArgumentException("Incorrect abilities format");
     }
 
+    /**
+     * Parses GET_CLIENT_VERSION command
+     * @param cmd - command
+     * @param data - arguments
+     */
     private void getClientVersion(Cmd cmd, IIntArray data) {
         if (data.length() == 6)
             model.setClientVersion(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5));
         else throw new IllegalArgumentException("Incorrect client version format" + cmd);
     }
 
+    /**
+     * Parses the error code and runs the corresponding method of Model
+     * @param cmd - command that causes the error
+     * @param code - error code
+     */
     private void inspectError(Cmd cmd, int code) {
         switch (code) {
             case 0:

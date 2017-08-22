@@ -19,6 +19,9 @@ import ru.mitrakov.self.rush.screens.*;
 
 /**
  * Entry point
+ * Hello! This is an official GUI Client for Winesaps Game (https://winesaps.com).
+ * This class is intended to have a single instance
+ * @author mitrakov
  */
 public class Winesaps extends Game {
     public static final int WIDTH = 800;
@@ -42,6 +45,11 @@ public class Winesaps extends Game {
     private /*final*/ LocalizableScreen screenBattle;
     private /*final*/ Stage stage; // to draw splash screen only!
 
+    /**
+     * Creates new instance of Game.
+     * Please DO NOT put here any things related with LibGDX objects. Do it in create() method
+     * @param psObject - Platform Specific Object (NON-NULL)
+     */
     public Winesaps(PsObject psObject) {
         assert psObject != null;
         this.psObject = psObject;
@@ -115,17 +123,28 @@ public class Winesaps extends Game {
             stage.dispose();
     }
 
+    /**
+     * Turns the music/SFX on/off
+     * @param value - true to mute music/SFX
+     */
     public void mute(boolean value) {
         if (audioManager != null)
             audioManager.muteAll(value);
     }
 
+    /**
+     * Informs the game about changing the screen ratio
+     * @param ratio - float value of width/height
+     */
     @SuppressWarnings("WeakerAccess")
     public void setRatio(float ratio) {
         if (screenLogin instanceof ScreenLogin)
             ((ScreenLogin) screenLogin).setRatio(ratio);
     }
 
+    /**
+     * Shows the next screen of the game (in a logical order)
+     */
     public void setNextScreen() {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android
         if (screen == screenLogin)
@@ -140,6 +159,9 @@ public class Winesaps extends Game {
             setScreen(screenMain);
     }
 
+    /**
+     * Shows the login screen
+     */
     public void setLoginScreen() {
         setScreen(screenLogin);
     }
@@ -153,6 +175,10 @@ public class Winesaps extends Game {
         screenBattle.onLocaleChanged(bundle);
     }
 
+    /**
+     * @param key - debug key
+     * @return debug value by the debug key
+     */
     public String getDebugInfo(String key) {
         // Java-6 doesn't support switch on strings (https://stackoverflow.com/questions/338206)
         if (key.equals("#!name")) return model.name;
@@ -169,9 +195,12 @@ public class Winesaps extends Game {
         return "";
     }
 
+    /**
+     * Performs starting initialization.
+     * This method MUST be called only in render() or create() method!
+     * Do NOT do it in constructor because Gdx would not be ready
+     */
     private void init() {
-        // the following actions MUST be done only since here or create() method!
-        // Do NOT do it in constructor because Gdx would not be ready
         model.loadSettings();
 
         audioManager = new AudioManager(assetManager, !model.music, !model.soundEffects);
@@ -217,6 +246,9 @@ public class Winesaps extends Game {
         updateLocale();
     }
 
+    /**
+     * Enqueues assets for loading. Feel free to add assets loading here
+     */
     private void enqueueAssets() {
         // List all your assets here (except "back/login.jpg" - it is our splash screen, and must be loaded before)
         assetManager.load("back/main.jpg", Texture.class);

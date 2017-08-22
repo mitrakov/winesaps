@@ -10,13 +10,20 @@ import static ru.mitrakov.self.rush.utils.Utils.getBytes;
 import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 
 /**
- * Created by mitrakov on 27.02.2017
+ * Message Sender is used for sending messages from the Model (Loose Coupling Principle)
+ * This class is intended to have a single instance
+ * @author mitrakov
  */
 class MsgSender implements Model.ISender {
     private final Network network;
     private final Thread.UncaughtExceptionHandler errorHandler;
     private final IIntArray sendBuf = new GcResistantIntArray(BUF_SIZ_SEND);
 
+    /**
+     * Creates a new instance of Message Sender
+     * @param network - network (NON-NULL)
+     * @param errorHandler - error handler to process IO exceptions (NON-NULL)
+     */
     MsgSender(Network network, Thread.UncaughtExceptionHandler errorHandler) {
         assert network != null && errorHandler != null;
         this.network = network;
