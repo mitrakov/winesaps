@@ -10,7 +10,8 @@ import static ru.mitrakov.self.rush.utils.Utils.getBytes;
 import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 
 /**
- * Message Sender is used for sending messages from the Model (Loose Coupling Principle)
+ * Message Sender is used for sending messages from the Model
+ * Class is designed to meet the Loose Coupling Principle
  * This class is intended to have a single instance
  * @author mitrakov
  */

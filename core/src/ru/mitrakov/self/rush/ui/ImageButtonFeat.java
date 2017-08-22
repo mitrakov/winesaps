@@ -7,22 +7,42 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import ru.mitrakov.self.rush.AudioManager;
 
 /**
- * Created by mitrakov on 27.03.2017
+ * Gdx image button with extra features added
+ * @see com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+ * @author mitrakov
  */
-@SuppressWarnings("WeakerAccess")
 public class ImageButtonFeat extends ImageButton {
+    /**
+     * Creates a new instance of ImageButtonFeat with a usual drawable
+     * @param drawable - drawable
+     * @param audioManager - audio manager
+     * @param f - onClick function
+     */
     public ImageButtonFeat(Drawable drawable, AudioManager audioManager, Runnable f) {
         super(drawable);
-        addSfx(audioManager, f);
+        init(audioManager, f);
     }
 
+    /**
+     * Creates a new instance of ImageButtonFeat with 2 toggle drawables: for "on" and "off" state correspondingly
+     * @param drawableOn - drawable to represent the On state of a toggle button
+     * @param drawableOff - drawable to represent the Off state of a toggle button
+     * @param checked - initial state
+     * @param audio - audio manager
+     * @param f - onClick function
+     */
     public ImageButtonFeat(Drawable drawableOn, Drawable drawableOff, boolean checked, AudioManager audio, Runnable f) {
         super(drawableOff, null, drawableOn);
         setChecked(checked);
-        addSfx(audio, f); // add listener AFTER setChecked()!
+        init(audio, f); // add listener AFTER setChecked()!
     }
 
-    private void addSfx(final AudioManager audioManager, final Runnable f) {
+    /**
+     * Adds the onClick listener
+     * @param audioManager - audio manager
+     * @param f - onClick function
+     */
+    private void init(final AudioManager audioManager, final Runnable f) {
         assert audioManager != null;
         addListener(new ChangeListener() {
             @Override

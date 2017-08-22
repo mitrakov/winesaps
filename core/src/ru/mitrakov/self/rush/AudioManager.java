@@ -5,7 +5,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.assets.AssetManager;
 
 /**
- * Created by mitrakov on 06.04.2017
+ * Simple Gdx-specific wrapper to handle all Music and Sound instances. Supports "mute" operations.
+ * This class is intended to have a single instance
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public class AudioManager {
@@ -17,6 +19,12 @@ public class AudioManager {
     private Music curMusic;
     private String curMusicName = "";
 
+    /**
+     * Creates a new instance of AudioManager
+     * @param assetManager - Asset Manager (NON-NULL)
+     * @param musicMuted - starting mute state for music (default is false)
+     * @param soundMuted - starting mute state for sounds (default is false)
+     */
     public AudioManager(AssetManager assetManager, boolean musicMuted, boolean soundMuted) {
         assert assetManager != null;
         this.assetManager = assetManager;
@@ -24,6 +32,11 @@ public class AudioManager {
         this.soundMuted = soundMuted;
     }
 
+    /**
+     * Plays the music. If the other music instance is already playing, it will be stopped
+     * @param name - name of a music asset WITHOUT any paths and extensions like ".mp3" and so on
+     * @param loop - loop flag
+     */
     public void music(String name, boolean loop) {
         assert name != null;
         if (!curMusicName.equals(name)) {
@@ -41,6 +54,11 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Plays the sound. If the other sound instance is already playing, both of them will be played simultaneously.
+     * Please ensure your SFX is less than 1 Mb
+     * @param name - name of a sound asset WITHOUT any paths and extensions like ".wav" and so on
+     */
     public void sound(String name) {
         if (!soundMuted) {
             String path = soundNames.get(name);
@@ -52,6 +70,10 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Turns the music on/off
+     * @param value - true to mute music
+     */
     public void muteMusic(boolean value) {
         musicMuted = value;
         if (curMusic != null) {
@@ -61,10 +83,18 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Turns the sounds on/off
+     * @param value - true to mute sounds
+     */
     public void muteSound(boolean value) {
         soundMuted = value;
     }
 
+    /**
+     * Turns the music and sounds on/off
+     * @param value - true to mute music and sounds
+     */
     public void muteAll(boolean value) {
         muteMusic(value);
         muteSound(value);

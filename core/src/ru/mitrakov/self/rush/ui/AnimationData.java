@@ -7,12 +7,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * Created by mitrakov on 14.06.2017
+ * Class to store different animation frames for different character actions (Run, Climb, Swim and so on)
+ * @author mitrakov
  */
-
 class AnimationData<T> {
     enum AnimationType {Idle, Run, Climb, Ladder}
 
+    /**
+     * Simple class to store all possible animations for a character
+     */
     private static class AnimChar {
         private final ObjectMap<AnimationType, Animation<TextureRegion>> animations =
                 new ObjectMap<AnimationType, Animation<TextureRegion>>(AnimationType.values().length);
@@ -39,15 +42,31 @@ class AnimationData<T> {
     private AnimationType curType = AnimationType.Idle;
     private float t;
 
+    /**
+     * Creates a new instance of AnimationData
+     * @param speedX - current speed on X axis (worldUnits/sec)
+     */
     AnimationData(float speedX) {
         this.speedX = speedX;
     }
 
+    /**
+     * Adds a new AnimChar to animation store for the given key
+     * @param key - any key (usually instance of Character)
+     * @param atlas - Texture Atlas that contains frames needed
+     * @param frameDuration - animation speed
+     * @return "this"
+     */
     public AnimationData add(T key, TextureAtlas atlas, float frameDuration) {
         animChars.put(key, new AnimChar(atlas, frameDuration));
         return this;
     }
 
+    /**
+     * Gets the current frame (taking into account current time "t") for the animation matched by the given key
+     * @param key - key (usually instance of Character)
+     * @return current animation frame (of NULL if a key matches nothing)
+     */
     TextureRegion getFrame(T key) {
         AnimChar animChar = animChars.get(key);
         if (animChar != null) {
@@ -58,6 +77,11 @@ class AnimationData<T> {
         return null;
     }
 
+    /**
+     * Gets the max possible width of the animation matched by the given key
+     * @param key - key (usually instance of Character)
+     * @return texture width (or 0 if a key matches nothing)
+     */
     int getWidth(T key) {
         AnimChar animChar = animChars.get(key);
         if (animChar != null) {
@@ -68,14 +92,26 @@ class AnimationData<T> {
         return 0;
     }
 
+    /**
+     * @return current animation type
+     */
     AnimationType getAnimation() {
         return curType;
     }
 
+    /**
+     * Increases current time to move the animation
+     * @param dt - delta time (sec)
+     */
     void addDt(float dt) {
         t += dt;
     }
 
+    /**
+     * Sets the animation type on/off
+     * @param type - animation type
+     * @param value - true to set and false to unset animation
+     */
     void setAnimation(AnimationType type, boolean value) {
         switch (type) {
             case Run:

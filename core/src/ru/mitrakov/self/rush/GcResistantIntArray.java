@@ -7,7 +7,9 @@ import java.io.UnsupportedEncodingException;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 /**
- * Created by mitrakov on 19.05.2017
+ * GcResistantIntArray - special implementation of IIntArray that DOES NOT creates new objects during its work to
+ * decrease GC pressure. It can be safely used in render() method
+ * @author mitrakov
  */
 public final class GcResistantIntArray implements IIntArray {
     private final IntArray array;
@@ -53,11 +55,11 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     /**
-     * ...
+     * Copies data from an existing array
      * if data.length() or length is larger than bufSize it's OK (internal buffer will be resized)
-     * @param data - ...
-     * @param length - ...
-     * @return ...
+     * @param data - data
+     * @param length - length
+     * @return reference to "this"
      */
     @Override
     public synchronized IIntArray copyFrom(IIntArray data, int length) {

@@ -3,7 +3,8 @@ package ru.mitrakov.self.rush;
 import java.util.List;
 
 /**
- * Created by mitrakov on 21.06.2017
+ * Interface for Billing Providers (that can differ for different platforms)
+ * @author mitrakov
  */
 public interface IBillingProvider {
     interface BillingListener {
@@ -14,6 +15,11 @@ public interface IBillingProvider {
     List<Sku> getProducts();
     void purchaseProduct(Sku sku, String payload);
 
+    /**
+     * Stock Keeping Unit (in terms of Google Play Billing)
+     * Case class
+     * @author mitrakov
+     */
     @SuppressWarnings({"WeakerAccess", "NullableProblems"})
     final class Sku implements Comparable<Sku> {
         public final String id;
