@@ -6,11 +6,12 @@ import java.io.IOException;
 import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
-import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 import static ru.mitrakov.self.rush.net.SwUDP.*;
 
 /**
- * Created by mitrakov on 03.04.2017
+ * Receiver is the part of SwUDP class (it was extracted to reduce the source file size)
+ * This class should have a single instance for each SwUDP instance
+ * @author mitrakov
  */
 @SuppressWarnings("ForLoopReplaceableByForEach")
 class Receiver {
@@ -27,6 +28,14 @@ class Receiver {
     boolean connected = false;
     private int pending = 0;
 
+    /**
+     * Creates a new instance of Receiver
+     * @param socket - UDP-socket
+     * @param host - host (IP-address or host name)
+     * @param port - port
+     * @param handler - handler to process incoming messages
+     * @param protocol - transport protocol (in our case, SwUDP)
+     */
     Receiver(DatagramSocket socket, String host, int port, IHandler handler, IProtocol protocol) {
         assert socket != null && host != null && 0 < port && port < 65536 && handler != null && protocol != null;
         this.socket = socket;
@@ -41,6 +50,13 @@ class Receiver {
         }
     }
 
+    /**
+     * OnMessageReceived callback
+     * @param id - SwUDP packet ID
+     * @param crcid - SwUDP crcID
+     * @param msg - message
+     * @throws IOException
+     */
     void onMsg(int id, int crcid, IIntArray msg) throws IOException {
         ack.clear();
         ack.add(id).add((crcid >> 24) & 0xFF).add((crcid >> 16) & 0xFF).add((crcid >> 8) & 0xFF).add(crcid & 0xFF);
@@ -79,6 +95,9 @@ class Receiver {
         }
     }
 
+    /**
+     * Transmits the successful packet to the handler and removes it from the buffer
+     */
     private void accept() {
         if (buffer[expected].exists) {
             handler.onReceived(buffer[expected].msg);
@@ -88,6 +107,14 @@ class Receiver {
         }
     }
 
+    /**
+     * Packs given data to a datagram packet and returns this packet.
+     * Method is designed to reduce GC pressure by avoiding "new DatagramPacket" operations
+     * @param data - data
+     * @param length - data length
+     * @return ready to send datagram packet
+     * @throws UnknownHostException - if the host cannot be resolved
+     */
     private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
         if (packet == null)
             packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);
