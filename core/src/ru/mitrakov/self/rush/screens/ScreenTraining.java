@@ -14,7 +14,8 @@ import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * Created by mitrakov on 01.03.2017
+ * ScreenTraining shows the Training battle screen with UseThing and Skip buttons
+ * @author mitrakov
  */
 public class ScreenTraining extends LocalizableScreen {
 
@@ -129,6 +130,9 @@ public class ScreenTraining extends LocalizableScreen {
     public void handleEventBackground(EventBus.Event event) {
     }
 
+    /**
+     * Prepares textures
+     */
     private void loadTextures() {
         TextureAtlas atlasThing = assetManager.get("pack/thing.pack");
         for (Class clazz : new Class[]{CellObject.class, UmbrellaThing.class}) {
@@ -138,6 +142,9 @@ public class ScreenTraining extends LocalizableScreen {
         }
     }
 
+    /**
+     * Initializes components
+     */
     private void initComponents() {
         // building table
         table.add(gui);
@@ -162,6 +169,10 @@ public class ScreenTraining extends LocalizableScreen {
         }
     }
 
+    /**
+     * Adds content (messages and pictures) to the tutorial dialog
+     * @param b - i18n bundle
+     */
     private void addContent(I18NBundle b) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
         TextureAtlas atlas = assetManager.get("pack/tutorial.pack");

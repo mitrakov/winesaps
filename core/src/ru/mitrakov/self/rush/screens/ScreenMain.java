@@ -26,6 +26,7 @@ import ru.mitrakov.self.rush.dialogs.*;
 /**
  * ScreenMain shows the main screen and comprises tabs (Info, Rating, History, Friends), buttons to fight, "Settings"
  * button, "About" button and so on
+ * @author mitrakov
  */
 public class ScreenMain extends LocalizableScreen {
 

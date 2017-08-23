@@ -10,7 +10,9 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
- * Created by mitrakov on 23.02.2017
+ * Main networking class
+ * Class is intended to have a single instance
+ * @author mitrakov
  */
 public final class Network extends Thread implements IHandler {
     // @note uncomment only for debug! public static boolean TMP_NO_CONNECTION = false;
@@ -37,6 +39,15 @@ public final class Network extends Thread implements IHandler {
     private long token = 0;
     private IProtocol protocol;
 
+    /**
+     * Creates a new instance of Network
+     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param handler - handler to process incoming messages
+     * @param eHandler - error handler
+     * @param host - host (IP-address or host name)
+     * @param port - port (0 < port < 65536)
+     * @throws SocketException - if DatagramSocket cannot be created (e.g. if there are no permissions on Android)
+     */
     public Network(PsObject psObject, IHandler handler, UncaughtExceptionHandler eHandler, String host, int port)
             throws SocketException {
         assert psObject != null && handler != null && eHandler != null && host != null && 0 < port && port < 65536;
@@ -123,6 +134,11 @@ public final class Network extends Thread implements IHandler {
         }
     }
 
+    /**
+     * Sends message to the server, prepending it with sid, token, flags and msgSize fields
+     * @param data - data
+     * @throws IOException - if the host cannot be resolved
+     */
     public void send(IIntArray data) throws IOException {
         // @note uncomment only for debug! if (TMP_NO_CONNECTION) return;
 
@@ -145,19 +161,39 @@ public final class Network extends Thread implements IHandler {
         else socket.send(getPacket(data.toByteArray(), data.length()));
     }
 
+    /**
+     * Resets the network state with a given sid and token
+     * @param sid - sid (default is 0)
+     * @param token - token (default is 0)
+     */
     public void reset(int sid, long token) {
         this.sid = sid;
         this.token = token;
     }
 
+    /**
+     * @return socket
+     */
     public DatagramSocket getSocket() {
         return socket;
     }
 
+    /**
+     * Sets a new transport protocol for the network
+     * @param protocol - protocol (may be NULL)
+     */
     public void setProtocol(IProtocol protocol) {
         this.protocol = protocol;
     }
 
+    /**
+     * Packs given data to a datagram packet and returns this packet.
+     * Method is designed to reduce GC pressure by avoiding "new DatagramPacket" operations
+     * @param data - data
+     * @param length - data length
+     * @return ready to send datagram packet
+     * @throws UnknownHostException - if the host cannot be resolved
+     */
     private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
         if (packet == null)
             packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);
