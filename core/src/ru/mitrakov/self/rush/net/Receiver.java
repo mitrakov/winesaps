@@ -51,7 +51,7 @@ class Receiver {
     }
 
     /**
-     * OnMessageReceived callback
+     * Callback on a new message received
      * @param id - SwUDP packet ID
      * @param crcid - SwUDP crcID
      * @param msg - message

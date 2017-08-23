@@ -1,7 +1,6 @@
 package ru.mitrakov.self.rush.net;
 
 import java.net.*;
-import java.util.Locale;
 import java.io.IOException;
 
 import ru.mitrakov.self.rush.*;
@@ -12,7 +11,9 @@ import static ru.mitrakov.self.rush.net.SwUDP.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
- * Created by mitrakov on 03.04.2017
+ * Sender is the part of SwUDP class (it was extracted to reduce the source file size)
+ * This class should have a single instance for each SwUDP instance
+ * @author mitrakov
  */
 @SuppressWarnings("ForLoopReplaceableByForEach")
 class Sender {
@@ -29,6 +30,14 @@ class Sender {
     float srtt = .0f;
     volatile boolean connected = false; // volatile needed (by FindBugs)
 
+    /**
+     * Creates a new instance of Sender
+     * @param psObject - Platform Specific Object
+     * @param socket - UDP-socket
+     * @param host - host (IP-address or host name)
+     * @param port - port
+     * @param protocol - transport protocol (in our case, SwUDP)
+     */
     Sender(PsObject psObject, DatagramSocket socket, String host, int port, IProtocol protocol) {
         assert psObject != null && socket != null && host != null && 0 < port && port < 65536 && protocol != null;
         this.socket = socket;
@@ -52,6 +61,11 @@ class Sender {
         });
     }
 
+    /**
+     * Connects to a remote SwUDP receiver
+     * @param crc_id - SwUDP crcID
+     * @throws IOException
+     */
     synchronized void connect(int crc_id) throws IOException {
         crcid = crc_id;
         id = expectedAck = SYN;
@@ -70,6 +84,11 @@ class Sender {
         socket.send(getPacket(startMsg.toByteArray(), startMsg.length()));
     }
 
+    /**
+     * Sends the given message to the remote SwUDP receiver
+     * @param msg - message
+     * @throws IOException
+     */
     synchronized void send(IIntArray msg) throws IOException {
         if (connected) {
             id = next(id);
@@ -83,6 +102,11 @@ class Sender {
         } else throw new ConnectException("Not connected");
     }
 
+    /**
+     * Callback on Ack packet received
+     * @param ack - Ack packet from the remote SwUDP receiver
+     * @throws IOException
+     */
     synchronized void onAck(int ack) throws IOException {
         log("SRTT = ", srtt);
         if (buffer[ack].exists) {
@@ -106,6 +130,9 @@ class Sender {
         }
     }
 
+    /**
+     * Accepts expected Ack and removes the corresponding message from the buffer
+     */
     private void accept() {
         if (buffer[expectedAck].exists) {
             if (buffer[expectedAck].ack) {
@@ -116,6 +143,10 @@ class Sender {
         }
     }
 
+    /**
+     * Called by timer procedure, that tries to retransmit non-Acked packets to the remote SwUDP receiver
+     * @throws IOException
+     */
     private synchronized void trigger() throws IOException {
         totalTicks++;
         int i = expectedAck;
@@ -141,6 +172,14 @@ class Sender {
         }
     }
 
+    /**
+     * Packs given data to a datagram packet and returns this packet.
+     * Method is designed to reduce GC pressure by avoiding "new DatagramPacket" operations
+     * @param data - data
+     * @param length - data length
+     * @return ready to send datagram packet
+     * @throws UnknownHostException - if the host cannot be resolved
+     */
     private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
         if (packet == null)
             packet = new DatagramPacket(data, length, InetAddress.getByName(host), port);

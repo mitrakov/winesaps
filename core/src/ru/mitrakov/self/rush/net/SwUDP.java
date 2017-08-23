@@ -11,7 +11,9 @@ import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
- * Created by mitrakov on 31.03.2017
+ * SwUDP protocol. Consists of 2 parts: {@link Sender} and {@link Receiver}
+ * Please, see digit-by-digit algorithm in corresponding SwUDP documentation
+ * @author mitrakov
  */
 public class SwUDP implements IProtocol {
     final static int N = 256;
@@ -26,7 +28,11 @@ public class SwUDP implements IProtocol {
     final static float RC = .8f;
     final static float AC = 2.2f;
 
-    @SuppressWarnings("unused")
+    /**
+     * Single message item.
+     * Please DO NOT call "new Item" each time the next packet is sent/received. Use clear() method to reuse the old one
+     * @author mitrakov
+     */
     static class Item {
         boolean exists = false;
         boolean ack = false;
@@ -36,17 +42,9 @@ public class SwUDP implements IProtocol {
         int nextRepeat = 0;
         IIntArray msg = new GcResistantIntArray(BUF_SIZ_SEND);
 
-        Item() {}
-
-        Item(IIntArray msg) {
-            this.msg.copyFrom(msg, msg.length());
-        }
-
-        Item(IIntArray msg, int startRtt) {
-            this.msg.copyFrom(msg, msg.length());
-            this.startRtt = startRtt;
-        }
-
+        /**
+         * Resets the internal state (designed specially to get it reusable and reduce GC pressure)
+         */
         void clear() {
             exists = ack = false;
             startRtt = ticks = attempt = nextRepeat = 0;
@@ -54,12 +52,21 @@ public class SwUDP implements IProtocol {
         }
     }
 
+    /**
+     * @param n - current SwUDP ID
+     * @return next SwUDP ID (number in range 2-255)
+     */
     static int next(int n) {
         int result = (n + 1) % N;
         boolean ok = result != SYN && result != ERRACK;
         return ok ? result : next(result);
     }
 
+    /**
+     * @param x - SwUDP ID1
+     * @param y - SwUDP ID2
+     * @return whether ID1 is after or before ID2
+     */
     static boolean after(int x, int y) {
         return (y - x + N) % N > N / 2;
     }
@@ -68,6 +75,14 @@ public class SwUDP implements IProtocol {
     private final Receiver receiver;
     private final IHandler handler;
 
+    /**
+     * Creates a new SwUDP protocol implementation
+     * @param psObject - Platform Specific Object
+     * @param socket - UDP-socket
+     * @param host - host (IP-address or host name)
+     * @param port - port
+     * @param handler - handler to process incoming messages
+     */
     public SwUDP(PsObject psObject, DatagramSocket socket, String host, int port, IHandler handler) {
         assert psObject != null && socket != null && host != null && handler != null && 0 < port && port < 65536;
         this.handler = handler;
@@ -121,6 +136,9 @@ public class SwUDP implements IProtocol {
         return sender.connected && receiver.connected;
     }
 
+    /**
+     * @return current Smoothed Round-Trip-Time in ticks (1 tick is 10 msec)
+     */
     public float getSrtt() {
         return sender.srtt;
     }
