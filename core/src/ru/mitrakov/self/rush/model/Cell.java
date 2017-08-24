@@ -6,19 +6,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * Created by mitrakov on 23.02.2017
+ * Cell is a single element of a battle field. Character can move only from one cell to another
+ * @author mitrakov
  */
-
 public class Cell {
-    // ....
+    // @mitrakov: fields are public, because they are frequently accessed in render() method
     public final int xy;
     public CellObject bottom; // may be NULL
     List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
 
+    /**
+     * private constructor (use newCell() factory method)
+     * @param xy - index in a battle field
+     */
     private Cell(int xy) {
         this.xy = xy;
     }
 
+    /**
+     * Creates a new instance of Cell
+     * @param value - binary value (2 bits are bottom, 6 bits - object, like ladders, rope lines, etc.)
+     * @param xy - index in a battle field
+     * @param number - function, that returns current order number on a battle field (starting with 1)
+     * @return new Cell
+     */
     static Cell newCell(int value, int xy, Field.NextNumber number) {
         Cell res = new Cell(xy);
         switch (value >> 6) {
@@ -39,6 +50,13 @@ public class Cell {
         return res;
     }
 
+    /**
+     * Creates a new instance of CellObject
+     * @param value - binary 6-bits value
+     * @param xy - index of a cell
+     * @param number - function, that returns current order number on a battle field (starting with 1)
+     * @return new CellObject
+     */
     static CellObject newObject(int value, int xy, Field.NextNumber number) {
         switch (value) {
             case 0x01:
@@ -130,6 +148,11 @@ public class Cell {
         }
     }
 
+    /**
+     * @param objClass - java class of CellObject to search
+     * @param <T> - CellObject type
+     * @return first object in the cell that corresponds to a given java class
+     */
     @SuppressWarnings("unchecked")
     public <T extends CellObject> T getFirst(Class<T> objClass) {
         for (int i = 0; i < objects.size(); i++) {  // .... GC!
@@ -140,14 +163,28 @@ public class Cell {
         return null;
     }
 
+    /**
+     * @param objClass - java class of CellObject to check
+     * @return true, if a CellObject of a given java class exists in the cell
+     */
     public boolean objectExists(Class<? extends CellObject> objClass) {
         return getFirst(objClass) != null;
     }
 
+    /**
+     * @return count of CellObjects in the cell
+     */
     public int getObjectsCount() {
         return objects.size();
     }
 
+    /**
+     * Gets CellObject by its index
+     * This method is asymptotically O(1), safe and highly recommended to use inside for(...) loop to reduce GC,
+     * produced by for-each constructions
+     * @param idx - index
+     * @return CellObject by its index
+     */
     public CellObject getObject(int idx) {
         try {
             return objects.get(idx);
