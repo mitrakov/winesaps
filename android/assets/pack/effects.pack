@@ -234,3 +234,10 @@ Antidote
   orig: 50, 45
   offset: 0, 0
   index: -1
+Dazzle
+  rotate: false
+  xy: 882, 355
+  size: 50, 45
+  orig: 50, 45
+  offset: 0, 0
+  index: -1

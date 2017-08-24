@@ -93,6 +93,7 @@ public class ScreenLogin extends LocalizableScreen {
         txtPassword = new TextFieldFeat("", skin, "default", psObject, btnOk) {{
             setPasswordMode(true);
             setPasswordCharacter('*');
+            setText("1234"); // do not set text in constructor, because password mode would not set yet
         }};
         txtPromocode = new TextFieldFeat("", skin, "default", psObject, btnOk) {{
             addListener(new ChangeListener() {

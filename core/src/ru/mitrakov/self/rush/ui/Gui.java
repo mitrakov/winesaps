@@ -104,9 +104,10 @@ public class Gui extends Actor {
     private final AnimInfo animExplosion;
     private final AnimInfo animSmoke;
     private final TextureRegion textureAntidote;
+    private final TextureRegion textureDazzle;
 
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
-    private float time = 0;
+    private float time = 0, enemyDazzleEffectTime = 0;
 
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
@@ -255,6 +256,7 @@ public class Gui extends Actor {
 
         // simple textures
         textureAntidote = atlasEffects.findRegion("Antidote");
+        textureDazzle = atlasEffects.findRegion("Dazzle");
     }
 
     @Override
@@ -769,6 +771,19 @@ public class Gui extends Actor {
                                     textureAntidote.flip(true, false);
                                     batch.draw(textureAntidote, x + 10, yy);
                                     textureAntidote.flip(true, false);
+                                }
+                            }
+                            // draw dazzle balloon
+                            if (obj == model.enemyActor) {
+                                if (obj.getEffect() == Model.Effect.Dazzle) {
+                                    obj.setEffect(Model.Effect.None);
+                                    enemyDazzleEffectTime = 3.0f;
+                                }
+                                if (enemyDazzleEffectTime > 0) {
+                                    enemyDazzleEffectTime -= dt;
+                                    float xx = x - (.5f * textureDazzle.getRegionWidth());
+                                    float yy = y + CELL_SIZ_H / 2;
+                                    batch.draw(textureDazzle, xx, yy);
                                 }
                             }
                         }
