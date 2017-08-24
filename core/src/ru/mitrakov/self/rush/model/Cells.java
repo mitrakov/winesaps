@@ -341,4 +341,10 @@ public class Cells {
             super(0x32, xy);
         }
     }
+
+    public static class DecorationDanger extends CellObject {
+        public DecorationDanger(int xy) {
+            super(0x33, xy);
+        }
+    }
 }

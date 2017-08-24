@@ -143,6 +143,8 @@ public class Cell {
                 return new DecorationDynamic(xy);
             case 0x32:
                 return new DecorationWarning(xy);
+            case 0x33:
+                return new DecorationDanger(xy);
             default:
                 return null;
         }

@@ -17,163 +17,191 @@ DecorationStatic1
   orig: 53, 72
   offset: 0, 0
   index: -1
+DecorationDanger0
+  rotate: false
+  xy: 129, 58
+  size: 37, 65
+  orig: 37, 65
+  offset: 0, 0
+  index: -1
+DecorationDanger1
+  rotate: false
+  xy: 129, 58
+  size: 37, 65
+  orig: 37, 65
+  offset: 0, 0
+  index: -1
+DecorationDanger2
+  rotate: false
+  xy: 129, 58
+  size: 37, 65
+  orig: 37, 65
+  offset: 0, 0
+  index: -1
+DecorationDanger3
+  rotate: false
+  xy: 129, 58
+  size: 37, 65
+  orig: 37, 65
+  offset: 0, 0
+  index: -1
 LadderBottom1
   rotate: false
-  xy: 129, 68
+  xy: 168, 68
   size: 42, 55
   orig: 42, 55
   offset: 0, 0
   index: -1
 LadderTop1
   rotate: false
-  xy: 173, 68
+  xy: 212, 68
   size: 42, 55
   orig: 42, 55
   offset: 0, 0
   index: -1
 LadderBottom2
   rotate: false
-  xy: 217, 68
+  xy: 256, 68
   size: 40, 55
   orig: 40, 55
   offset: 0, 0
   index: -1
 LadderTop2
   rotate: false
-  xy: 259, 68
+  xy: 298, 68
   size: 40, 55
   orig: 40, 55
   offset: 0, 0
   index: -1
 Umbrella
   rotate: false
-  xy: 301, 68
+  xy: 340, 68
   size: 36, 55
   orig: 36, 55
   offset: 0, 0
   index: -1
 LadderBottom0
   rotate: false
-  xy: 339, 68
+  xy: 378, 68
   size: 35, 55
   orig: 35, 55
   offset: 0, 0
   index: -1
 LadderBottom3
   rotate: false
-  xy: 376, 68
+  xy: 415, 68
   size: 35, 55
   orig: 35, 55
   offset: 0, 0
   index: -1
 LadderTop0
   rotate: false
-  xy: 413, 68
+  xy: 452, 68
   size: 35, 55
   orig: 35, 55
   offset: 0, 0
   index: -1
 LadderTop3
   rotate: false
-  xy: 450, 68
+  xy: 489, 68
   size: 35, 55
   orig: 35, 55
   offset: 0, 0
   index: -1
 DecorationStatic2
   rotate: false
-  xy: 487, 68
+  xy: 526, 68
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 DecorationWarning0
   rotate: false
-  xy: 519, 68
+  xy: 558, 68
   size: 30, 55
   orig: 30, 55
   offset: 0, 0
   index: -1
 RopeLine0
   rotate: false
-  xy: 551, 52
+  xy: 590, 52
   size: 25, 71
   orig: 25, 71
   offset: 0, 0
   index: -1
 RopeLine1
   rotate: false
-  xy: 578, 52
+  xy: 617, 52
   size: 20, 71
   orig: 20, 71
   offset: 0, 0
   index: -1
 RopeLine3
   rotate: false
-  xy: 600, 52
+  xy: 639, 52
   size: 20, 71
   orig: 20, 71
   offset: 0, 0
   index: -1
 Block0
   rotate: false
-  xy: 622, 51
+  xy: 661, 51
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block1
   rotate: false
-  xy: 638, 51
+  xy: 677, 51
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block2
   rotate: false
-  xy: 654, 51
+  xy: 693, 51
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Block3
   rotate: false
-  xy: 670, 51
+  xy: 709, 51
   size: 14, 72
   orig: 14, 72
   offset: 0, 0
   index: -1
 Water0
   rotate: false
-  xy: 686, 52
+  xy: 725, 52
   size: 14, 71
   orig: 14, 71
   offset: 0, 0
   index: -1
 Water1
   rotate: false
-  xy: 702, 52
+  xy: 741, 52
   size: 14, 71
   orig: 14, 71
   offset: 0, 0
   index: -1
 Water2
   rotate: false
-  xy: 718, 52
+  xy: 757, 52
   size: 14, 71
   orig: 14, 71
   offset: 0, 0
   index: -1
 Water3
   rotate: false
-  xy: 734, 52
+  xy: 773, 52
   size: 14, 71
   orig: 14, 71
   offset: 0, 0
   index: -1
 RopeLine2
   rotate: false
-  xy: 750, 52
+  xy: 789, 52
   size: 12, 71
   orig: 12, 71
   offset: 0, 0
@@ -187,14 +215,14 @@ DecorationWarning3
   index: -1
 DecorationWarning2
   rotate: false
-  xy: 764, 88
+  xy: 803, 88
   size: 33, 35
   orig: 33, 35
   offset: 0, 0
   index: -1
 DecorationWarning1
   rotate: false
-  xy: 764, 56
+  xy: 803, 56
   size: 33, 30
   orig: 33, 30
   offset: 0, 0
@@ -208,112 +236,112 @@ AntidoteThing
   index: -1
 BeamThing
   rotate: false
-  xy: 799, 95
+  xy: 838, 95
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 BoxThing
   rotate: false
-  xy: 799, 65
+  xy: 838, 65
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 DetectorThing
   rotate: false
-  xy: 829, 95
+  xy: 868, 95
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 FlashbangThing
   rotate: false
-  xy: 829, 65
+  xy: 868, 65
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 MineThing
   rotate: false
-  xy: 859, 95
+  xy: 898, 95
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 TeleportThing
   rotate: false
-  xy: 859, 65
+  xy: 898, 65
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 UmbrellaThing
   rotate: false
-  xy: 889, 95
+  xy: 928, 95
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 Apple
   rotate: false
-  xy: 889, 65
+  xy: 928, 65
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Carrot
   rotate: false
-  xy: 919, 95
+  xy: 958, 95
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Meat
   rotate: false
-  xy: 915, 65
+  xy: 954, 65
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Mushroom
   rotate: false
-  xy: 945, 95
+  xy: 984, 95
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Nut
   rotate: false
-  xy: 941, 65
+  xy: 980, 65
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 Pear
   rotate: false
-  xy: 971, 95
+  xy: 70, 21
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 DecorationStatic0
   rotate: false
-  xy: 967, 73
+  xy: 96, 29
   size: 26, 20
   orig: 26, 20
   offset: 0, 0
   index: -1
 Beam
   rotate: false
-  xy: 997, 78
+  xy: 1010, 78
   size: 6, 45
   orig: 6, 45
   offset: 0, 0
   index: -1
 BeamChunk
   rotate: false
-  xy: 129, 60
+  xy: 168, 60
   size: 15, 6
   orig: 15, 6
   offset: 0, 0
@@ -327,28 +355,28 @@ Box
   index: -1
 Stair0
   rotate: false
-  xy: 40, 14
+  xy: 838, 56
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair1
   rotate: false
-  xy: 799, 56
+  xy: 40, 14
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair2
   rotate: false
-  xy: 1005, 116
+  xy: 18, 2
   size: 14, 7
   orig: 14, 7
   offset: 0, 0
   index: -1
 Stair3
   rotate: false
-  xy: 129, 51
+  xy: 854, 56
   size: 14, 7
   orig: 14, 7
   offset: 0, 0

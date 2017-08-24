@@ -1,7 +1,12 @@
-[1.0.2, 2016-08-19]
+[1.0.3, 2017-08-24]
+* Added "?" balloon to a dazzled enemy
+* Added danger decorations (for Training level)
+* Added default password to Password text box
+
+[1.0.2, 2017-08-19]
 * Renamed "Snowshoes" to "Sapper Shoes" and "Spy" to "Teleport Man"
 
-[1.0.1, 2016-08-17]
+[1.0.1, 2017-08-17]
 * Added statuses to Friend List (online/offline)
 * Increased SwUDP MAX_ATTEMPT parameter
 * Removed Skip button from the tutorial
@@ -9,5 +14,5 @@
 * Changed URLs from "http://winesaps.com" to "https://winesaps.com"
 * Simplified registration process
 
-[1.0.0, 2016-08-11]
+[1.0.0, 2017-08-11]
 * Initial build

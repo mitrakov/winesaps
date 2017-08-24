@@ -161,7 +161,7 @@ public class Gui extends Actor {
         // static up textures, each with 4 styles
         TextureAtlas atlasUp = assetManager.get("pack/up.pack");
         for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
-                DecorationStatic.class, DecorationWarning.class, Stair.class}) {
+                DecorationStatic.class, DecorationWarning.class, DecorationDanger.class, Stair.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
