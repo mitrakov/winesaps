@@ -24,12 +24,12 @@
     <runtimeBits>64/32</runtimeBits>
   </jre>
   <versionInfo>
-    <fileVersion>1.0.1.0</fileVersion>
-    <txtFileVersion>1.0.1</txtFileVersion>
+    <fileVersion>1.0.4.0</fileVersion>
+    <txtFileVersion>1.0.4</txtFileVersion>
     <fileDescription>Winesaps: online multiplayer game for Windows, Linux and Android</fileDescription>
     <copyright>© Winesaps, 2017, https://winesaps.com</copyright>
-    <productVersion>1.0.1.0</productVersion>
-    <txtProductVersion>1.0.1</txtProductVersion>
+    <productVersion>1.0.4.0</productVersion>
+    <txtProductVersion>1.0.4</txtProductVersion>
     <productName>Winesaps</productName>
     <companyName>Open Source Developer, Artem Mitrakov</companyName>
     <internalName>Winesaps</internalName>

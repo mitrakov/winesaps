@@ -1,3 +1,8 @@
+[1.0.4, 2017-08-25]
+* Fixed bug with Next button in Character Screen
+* Fixed bug with localization of "New version available" label
+* Fixed bug with updating on Desktop
+
 [1.0.3, 2017-08-24]
 * Added "?" balloon to a dazzled enemy
 * Added danger decorations (for Training level)

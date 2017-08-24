@@ -110,6 +110,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
+    private String newVersion = "";
 
     /**
      * Creates a new instance of ScreenMain
@@ -294,6 +295,7 @@ public class ScreenMain extends LocalizableScreen {
             @Override
             public void run() {
                 Gdx.net.openURI(Winesaps.URL);
+                Gdx.app.exit(); // NOTE! DO NOT use it on iOS (see javaDocs)
             }
         });
         lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
@@ -351,6 +353,7 @@ public class ScreenMain extends LocalizableScreen {
     public void onLocaleChanged(I18NBundle bundle) {
         super.onLocaleChanged(bundle);
         assert bundle != null;
+        String updateStr = bundle.format("dialog.about.new.version", newVersion);
 
         promocodeDialog.onLocaleChanged(bundle);
         purchaseDialog.onLocaleChanged(bundle);
@@ -386,6 +389,7 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingLosses.setText(bundle.format("rating.losses"));
         lblRatingScoreDiff.setText(bundle.format("rating.score.diff"));
         lblRatingDots.setText(bundle.format("rating.dots"));
+        lblNewVersion.setText(updateStr, bundle.format("dialog.about.update"), "");
 
         rebuildRightTable(CurDisplayMode.Info); // forward user to the main tab (to avoid artifacts, e.g. in History)
     }
@@ -539,6 +543,7 @@ public class ScreenMain extends LocalizableScreen {
         }
         if (event instanceof EventBus.NewVersionAvailableEvent) {
             EventBus.NewVersionAvailableEvent ev = (EventBus.NewVersionAvailableEvent) event;
+            newVersion = ev.newVersion;
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String start = i18n.format("dialog.about.new.version", ev.newVersion);
             lblNewVersion.setText(start, i18n.format("dialog.about.update"), "");

@@ -150,13 +150,14 @@ public class ScreenCharacter extends LocalizableScreen {
     private void buildTable(Skin skin) {
         Table tableMain = new Table(skin);
         tableMain.pad(20).setBackground("panel-maroon");
+        Array<Actor> images = loadImages(skin);
 
         table.add(tableMain).expand();
         table.row().pad(5);
-        table.add(btnNext).colspan(checkboxes.size).width(200).height(50).right();
+        table.add(btnNext).colspan(images.size).width(200).height(50).right();
         table.setBackground(new Image(assetManager.<Texture>get("back/main.jpg")).getDrawable());
 
-        for (Actor img : loadImages(skin)) {
+        for (Actor img : images) {
             tableMain.add(img).bottom().space(20);
         }
         tableMain.row();
