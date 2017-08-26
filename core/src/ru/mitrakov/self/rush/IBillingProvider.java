@@ -1,12 +1,13 @@
 package ru.mitrakov.self.rush;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Interface for Billing Providers (that can differ for different platforms)
  * @author mitrakov
  */
 public interface IBillingProvider {
+    List<String> SKU_LIST = Arrays.asList("gems_pack_small", "gems_pack", "gems_pack_big");
     interface BillingListener {
         void onResponse(String data, String signature);
     }
@@ -16,7 +17,7 @@ public interface IBillingProvider {
     void purchaseProduct(Sku sku, String payload);
 
     /**
-     * Stock Keeping Unit (in terms of Google Play Billing)
+     * Stock Keeping Unit
      * Case class
      * @author mitrakov
      */
@@ -43,7 +44,8 @@ public interface IBillingProvider {
 
         @Override
         public String toString() {
-            return "Sku{" + "id='" + id + '\'' + ", dscr='" + description + '\'' + ", price='" + price + '\'' + '}';
+            return "Sku{" + "id='" + id + '\'' + ", description='" + description + '\'' + ", price='" + price + '\''
+                    + ", value=" + value + '}';
         }
 
         @Override
