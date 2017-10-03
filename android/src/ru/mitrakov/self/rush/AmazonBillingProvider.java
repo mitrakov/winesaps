@@ -13,6 +13,7 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 
 /**
  * Billing Provider for Amazon App Store
+ * @deprecated since 2017-10-04 (use {@link GooglePlayBillingProvider})
  */
 class AmazonBillingProvider implements IBillingProvider, PurchasingListener {
     private final Activity activity;

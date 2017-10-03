@@ -20,7 +20,9 @@ class AndroidPsObject extends PsObject {
     private boolean active = true;
 
     AndroidPsObject(Activity activity) {
-        super(new AndroidBillingProvider(activity));
+        super(new GooglePlayBillingProvider(activity));
+        // super(new AmazonBillingProvider(activity));
+
         assert activity != null;
         this.activity = activity;
         thread = new HandlerThread("psObject"); // https://stackoverflow.com/questions/18856376
