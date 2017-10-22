@@ -143,6 +143,9 @@ class Parser implements IHandler {
                     case OBJECT_APPENDED:
                         objectAppended(cmd, data.remove(0, 1));
                         break;
+                    case RESTORE_STATE:
+                        restoreState(cmd, data.remove(0, 1));
+                        break;
                     case CHECK_PROMOCODE:
                         checkPromocode(cmd, data.remove(0, 1));
                         break;
@@ -535,6 +538,30 @@ class Parser implements IHandler {
         } else if (data.length() == 1) {
             inspectError(cmd, data.get(0));
         } else throw new IllegalArgumentException("Incorrect object format");
+    }
+
+    /**
+     *
+     * @param cmd
+     * @param data
+     * @since ServerAPI 1.3.0
+     */
+    private void restoreState(Cmd cmd, IIntArray data) {
+        if (data.length() >= 1) {
+            int error = data.get(0);
+            if (error == 0) {
+                IIntArray chunks = data.remove(0, 1);
+                if (chunks.length() % 3 == 0) {
+                    for (int i = 0; i < chunks.length(); i += 3) {
+                        int num = chunks.get(i);
+                        int id = chunks.get(i + 1);
+                        int xy = chunks.get(i + 2);
+                        log("RESTORING: ", String.format("num = %d; id = %d; xy = %d" ,num, id, xy));
+                        model.setXy(num, id, xy, true);
+                    }
+                } else throw new IllegalArgumentException("Incorrect restoreState format");
+            } else inspectError(cmd, error);
+        } else throw new IllegalArgumentException("Incorrect restoreState size");
     }
 
     /**

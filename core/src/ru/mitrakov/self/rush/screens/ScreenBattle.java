@@ -29,7 +29,6 @@ public class ScreenBattle extends LocalizableScreen {
     private final ImageButton btnThing;
     private final Image imgLives;
     private final DialogFinished finishedDialog;
-    private final DialogInfo infoDialog;
     private final DialogNoButtons hintDialog;
     private final Drawable lives1;
     private final Drawable lives2;
@@ -60,7 +59,6 @@ public class ScreenBattle extends LocalizableScreen {
         Skin skin = assetManager.get("skin/uiskin.json");
         TextureAtlas atlas = assetManager.get("pack/icons.pack");
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
-        infoDialog = new DialogInfo("", skin, "default");
         hintDialog = new DialogNoButtons("", skin, "panel");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
@@ -68,14 +66,6 @@ public class ScreenBattle extends LocalizableScreen {
         lives1 = new TextureRegionDrawable(atlas.findRegion("lives1"));
         lives2 = new TextureRegionDrawable(atlas.findRegion("lives2"));
         imgLives = new Image(lives2);
-
-        infoDialog.setOnResultAction(new Runnable() {
-            @Override
-            public void run() {
-                audioManager.music("theme", false);
-                game.setNextScreen();
-            }
-        });
 
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager, new Runnable() {
             @Override
@@ -125,11 +115,7 @@ public class ScreenBattle extends LocalizableScreen {
         assert bundle != null;
 
         outOfSyncStr = bundle.format("battle.out.of.sync");
-
         finishedDialog.onLocaleChanged(bundle);
-        infoDialog.onLocaleChanged(bundle);
-
-        infoDialog.setText(bundle.format("dialog.warning"), bundle.format("battle.out.of.sync.text"));
     }
 
     @Override
@@ -253,8 +239,7 @@ public class ScreenBattle extends LocalizableScreen {
             EventBus.ConnectedChangeEvent ev = (EventBus.ConnectedChangeEvent) event;
             outOfSync = ev.connected;
             if (outOfSync)
-                infoDialog.show(stage);
-            else infoDialog.hide();
+                model.restoreState();
         }
     }
 
@@ -316,7 +301,6 @@ public class ScreenBattle extends LocalizableScreen {
      */
     private void reset() {
         outOfSync = false;
-        infoDialog.hide();
         hintDialog.remove();
     }
 

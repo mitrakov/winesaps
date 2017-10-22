@@ -104,7 +104,7 @@ public class Model {
         THING_TAKEN,        // 27
         OBJECT_APPENDED,    // 28
         FINISHED,           // 29
-        RESERVED_1E,        // 30
+        RESTORE_STATE,      // 30
         RESERVED_1F,        // 31
         RATING,             // 32
         FRIEND_LIST,        // 33
@@ -652,6 +652,18 @@ public class Model {
         }
     }
 
+    /**
+     * Sends RESTORE_STATE command to the server;
+     * Please use this method ONLY when a client was disconnected and connected again in a battle
+     * @since ServerAPI 1.3.0
+     */
+    public void restoreState() {
+        if (connected && sender != null) {
+            sender.send(FULL_STATE);
+            sender.send(RESTORE_STATE);
+        }
+    }
+
     // ===============================
     // === SERVER RESPONSE METHODS ===
     // ===============================
@@ -1105,6 +1117,10 @@ public class Model {
             bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
     }
 
+    // ======================
+    // === ERROR HANDLING ===
+    // ======================
+
     public void setUnsupportedProtocol() {
         bus.raise(new EventBus.UnsupportedProtocolEvent());
     }
@@ -1166,6 +1182,10 @@ public class Model {
     public void setServerGonnaStop() {
         bus.raise(new EventBus.ServerGonnaStopEvent());
     }
+
+    // =======================
+    // === PRIVATE METHODS ===
+    // =======================
 
     private void checkWeakPassword(int winsCount) {
         boolean passwordIs1234 = hash.equals("81dc9bdb52d04dc20036dbd8313ed055");
