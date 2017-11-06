@@ -569,11 +569,14 @@ class Parser implements IHandler {
             if (error == 0) {
                 IIntArray chunks = data.remove(0, 1);
                 if (chunks.length() % 3 == 0) {
+                    log("RESTORING CHUNKS: ", chunks.length());
                     for (int i = 0; i < chunks.length(); i += 3) {
                         int num = chunks.get(i);
                         int id = chunks.get(i + 1);
                         int xy = chunks.get(i + 2);
-                        log("RESTORING: ", String.format("num = %d; id = %d; xy = %d" ,num, id, xy));
+                        log("Num:", num);
+                        log("Id: ", id);
+                        log("XY: ", xy);
                         model.setXy(num, id, xy, true);
                     }
                 } else throw new IllegalArgumentException("Incorrect restoreState format");

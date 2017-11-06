@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.stat;
 
+import java.util.Locale;
 import ru.mitrakov.self.rush.net.IHandler;
 import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
@@ -45,7 +46,9 @@ class ParserStat implements IHandler {
                     }
                 } else throw new RuntimeException("Statistics error: " + error);
             } else if (code == 0xF1) {
-                screen.showMessage("Server responded with code " + error);
+                String str = data.remove(0, 2).toUTF8();
+                String msg = String.format(Locale.getDefault(), "Server response: code=%d; data=%s", error, str);
+                screen.showMessage(msg);
             }
         } else throw new IllegalArgumentException("Data too short");
     }
