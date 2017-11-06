@@ -116,8 +116,8 @@ class InputController {
      * @return true
      */
     private boolean moveDown() {
-        model.move(curDirRight ? Model.MoveDirection.RightDown : Model.MoveDirection.LeftDown);
-        nextMoveAllowed = false;
+        if (model.move(curDirRight ? Model.MoveDirection.RightDown : Model.MoveDirection.LeftDown))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -126,8 +126,8 @@ class InputController {
      * @return true
      */
     private boolean moveUp() {
-        model.move(curDirRight ? Model.MoveDirection.RightUp : Model.MoveDirection.LeftUp);
-        nextMoveAllowed = false;
+        if (model.move(curDirRight ? Model.MoveDirection.RightUp : Model.MoveDirection.LeftUp))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -137,8 +137,8 @@ class InputController {
      */
     private boolean moveLeft() {
         curDirRight = false;
-        model.move(Model.MoveDirection.Left);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.Left))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -148,8 +148,8 @@ class InputController {
      */
     private boolean moveRight() {
         curDirRight = true;
-        model.move(Model.MoveDirection.Right);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.Right))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -159,8 +159,8 @@ class InputController {
      */
     private boolean moveLeftDown() {
         curDirRight = false;
-        model.move(Model.MoveDirection.LeftDown);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.LeftDown))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -170,8 +170,8 @@ class InputController {
      */
     private boolean moveLeftUp() {
         curDirRight = false;
-        model.move(Model.MoveDirection.LeftUp);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.LeftUp))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -181,8 +181,8 @@ class InputController {
      */
     private boolean moveRightDown() {
         curDirRight = true;
-        model.move(Model.MoveDirection.RightDown);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.RightDown))
+            nextMoveAllowed = false;
         return true;
     }
 
@@ -192,8 +192,8 @@ class InputController {
      */
     private boolean moveRightUp() {
         curDirRight = true;
-        model.move(Model.MoveDirection.RightUp);
-        nextMoveAllowed = false;
+        if (model.move(Model.MoveDirection.RightUp))
+            nextMoveAllowed = false;
         return true;
     }
 }

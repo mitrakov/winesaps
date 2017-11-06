@@ -572,26 +572,30 @@ public class Model {
 
     /**
      * Sends MOVE battle command to the server
+     * @param direction MoveDirection (Left, Right and so on)
+     * @return true, if MOVE sent successfully (otherwise false, e.g. if this action is found to be useless)
      */
-    public void move(MoveDirection direction) {
+    public boolean move(MoveDirection direction) {
         if (connected && sender != null && curActor != null) {
             // simple checks to relieve the server
             // DO NOT use switch(direction)!!! It causes call MoveDirection.values() that produces work for GC!
             if (direction == MoveDirection.LeftDown) {
-                if (curActor.getX() == 0 && curActor.getY() == Field.HEIGHT - 1) return;
+                if (curActor.getX() == 0 && curActor.getY() == Field.HEIGHT - 1) return false;
             } else if (direction == MoveDirection.Left) {
-                if (curActor.getX() == 0) return;
+                if (curActor.getX() == 0) return false;
             } else if (direction == MoveDirection.LeftUp) {
-                if (curActor.getX() == 0 && curActor.getY() == 0) return;
+                if (curActor.getX() == 0 && curActor.getY() == 0) return false;
             } else if (direction == MoveDirection.RightDown) {
-                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == Field.HEIGHT - 1) return;
+                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == Field.HEIGHT - 1) return false;
             } else if (direction == MoveDirection.Right) {
-                if (curActor.getX() == Field.WIDTH - 1) return;
+                if (curActor.getX() == Field.WIDTH - 1) return false;
             } else if (direction == MoveDirection.RightUp) {
-                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return;
+                if (curActor.getX() == Field.WIDTH - 1 && curActor.getY() == 0) return false;
             }
             sender.send(MOVE, Arrays.binarySearch(moveDirectionValues, direction)); // avoid "direction.ordinal()" (GC)
+            return true;
         }
+        return false;
     }
 
     /**
