@@ -17,6 +17,7 @@ class InputController {
     private final Model model;
     private boolean curDirRight = true;
     private boolean movesAllowed = true;
+    private boolean nextMoveAllowed = true; // to restrict sending next MOVE cmd until we receive Ack on previous one
 
     /**
      * Creates a new instance of InputController
@@ -59,7 +60,7 @@ class InputController {
         CellObject actor = model.curActor; // copy to local to avoid Null-Exceptions
         if (actor != null) {
             // MOVEMENT HANDLING (restricted by TOUCH_DELAY intervals)
-            if (movesAllowed) {
+            if (movesAllowed && nextMoveAllowed) {
                 if (mouseButton >= 0) {
                     // get server oriented coordinates
                     int touchX = Gui.convertXFromScreenToModel(x);
@@ -104,11 +105,19 @@ class InputController {
     }
 
     /**
+     * Allows next move (in case of poor connection we forbid sending next MOVE cmd until we receive Ack on previous)
+     */
+    void setNextMoveAllowed() {
+        this.nextMoveAllowed = true;
+    }
+
+    /**
      * Moves down
      * @return true
      */
     private boolean moveDown() {
         model.move(curDirRight ? Model.MoveDirection.RightDown : Model.MoveDirection.LeftDown);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -118,6 +127,7 @@ class InputController {
      */
     private boolean moveUp() {
         model.move(curDirRight ? Model.MoveDirection.RightUp : Model.MoveDirection.LeftUp);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -128,6 +138,7 @@ class InputController {
     private boolean moveLeft() {
         curDirRight = false;
         model.move(Model.MoveDirection.Left);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -138,6 +149,7 @@ class InputController {
     private boolean moveRight() {
         curDirRight = true;
         model.move(Model.MoveDirection.Right);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -148,6 +160,7 @@ class InputController {
     private boolean moveLeftDown() {
         curDirRight = false;
         model.move(Model.MoveDirection.LeftDown);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -158,6 +171,7 @@ class InputController {
     private boolean moveLeftUp() {
         curDirRight = false;
         model.move(Model.MoveDirection.LeftUp);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -168,6 +182,7 @@ class InputController {
     private boolean moveRightDown() {
         curDirRight = true;
         model.move(Model.MoveDirection.RightDown);
+        nextMoveAllowed = false;
         return true;
     }
 
@@ -178,6 +193,7 @@ class InputController {
     private boolean moveRightUp() {
         curDirRight = true;
         model.move(Model.MoveDirection.RightUp);
+        nextMoveAllowed = false;
         return true;
     }
 }

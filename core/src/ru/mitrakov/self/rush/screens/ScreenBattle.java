@@ -123,7 +123,8 @@ public class ScreenBattle extends LocalizableScreen {
         // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
         // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
-        if (event instanceof EventBus.NewFieldEvent || event instanceof EventBus.ActorResetEvent) {
+        if (event instanceof EventBus.NewFieldEvent || event instanceof EventBus.ActorResetEvent ||
+                event instanceof EventBus.MoveResponseEvent) {
             gui.handleEvent(event);
         }
         if (event instanceof EventBus.RoundStartedEvent || event instanceof EventBus.EnemyNameChangedEvent) {

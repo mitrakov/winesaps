@@ -239,6 +239,7 @@ public class Model {
     // ==================================================
 
     private final EventBus.NewFieldEvent newFieldEvent = new EventBus.NewFieldEvent(null, null);
+    private final EventBus.MoveResponseEvent moveResponseEvent = new EventBus.MoveResponseEvent();
     private final EventBus.ActorResetEvent actorResetEvent = new EventBus.ActorResetEvent(null);
     private final EventBus.EffectAddedEvent effectAddedEvent = new EventBus.EffectAddedEvent(Effect.None);
     private final EventBus.RoundStartedEvent roundStartedEvent = new EventBus.RoundStartedEvent(0, "");
@@ -948,6 +949,13 @@ public class Model {
         newFieldEvent.actor = curActor;
         newFieldEvent.field = field;
         bus.raise(newFieldEvent);
+    }
+
+    /**
+     * Response on MOVE command
+     */
+    public void moveResponse() {
+        bus.raise(moveResponseEvent);
     }
 
     public void appendObject(int number, int id, int xy) {

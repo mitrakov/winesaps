@@ -309,6 +309,8 @@ public class Gui extends Actor {
      * @param event - event (may be NULL)
      */
     public void handleEvent(EventBus.Event event) {
+        if (event instanceof EventBus.MoveResponseEvent)
+            controller.setNextMoveAllowed();
         if (event instanceof EventBus.PlayerWoundedEvent) {
             EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -334,11 +336,14 @@ public class Gui extends Actor {
         }
         if (event instanceof EventBus.NewFieldEvent) {
             EventBus.NewFieldEvent ev = (EventBus.NewFieldEvent) event;
+            // play "aura" animation around the actor
             float bottomHeight = getBottomHeight(ev.field.cells[ev.actor.getXy()]); // ev.field, ev.actor != null
             TextureRegion r = animExplosion.animation.getKeyFrame(0);
             animAura.x = convertXFromModelToScreen(ev.actor.getX()) - (.5f * r.getRegionWidth());
             animAura.y = convertYFromModelToScreen(ev.actor.getY()) - CELL_SIZ_H / 2 + bottomHeight;
             animAura.t = 0; // start animation
+            // also allow nextMove (in case of re-connections)
+            controller.setNextMoveAllowed();
         }
         if (event instanceof EventBus.ActorResetEvent) {
             EventBus.ActorResetEvent ev = (EventBus.ActorResetEvent) event;

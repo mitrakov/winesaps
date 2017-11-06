@@ -122,6 +122,9 @@ class Parser implements IHandler {
                     case FULL_STATE:
                         fullState(cmd, data.remove(0, 1));
                         break;
+                    case MOVE:   // response on Move
+                        move(cmd, data.remove(0, 1));
+                        break;
                     case STATE_CHANGED:
                         stateChanged(cmd, data.remove(0, 1));
                         break;
@@ -432,6 +435,20 @@ class Parser implements IHandler {
         } else if (state.length() == 1) {
             inspectError(cmd, state.get(0));
         } else throw new IllegalArgumentException("Incorrect field size");
+    }
+
+    /**
+     * Parses MOVE commande
+     * @param cmd command
+     * @param data arguments
+     */
+    private void move(Cmd cmd, IIntArray data) {
+        if (data.length() == 1) {
+            boolean error = data.get(0) != 0;
+            if (!error)
+                model.moveResponse();
+            else inspectError(cmd, data.get(0));
+        } else throw new IllegalArgumentException("Incorrect 'move response' format");
     }
 
     /**

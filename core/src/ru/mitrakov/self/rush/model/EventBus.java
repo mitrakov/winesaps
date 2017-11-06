@@ -11,6 +11,7 @@ import ru.mitrakov.self.rush.model.Cells.CellObject;
 public class EventBus {
     public static abstract class Event {}
 
+    public static final class MoveResponseEvent extends Event {}
     public static final class AggressorBusyEvent extends Event {}
     public static final class DefenderBusyEvent extends Event {}
     public static final class EnemyNotFoundEvent extends Event {}
