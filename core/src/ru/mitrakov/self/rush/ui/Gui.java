@@ -309,7 +309,7 @@ public class Gui extends Actor {
      * @param event - event (may be NULL)
      */
     public void handleEvent(EventBus.Event event) {
-        if (event instanceof EventBus.MoveResponseEvent)
+        if (event instanceof EventBus.MoveResponseEvent || event instanceof EventBus.ConnectedChangeEvent)
             controller.setNextMoveAllowed();
         if (event instanceof EventBus.PlayerWoundedEvent) {
             EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;

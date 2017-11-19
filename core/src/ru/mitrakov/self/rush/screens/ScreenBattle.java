@@ -124,7 +124,7 @@ public class ScreenBattle extends LocalizableScreen {
         // excessive work for GC on each event during a battle (because all screens are subscribed to events)
 
         if (event instanceof EventBus.NewFieldEvent || event instanceof EventBus.ActorResetEvent ||
-                event instanceof EventBus.MoveResponseEvent) {
+                event instanceof EventBus.MoveResponseEvent || event instanceof EventBus.ConnectedChangeEvent) {
             gui.handleEvent(event);
         }
         if (event instanceof EventBus.RoundStartedEvent || event instanceof EventBus.EnemyNameChangedEvent) {
