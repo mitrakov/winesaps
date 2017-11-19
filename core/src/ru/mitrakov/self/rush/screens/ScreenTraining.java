@@ -22,7 +22,7 @@ public class ScreenTraining extends LocalizableScreen {
     private final Gui gui;
     private final ImageButton btnThing;
     // private final TextButton btnSkip; @mitrakov (2017-08-16) removed Skip button to make new users pass the tutorial
-    private final DialogFinished finishedDialog;
+    private final DialogFinishedSimple finishedDialog;
     private final DialogTutorial trainingDialog;
     private final DialogInfo infoDialog;
 
@@ -37,7 +37,7 @@ public class ScreenTraining extends LocalizableScreen {
         gui = new Gui(model, assetManager); // do NOT share this GUI with ScreenBattle (because it's an Actor)
 
         Skin skin = assetManager.get("skin/uiskin.json");
-        finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
+        finishedDialog = new DialogFinishedSimple(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         trainingDialog = new DialogTutorial(skin, "panel-maroon");
         infoDialog = new DialogInfo("", skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager, new Runnable() {
@@ -87,7 +87,7 @@ public class ScreenTraining extends LocalizableScreen {
         if (event instanceof EventBus.RoundFinishedEvent || event instanceof EventBus.BattleNotFoundEvent) {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
                 trainingDialog.remove();
-                finishedDialog.setScore("", "", 1, 0).setOnResultAction(new Runnable() {
+                finishedDialog.setOnResultAction(new Runnable() {
                     @Override
                     public void run() {
                         game.setNextScreen();

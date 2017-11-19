@@ -4,20 +4,16 @@ import java.util.Locale;
 
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
-import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
  * Created by mitrakov on 05.03.2017
  */
-public class DialogFinished extends DialogFeat {
+public class DialogFinished extends DialogFinishedSimple {
 
     private final Table rewardTable = new Table();
     private final Image imgHeader;
-    private final Label lblMessage;
     private final Label lblDetractors;
     private final Label lblScore;
     private final Label lblRewardIs;
@@ -29,11 +25,10 @@ public class DialogFinished extends DialogFeat {
     private final Drawable battleLoss;
 
     public DialogFinished(Skin skin, String windowStyleName, TextureAtlas atlas) {
-        super("", skin, windowStyleName);
+        super(skin, windowStyleName, atlas);
         assert atlas != null;
 
         imgHeader = new Image();
-        lblMessage = new Label("", skin, "default");
         lblDetractors = new Label("", skin, "score");
         lblScore = new Label("", skin, "score");
         lblRewardIs = new Label("", skin, "default");
@@ -49,34 +44,17 @@ public class DialogFinished extends DialogFeat {
         rewardTable.add(new Image(atlas.findRegion("gem")));
 
         rebuildTable(getContentTable(), false);
-        button("OK"); // text will be replaced in onLocaleChanged()
     }
 
     @Override
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
-
+        super.onLocaleChanged(bundle);
         lblRewardIs.setText(bundle.format("dialog.finished.reward"));
-        if (getButtonTable() != null) {
-            Array<Actor> buttons = getButtonTable().getChildren();
-            assert buttons != null;
-            if (buttons.size == 1) {
-                Actor actor = buttons.first();
-                if (actor instanceof TextButton) // stackoverflow.com/questions/2950319
-                    ((TextButton) actor).setText(bundle.format("ok"));
-            }
-        }
     }
 
     public DialogFinished setPicture(boolean gameOver, boolean winner) {
         imgHeader.setDrawable(gameOver ? (winner ? battleWin : battleLoss) : (winner ? roundWin : roundLoss));
-        return this;
-    }
-
-    public DialogFinished setText(String header, String msg) {
-        if (getTitleLabel() != null)
-            getTitleLabel().setText(header);
-        lblMessage.setText(msg);
         return this;
     }
 

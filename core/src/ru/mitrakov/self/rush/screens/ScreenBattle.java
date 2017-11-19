@@ -176,7 +176,7 @@ public class ScreenBattle extends LocalizableScreen {
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("battle.out.of.sync");
             String msg = i18n.format("battle.out.of.sync.exit");
-            finishedDialog.setPicture(true, false).setText(header, msg).setScore("", "", 0, 0);
+            finishedDialog.setPicture(true, false).setScore("", "", 0, 0).setText(header, msg);
             finishedDialog.setReward(0).setOnResultAction(new Runnable() {
                 @Override
                 public void run() {
