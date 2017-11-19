@@ -28,7 +28,7 @@ public class ScreenBattle extends LocalizableScreen {
     private final ScrollPane abilityButtonsScroll;
     private final ImageButton btnThing;
     private final Image imgLives;
-    private final DialogFinished finishedDialog;
+    private final DialogFinishedEx finishedDialog;
     private final DialogNoButtons hintDialog;
     private final Drawable lives1;
     private final Drawable lives2;
@@ -58,7 +58,7 @@ public class ScreenBattle extends LocalizableScreen {
 
         Skin skin = assetManager.get("skin/uiskin.json");
         TextureAtlas atlas = assetManager.get("pack/icons.pack");
-        finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
+        finishedDialog = new DialogFinishedEx(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
         hintDialog = new DialogNoButtons("", skin, "panel");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
