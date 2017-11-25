@@ -19,7 +19,8 @@ class Parser implements IHandler {
     private static final int ERR_ATTACK_YOURSELF = 50;
     private static final int ERR_AGGRESSOR_BUSY = 51;
     private static final int ERR_DEFENDER_BUSY = 52;
-    private static final int ERR_BATTLE_NOT_FOUND = 55;
+    private static final int ERR_BATTLE_NOT_FOUND0 = 55;
+    private static final int ERR_BATTLE_NOT_FOUND1 = 56;
     private static final int ERR_BATTLE_NOT_FOUND2 = 77;
     private static final int ERR_SIGN_UP = 201;
     private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
@@ -37,6 +38,7 @@ class Parser implements IHandler {
     private static final int ERR_SERVER_GONNA_STOP = 254;
 
     private final Model model;
+    private final Locale locale = Locale.getDefault();
     private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
@@ -183,7 +185,7 @@ class Parser implements IHandler {
                             ((long) data.get(8) << 16) |
                             ((long) data.get(9) << 8) |
                             ((long) data.get(10));
-                    String s = String.format(Locale.getDefault(), "%d: %d msec", num, System.currentTimeMillis() - t0);
+                    String s = String.format(locale, "%d: %d msec", num, System.currentTimeMillis() - t0);
                     log("DATA ", s);
                 } else throw new IllegalArgumentException("Incorrect command code");
             }
@@ -432,9 +434,11 @@ class Parser implements IHandler {
                 }
                 j += sectionLen;
             }
+        } else if (state.length() == 0) {
+            model.setEmptyField();
         } else if (state.length() == 1) {
             inspectError(cmd, state.get(0));
-        } else throw new IllegalArgumentException("Incorrect field size");
+        } else throw new IllegalArgumentException(String.format(locale, "Incorrect field size %d", state.length()));
     }
 
     /**
@@ -700,10 +704,10 @@ class Parser implements IHandler {
         switch (code) {
             case 0:
                 break; // no error
-            case ERR_BATTLE_NOT_FOUND:
+            case ERR_BATTLE_NOT_FOUND0:
+            case ERR_BATTLE_NOT_FOUND1:
             case ERR_BATTLE_NOT_FOUND2:
-                model.setBattleNotFound();
-                break;
+                break; // no error
             case ERR_SIGNIN_INCORRECT_PASSWORD:
                 model.setIncorrectCredentials();
                 break;
@@ -753,7 +757,7 @@ class Parser implements IHandler {
                 model.setServerGonnaStop();
                 break;
             default:
-                String s = String.format(Locale.getDefault(), "Unhandled error (cmd = %s, code = %d)", cmd, code);
+                String s = String.format(locale, "Unhandled error (cmd = %s, code = %d)", cmd, code);
                 throw new IllegalArgumentException(s);
         }
     }
