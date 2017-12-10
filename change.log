@@ -1,3 +1,6 @@
+[1.1.6, 2017-12-10]
+* Fixed possible rare hang up (nextMoveAllowed issue)
+
 [1.1.5, 2017-11-25]
 * Fixed bug: "Hang up" after re-connect when battle is finished
 

@@ -310,7 +310,7 @@ public class Gui extends Actor {
      */
     public void handleEvent(EventBus.Event event) {
         if (event instanceof EventBus.MoveResponseEvent || event instanceof EventBus.ConnectedChangeEvent)
-            controller.setNextMoveAllowed();
+            controller.setNextMoveAllowed(true);
         if (event instanceof EventBus.PlayerWoundedEvent) {
             EventBus.PlayerWoundedEvent ev = (EventBus.PlayerWoundedEvent) event;
             Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
@@ -343,7 +343,7 @@ public class Gui extends Actor {
             animAura.y = convertYFromModelToScreen(ev.actor.getY()) - CELL_SIZ_H / 2 + bottomHeight;
             animAura.t = 0; // start animation
             // also allow nextMove (in case of re-connections)
-            controller.setNextMoveAllowed();
+            controller.setNextMoveAllowed(true);
         }
         if (event instanceof EventBus.ActorResetEvent) {
             EventBus.ActorResetEvent ev = (EventBus.ActorResetEvent) event;

@@ -13,11 +13,13 @@ import static com.badlogic.gdx.Gdx.input;
  * @author mitrakov
  */
 class InputController {
+    private final static long NEXT_MOVE_MAX_DELAY_NS = 10 * 1000000000L; // 10 sec
 
     private final Model model;
     private boolean curDirRight = true;
     private boolean movesAllowed = true;
     private boolean nextMoveAllowed = true; // to restrict sending next MOVE cmd until we receive Ack on previous one
+    private transient long nextMoveTimestamp = System.nanoTime();
 
     /**
      * Creates a new instance of InputController
@@ -60,7 +62,7 @@ class InputController {
         CellObject actor = model.curActor; // copy to local to avoid Null-Exceptions
         if (actor != null) {
             // MOVEMENT HANDLING (restricted by TOUCH_DELAY intervals)
-            if (movesAllowed && nextMoveAllowed) {
+            if (movesAllowed && isNextMoveAllowed()) {
                 if (mouseButton >= 0) {
                     // get server oriented coordinates
                     int touchX = Gui.convertXFromScreenToModel(x);
@@ -107,8 +109,16 @@ class InputController {
     /**
      * Allows next move (in case of poor connection we forbid sending next MOVE cmd until we receive Ack on previous)
      */
-    void setNextMoveAllowed() {
-        this.nextMoveAllowed = true;
+    void setNextMoveAllowed(boolean value) {
+        nextMoveAllowed = value;
+        nextMoveTimestamp = System.nanoTime();
+    }
+
+    private boolean isNextMoveAllowed() {
+        // if 10 sec elapsed: allow nextMoveAllowed in order to avoid possible hang ups (since 1.1.6)
+        if (System.nanoTime() - nextMoveTimestamp > NEXT_MOVE_MAX_DELAY_NS)
+            setNextMoveAllowed(true);
+        return nextMoveAllowed;
     }
 
     /**
@@ -117,7 +127,7 @@ class InputController {
      */
     private boolean moveDown() {
         if (model.move(curDirRight ? Model.MoveDirection.RightDown : Model.MoveDirection.LeftDown))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -127,7 +137,7 @@ class InputController {
      */
     private boolean moveUp() {
         if (model.move(curDirRight ? Model.MoveDirection.RightUp : Model.MoveDirection.LeftUp))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -138,7 +148,7 @@ class InputController {
     private boolean moveLeft() {
         curDirRight = false;
         if (model.move(Model.MoveDirection.Left))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -149,7 +159,7 @@ class InputController {
     private boolean moveRight() {
         curDirRight = true;
         if (model.move(Model.MoveDirection.Right))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -160,7 +170,7 @@ class InputController {
     private boolean moveLeftDown() {
         curDirRight = false;
         if (model.move(Model.MoveDirection.LeftDown))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -171,7 +181,7 @@ class InputController {
     private boolean moveLeftUp() {
         curDirRight = false;
         if (model.move(Model.MoveDirection.LeftUp))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -182,7 +192,7 @@ class InputController {
     private boolean moveRightDown() {
         curDirRight = true;
         if (model.move(Model.MoveDirection.RightDown))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 
@@ -193,7 +203,7 @@ class InputController {
     private boolean moveRightUp() {
         curDirRight = true;
         if (model.move(Model.MoveDirection.RightUp))
-            nextMoveAllowed = false;
+            setNextMoveAllowed(false);
         return true;
     }
 }
