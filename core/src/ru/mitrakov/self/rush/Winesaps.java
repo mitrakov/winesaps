@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.screens.*;
@@ -63,12 +64,17 @@ public class Winesaps extends Game {
                         model.setUnsupportedProtocol();
                 }
             };
-            network = new Network(psObject, new Parser(model), errorHandler, HOST, PORT);
+            IHandler parser = new Parser(model);
+            Model.IFileReader fileReader = new FileReader();
+            ServerEmulator serverEmulator = new ServerEmulator(fileReader, parser);
+
+            network = new Network(psObject, parser, errorHandler, HOST, PORT);
             network.setProtocol(new SwUDP(psObject, network.getSocket(), HOST, PORT, network));
 
             // set up model
-            model.setSender(new MsgSender(network, errorHandler));
-            model.setFileReader(new FileReader());
+            model.setSenders(new MsgSender(network, errorHandler), new MsgSenderEmulator(serverEmulator));
+            model.setFileReader(fileReader);
+            model.setEmulator(serverEmulator);
         } catch (SocketException e) {
             e.printStackTrace();
         }

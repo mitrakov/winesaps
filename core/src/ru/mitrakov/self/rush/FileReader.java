@@ -33,6 +33,15 @@ public class FileReader implements Model.IFileReader {
     }
 
     @Override
+    public byte[] readAsByteArray(String filename) {
+        try {
+            return Gdx.files.local(filename).readBytes();
+        } catch (Exception e) {
+            return new byte[0];
+        }
+    }
+
+    @Override
     public Object deserialize(String filename) {
         try { // since API Level 19 may be replaced with try-with-resources
             ObjectInputStream s = new ObjectInputStream(Gdx.files.local(filename).read());

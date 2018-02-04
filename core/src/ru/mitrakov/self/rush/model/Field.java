@@ -12,7 +12,6 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 public class Field {
     public static final int WIDTH = 51;
     public static final int HEIGHT = 5;
-    static final int TRASH_CELL = WIDTH * HEIGHT;
 
     interface NextNumber {
         int next();
@@ -25,21 +24,27 @@ public class Field {
         }
     };
 
+    public static final int TRASH_XY = WIDTH * HEIGHT;
+    public static final Cell TRASH_CELL = Cell.newCell(0, TRASH_XY, ZeroNumber);
+
+
     public final Cell cells[] = new Cell[WIDTH * HEIGHT + 1]; // .... public // + 1 fake cell
 
     private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
     private int objectNumber = 0;
 
-    Field(IIntArray fieldData) {
+    protected final NextNumber nextNumber = new NextNumber() {
+        @Override
+        public int next() {
+            return ++objectNumber;
+        }
+    };
+
+    public Field(IIntArray fieldData) {
         assert fieldData != null;
+        System.out.println(fieldData.length());
         if (fieldData.length() != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
 
-        NextNumber nextNumber = new NextNumber() {
-            @Override
-            public int next() {
-                return ++objectNumber;
-            }
-        };
         for (int i = 0; i < fieldData.length(); i++) {
             cells[i] = Cell.newCell(fieldData.get(i), i, nextNumber);
             assert cells[i] != null;
@@ -48,14 +53,14 @@ public class Field {
             }
         }
         // create fake cell for "removed" objects
-        cells[TRASH_CELL] = Cell.newCell(0, TRASH_CELL, nextNumber);
+        cells[TRASH_XY] = TRASH_CELL;
     }
 
-    void appendObject(final int number, int id, int xy) {
-        if (xy < 0 || xy > TRASH_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+    public void appendObject(final int number, int id, int xy) {
+        if (xy < 0 || xy > TRASH_XY) // 0xFF is a LEGAL coordinate! it means a fake cell
             throw new IllegalArgumentException("Incorrect xy");
 
-        CellObject object = Cell.newObject(id, xy, new Field.NextNumber() {
+        CellObject object = Cell.newObject(id, cells[xy], new Field.NextNumber() {
             @Override
             public int next() {
                 return number;
@@ -67,29 +72,26 @@ public class Field {
         }
     }
 
-    void setXy(int number, int id, int newXy) {
-        if (newXy < 0 || newXy > TRASH_CELL) // 0xFF is a LEGAL coordinate! it means a fake cell
+    public void setXy(int number, int id, int newXy) {
+        if (newXy < 0 || newXy > TRASH_XY) // 0xFF is a LEGAL coordinate! it means a fake cell
             throw new IllegalArgumentException("Incorrect xy");
 
         CellObject object = objects.get(number);
         if (object != null) {
             if (object.getId() == id) { // Server API recommends to check it to avoid out-of-sync occasions
-                int oldXy = object.getXy();
-                object.setXy(newXy);
-                cells[oldXy].objects.remove(object);
-                cells[newXy].objects.add(object);
+                object.setCell(cells[newXy]);
             } else throw new IllegalStateException(String.format(Locale.getDefault(),
                     "SetXY (%d) error! Object num %d has different id (%d <> %d)", newXy, number, object.getId(), id));
         }
     }
 
-    void setEffect(int number, Model.Effect effect) {
+    public void setEffect(int number, Model.Effect effect) {
         CellObject object = objects.get(number);
         if (object != null)
             object.setEffect(effect);
     }
 
-    CellObject getObjectById(int id) {
+    public CellObject getObjectById(int id) {
         // in Java 8 may be replaced with lambda
         for (Cell cell : cells) {
             for (CellObject object : cell.objects) {
@@ -100,7 +102,7 @@ public class Field {
         return null;
     }
 
-    CellObject getObjectByNumber(int number) {
+    public CellObject getObjectByNumber(int number) {
         return objects.get(number);
     }
 }

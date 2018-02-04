@@ -7,13 +7,15 @@ package ru.mitrakov.self.rush.model;
 public class Cells {
     public static abstract class CellObject {
         protected int number = 0;
-        protected int xy;
+        protected Cell cell; // reverse reference; since 2.0.0
+
         private int id;
         private Model.Effect effect = Model.Effect.None;
 
-        public CellObject(int id, int xy) {
+        public CellObject(int id, Cell cell) {
+            assert cell != null;
             this.id = id;
-            this.xy = xy;
+            this.cell = cell;
         }
 
         public int getNumber() {
@@ -25,19 +27,15 @@ public class Cells {
         }
 
         public int getXy() {
-            return xy;
-        }
-
-        public void setXy(int xy) {
-            this.xy = xy;
+            return cell.xy;
         }
 
         public int getX() {
-            return xy % Field.WIDTH;
+            return cell.xy % Field.WIDTH;
         }
 
         public int getY() {
-            return xy / Field.WIDTH;
+            return cell.xy / Field.WIDTH;
         }
 
         public Model.Effect getEffect() {
@@ -47,304 +45,321 @@ public class Cells {
         public void setEffect(Model.Effect effect) {
             this.effect = effect;
         }
+
+        public Cell getCell() {
+            return cell;
+        }
+
+        public void setCell(Cell newCell) {
+            Cell oldCell = this.cell;
+            oldCell.objects.remove(this);
+            newCell.objects.add(this);
+            this.cell = newCell;
+        }
     }
 
     public static abstract class CellObjectAnimated extends CellObject {
-        public CellObjectAnimated(int id, int xy) {
-            super(id, xy);
+        public CellObjectAnimated(int id, Cell cell) {
+            super(id, cell);
         }
     }
 
     public static abstract class CellObjectActor extends CellObjectAnimated {
-        public CellObjectActor(int id, int xy) {
-            super(id, xy);
+        public CellObjectActor(int id, Cell cell) {
+            super(id, cell);
         }
     }
 
     public static abstract class CellObjectFood extends CellObject {
-        public CellObjectFood(int id, int xy) {
-            super(id, xy);
+        public CellObjectFood(int id, Cell cell) {
+            super(id, cell);
         }
     }
 
     public static abstract class CellObjectRaisable extends CellObject {
-        public CellObjectRaisable(int id, int xy) {
-            super(id, xy);
+        public CellObjectRaisable(int id, Cell cell) {
+            super(id, cell);
+        }
+    }
+
+    public static abstract class CellObjectThing extends CellObject {
+        public CellObjectThing(int id, Cell cell) {
+            super(id, cell);
         }
     }
 
     public static class Block extends CellObject {
-        public Block(int xy) {
-            super(0x01, xy);
+        public Block(Cell cell) {
+            super(0x01, cell);
         }
     }
 
     public static class Dais extends CellObject {
-        public Dais(int xy) {
-            super(0x02, xy);
+        public Dais(Cell cell) {
+            super(0x02, cell);
         }
     }
 
     public static class Water extends CellObject {
-        public Water(int xy) {
-            super(0x03, xy);
+        public Water(Cell cell) {
+            super(0x03, cell);
         }
     }
 
     public static class Actor1 extends CellObjectActor {
-        public Actor1(int xy, int number) {
-            super(0x04, xy);
+        public Actor1(Cell cell, int number) {
+            super(0x04, cell);
             this.number = number;
         }
     }
 
     public static class Actor2 extends CellObjectActor {
-        public Actor2(int xy, int number) {
-            super(0x05, xy);
+        public Actor2(Cell cell, int number) {
+            super(0x05, cell);
             this.number = number;
         }
     }
 
     public static class Wolf extends CellObjectAnimated {
-        public Wolf(int xy, int number) {
-            super(0x06, xy);
+        public Wolf(Cell cell, int number) {
+            super(0x06, cell);
             this.number = number;
         }
     }
 
     public static class Entry1 extends CellObject {
-        public Entry1(int xy) {
-            super(0x07, xy);
+        public Entry1(Cell cell) {
+            super(0x07, cell);
         }
     }
 
     public static class Entry2 extends CellObject {
-        public Entry2(int xy) {
-            super(0x08, xy);
+        public Entry2(Cell cell) {
+            super(0x08, cell);
         }
     }
 
     public static class LadderTop extends CellObject {
-        public LadderTop(int xy) {
-            super(0x09, xy);
+        public LadderTop(Cell cell) {
+            super(0x09, cell);
         }
     }
 
     public static class LadderBottom extends CellObject {
-        public LadderBottom(int xy) {
-            super(0x0A, xy);
+        public LadderBottom(Cell cell) {
+            super(0x0A, cell);
         }
     }
 
     public static class Stair extends CellObjectRaisable {
-        public Stair(int xy) {
-            super(0x0B, xy);
+        public Stair(Cell cell) {
+            super(0x0B, cell);
         }
     }
 
     public static class RopeLine extends CellObject {
-        public RopeLine(int xy) {
-            super(0x0C, xy);
+        public RopeLine(Cell cell) {
+            super(0x0C, cell);
         }
     }
 
     public static class Waterfall extends CellObject {
-        public Waterfall(int xy) {
-            super(0x0D, xy);
+        public Waterfall(Cell cell) {
+            super(0x0D, cell);
         }
-        public Waterfall(int id, int xy) {
-            super(id, xy);
+        public Waterfall(int id, Cell cell) {
+            super(id, cell);
         }
     }
 
     public static class WaterfallSafe extends Waterfall {
-        public WaterfallSafe(int xy) {
-            super(0x0E, xy);
+        public WaterfallSafe(Cell cell) {
+            super(0x0E, cell);
         }
     }
 
     public static class BeamChunk extends CellObject {
-        public BeamChunk(int xy, int number) {
-            super(0x0F, xy);
+        public BeamChunk(Cell cell, int number) {
+            super(0x0F, cell);
             this.number = number;
         }
     }
 
     public static class Apple extends CellObjectFood {
-        public Apple(int xy, int number) {
-            super(0x10, xy);
+        public Apple(Cell cell, int number) {
+            super(0x10, cell);
             this.number = number;
         }
     }
 
     public static class Pear extends CellObjectFood {
-        public Pear(int xy, int number) {
-            super(0x11, xy);
+        public Pear(Cell cell, int number) {
+            super(0x11, cell);
             this.number = number;
         }
     }
 
     public static class Meat extends CellObjectFood {
-        public Meat(int xy, int number) {
-            super(0x12, xy);
+        public Meat(Cell cell, int number) {
+            super(0x12, cell);
             this.number = number;
         }
     }
 
     public static class Carrot extends CellObjectFood {
-        public Carrot(int xy, int number) {
-            super(0x13, xy);
+        public Carrot(Cell cell, int number) {
+            super(0x13, cell);
             this.number = number;
         }
     }
 
     public static class Mushroom extends CellObjectFood {
-        public Mushroom(int xy, int number) {
-            super(0x14, xy);
+        public Mushroom(Cell cell, int number) {
+            super(0x14, cell);
             this.number = number;
         }
     }
 
     public static class Nut extends CellObjectFood {
-        public Nut(int xy, int number) {
-            super(0x15, xy);
+        public Nut(Cell cell, int number) {
+            super(0x15, cell);
             this.number = number;
         }
     }
 
-    public static class UmbrellaThing extends CellObject {
-        public UmbrellaThing(int xy, int number) {
-            super(0x20, xy);
+    public static class UmbrellaThing extends CellObjectThing {
+        public UmbrellaThing(Cell cell, int number) {
+            super(0x20, cell);
             this.number = number;
         }
     }
 
-    public static class MineThing extends CellObject {
-        public MineThing(int xy, int number) {
-            super(0x21, xy);
+    public static class MineThing extends CellObjectThing {
+        public MineThing(Cell cell, int number) {
+            super(0x21, cell);
             this.number = number;
         }
     }
 
-    public static class BeamThing extends CellObject {
-        public BeamThing(int xy, int number) {
-            super(0x22, xy);
+    public static class BeamThing extends CellObjectThing {
+        public BeamThing(Cell cell, int number) {
+            super(0x22, cell);
             this.number = number;
         }
     }
 
-    public static class AntidoteThing extends CellObject {
-        public AntidoteThing(int xy, int number) {
-            super(0x23, xy);
+    public static class AntidoteThing extends CellObjectThing {
+        public AntidoteThing(Cell cell, int number) {
+            super(0x23, cell);
             this.number = number;
         }
     }
 
-    public static class FlashbangThing extends CellObject {
-        public FlashbangThing(int xy, int number) {
-            super(0x24, xy);
+    public static class FlashbangThing extends CellObjectThing {
+        public FlashbangThing(Cell cell, int number) {
+            super(0x24, cell);
             this.number = number;
         }
     }
 
-    public static class TeleportThing extends CellObject {
-        public TeleportThing(int xy, int number) {
-            super(0x25, xy);
+    public static class TeleportThing extends CellObjectThing {
+        public TeleportThing(Cell cell, int number) {
+            super(0x25, cell);
             this.number = number;
         }
     }
 
-    public static class DetectorThing extends CellObject {
-        public DetectorThing(int xy, int number) {
-            super(0x26, xy);
+    public static class DetectorThing extends CellObjectThing {
+        public DetectorThing(Cell cell, int number) {
+            super(0x26, cell);
             this.number = number;
         }
     }
 
-    public static class BoxThing extends CellObject {
-        public BoxThing(int xy, int number) {
-            super(0x27, xy);
+    public static class BoxThing extends CellObjectThing {
+        public BoxThing(Cell cell, int number) {
+            super(0x27, cell);
             this.number = number;
         }
     }
 
     public static class Umbrella extends CellObject {
-        public Umbrella(int xy, int number) {
-            super(0x28, xy);
+        public Umbrella(Cell cell, int number) {
+            super(0x28, cell);
             this.number = number;
         }
     }
 
     public static class Mine extends CellObject {
-        public Mine(int xy, int number) {
-            super(0x29, xy);
+        public Mine(Cell cell, int number) {
+            super(0x29, cell);
             this.number = number;
         }
     }
 
     public static class Beam extends CellObject {
-        public Beam(int xy, int number) {
-            super(0x2A, xy);
+        public Beam(Cell cell, int number) {
+            super(0x2A, cell);
             this.number = number;
         }
     }
 
     public static class Antidote extends CellObject {
-        public Antidote(int xy, int number) {
-            super(0x2B, xy);
+        public Antidote(Cell cell, int number) {
+            super(0x2B, cell);
             this.number = number;
         }
     }
 
     public static class Flashbang extends CellObject {
-        public Flashbang(int xy, int number) {
-            super(0x2C, xy);
+        public Flashbang(Cell cell, int number) {
+            super(0x2C, cell);
             this.number = number;
         }
     }
 
     public static class Teleport extends CellObject {
-        public Teleport(int xy, int number) {
-            super(0x2D, xy);
+        public Teleport(Cell cell, int number) {
+            super(0x2D, cell);
             this.number = number;
         }
     }
 
     public static class Detector extends CellObject {
-        public Detector(int xy, int number) {
-            super(0x2E, xy);
+        public Detector(Cell cell, int number) {
+            super(0x2E, cell);
             this.number = number;
         }
     }
 
     public static class Box extends CellObjectRaisable {
-        public Box(int xy, int number) {
-            super(0x2F, xy);
+        public Box(Cell cell, int number) {
+            super(0x2F, cell);
             this.number = number;
         }
     }
 
     public static class DecorationStatic extends CellObject {
-        public DecorationStatic(int xy) {
-            super(0x30, xy);
+        public DecorationStatic(Cell cell) {
+            super(0x30, cell);
         }
     }
 
     public static class DecorationDynamic extends CellObject {
-        public DecorationDynamic(int xy) {
-            super(0x31, xy);
+        public DecorationDynamic(Cell cell) {
+            super(0x31, cell);
         }
     }
 
     public static class DecorationWarning extends CellObject {
-        public DecorationWarning(int xy) {
-            super(0x32, xy);
+        public DecorationWarning(Cell cell) {
+            super(0x32, cell);
         }
     }
 
     public static class DecorationDanger extends CellObject {
-        public DecorationDanger(int xy) {
-            super(0x33, xy);
+        public DecorationDanger(Cell cell) {
+            super(0x33, cell);
         }
     }
 }

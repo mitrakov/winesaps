@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
+import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.utils.Utils.*;
@@ -60,6 +61,8 @@ public class Model {
         void append(String filename, String s);
 
         String read(String filename);
+
+        byte[] readAsByteArray(String filename);
 
         Object deserialize(String filename);
 
@@ -259,6 +262,7 @@ public class Model {
     private final PsObject psObject;
     private final Object locker = new Object();
     private final Collection<Ability> abilities = new LinkedList<Ability>();
+    private final List<ISender> senders = new LinkedList<ISender>();
 
     private ISender sender;
     private boolean authorized = false;
@@ -266,8 +270,9 @@ public class Model {
     private CellObject curThing;
     private CellObject enemyThing;
     private transient int debugCounter;
-    public /*private*/ IFileReader fileReader; // public for debug purposes only!
-    public /*private*/ String hash = "";       // public for debug purposes only!
+    public /*private final*/ IFileReader fileReader;        // public for debug purposes only!
+    public /*private final*/ ServerEmulator serverEmulator; // public for debug purposes only!
+    public /*private*/ String hash = "";                    // public for debug purposes only!
 
     public Model(PsObject psObject) {
         assert psObject != null;
@@ -290,10 +295,13 @@ public class Model {
     /**
      * Sets a new sender to the model
      *
-     * @param sender - sender (may be NULL)
+     * @param senders - list of senders (first sender becomes default)
      */
-    public void setSender(ISender sender) {
-        this.sender = sender;
+    public void setSenders(ISender ... senders) {
+        assert senders.length > 0;
+        this.senders.clear();
+        this.senders.addAll(Arrays.asList(senders));
+        this.sender = senders[0];
     }
 
     /**
@@ -303,6 +311,10 @@ public class Model {
      */
     public void setFileReader(IFileReader fileReader) {
         this.fileReader = fileReader;
+    }
+
+    public void setEmulator(ServerEmulator emulator) {
+        this.serverEmulator = emulator;
     }
 
     /**
@@ -465,6 +477,10 @@ public class Model {
         if (connected && sender != null) {
             sender.send(ATTACK, 2);
         }
+    }
+
+    public void singlePlayer(String levelName) {
+
     }
 
     /**
@@ -986,10 +1002,10 @@ public class Model {
             field = this.field;
         }
         if (field != null) {
-            if (xy == Field.TRASH_CELL) {
+            if (xy == Field.TRASH_XY) {
                 CellObject obj = field.getObjectByNumber(number);
                 if (obj != null) {
-                    objectRemovedEvent.oldXy = obj.xy;
+                    objectRemovedEvent.oldXy = obj.getXy();
                     objectRemovedEvent.obj = obj;
                     bus.raise(objectRemovedEvent);
                 }
@@ -1040,7 +1056,7 @@ public class Model {
             CellObject actor = field.getObjectById(me == aggressor ? AGGRESSOR_ID : DEFENDER_ID);
             assert actor != null;
             if (0 <= cause && cause < hurtCauseValues.length) {
-                playerWoundedEvent.xy = actor.xy;
+                playerWoundedEvent.xy = actor.getXy();
                 playerWoundedEvent.cause = hurtCauseValues[cause];
                 playerWoundedEvent.myLives = myLives;
                 playerWoundedEvent.enemyLives = enemyLives;
@@ -1130,6 +1146,12 @@ public class Model {
             bus.raise(new EventBus.VersionNotAllowedEvent(minVersion));
         if (newVersionAvailable)
             bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
+    }
+
+    public void setSinglePlayer(boolean value) {
+        if (senders.size() == 2) {
+            sender = value ? senders.get(1) : senders.get(0);
+        }
     }
 
     // ======================
