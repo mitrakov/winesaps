@@ -26,6 +26,11 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     @Override
+    public void set(int idx, int value) {
+        array.set(idx, value);
+    }
+
+    @Override
     public synchronized IIntArray add(int item) {
         array.add(item);
         return this;

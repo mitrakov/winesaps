@@ -101,10 +101,10 @@ public class Cell {
                 return new Mushroom(cell, number.next());
             case 0x15:
                 return new Nut(cell, number.next());
-          /*case 0x16:
-                return new FoodActor1(cell, number.next()); only for server
+            case 0x16:
+                return new FoodActor1(cell, number.next());
             case 0x17:
-                return new FoodActor2(cell, number.next()); only for server */
+                return new FoodActor2(cell, number.next());
             case 0x20:
                 return new UmbrellaThing(cell, number.next());
             case 0x21:

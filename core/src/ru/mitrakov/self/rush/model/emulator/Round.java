@@ -46,6 +46,7 @@ public class Round {
         actor1.setCharacter(character1);
         actor2.setCharacter(character2);
 
+        field.replaceFavouriteFood(actor1, actor2);
         player1 = new Player(actor1);
         player2 = new Player(actor2);
     }

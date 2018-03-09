@@ -124,19 +124,14 @@ public class Model {
     public static final Cmd[] cmdValues = Cmd.values();
 
     public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
-
-    public final Character[] characterValues = Character.values();
-
     public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
-    private final HurtCause[] hurtCauseValues = HurtCause.values();
-
     public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
-
-    private final Effect[] effectValues = Effect.values();
-
     public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
 
-    private final MoveDirection[] moveDirectionValues = MoveDirection.values();
+    public static final Character[] characterValues = Character.values();
+    public static final HurtCause[] hurtCauseValues = HurtCause.values();
+    public static final Effect[] effectValues = Effect.values();
+    public static final MoveDirection[] moveDirectionValues = MoveDirection.values();
 
     /**
      * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33

@@ -76,6 +76,12 @@ public class Cells {
         }
     }
 
+    public static abstract class CellObjectFavouriteFood extends CellObjectFood {
+        public CellObjectFavouriteFood(int id, Cell cell) {
+            super(id, cell);
+        }
+    }
+
     public static abstract class CellObjectRaisable extends CellObject {
         public CellObjectRaisable(int id, Cell cell) {
             super(id, cell);
@@ -223,6 +229,20 @@ public class Cells {
     public static class Nut extends CellObjectFood {
         public Nut(Cell cell, int number) {
             super(0x15, cell);
+            this.number = number;
+        }
+    }
+
+    public static class FoodActor1 extends CellObjectFavouriteFood {
+        public FoodActor1(Cell cell, int number) {
+            super(0x16, cell);
+            this.number = number;
+        }
+    }
+
+    public static class FoodActor2 extends CellObjectFavouriteFood {
+        public FoodActor2(Cell cell, int number) {
+            super(0x17, cell);
             this.number = number;
         }
     }

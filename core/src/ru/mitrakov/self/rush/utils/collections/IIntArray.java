@@ -14,6 +14,8 @@ public interface IIntArray {
      */
     int get(int idx);
 
+    void set(int idx, int value);
+
     /**
      * Appends element to the end of the collection
      * @param item - element

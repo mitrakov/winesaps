@@ -7,6 +7,7 @@ import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Field.*;
+import static ru.mitrakov.self.rush.model.Model.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 
@@ -20,16 +21,16 @@ class BattleManager {
     private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);
     private final Model.MoveDirection[] directions = Model.MoveDirection.values();
 
-    private final int fullState = Arrays.binarySearch(Model.cmdValues, FULL_STATE);         // don't use "cmd.ordinal()"
-    private final int roundInfo = Arrays.binarySearch(Model.cmdValues, ROUND_INFO);         // don't use "cmd.ordinal()"
-    private final int move = Arrays.binarySearch(Model.cmdValues, MOVE);                    // don't use "cmd.ordinal()"
-    private final int stateChanged = Arrays.binarySearch(Model.cmdValues, STATE_CHANGED);   // don't use "cmd.ordinal()"
-    private final int objectAppended = Arrays.binarySearch(Model.cmdValues, OBJECT_APPENDED); // same comment
-    private final int scoreChanged = Arrays.binarySearch(Model.cmdValues, SCORE_CHANGED);   // don't use "cmd.ordinal()"
-    private final int thingTaken = Arrays.binarySearch(Model.cmdValues, THING_TAKEN);       // don't use "cmd.ordinal()"
-    private final int effectChanged = Arrays.binarySearch(Model.cmdValues, EFFECT_CHANGED); // don't use "cmd.ordinal()"
-    private final int playerWounded = Arrays.binarySearch(Model.cmdValues, PLAYER_WOUNDED); // don't use "cmd.ordinal()"
-    private final int finished = Arrays.binarySearch(Model.cmdValues, FINISHED);            // don't use "cmd.ordinal()"
+    private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal()"
+    private final int roundInfo = Arrays.binarySearch(cmdValues, ROUND_INFO);           // don't use "cmd.ordinal()"
+    private final int move = Arrays.binarySearch(cmdValues, MOVE);                      // don't use "cmd.ordinal()"
+    private final int stateChanged = Arrays.binarySearch(cmdValues, STATE_CHANGED);     // don't use "cmd.ordinal()"
+    private final int objectAppended = Arrays.binarySearch(cmdValues, OBJECT_APPENDED); // don't use "cmd.ordinal()"
+    private final int scoreChanged = Arrays.binarySearch(cmdValues, SCORE_CHANGED);     // don't use "cmd.ordinal()"
+    private final int thingTaken = Arrays.binarySearch(cmdValues, THING_TAKEN);         // don't use "cmd.ordinal()"
+    private final int effectChanged = Arrays.binarySearch(cmdValues, EFFECT_CHANGED);   // don't use "cmd.ordinal()"
+    private final int playerWounded = Arrays.binarySearch(cmdValues, PLAYER_WOUNDED);   // don't use "cmd.ordinal()"
+    private final int finished = Arrays.binarySearch(cmdValues, FINISHED);              // don't use "cmd.ordinal()"
 
     BattleManager(ServerEmulator emulator, Model.IFileReader fileReader) {
         assert fileReader != null;
@@ -92,7 +93,7 @@ class BattleManager {
     }
 
     void effectChanged(Model.Effect effect, boolean added, int objNumber) {
-        int effectId = Arrays.binarySearch(Model.Effect.values(), effect); // don't use "effect.ordinal()"!
+        int effectId = Arrays.binarySearch(effectValues, effect); // don't use "effect.ordinal()"!
         emulator.receive(array.clear().add(effectChanged).add(effectId).add(added ? 1 : 0).add(objNumber));
     }
 
@@ -109,7 +110,7 @@ class BattleManager {
         boolean isAlive = round.wound(me);
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
-        int causeId = Arrays.binarySearch(Model.HurtCause.values(), cause); // don't use "effect.ordinal()"!
+        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "effect.ordinal()"!
         emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
         if (isAlive) {
             round.restore();
@@ -151,9 +152,9 @@ class BattleManager {
 
         IIntArray base = round.field.raw;
         Model.Character char1 = round.player1.actor.getCharacter();
-        Model.Character char2 = round.player1.actor.getCharacter();
-        int char1Id = Arrays.binarySearch(Model.Character.values(), char1); // don't use "cmd.ordinal()"
-        int char2Id = Arrays.binarySearch(Model.Character.values(), char2); // don't use "cmd.ordinal()"
+        Model.Character char2 = round.player2.actor.getCharacter();
+        int char1Id = Arrays.binarySearch(characterValues, char1); // don't use "cmd.ordinal()"
+        int char2Id = Arrays.binarySearch(characterValues, char2); // don't use "cmd.ordinal()"
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
         //abilities1, err1 := round.getCurrentAbilities(sid1)

@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.model.emulator;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import ru.mitrakov.self.rush.model.*;
@@ -19,6 +21,8 @@ class FieldEx extends Field {
     private final BattleManager battleManager;
     private final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock cellLock = new ReentrantLock();
+    private final List<Cells.CellObjectFavouriteFood> favouriteFoodList =
+            new CopyOnWriteArrayList<Cells.CellObjectFavouriteFood>();
 
 //    private final Cells.CellObject umbrella = new Cells.Umbrella(TRASH_CELL, 0);   // GC
 //    private final Cells.CellObject mine = new Cells.Mine(TRASH_CELL, 0);           // GC
@@ -106,6 +110,20 @@ class FieldEx extends Field {
     private Cell getCell(int xy) {
         assert 0 <= xy && xy < WIDTH * HEIGHT;
         return cells[xy];
+    }
+
+    @SuppressWarnings("ForLoopReplaceableByForEach")
+    private List<Cells.CellObjectFavouriteFood> getFavouriteFoodList() {
+        favouriteFoodList.clear();
+        for (int i=0; i<cells.length; i++) {
+            Cell cell = cells[i];
+            cellLock.lock();
+            Cells.CellObjectFavouriteFood food = cell.getFirst(Cells.CellObjectFavouriteFood.class);
+            if (food != null)
+                favouriteFoodList.add(food);
+            cellLock.unlock();
+        }
+        return favouriteFoodList;
     }
 
     Cells.Entry1 getEntryByActor() {
@@ -240,14 +258,14 @@ class FieldEx extends Field {
             if (food != null && isPoison(actor, food)) {
                 cell.objects.remove(food);
                 objChanged(food, 0xFF, true);
-                if (actor.getEffect() == Antidote) {
+                if (actor.hasEffect(Antidote)) {
                     battleManager.foodEaten();
                     // no return here (we should check mines, waterfalls and so on)
                 } else battleManager.hurt(true, Poisoned);
             }
             if (mine != null && !cell.objectExists(Cells.BeamChunk.class) && !actor.hasSwagga(SapperShoes)) {
-                if (actor.getEffect() != Attention) {
-                    // thanks to this condition the actor can ONCE step onto the mine immediately upon it burried; but in
+                if (!actor.hasEffect(Attention)) {
+                    // thanks to this condition the actor can ONCE step onto the mine immediately upon it burried;but in
                     // theory the condition allows the enemy to avoid explosion (if it's stepCount = mine.stepCount+1)
                     // so let's consider it as a feature
                     cell.objects.remove(mine);
@@ -324,6 +342,43 @@ class FieldEx extends Field {
             }
             Cell nextCell = getCellByDirection(cell, toRight);
             detectMines(nextCell, toRight, n - 1);
+        }
+    }
+
+    void replaceFavouriteFood(ActorEx actor1, ActorEx actor2) {
+        List<Cells.CellObjectFavouriteFood> foodActorLst = getFavouriteFoodList();
+        for (int i = 0; i < foodActorLst.size(); i++) {
+            Cells.CellObjectFavouriteFood favouriteFood = foodActorLst.get(i);
+
+            // first determine who loves this "virtual" food
+            ActorEx actor = favouriteFood instanceof Cells.FoodActor1 ? actor1 : actor2;
+            assert actor != null;
+
+            // now replace "virtual" food with the actor's favorite one
+            Cell cell = favouriteFood.getCell();
+            assert cell != null;
+            Cells.CellObjectFood food = createFavouriteFood(actor, favouriteFood.getNumber(), cell);
+            cell.objects.remove(favouriteFood);
+            cell.objects.add(food);
+
+            // also fix raw field data for sending to clients
+            raw.set(cell.xy, (raw.get(cell.xy) & 0xC0) | food.getId());
+        }
+    }
+
+    private Cells.CellObjectFood createFavouriteFood(ActorEx actor, int num, Cell cell) {
+        assert cell != null;
+        switch (actor.getCharacter()) {
+            case Rabbit:
+                return new Cells.Carrot(cell, num);
+            case Hedgehog:
+                return new Cells.Mushroom(cell, num);
+            case Squirrel:
+                return new Cells.Nut(cell, num);
+            case Cat:
+                return new Cells.Meat(cell, num);
+            default:
+                return new Cells.Apple(cell, num);
         }
     }
 

@@ -58,7 +58,7 @@ public class ServerEmulator {
     }
 
     private void attack(String levelName) {
-        battleManager.accept(Model.Character.Hedgehog, Model.Character.None, new String[]{levelName}, 90, 1); // TODO 90 1
+        battleManager.accept(Model.Character.Hedgehog, Model.Character.Rabbit, new String[]{levelName}, 90, 1); // TODO 90 1
     }
 
     private void move(int direction) {
