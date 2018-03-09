@@ -55,6 +55,14 @@ class BattleManager {
         emulator.receive(array.clear().add(move).add(0));
     }
 
+    void useThing() {
+        assert battle != null;
+        Round round = battle.getRound();
+        assert round != null;
+        round.useThing();
+        emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+    }
+
     void objChanged(Cells.CellObject obj, int newXy, boolean reset) {
         array.clear().add(stateChanged).add(obj.getNumber()).add(obj.getId()).add(newXy).add(reset ? 1 : 0);
         emulator.receive(array);

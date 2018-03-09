@@ -1,9 +1,7 @@
 package ru.mitrakov.self.rush.model.emulator;
 
+import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.GcResistantIntArray;
-import ru.mitrakov.self.rush.model.Cell;
-import ru.mitrakov.self.rush.model.Cells;
-import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Field.*;
@@ -97,6 +95,12 @@ public class Round {
             actor.addStep();
     }
 
+    void useThing() {
+        Cells.CellObjectThing thing = player1.setThing(null);
+        if (thing != null)
+            field.useThing(player1.actor, thing);
+    }
+
     void restore() {
         ActorEx actor = player1.actor;
         assert actor != null;
@@ -108,11 +112,15 @@ public class Round {
     }
 
     void checkRoundFinished() {
-
+        // TODO
     }
 
     void setThingToPlayer(Cells.CellObjectThing thing) {
+        assert field != null && player1 != null;
 
+        Cells.CellObjectThing oldThing = player1.setThing(thing);
+        if (oldThing != null)
+            field.dropThing(player1.actor, oldThing);
     }
 
     boolean wound(boolean me) {

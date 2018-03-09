@@ -66,7 +66,7 @@ public class ServerEmulator {
     }
 
     private void useThing() {
-
+        battleManager.useThing();
     }
 
     private void useSkill(int code) {

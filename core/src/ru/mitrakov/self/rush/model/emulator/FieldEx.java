@@ -19,6 +19,16 @@ class FieldEx extends Field {
     private final BattleManager battleManager;
     private final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock cellLock = new ReentrantLock();
+
+//    private final Cells.CellObject umbrella = new Cells.Umbrella(TRASH_CELL, 0);   // GC
+//    private final Cells.CellObject mine = new Cells.Mine(TRASH_CELL, 0);           // GC
+//    private final Cells.CellObject beam = new Cells.Beam(TRASH_CELL, 0);           // GC
+//    private final Cells.CellObject antidote = new Cells.Antidote(TRASH_CELL, 0);   // GC
+//    private final Cells.CellObject flashbang = new Cells.Flashbang(TRASH_CELL, 0); // GC
+//    private final Cells.CellObject teleport = new Cells.Teleport(TRASH_CELL, 0);   // GC
+//    private final Cells.CellObject detector = new Cells.Detector(TRASH_CELL, 0);   // GC
+//    private final Cells.CellObject box = new Cells.Box(TRASH_CELL, 0);             // GC
+
     final IIntArray raw;
 
     FieldEx(IIntArray fieldData, IIntArray raw, BattleManager emulator) {
@@ -46,7 +56,7 @@ class FieldEx extends Field {
         return cell.objectExists(Cells.LadderTop.class);
     }
 
-    public boolean move(ActorEx actor, int idxTo) {
+    public boolean move(Cells.CellObject actor, int idxTo) {
         lock.lock();
         boolean result = moveSync(actor, idxTo);
         lock.unlock();
@@ -106,6 +116,47 @@ class FieldEx extends Field {
             if (entry != null) return entry;
         }
         return null;
+    }
+
+    void dropThing(ActorEx actor, Cells.CellObjectThing thing) {
+        assert actor != null && actor.getCell() != null && thing != null;
+
+        Cell cell = actor.getCell();
+        cell.objects.add(thing);
+        objChanged(thing, cell.xy, false);
+    }
+
+    void useThing(ActorEx actor, Cells.CellObjectThing thing) {
+        assert actor != null && thing != null;
+
+        Cell myCell = actor.getCell();
+        assert myCell != null;
+
+        // get an appropriate cell (if an obstacle ahead, actor uses its own cell)
+        Cell cell = getCellByDirection(myCell, actor.isDirectedToRight());
+        if (cell == null || cell.objectExists(Cells.Block.class) || cell.objectExists(Cells.Water.class)
+                || (cell.objectExists(Cells.Dais.class) && !myCell.objectExists(Cells.Dais.class))) {
+            cell = myCell;
+        }
+
+        // // ================
+        if (thing instanceof Cells.UmbrellaThing) {
+            Cell next = getCellByDirection(cell, actor.isDirectedToRight());
+            if (next != null && next.objectExists(Cells.Waterfall.class)) {
+                cell = next;
+            }
+        }
+        // ================
+
+        // emplace object
+        int number = nextNumber.next();
+        Cells.CellObject emplaced = emplace(thing, number, myCell);
+        objAppended(emplaced);
+        move(emplaced, cell.xy);
+
+        // for mines we must provide a safe single step over the buried mine
+        if (emplaced instanceof Cells.Mine)
+            actor.setEffect(Attention, 2, null);
     }
 
     void relocate(Cell oldCell, Cell newCell, Cells.CellObject obj, boolean reset) {
@@ -316,5 +367,49 @@ class FieldEx extends Field {
         int x = x0 + 2 * (WIDTH / 2 - x0);
         int y = y0 + 2 * (HEIGHT / 2 - y0);
         return y * WIDTH + x;
+    }
+
+    private Cells.CellObject emplace(Cells.CellObjectThing thing, int number, Cell cell) {
+        if (thing instanceof Cells.UmbrellaThing) {
+            //umbrella.setCell(cell);
+            //umbrella.setNumber(number);
+            return new Cells.Umbrella(cell, number);
+        }
+        if (thing instanceof Cells.MineThing) {
+            //mine.setCell(cell);
+            //mine.setNumber(number);
+            return new Cells.Mine(cell, number);
+        }
+        if (thing instanceof Cells.BeamThing) {
+            //beam.setCell(cell);
+            //beam.setNumber(number);
+            return new Cells.Beam(cell, number);
+        }
+        if (thing instanceof Cells.AntidoteThing) {
+            //antidote.setCell(cell);
+            //antidote.setNumber(number);
+            return new Cells.Antidote(cell, number);
+        }
+        if (thing instanceof Cells.FlashbangThing) {
+            //flashbang.setCell(cell);
+            //flashbang.setNumber(number);
+            return new Cells.Flashbang(cell, number);
+        }
+        if (thing instanceof Cells.TeleportThing) {
+            //teleport.setCell(cell);
+            //teleport.setNumber(number);
+            return new Cells.Teleport(cell, number);
+        }
+        if (thing instanceof Cells.DetectorThing) {
+            //detector.setCell(cell);
+            //detector.setNumber(number);
+            return new Cells.Detector(cell, number);
+        }
+        if (thing instanceof Cells.BoxThing) {
+            //box.setCell(cell);
+            //box.setNumber(number);
+            return new Cells.Box(cell, number);
+        }
+        return null;
     }
 }

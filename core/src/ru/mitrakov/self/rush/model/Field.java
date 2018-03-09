@@ -13,7 +13,7 @@ public class Field {
     public static final int WIDTH = 51;
     public static final int HEIGHT = 5;
 
-    interface NextNumber {
+    public interface NextNumber {
         int next();
     }
 
@@ -42,7 +42,6 @@ public class Field {
 
     public Field(IIntArray fieldData) {
         assert fieldData != null;
-        System.out.println(fieldData.length());
         if (fieldData.length() != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
 
         for (int i = 0; i < fieldData.length(); i++) {

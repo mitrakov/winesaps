@@ -1,20 +1,15 @@
 package ru.mitrakov.self.rush.model.emulator;
 
-import ru.mitrakov.self.rush.model.Cell;
-import ru.mitrakov.self.rush.model.Cells;
-import ru.mitrakov.self.rush.model.Model;
+import ru.mitrakov.self.rush.model.*;
 
 /**
  * Created by mitrakov on 08.03.2018
  */
-public class ActorEx extends Cells.Actor1 {
+class ActorEx extends Cells.Actor1 {
     private Model.Character character;
     private boolean directionRight = true;
 
-
-    private Cells.CellObjectThing thing;
-
-    public ActorEx(Cell cell, int number) {
+    ActorEx(Cell cell, int number) {
         super(cell, number);
     }
 
@@ -26,31 +21,23 @@ public class ActorEx extends Cells.Actor1 {
         this.character = character;
     }
 
-    public boolean isDirectedToRight() {
+    boolean isDirectedToRight() {
         return directionRight;
     }
 
-    public Cells.CellObjectThing getThing() {
-        return thing;
+    void addStep() {
+        // TODO
     }
 
-    public void setThing(Cells.CellObjectThing thing) {
-        this.thing = thing;
-    }
-
-    public void addStep() {
-
-    }
-
-    public void setDirectionRight(boolean directedRight) {
+    void setDirectionRight(boolean directedRight) {
         this.directionRight = directedRight;
     }
 
-    public boolean hasSwagga(Model.Ability ability) {
-        return true;
+    boolean hasSwagga(Model.Ability ability) {
+        return false; // TODO
     }
 
-    public void setEffect(Model.Effect effect, int steps, Runnable callback) {
-
+    void setEffect(Model.Effect effect, int steps, Runnable callback) {
+        // TODO
     }
 }
