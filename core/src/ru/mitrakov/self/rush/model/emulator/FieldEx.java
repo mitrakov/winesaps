@@ -136,6 +136,19 @@ class FieldEx extends Field {
         return null;
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
+    int getFoodCount() {
+        int result = 0;
+        for (int i = 0; i < cells.length; i++) {
+            cellLock.lock();
+            Cell cell = cells[i];
+            if (cell.objectExists(Cells.CellObjectFood.class))
+                result++;
+            cellLock.unlock();
+        }
+        return result;
+    }
+
     void dropThing(ActorEx actor, Cells.CellObjectThing thing) {
         assert actor != null && actor.getCell() != null && thing != null;
 

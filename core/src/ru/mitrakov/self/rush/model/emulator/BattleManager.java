@@ -126,7 +126,7 @@ class BattleManager {
         hurt(player == round.player1, Model.HurtCause.Devoured);
     }
 
-    private void roundFinished(boolean winner) {
+    void roundFinished(boolean winner) {
 
         boolean gameOver = battle.checkBattle(winner);
         Detractor detractor1 = battle.detractor1;

@@ -10,6 +10,9 @@ import static ru.mitrakov.self.rush.model.Field.*;
  * Created by mitrakov on 09.03.2018
  */
 public class Round {
+    private final BattleManager battleManager;
+    private final TryMutex tryMutex = new TryMutex();
+    private final int foodTotal;
 
     final FieldEx field;
     final Player player1;
@@ -25,6 +28,7 @@ public class Round {
         this.number = number;
         this.timeSec = timeSec;
         this.levelname = levelName;
+        this.battleManager = battleManager;
 
         Model.IFileReader reader = battleManager.getFileReader();
         assert reader != null;
@@ -49,6 +53,20 @@ public class Round {
         field.replaceFavouriteFood(actor1, actor2);
         player1 = new Player(actor1);
         player2 = new Player(actor2);
+        this.foodTotal = field.getFoodCount();
+    }
+
+    private void finishRoundForced() {
+        if (player1.score > player2.score) {
+            battleManager.roundFinished(true);
+        } else if (player2.score > player1.score) {
+            battleManager.roundFinished(false);
+        } else { // draw: let's check who has more lives
+            if (player1.lives > player2.lives)
+                battleManager.roundFinished(true);
+            // note: if draw and lives are equals let's suppose the defender (player2) wins
+            battleManager.roundFinished(false);
+        }
     }
 
     void move(Model.MoveDirection direction) {
@@ -113,7 +131,18 @@ public class Round {
     }
 
     void checkRoundFinished() {
-        // TODO
+        tryMutex.onlyOne(new Runnable() {
+            @Override
+            public void run() {
+                if (player1.score > foodTotal / 2) {
+                    battleManager.roundFinished(true);
+                } else if (player2.score > foodTotal / 2) {
+                    battleManager.roundFinished(false);
+                } else if (field.getFoodCount() == 0) {
+                    finishRoundForced();
+                }
+            }
+        });
     }
 
     void setThingToPlayer(Cells.CellObjectThing thing) {
