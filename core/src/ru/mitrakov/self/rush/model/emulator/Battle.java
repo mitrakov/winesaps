@@ -77,6 +77,12 @@ class Battle {
     }
 
     void stop() {
+        Round round = getRound();
+        assert round != null;
+        round.stop.cancel();
 
+        Environment env = battleManager.getEnvironment();
+        assert env != null;
+        env.removeField();
     }
 }

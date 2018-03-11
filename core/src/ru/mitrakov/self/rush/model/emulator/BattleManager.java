@@ -17,6 +17,7 @@ import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 class BattleManager {
     private final ServerEmulator emulator;
     private final Model.IFileReader fileReader;
+    private final Environment environment;
     Battle battle;
     private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);
     private final Model.MoveDirection[] directions = Model.MoveDirection.values();
@@ -36,11 +37,16 @@ class BattleManager {
         assert fileReader != null;
         this.emulator = emulator;
         this.fileReader = fileReader;
+        this.environment = new Environment(this);
     }
 
     void accept(Model.Character character1, Model.Character character2, String[] levelnames, int timeSec, int wins) {
         battle = new Battle(character1, character2, levelnames, timeSec, wins, this);
         startRound(battle.getRound());
+    }
+
+    Environment getEnvironment() {
+        return environment;
     }
 
     Model.IFileReader getFileReader() {
@@ -62,6 +68,12 @@ class BattleManager {
         assert round != null;
         round.useThing();
         emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+    }
+
+    void close() {
+        //Assert(battleMgr.stop, battleMgr.environment)
+        //battleMgr.stop <- true
+        environment.close();
     }
 
     void objChanged(Cells.CellObject obj, int newXy, boolean reset) {

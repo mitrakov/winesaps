@@ -21,6 +21,7 @@ class FieldEx extends Field {
     private final BattleManager battleManager;
     private final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock cellLock = new ReentrantLock();
+    private final List<WolfEx> wolfList = new CopyOnWriteArrayList<WolfEx>();
     private final List<Cells.CellObjectFavouriteFood> favouriteFoodList =
             new CopyOnWriteArrayList<Cells.CellObjectFavouriteFood>();
 
@@ -33,6 +34,7 @@ class FieldEx extends Field {
 //    private final Cells.CellObject detector = new Cells.Detector(TRASH_CELL, 0);   // GC
 //    private final Cells.CellObject box = new Cells.Box(TRASH_CELL, 0);             // GC
 
+    /*final*/ ActorEx actor1, actor2;
     final IIntArray raw;
 
     FieldEx(IIntArray fieldData, IIntArray raw, BattleManager emulator) {
@@ -40,6 +42,27 @@ class FieldEx extends Field {
         assert emulator != null;
         this.raw = raw;
         this.battleManager = emulator;
+
+        createSubTypesInternal();
+    }
+
+    @SuppressWarnings("ForLoopReplaceableByForEach")
+    private void createSubTypesInternal() {
+        wolfList.clear();
+        for (int i = 0; i < cells.length; i++) {
+            Cell cell = cells[i];
+            cellLock.lock();
+            Cells.Actor1 actor1 = cell.getFirst(Cells.Actor1.class);
+            if (actor1 != null)
+                this.actor1 = new ActorEx(actor1.getCell(), actor1.getNumber());
+            Cells.Actor2 actor2 = cell.getFirst(Cells.Actor2.class);
+            if (actor2 != null)
+                this.actor2 = new ActorEx(actor2.getCell(), actor2.getNumber());
+            Cells.Wolf wolf = cell.getFirst(Cells.Wolf.class);
+            if (wolf != null)
+                wolfList.add(new WolfEx(wolf.getCell(), wolf.getNumber()));
+            cellLock.unlock();
+        }
     }
 
     private void objChanged(Cells.CellObject obj, int xy, boolean reset) {
@@ -85,7 +108,8 @@ class FieldEx extends Field {
             // scale a dias
             if (leftRight && !oldCell.objectExists(Cells.Dais.class) && newCell.objectExists(Cells.Dais.class) &&
                     !oldCell.objectExists(Cells.CellObjectRaisable.class)) {
-                if (obj instanceof ActorEx && !battleManager.battle.curRound.player1.actor.hasSwagga(ClimbingShoes))
+                if (obj == actor1 && !actor1.hasSwagga(ClimbingShoes) ||
+                        obj == actor2 && !actor2.hasSwagga(ClimbingShoes))
                     return false;
             }
             // sink through the floor
@@ -110,6 +134,11 @@ class FieldEx extends Field {
     private Cell getCell(int xy) {
         assert 0 <= xy && xy < WIDTH * HEIGHT;
         return cells[xy];
+    }
+
+    @SuppressWarnings("ForLoopReplaceableByForEach")
+    List<WolfEx> getWolves() {
+        return wolfList;
     }
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
@@ -206,8 +235,7 @@ class FieldEx extends Field {
 
         if (cell.objectExists(Cells.CellObjectActor.class)) {
             final ActorEx actor = cell.objectExists(Cells.Actor1.class)
-                    ? battleManager.battle.curRound.player1.actor
-                    : battleManager.battle.curRound.player2.actor;
+                    ? actor1 : cell.objectExists(Cells.Actor2.class) ? actor2 : null;
             assert actor != null;
 
             // ==== 1. Checks that DO NOT return (e.g. items can be collected simultaneously) ===
@@ -303,7 +331,7 @@ class FieldEx extends Field {
         }
     }
 
-    private Cell getCellByDirection(Cell curCell, boolean toRight) {
+    Cell getCellByDirection(Cell curCell, boolean toRight) {
         assert curCell != null;
         int xy = curCell.xy;
 

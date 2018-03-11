@@ -1,5 +1,7 @@
 package ru.mitrakov.self.rush.model.emulator;
 
+import java.util.*;
+
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
@@ -20,6 +22,7 @@ public class Round {
     final int number;
     final int timeSec;
     final String levelname;
+    final Timer stop;
 
     public Round(Model.Character character1, Model.Character character2, int number, String levelName, int timeSec,
                  BattleManager battleManager) {
@@ -39,14 +42,16 @@ public class Round {
         IIntArray raw = new GcResistantIntArray(level.length);
         array.fromByteArray(level, WIDTH * HEIGHT);
         raw.fromByteArray(level, level.length);
-        field = new FieldEx(array, raw, battleManager);
 
-        int actor1Id = new Cells.Actor1(TRASH_CELL, 0).getId();
-        int actor2Id = new Cells.Actor2(TRASH_CELL, 0).getId();
-        Cells.CellObject obj1 = field.getObjectById(actor1Id);
-        Cells.CellObject obj2 = field.getObjectById(actor2Id);
-        ActorEx actor1 = new ActorEx(obj1.getCell(), obj1.getNumber());
-        ActorEx actor2 = new ActorEx(obj2.getCell(), obj2.getNumber());
+        Environment env = battleManager.getEnvironment();
+        assert env != null;
+
+        field = new FieldEx(array, raw, battleManager);
+        env.addField(field);
+
+        ActorEx actor1 = field.actor1;
+        ActorEx actor2 = field.actor2;
+        assert actor1 != null && actor2 != null;
         actor1.setCharacter(character1);
         actor2.setCharacter(character2);
 
@@ -54,6 +59,22 @@ public class Round {
         player1 = new Player(actor1);
         player2 = new Player(actor2);
         this.foodTotal = field.getFoodCount();
+        this.stop = new Timer(true);
+        this.stop.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timeOut();
+            }
+        }, timeSec * 1000);
+    }
+
+    private void timeOut() {
+        tryMutex.onlyOne(new Runnable() {
+            @Override
+            public void run() {
+                finishRoundForced();
+            }
+        });
     }
 
     private void finishRoundForced() {
