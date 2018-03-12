@@ -15,11 +15,12 @@ import static ru.mitrakov.self.rush.model.Model.Cmd.*;
  * Created by mitrakov on 04.02.2018
  */
 class BattleManager {
+    private final Object lock = new Object();
     private final ServerEmulator emulator;
     private final Model.IFileReader fileReader;
     private final Environment environment;
     Battle battle;
-    private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);
+    private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);      // need to be synchronized!
     private final Model.MoveDirection[] directions = Model.MoveDirection.values();
 
     private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal()"
@@ -59,7 +60,9 @@ class BattleManager {
         assert round != null;
 
         round.move(directions[direction]);
-        emulator.receive(array.clear().add(move).add(0));
+        synchronized (lock){
+            emulator.receive(array.clear().add(move).add(0));
+        }
     }
 
     void useThing() {
@@ -67,7 +70,9 @@ class BattleManager {
         Round round = battle.getRound();
         assert round != null;
         round.useThing();
-        emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+        }
     }
 
     void close() {
@@ -77,12 +82,16 @@ class BattleManager {
     }
 
     void objChanged(Cells.CellObject obj, int newXy, boolean reset) {
-        array.clear().add(stateChanged).add(obj.getNumber()).add(obj.getId()).add(newXy).add(reset ? 1 : 0);
-        emulator.receive(array);
+        synchronized (lock) {
+            array.clear().add(stateChanged).add(obj.getNumber()).add(obj.getId()).add(newXy).add(reset ? 1 : 0);
+            emulator.receive(array);
+        }
     }
 
     void objectAppended(Cells.CellObject obj) {
-        emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
+        }
     }
 
     void foodEaten() {
@@ -92,7 +101,9 @@ class BattleManager {
         Player player = round.player1;
 
         player.score++;
-        emulator.receive(array.clear().add(scoreChanged).add(player.score).add(0));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(scoreChanged).add(player.score).add(0));
+        }
         round.checkRoundFinished();
     }
 
@@ -101,12 +112,16 @@ class BattleManager {
         Round round = battle.getRound();
         assert round != null;
         round.setThingToPlayer(thing);
-        emulator.receive(array.clear().add(thingTaken).add(1).add(thing != null ? thing.getId() : 0));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(thingTaken).add(1).add(thing != null ? thing.getId() : 0));
+        }
     }
 
     void effectChanged(Model.Effect effect, boolean added, int objNumber) {
         int effectId = Arrays.binarySearch(effectValues, effect); // don't use "effect.ordinal()"!
-        emulator.receive(array.clear().add(effectChanged).add(effectId).add(added ? 1 : 0).add(objNumber));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(effectChanged).add(effectId).add(added ? 1 : 0).add(objNumber));
+        }
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -123,7 +138,9 @@ class BattleManager {
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
         int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "effect.ordinal()"!
-        emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
+        synchronized (lock) {
+            emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
+        }
         if (isAlive) {
             round.restore();
         } else roundFinished(false);
@@ -145,16 +162,21 @@ class BattleManager {
         Detractor detractor2 = battle.detractor2;
         int score1 = detractor1.score;
         int score2 = detractor2.score;
-        array.clear().add(finished).add(0).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
-        emulator.receive(array);
+        synchronized (lock) {
+            array.clear().add(finished).add(0).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
+            emulator.receive(array);
+        }
 
         if (!gameOver) {
             Round round = battle.nextRound();
             startRound(round);
         } else {
             battle.stop();
-            array.clear().add(finished).add(1).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
-            emulator.receive(array);
+            synchronized (lock) {
+                array.clear();
+                array.add(finished).add(1).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
+                emulator.receive(array);
+            }
         }
     }
 
@@ -174,10 +196,12 @@ class BattleManager {
         int t = round.timeSec;
         String fname = round.levelname;
 
-        array.fromByteArray(getBytes(fname), fname.length()).prepend(lives2).prepend(lives1).prepend(char2Id)
-                .prepend(char1Id).prepend(1).prepend(t).prepend(round.number).prepend(roundInfo);
-        emulator.receive(array);
-        emulator.receive(base.prepend(fullState));
+        synchronized (lock) {
+            array.fromByteArray(getBytes(fname), fname.length()).prepend(lives2).prepend(lives1).prepend(char2Id)
+                    .prepend(char1Id).prepend(1).prepend(t).prepend(round.number).prepend(roundInfo);
+            emulator.receive(array);
+            emulator.receive(base.prepend(fullState));
+        }
         //box.Put(sid1, battleMgr.packer.PackAbilityList(abilities1))
         //box.Put(sid2, battleMgr.packer.PackAbilityList(abilities2))
     }

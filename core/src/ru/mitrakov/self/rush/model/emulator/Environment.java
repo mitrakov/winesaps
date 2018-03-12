@@ -61,7 +61,6 @@ class Environment {
     }
 
     private void stepWolf(FieldEx field, WolfEx wolf, BattleManager battleManager) {
-        System.out.println(1);
         assert wolf != null && field != null;
         Cell cell = wolf.getCell();
         assert cell != null;

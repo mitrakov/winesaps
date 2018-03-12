@@ -53,14 +53,27 @@ class FieldEx extends Field {
             Cell cell = cells[i];
             cellLock.lock();
             Cells.Actor1 actor1 = cell.getFirst(Cells.Actor1.class);
-            if (actor1 != null)
+            if (actor1 != null) {
                 this.actor1 = new ActorEx(actor1.getCell(), actor1.getNumber());
+                cell.objects.add(this.actor1);
+                objects.put(this.actor1.getNumber(), this.actor1);
+                actor1.getCell().objects.remove(actor1); // don't forget to remove original Actor to avoid bugs
+            }
             Cells.Actor2 actor2 = cell.getFirst(Cells.Actor2.class);
-            if (actor2 != null)
+            if (actor2 != null) {
                 this.actor2 = new ActorEx(actor2.getCell(), actor2.getNumber());
+                cell.objects.add(this.actor2);
+                objects.put(this.actor2.getNumber(), this.actor2);
+                actor2.getCell().objects.remove(actor2); // don't forget to remove original Actor to avoid bugs
+            }
             Cells.Wolf wolf = cell.getFirst(Cells.Wolf.class);
-            if (wolf != null)
-                wolfList.add(new WolfEx(wolf.getCell(), wolf.getNumber()));
+            if (wolf != null) {
+                WolfEx wolfEx = new WolfEx(wolf.getCell(), wolf.getNumber());
+                wolfList.add(wolfEx);
+                cell.objects.add(wolfEx);
+                objects.put(wolfEx.getNumber(), wolfEx);
+                wolf.getCell().objects.remove(wolf); // don't forget to remove original Wolf to avoid bugs
+            }
             cellLock.unlock();
         }
     }
@@ -96,7 +109,7 @@ class FieldEx extends Field {
         if (0 <= idxTo && idxTo < WIDTH * HEIGHT) {
             Cell oldCell = obj.getCell();
             Cell newCell = getCell(idxTo);
-            int h = idxTo - obj.getXy(); // increment of index
+            int h = idxTo - oldCell.xy; // increment of index
             boolean leftRight = h * h == 1;
             // face an obstacle
             if (newCell.objectExists(Cells.Block.class)) return false;
@@ -118,7 +131,7 @@ class FieldEx extends Field {
                 if (h == -WIDTH && !oldCell.objectExists(Cells.LadderBottom.class)) return false;
             }
             // left-right edges
-            if (oldCell.xy + 1 % WIDTH == 0 && (h > 0 && h < WIDTH)) return false; // if right edge
+            if ((oldCell.xy + 1) % WIDTH == 0 && (h > 0 && h < WIDTH)) return false; // if right edge
             if (oldCell.xy % WIDTH == 0 && (h < 0 && h > -WIDTH)) return false; // if left edge
 
             // relocating

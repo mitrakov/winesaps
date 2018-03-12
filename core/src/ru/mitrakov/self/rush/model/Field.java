@@ -30,7 +30,7 @@ public class Field {
 
     public final Cell cells[] = new Cell[WIDTH * HEIGHT + 1]; // .... public // + 1 fake cell
 
-    private final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
+    protected final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
     private int objectNumber = 0;
 
     protected final NextNumber nextNumber = new NextNumber() {
