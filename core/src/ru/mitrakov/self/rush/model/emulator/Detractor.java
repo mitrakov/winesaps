@@ -9,8 +9,8 @@ import ru.mitrakov.self.rush.model.Model;
  */
 class Detractor {
     final Model.Character character;
+    final Map<Model.Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Model.Ability, Integer>();
     int score;
-    public final Map<Model.Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Model.Ability, Integer>();
 
     Detractor(Model.Character character) {
         this.character = character;

@@ -40,6 +40,10 @@ class ActorEx extends Cells.Actor1 {
         return directionRight;
     }
 
+    void setDirectionRight(boolean directedRight) {
+        this.directionRight = directedRight;
+    }
+
     void addStep() {
         for (int i = 0; i < effectSteps.length(); i++) {
             if (effectSteps.get(i) > 0) {
@@ -48,14 +52,6 @@ class ActorEx extends Cells.Actor1 {
                     effectCallbacks.get(i).run();
             }
         }
-    }
-
-    void setDirectionRight(boolean directedRight) {
-        this.directionRight = directedRight;
-    }
-
-    boolean hasSwagga(Model.Ability ability) {
-        return false; // TODO
     }
 
     void setEffect(Model.Effect effect, int steps, Runnable callback) {
@@ -68,5 +64,13 @@ class ActorEx extends Cells.Actor1 {
         int effectId = Arrays.binarySearch(effectValues, effect);
         int steps = effectSteps.get(effectId);
         return steps > 0;
+    }
+
+    void addSwagga(Model.Ability ability) {
+        // TODO
+    }
+
+    boolean hasSwagga(Model.Ability ability) {
+        return false; // TODO
     }
 }

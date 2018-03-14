@@ -10,18 +10,17 @@ import static ru.mitrakov.self.rush.model.Field.*;
 import static ru.mitrakov.self.rush.model.Model.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
+import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 
 /**
  * Created by mitrakov on 04.02.2018
  */
 class BattleManager {
-    private final Object lock = new Object();
     private final ServerEmulator emulator;
+    private final Object lock = new Object();
     private final Model.IFileReader fileReader;
     private final Environment environment;
-    Battle battle;
     private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);      // need to be synchronized!
-    private final Model.MoveDirection[] directions = Model.MoveDirection.values();
 
     private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal()"
     private final int roundInfo = Arrays.binarySearch(cmdValues, ROUND_INFO);           // don't use "cmd.ordinal()"
@@ -34,6 +33,8 @@ class BattleManager {
     private final int playerWounded = Arrays.binarySearch(cmdValues, PLAYER_WOUNDED);   // don't use "cmd.ordinal()"
     private final int finished = Arrays.binarySearch(cmdValues, FINISHED);              // don't use "cmd.ordinal()"
 
+    private Battle battle;
+
     BattleManager(ServerEmulator emulator, Model.IFileReader fileReader) {
         assert fileReader != null;
         this.emulator = emulator;
@@ -41,25 +42,25 @@ class BattleManager {
         this.environment = new Environment(this);
     }
 
-    void accept(Model.Character character1, Model.Character character2, String[] levelnames, int timeSec, int wins) {
-        battle = new Battle(character1, character2, levelnames, timeSec, wins, this);
-        startRound(battle.getRound());
+    Model.IFileReader getFileReader() {
+        return fileReader;
     }
 
     Environment getEnvironment() {
         return environment;
     }
 
-    Model.IFileReader getFileReader() {
-        return fileReader;
+    void accept(Model.Character character1, Model.Character character2, String[] levelnames, int timeSec, int wins) {
+        battle = new Battle(character1, character2, levelnames, timeSec, wins, this);
+        startRound(battle.getRound());
     }
 
     void move(int direction) {
-        assert battle != null && 0 <= direction && direction < directions.length;
+        assert battle != null && 0 <= direction && direction < moveDirectionValues.length;
         Round round = battle.getRound();
         assert round != null;
 
-        round.move(directions[direction]);
+        round.move(moveDirectionValues[direction]);
         synchronized (lock){
             emulator.receive(array.clear().add(move).add(0));
         }
@@ -75,6 +76,10 @@ class BattleManager {
         }
     }
 
+    void useSkill() {
+        // TODO
+    }
+
     void close() {
         //Assert(battleMgr.stop, battleMgr.environment)
         //battleMgr.stop <- true
@@ -85,12 +90,6 @@ class BattleManager {
         synchronized (lock) {
             array.clear().add(stateChanged).add(obj.getNumber()).add(obj.getId()).add(newXy).add(reset ? 1 : 0);
             emulator.receive(array);
-        }
-    }
-
-    void objectAppended(Cells.CellObject obj) {
-        synchronized (lock) {
-            emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
         }
     }
 
@@ -117,46 +116,13 @@ class BattleManager {
         }
     }
 
-    void effectChanged(Model.Effect effect, boolean added, int objNumber) {
-        int effectId = Arrays.binarySearch(effectValues, effect); // don't use "effect.ordinal()"!
+    void objectAppended(Cells.CellObject obj) {
         synchronized (lock) {
-            emulator.receive(array.clear().add(effectChanged).add(effectId).add(added ? 1 : 0).add(objNumber));
+            emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
         }
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    void setEffectOnEnemy(Model.Effect effect) {
-        // not required for Single Player mode
-    }
-
-    void hurt(boolean me, Model.HurtCause cause) {
-        assert battle != null;
-        Round round = battle.getRound();
-        assert round != null;
-
-        boolean isAlive = round.wound(me);
-        int lives1 = round.player1.lives;
-        int lives2 = round.player2.lives;
-        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "effect.ordinal()"!
-        synchronized (lock) {
-            emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
-        }
-        if (isAlive) {
-            round.restore();
-        } else roundFinished(false);
-    }
-
-    void eatenByWolf(ActorEx actor) {
-        Round round = battle.getRound();
-        assert round != null;
-        Player player = round.getPlayerByActor(actor);
-        assert player != null;
-
-        hurt(player == round.player1, Model.HurtCause.Devoured);
     }
 
     void roundFinished(boolean winner) {
-
         boolean gameOver = battle.checkBattle(winner);
         Detractor detractor1 = battle.detractor1;
         Detractor detractor2 = battle.detractor2;
@@ -178,6 +144,44 @@ class BattleManager {
                 emulator.receive(array);
             }
         }
+    }
+
+    void eatenByWolf(ActorEx actor) {
+        Round round = battle.getRound();
+        assert round != null;
+        Player player = round.getPlayerByActor(actor);
+        assert player != null;
+
+        hurt(player == round.player1, Devoured);
+    }
+
+    void hurt(boolean me, Model.HurtCause cause) {
+        assert battle != null;
+        Round round = battle.getRound();
+        assert round != null;
+
+        boolean isAlive = round.wound(me);
+        int lives1 = round.player1.lives;
+        int lives2 = round.player2.lives;
+        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "effect.ordinal()"!
+        synchronized (lock) {
+            emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
+        }
+        if (isAlive) {
+            round.restore();
+        } else roundFinished(false);
+    }
+
+    void effectChanged(Model.Effect effect, boolean added, int objNumber) {
+        int effectId = Arrays.binarySearch(effectValues, effect); // don't use "effect.ordinal()"!
+        synchronized (lock) {
+            emulator.receive(array.clear().add(effectChanged).add(effectId).add(added ? 1 : 0).add(objNumber));
+        }
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    void setEffectOnEnemy(Model.Effect effect) {
+        // TODO
     }
 
     private void startRound(Round round) {

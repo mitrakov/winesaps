@@ -10,13 +10,13 @@ import ru.mitrakov.self.rush.model.Model;
 class Battle {
     private final BattleManager battleManager;
     private final ReentrantLock lock = new ReentrantLock();
-    private final int wins;
     private final int roundTimeSec;
+    private final int wins;
     private final String[] levelnames;
 
     final Detractor detractor1;
     final Detractor detractor2;
-    Round curRound;
+    private Round curRound;
 
     Battle(Model.Character character1, Model.Character character2, String[] levelnames, int timeSec, int wins,
            BattleManager battleManager) {
@@ -35,7 +35,6 @@ class Battle {
         } else throw new IllegalArgumentException("Empty levels list");
     }
 
-
     Round getRound() {
         lock.lock();
         Round round = curRound;
@@ -49,7 +48,6 @@ class Battle {
             detractor1.score++;
         } else detractor2.score++;
         return detractor1.score >= wins || detractor2.score >= wins;
-
     }
 
     Round nextRound() {

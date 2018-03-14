@@ -12,15 +12,15 @@ import static ru.mitrakov.self.rush.model.Field.*;
  * Created by mitrakov on 09.03.2018
  */
 public class Round {
-    private final BattleManager battleManager;
     private final TryMutex tryMutex = new TryMutex();
     private final int foodTotal;
+    private final BattleManager battleManager;
 
-    final FieldEx field;
-    final Player player1;
-    final Player player2;
     final int number;
     final int timeSec;
+    final Player player1;
+    final Player player2;
+    final FieldEx field;
     final String levelname;
     final Timer stop;
 
@@ -28,6 +28,7 @@ public class Round {
                  BattleManager battleManager) {
         assert character1 != null && character2 != null && levelName != null && battleManager != null;
         assert number >= 0 && timeSec > 0;
+
         this.number = number;
         this.timeSec = timeSec;
         this.levelname = levelName;
@@ -66,6 +67,28 @@ public class Round {
                 timeOut();
             }
         }, timeSec * 1000);
+    }
+
+    Player getPlayerByActor(ActorEx actor) {
+        assert actor != null;
+        if (actor == player1.actor) return player1;
+        if (actor == player2.actor) return player2;
+        return null;
+    }
+
+    void checkRoundFinished() {
+        tryMutex.onlyOne(new Runnable() {
+            @Override
+            public void run() {
+                if (player1.score > foodTotal / 2) {
+                    battleManager.roundFinished(true);
+                } else if (player2.score > foodTotal / 2) {
+                    battleManager.roundFinished(false);
+                } else if (field.getFoodCount() == 0) {
+                    finishRoundForced();
+                }
+            }
+        });
     }
 
     private void timeOut() {
@@ -135,10 +158,8 @@ public class Round {
             actor.addStep();
     }
 
-    void useThing() {
-        Cells.CellObjectThing thing = player1.setThing(null);
-        if (thing != null)
-            field.useThing(player1.actor, thing);
+    boolean wound(boolean me) {
+        return me ? (--player1.lives > 0) : (--player2.lives > 0);
     }
 
     void restore() {
@@ -151,21 +172,6 @@ public class Round {
         } else throw new IllegalStateException("Entry not found");
     }
 
-    void checkRoundFinished() {
-        tryMutex.onlyOne(new Runnable() {
-            @Override
-            public void run() {
-                if (player1.score > foodTotal / 2) {
-                    battleManager.roundFinished(true);
-                } else if (player2.score > foodTotal / 2) {
-                    battleManager.roundFinished(false);
-                } else if (field.getFoodCount() == 0) {
-                    finishRoundForced();
-                }
-            }
-        });
-    }
-
     void setThingToPlayer(Cells.CellObjectThing thing) {
         assert field != null && player1 != null;
 
@@ -174,14 +180,9 @@ public class Round {
             field.dropThing(player1.actor, oldThing);
     }
 
-    boolean wound(boolean me) {
-        return me ? (--player1.lives > 0) : (--player2.lives > 0);
-    }
-
-    Player getPlayerByActor(ActorEx actor) {
-        assert actor != null;
-        if (actor == player1.actor) return player1;
-        if (actor == player2.actor) return player2;
-        return null;
+    void useThing() {
+        Cells.CellObjectThing thing = player1.setThing(null);
+        if (thing != null)
+            field.useThing(player1.actor, thing);
     }
 }

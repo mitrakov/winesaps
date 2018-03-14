@@ -18,7 +18,7 @@ class Environment {
 
     private final Random rand = new Random(System.nanoTime());
     private final Timer stop;
-    private FieldEx field;
+    private volatile FieldEx field;
 
     Environment(final BattleManager battleManager) {
         assert battleManager != null;
@@ -44,7 +44,6 @@ class Environment {
 
     void addField(FieldEx field) {
         assert field != null;
-        // TODO add lock
         this.field = field;
     }
 

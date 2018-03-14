@@ -25,15 +25,6 @@ class FieldEx extends Field {
     private final List<Cells.CellObjectFavouriteFood> favouriteFoodList =
             new CopyOnWriteArrayList<Cells.CellObjectFavouriteFood>();
 
-//    private final Cells.CellObject umbrella = new Cells.Umbrella(TRASH_CELL, 0);   // GC
-//    private final Cells.CellObject mine = new Cells.Mine(TRASH_CELL, 0);           // GC
-//    private final Cells.CellObject beam = new Cells.Beam(TRASH_CELL, 0);           // GC
-//    private final Cells.CellObject antidote = new Cells.Antidote(TRASH_CELL, 0);   // GC
-//    private final Cells.CellObject flashbang = new Cells.Flashbang(TRASH_CELL, 0); // GC
-//    private final Cells.CellObject teleport = new Cells.Teleport(TRASH_CELL, 0);   // GC
-//    private final Cells.CellObject detector = new Cells.Detector(TRASH_CELL, 0);   // GC
-//    private final Cells.CellObject box = new Cells.Box(TRASH_CELL, 0);             // GC
-
     /*final*/ ActorEx actor1, actor2;
     final IIntArray raw;
 

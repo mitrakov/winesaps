@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by mitrakov on 11.03.2018
  */
-public class TryMutex {
+class TryMutex {
     private final ReentrantLock lock = new ReentrantLock();
     private boolean locked;
     private long cnt;

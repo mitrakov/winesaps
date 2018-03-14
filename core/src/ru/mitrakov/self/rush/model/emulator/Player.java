@@ -1,17 +1,13 @@
 package ru.mitrakov.self.rush.model.emulator;
 
 import ru.mitrakov.self.rush.model.Cells;
-import ru.mitrakov.self.rush.model.Model;
-
-import static ru.mitrakov.self.rush.model.Field.TRASH_CELL;
 
 /**
  * Created by mitrakov on 09.03.2018
  */
 class Player {
-    private Cells.CellObjectThing thing;
-
     final ActorEx actor;
+    private Cells.CellObjectThing thing;
     int score = 0;
     int lives = 2;
 
