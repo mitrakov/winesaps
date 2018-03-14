@@ -110,7 +110,7 @@ class FieldEx extends Field {
                 return true;
             }
             // scale a dias
-            if (leftRight && !oldCell.objectExists(Cells.Dais.class) && newCell.objectExists(Cells.Dais.class) &&
+            if (leftRight && !(oldCell.bottom instanceof Cells.Dais) && (newCell.bottom instanceof Cells.Dais) &&
                     !oldCell.objectExists(Cells.CellObjectRaisable.class)) {
                 if (obj == actor1 && !actor1.hasSwagga(ClimbingShoes) ||
                         obj == actor2 && !actor2.hasSwagga(ClimbingShoes))
@@ -198,8 +198,8 @@ class FieldEx extends Field {
 
         // get an appropriate cell (if an obstacle ahead, actor uses its own cell)
         Cell cell = getCellByDirection(myCell, actor.isDirectedToRight());
-        if (cell == null || cell.objectExists(Cells.Block.class) || cell.objectExists(Cells.Water.class)
-                || (cell.objectExists(Cells.Dais.class) && !myCell.objectExists(Cells.Dais.class))) {
+        if (cell == null || cell.objectExists(Cells.Block.class) || (cell.bottom instanceof Cells.Water)
+                || ((cell.bottom instanceof Cells.Dais) && !(myCell.bottom instanceof Cells.Dais))) {
             cell = myCell;
         }
 
@@ -327,7 +327,7 @@ class FieldEx extends Field {
                 battleManager.hurt(true, Soaked);
                 return;
             }
-            if (cell.objectExists(Cells.Water.class) && !cell.objectExists(Cells.BeamChunk.class) && !actor.hasSwagga(Snorkel)) {
+            if ((cell.bottom instanceof Cells.Water) && !cell.objectExists(Cells.BeamChunk.class) && !actor.hasSwagga(Snorkel)) {
                 battleManager.hurt(true, Sunk);
                 //noinspection UnnecessaryReturnStatement
                 return;
