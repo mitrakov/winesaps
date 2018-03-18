@@ -69,12 +69,16 @@ class FieldEx extends Field {
         }
     }
 
+    int getNextNum() {
+        return nextNumber.next();
+    }
+
     private void objChanged(Cells.CellObject obj, int xy, boolean reset) {
         battleManager.objChanged(obj, xy, reset);
     }
 
     private void objAppended(Cells.CellObject obj) {
-        battleManager.objectAppended(obj);
+        battleManager.objAppended(obj);
     }
 
     boolean isMoveUpPossible(Cell cell) {

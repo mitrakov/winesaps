@@ -143,7 +143,7 @@ public class Model {
         Miner, Builder, Shaman, Grenadier, TeleportMan
     }
 
-    public final Ability[] abilityValues = Ability.values();
+    public static final Ability[] abilityValues = Ability.values();
 
     /**
      * rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server

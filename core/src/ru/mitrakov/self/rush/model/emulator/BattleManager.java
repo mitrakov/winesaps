@@ -24,6 +24,7 @@ class BattleManager {
 
     private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal()"
     private final int roundInfo = Arrays.binarySearch(cmdValues, ROUND_INFO);           // don't use "cmd.ordinal()"
+    private final int abilityList = Arrays.binarySearch(cmdValues, ABILITY_LIST);       // don't use "cmd.ordinal()"
     private final int move = Arrays.binarySearch(cmdValues, MOVE);                      // don't use "cmd.ordinal()"
     private final int stateChanged = Arrays.binarySearch(cmdValues, STATE_CHANGED);     // don't use "cmd.ordinal()"
     private final int objectAppended = Arrays.binarySearch(cmdValues, OBJECT_APPENDED); // don't use "cmd.ordinal()"
@@ -50,8 +51,13 @@ class BattleManager {
         return environment;
     }
 
-    void accept(Model.Character character1, Model.Character character2, String[] levelnames, int timeSec, int wins) {
-        battle = new Battle(character1, character2, levelnames, timeSec, wins, this);
+    Battle getBattle() {
+        return battle;
+    }
+
+    void accept(Model.Character character1, Model.Character character2, IIntArray aggAbilities, IIntArray defAbilities,
+                String[] levelnames, int timeSec, int wins) {
+        battle = new Battle(character1, character2, levelnames, timeSec, wins, aggAbilities, defAbilities, this);
         startRound(battle.getRound());
     }
 
@@ -76,8 +82,24 @@ class BattleManager {
         }
     }
 
-    void useSkill() {
-        // TODO
+    void useSkill(int skillId) {
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            Cells.CellObjectThing thing = round.useSkill(skillId);
+            if (thing != null) { // thing may be NULL (in case skill produced nothing)
+                int thingId = thing.getId();
+                synchronized (lock) {
+                    emulator.receive(array.clear().add(thingTaken).add(1).add(thingId));
+                }
+            }
+            IIntArray abilities = round.getCurrentAbilities();
+            synchronized (lock) {
+                array.copyFrom(abilities, abilities.length()).prepend(abilities.length()).prepend(abilityList);
+                emulator.receive(array);
+            }
+        }
     }
 
     void close() {
@@ -116,7 +138,7 @@ class BattleManager {
         }
     }
 
-    void objectAppended(Cells.CellObject obj) {
+    void objAppended(Cells.CellObject obj) {
         synchronized (lock) {
             emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
         }
@@ -163,7 +185,7 @@ class BattleManager {
         boolean isAlive = round.wound(me);
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
-        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "effect.ordinal()"!
+        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "cause.ordinal()"!
         synchronized (lock) {
             emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
         }
@@ -195,8 +217,7 @@ class BattleManager {
         int char2Id = Arrays.binarySearch(characterValues, char2); // don't use "cmd.ordinal()"
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
-        //abilities1, err1 := round.getCurrentAbilities(sid1)
-        //abilities2, err2 := round.getCurrentAbilities(sid2)
+        IIntArray abilities1 = round.getCurrentAbilities();
         int t = round.timeSec;
         String fname = round.levelname;
 
@@ -205,8 +226,8 @@ class BattleManager {
                     .prepend(char1Id).prepend(1).prepend(t).prepend(round.number).prepend(roundInfo);
             emulator.receive(array);
             emulator.receive(base.prepend(fullState));
+            array.copyFrom(abilities1, abilities1.length()).prepend(abilities1.length()).prepend(abilityList);
+            emulator.receive(array);
         }
-        //box.Put(sid1, battleMgr.packer.PackAbilityList(abilities1))
-        //box.Put(sid2, battleMgr.packer.PackAbilityList(abilities2))
     }
 }

@@ -15,6 +15,7 @@ import static ru.mitrakov.self.rush.model.Model.effectValues;
 class ActorEx extends Cells.Actor1 {
     private final IIntArray effectSteps = new GcResistantIntArray(effectValues.length);
     private final List<Runnable> effectCallbacks = new CopyOnWriteArrayList<Runnable>();
+    private final List<Model.Ability> swaggas = new CopyOnWriteArrayList<Model.Ability>();
 
     private Model.Character character;
     private boolean directionRight = true;
@@ -67,10 +68,18 @@ class ActorEx extends Cells.Actor1 {
     }
 
     void addSwagga(Model.Ability ability) {
-        // TODO
+        swaggas.add(ability);
     }
 
-    boolean hasSwagga(Model.Ability ability) {
-        return false; // TODO
+    boolean hasSwagga(Model.Ability s) {
+        for (int i = 0; i < swaggas.size(); i++) {
+            Model.Ability v = swaggas.get(i); // don't use iterators here (GC!)
+            if (v == s) return true;
+        }
+        return false;
+    }
+
+    List<Model.Ability> getSwaggas() {
+        return swaggas;
     }
 }

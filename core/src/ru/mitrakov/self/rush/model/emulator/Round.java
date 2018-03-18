@@ -7,6 +7,8 @@ import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Field.*;
+import static ru.mitrakov.self.rush.model.Model.Ability.*;
+import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
 /**
  * Created by mitrakov on 09.03.2018
@@ -15,6 +17,8 @@ public class Round {
     private final TryMutex tryMutex = new TryMutex();
     private final int foodTotal;
     private final BattleManager battleManager;
+    private final IIntArray abilities = new GcResistantIntArray(abilityValues.length);
+    private final Set<Model.Ability> usedSkills = new LinkedHashSet<Model.Ability>();
 
     final int number;
     final int timeSec;
@@ -25,7 +29,8 @@ public class Round {
     final Timer stop;
 
     public Round(Model.Character character1, Model.Character character2, int number, String levelName, int timeSec,
-                 BattleManager battleManager) {
+                 List<Model.Ability> skills1, List<Model.Ability> skills2,
+                 List<Model.Ability> swaggas1, List<Model.Ability> swaggas2, BattleManager battleManager) {
         assert character1 != null && character2 != null && levelName != null && battleManager != null;
         assert number >= 0 && timeSec > 0;
 
@@ -55,10 +60,18 @@ public class Round {
         assert actor1 != null && actor2 != null;
         actor1.setCharacter(character1);
         actor2.setCharacter(character2);
+        for (int i = 0; i < swaggas1.size(); i++) {    // don't use iterators here (GC!)
+            Model.Ability s = swaggas1.get(i);
+            actor1.addSwagga(s);
+        }
+        for (int i = 0; i < swaggas2.size(); i++) {    // don't use iterators here (GC!)
+            Model.Ability s = swaggas2.get(i);
+            actor2.addSwagga(s);
+        }
 
         field.replaceFavouriteFood(actor1, actor2);
-        player1 = new Player(actor1);
-        player2 = new Player(actor2);
+        player1 = new Player(actor1, skills1);
+        player2 = new Player(actor2, skills2);
         this.foodTotal = field.getFoodCount();
         this.stop = new Timer(true);
         this.stop.schedule(new TimerTask() {
@@ -184,5 +197,50 @@ public class Round {
         Cells.CellObjectThing thing = player1.setThing(null);
         if (thing != null)
             field.useThing(player1.actor, thing);
+    }
+
+    Cells.CellObjectThing useSkill(int skillId) {
+        Model.Ability skill = player1.getSkill(skillId);
+        if (skill != null) {
+            Cells.CellObjectThing thing = skillApply(skill, field.getNextNum());
+            if (thing != null) {
+                battleManager.objAppended(thing);
+                setThingToPlayer(thing);
+                return thing;
+            }
+            return null; // no error here: skill may cast nothing
+        } else throw new IllegalArgumentException(String.format(Locale.getDefault(), "Skill not found %d", skillId));
+    }
+
+    synchronized IIntArray getCurrentAbilities() {
+        ActorEx actor = player1.actor; assert actor != null;
+        List<Model.Ability> swaggas = actor.getSwaggas();
+        List<Model.Ability> skills = player1.skills;
+        abilities.clear();
+        for (int i = 0; i < swaggas.size(); i++) {                       // don't use iterators here
+            Model.Ability s = swaggas.get(i);
+            int abilityId = Arrays.binarySearch(abilityValues, s);       // don't use "cmd.ordinal()"
+            abilities.add(abilityId);
+        }
+        for (int i = 0; i < skills.size(); i++) {
+            Model.Ability s = skills.get(i);
+            if (!usedSkills.contains(s)) {
+                int abilityId = Arrays.binarySearch(abilityValues, s);   // don't use "cmd.ordinal()"
+                abilities.add(abilityId);
+            }
+        }
+        return abilities;
+    }
+
+    private Cells.CellObjectThing skillApply(Model.Ability skill, int objNumber) {
+        if (usedSkills.contains(skill)) return null;
+        usedSkills.add(skill);
+
+        if (skill == Miner) return new Cells.MineThing(TRASH_CELL, objNumber); // TODO new!
+        if (skill == Builder) return new Cells.BeamThing(TRASH_CELL, objNumber); // TODO new!
+        if (skill == Shaman) return new Cells.AntidoteThing(TRASH_CELL, objNumber); // TODO new!
+        if (skill == Grenadier) return new Cells.FlashbangThing(TRASH_CELL, objNumber); // TODO new!
+        if (skill == TeleportMan) return new Cells.TeleportThing(TRASH_CELL, objNumber); // TODO new!
+        return null;
     }
 }

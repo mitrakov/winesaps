@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.model.emulator;
 
+import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.IHandler;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
@@ -58,7 +59,10 @@ public class ServerEmulator {
     }
 
     private void attack(String levelName) {
-        battleManager.accept(Model.Character.Hedgehog, Model.Character.Rabbit, new String[]{levelName}, 90, 1); // TODO 90 1
+        IIntArray array = new GcResistantIntArray(4);
+        array.add(1).add(2).add(3).add(0x21).add(0x22).add(0x23);
+        battleManager.accept(Model.Character.Hedgehog, Model.Character.Rabbit, array, new GcResistantIntArray(0),
+                new String[]{levelName}, 90, 1); // TODO 90 1
     }
 
     private void move(int direction) {
@@ -69,7 +73,7 @@ public class ServerEmulator {
         battleManager.useThing();
     }
 
-    private void useSkill(int code) {
-
+    private void useSkill(int skillId) {
+        battleManager.useSkill(skillId);
     }
 }
