@@ -27,7 +27,6 @@ public class Field {
     public static final int TRASH_XY = WIDTH * HEIGHT;
     public static final Cell TRASH_CELL = Cell.newCell(0, TRASH_XY, ZeroNumber);
 
-
     public final Cell cells[] = new Cell[WIDTH * HEIGHT + 1]; // .... public // + 1 fake cell
 
     protected final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
@@ -52,6 +51,8 @@ public class Field {
             }
         }
         // create fake cell for "removed" objects
+        TRASH_CELL.bottom = null;
+        TRASH_CELL.objects.clear();
         cells[TRASH_XY] = TRASH_CELL;
     }
 
