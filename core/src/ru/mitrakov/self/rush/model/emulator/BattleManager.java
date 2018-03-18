@@ -1,6 +1,7 @@
 package ru.mitrakov.self.rush.model.emulator;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.GcResistantIntArray;
@@ -18,6 +19,7 @@ import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 class BattleManager {
     private final ServerEmulator emulator;
     private final Object lock = new Object();
+    private final ReentrantLock battleLock = new ReentrantLock();
     private final Model.IFileReader fileReader;
     private final Environment environment;
     private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);      // need to be synchronized!
@@ -52,33 +54,44 @@ class BattleManager {
     }
 
     Battle getBattle() {
-        return battle;
+        battleLock.lock();
+        Battle result = this.battle;
+        battleLock.unlock();
+        return result;
     }
 
     void accept(Model.Character character1, Model.Character character2, IIntArray aggAbilities, IIntArray defAbilities,
                 String[] levelnames, int timeSec, int wins) {
-        battle = new Battle(character1, character2, levelnames, timeSec, wins, aggAbilities, defAbilities, this);
+        Battle battle = new Battle(character1, character2, levelnames, timeSec, wins, aggAbilities, defAbilities, this);
+        battleLock.lock();
+        this.battle = battle;
+        battleLock.unlock();
         startRound(battle.getRound());
     }
 
     void move(int direction) {
-        assert battle != null && 0 <= direction && direction < moveDirectionValues.length;
-        Round round = battle.getRound();
-        assert round != null;
-
-        round.move(moveDirectionValues[direction]);
+        assert 0 <= direction && direction < moveDirectionValues.length;
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            round.move(moveDirectionValues[direction]);
+        }
+        // also send Move Ack (in the Server "handler.go" actually does it)
         synchronized (lock){
             emulator.receive(array.clear().add(move).add(0));
         }
     }
 
     void useThing() {
-        assert battle != null;
-        Round round = battle.getRound();
-        assert round != null;
-        round.useThing();
-        synchronized (lock) {
-            emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            round.useThing();
+            synchronized (lock) {
+                emulator.receive(array.clear().add(thingTaken).add(1).add(0));
+            }
         }
     }
 
@@ -116,25 +129,29 @@ class BattleManager {
     }
 
     void foodEaten() {
-        assert battle != null;
-        Round round = battle.getRound();
-        assert round != null;
-        Player player = round.player1;
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            Player player = round.player1;
 
-        player.score++;
-        synchronized (lock) {
-            emulator.receive(array.clear().add(scoreChanged).add(player.score).add(0));
+            player.score++;
+            synchronized (lock) {
+                emulator.receive(array.clear().add(scoreChanged).add(player.score).add(0));
+            }
+            round.checkRoundFinished();
         }
-        round.checkRoundFinished();
     }
 
     void thingTaken(Cells.CellObjectThing thing) {
-        assert battle != null;
-        Round round = battle.getRound();
-        assert round != null;
-        round.setThingToPlayer(thing);
-        synchronized (lock) {
-            emulator.receive(array.clear().add(thingTaken).add(1).add(thing != null ? thing.getId() : 0));
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            round.setThingToPlayer(thing);
+            synchronized (lock) {
+                emulator.receive(array.clear().add(thingTaken).add(1).add(thing != null ? thing.getId() : 0));
+            }
         }
     }
 
@@ -145,53 +162,64 @@ class BattleManager {
     }
 
     void roundFinished(boolean winner) {
-        boolean gameOver = battle.checkBattle(winner);
-        Detractor detractor1 = battle.detractor1;
-        Detractor detractor2 = battle.detractor2;
-        int score1 = detractor1.score;
-        int score2 = detractor2.score;
-        synchronized (lock) {
-            array.clear().add(finished).add(0).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
-            emulator.receive(array);
-        }
-
-        if (!gameOver) {
-            Round round = battle.nextRound();
-            startRound(round);
-        } else {
-            battle.stop();
+        Battle battle = getBattle();
+        if (battle != null) {
+            boolean gameOver = battle.checkBattle(winner);
+            Detractor detractor1 = battle.detractor1;
+            Detractor detractor2 = battle.detractor2;
+            int score1 = detractor1.score;
+            int score2 = detractor2.score;
             synchronized (lock) {
-                array.clear();
-                array.add(finished).add(1).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
+                array.clear().add(finished).add(0).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
                 emulator.receive(array);
+            }
+
+            if (!gameOver) {
+                Round round = battle.nextRound();
+                startRound(round);
+            } else {
+                battle.stop();
+                battleLock.lock();
+                this.battle = null;
+                battleLock.unlock();
+                synchronized (lock) {
+                    array.clear();
+                    array.add(finished).add(1).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
+                    emulator.receive(array);
+                }
             }
         }
     }
 
     void eatenByWolf(ActorEx actor) {
-        Round round = battle.getRound();
-        assert round != null;
-        Player player = round.getPlayerByActor(actor);
-        assert player != null;
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+            Player player = round.getPlayerByActor(actor);
+            assert player != null;
 
-        hurt(player == round.player1, Devoured);
+            hurt(player == round.player1, Devoured);
+        }
     }
 
     void hurt(boolean me, Model.HurtCause cause) {
-        assert battle != null;
-        Round round = battle.getRound();
-        assert round != null;
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
 
-        boolean isAlive = round.wound(me);
-        int lives1 = round.player1.lives;
-        int lives2 = round.player2.lives;
-        int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "cause.ordinal()"!
-        synchronized (lock) {
-            emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
+            boolean isAlive = round.wound(me);
+            int lives1 = round.player1.lives;
+            int lives2 = round.player2.lives;
+            int causeId = Arrays.binarySearch(hurtCauseValues, cause); // don't use "cause.ordinal()"!
+            synchronized (lock) {
+                emulator.receive(array.clear().add(playerWounded).add(1).add(causeId).add(lives1).add(lives2));
+            }
+            if (isAlive) {
+                round.restore();
+            } else roundFinished(false);
         }
-        if (isAlive) {
-            round.restore();
-        } else roundFinished(false);
     }
 
     void effectChanged(Model.Effect effect, boolean added, int objNumber) {
