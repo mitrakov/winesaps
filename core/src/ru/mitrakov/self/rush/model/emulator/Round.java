@@ -82,6 +82,10 @@ public class Round {
         }, timeSec * 1000);
     }
 
+    Player getPlayerBySid(boolean isSid1) {
+        return isSid1 ? player1 : player2;
+    }
+
     Player getPlayerByActor(ActorEx actor) {
         assert actor != null;
         if (actor == player1.actor) return player1;

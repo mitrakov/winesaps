@@ -11,6 +11,7 @@ import static ru.mitrakov.self.rush.model.Field.*;
 import static ru.mitrakov.self.rush.model.Model.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
+import static ru.mitrakov.self.rush.model.Model.Ability.*;
 import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 
 /**
@@ -78,7 +79,7 @@ class BattleManager {
             round.move(moveDirectionValues[direction]);
         }
         // also send Move Ack (in the Server "handler.go" actually does it)
-        synchronized (lock){
+        synchronized (lock) {
             emulator.receive(array.clear().add(move).add(0));
         }
     }
@@ -229,9 +230,21 @@ class BattleManager {
         }
     }
 
-    @SuppressWarnings("UnusedParameters")
-    void setEffectOnEnemy(Model.Effect effect) {
-        // TODO
+    void setEffectOnEnemy(boolean isActor1, Model.Effect effect) {
+        Battle battle = getBattle();
+        if (battle != null) {
+            Round round = battle.getRound();
+            assert round != null;
+
+            Player player = round.getPlayerBySid(!isActor1);
+            ActorEx actor = player.actor;
+            assert actor != null;
+
+            if (!actor.hasSwagga(Sunglasses)) {
+                actor.setEffect(effect, 1, null); // only formality; in fact it's an empty effect on server-side
+                effectChanged(effect, true, actor.getNumber());
+            }
+        }
     }
 
     private void startRound(Round round) {

@@ -285,7 +285,7 @@ class FieldEx extends Field {
             if (bang != null) {
                 cell.objects.remove(bang);
                 objChanged(bang, 0xFF, true);
-                battleManager.setEffectOnEnemy(Dazzle);
+                battleManager.setEffectOnEnemy(actor == actor1, Dazzle);
             }
             if (detector != null) {
                 cell.objects.remove(detector);
