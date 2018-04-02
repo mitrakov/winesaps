@@ -62,7 +62,7 @@ public class AudioManager {
     public void sound(String name) {
         if (!soundMuted) {
             String path = soundNames.get(name);
-            if (path == null) {
+            if (path == null) { // 1-st time only
                 path = String.format("sfx/%s.wav", name);
                 soundNames.put(name, path);
             }

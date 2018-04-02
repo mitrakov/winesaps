@@ -27,10 +27,11 @@ public class Cell {
      * Creates a new instance of Cell
      * @param value - binary value (2 bits are bottom, 6 bits - object, like ladders, rope lines, etc.)
      * @param xy - index in a battle field
-     * @param number - function, that returns current order number on a battle field (starting with 1)
+     * @param numberFunc function, that returns current order number on a battle field (starting with 1), may be NULL
+     * @param number if `numberFunc` is NULL, then this value will be used (otherwise ignored)
      * @return new Cell
      */
-    static Cell newCell(int value, int xy, Field.NextNumber number) {
+    static Cell newCell(int value, int xy, Field.NextNumber numberFunc, int number) {
         Cell res = new Cell(xy);
         switch (value >> 6) {
             case 1:
@@ -44,7 +45,7 @@ public class Cell {
                 break;
             default:
         }
-        CellObject object = newObject(value & 0x3F, res, number);
+        CellObject object = newObject(value & 0x3F, res, numberFunc, number);
         if (object != null)
             res.objects.add(object);
         return res;
@@ -57,7 +58,7 @@ public class Cell {
      * @param number - function, that returns current order number on a battle field (starting with 1)
      * @return new CellObject
      */
-    public static CellObject newObject(int value, Cell cell, Field.NextNumber number) {
+    public static CellObject newObject(int value, Cell cell, Field.NextNumber numberFunc, int number) {
         switch (value) {
             case 0x01:
                 return new Block(cell);
@@ -66,11 +67,11 @@ public class Cell {
             case 0x03:
                 return new Water(cell);
             case 0x04:
-                return new Actor1(cell, number.next());
+                return new Actor1(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x05:
-                return new Actor2(cell, number.next());
+                return new Actor2(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x06:
-                return new Wolf(cell, number.next());
+                return new Wolf(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x07:
                 return new Entry1(cell);
             case 0x08:
@@ -88,55 +89,55 @@ public class Cell {
             case 0x0E:
                 return new WaterfallSafe(cell);
             case 0x0F:
-                return new BeamChunk(cell, number.next());
+                return new BeamChunk(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x10:
-                return new Apple(cell, number.next());
+                return new Apple(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x11:
-                return new Pear(cell, number.next());
+                return new Pear(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x12:
-                return new Meat(cell, number.next());
+                return new Meat(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x13:
-                return new Carrot(cell, number.next());
+                return new Carrot(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x14:
-                return new Mushroom(cell, number.next());
+                return new Mushroom(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x15:
-                return new Nut(cell, number.next());
+                return new Nut(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x16:
-                return new FoodActor1(cell, number.next());
+                return new FoodActor1(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x17:
-                return new FoodActor2(cell, number.next());
+                return new FoodActor2(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x20:
-                return new UmbrellaThing(cell, number.next());
+                return new UmbrellaThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x21:
-                return new MineThing(cell, number.next());
+                return new MineThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x22:
-                return new BeamThing(cell, number.next());
+                return new BeamThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x23:
-                return new AntidoteThing(cell, number.next());
+                return new AntidoteThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x24:
-                return new FlashbangThing(cell, number.next());
+                return new FlashbangThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x25:
-                return new TeleportThing(cell, number.next());
+                return new TeleportThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x26:
-                return new DetectorThing(cell, number.next());
+                return new DetectorThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x27:
-                return new BoxThing(cell, number.next());
+                return new BoxThing(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x28:
-                return new Umbrella(cell, number.next());
+                return new Umbrella(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x29:
-                return new Mine(cell, number.next());
+                return new Mine(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2A:
-                return new Beam(cell, number.next());
+                return new Beam(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2B:
-                return new Antidote(cell, number.next());
+                return new Antidote(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2C:
-                return new Flashbang(cell, number.next());
+                return new Flashbang(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2D:
-                return new Teleport(cell, number.next());
+                return new Teleport(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2E:
-                return new Detector(cell, number.next());
+                return new Detector(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x2F:
-                return new Box(cell, number.next());
+                return new Box(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x30:
                 return new DecorationStatic(cell);
             case 0x31:

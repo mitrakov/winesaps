@@ -35,7 +35,7 @@ public class FileReader implements Model.IFileReader {
     @Override
     public byte[] readAsByteArray(String filename) {
         try {
-            return Gdx.files.local(filename).readBytes();
+            return Gdx.files.internal(filename).readBytes();
         } catch (Exception e) {
             return new byte[0];
         }

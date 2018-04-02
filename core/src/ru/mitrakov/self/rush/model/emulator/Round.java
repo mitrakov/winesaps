@@ -8,13 +8,13 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Field.*;
 import static ru.mitrakov.self.rush.model.Model.Ability.*;
+import static ru.mitrakov.self.rush.model.Model.MoveDirection.*;
 import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
 /**
  * Created by mitrakov on 09.03.2018
  */
 public class Round {
-    private final TryMutex tryMutex = new TryMutex();
     private final int foodTotal;
     private final BattleManager battleManager;
     private final IIntArray abilities = new GcResistantIntArray(abilityValues.length);
@@ -93,28 +93,20 @@ public class Round {
         return null;
     }
 
-    void checkRoundFinished() {
-        tryMutex.onlyOne(new Runnable() {
-            @Override
-            public void run() {
-                if (player1.score > foodTotal / 2) {
-                    battleManager.roundFinished(true);
-                } else if (player2.score > foodTotal / 2) {
-                    battleManager.roundFinished(false);
-                } else if (field.getFoodCount() == 0) {
-                    finishRoundForced();
-                }
-            }
-        });
+    synchronized void checkRoundFinished() {
+        // tryMutex is not necessary here (synchronized is enough)
+        if (player1.score > foodTotal / 2) {
+            battleManager.roundFinished(true);
+        } else if (player2.score > foodTotal / 2) {
+            battleManager.roundFinished(false);
+        } else if (field.getFoodCount() == 0) {
+            finishRoundForced();
+        }
     }
 
-    private void timeOut() {
-        tryMutex.onlyOne(new Runnable() {
-            @Override
-            public void run() {
-                finishRoundForced();
-            }
-        });
+    synchronized private void timeOut() {
+        // tryMutex is not necessary here (synchronized is enough)
+        finishRoundForced();
     }
 
     private void finishRoundForced() {
@@ -137,29 +129,20 @@ public class Round {
         Cell cell = actor.getCell();
         assert cell != null;
 
-        // calculate delta
+        // calculate delta. DO NOT USE `switch` HERE! (please see details in Model.move() method)
         int delta = 0;
-        switch (direction) {
-            case LeftDown:
-                delta = field.isMoveDownPossible(cell) ? WIDTH : -1;
-                break;
-            case Left:
-                delta = -1;
-                break;
-            case LeftUp:
-                delta = field.isMoveUpPossible(cell) ? -WIDTH : -1;
-                break;
-            case RightDown:
-                delta = field.isMoveDownPossible(cell) ? WIDTH : 1;
-                break;
-            case Right:
-                delta = 1;
-                break;
-            case RightUp:
-                delta = field.isMoveUpPossible(cell) ? -WIDTH : 1;
-                break;
-            default:
-        }
+        if (direction == LeftDown)
+            delta = field.isMoveDownPossible(cell) ? WIDTH : -1;
+        else if (direction == Left)
+            delta = -1;
+        else if (direction == LeftUp)
+            delta = field.isMoveUpPossible(cell) ? -WIDTH : -1;
+        else if (direction == RightDown)
+            delta = field.isMoveDownPossible(cell) ? WIDTH : 1;
+        else if (direction == Right)
+            delta = 1;
+        else if (direction == RightUp)
+            delta = field.isMoveUpPossible(cell) ? -WIDTH : 1;
 
         // set actor's direction (left/right)
         if (delta == 1)

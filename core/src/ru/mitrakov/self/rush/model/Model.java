@@ -1026,7 +1026,7 @@ public class Model {
 
     public void setThing(int thingId) {
         CellObject oldThing = curThing;
-        curThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
+        curThing = Cell.newObject(thingId, Field.TRASH_CELL, null, 0);
         thingChangedEvent.oldThing = oldThing;
         thingChangedEvent.newThing = curThing;
         thingChangedEvent.mine = true;
@@ -1035,7 +1035,7 @@ public class Model {
 
     public void setEnemyThing(int thingId) {
         CellObject oldThing = enemyThing;
-        enemyThing = Cell.newObject(thingId, Field.TRASH_CELL, Field.ZeroNumber);
+        enemyThing = Cell.newObject(thingId, Field.TRASH_CELL, null, 0);
         thingChangedEvent.oldThing = oldThing;
         thingChangedEvent.newThing = enemyThing;
         thingChangedEvent.mine = false;

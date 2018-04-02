@@ -325,7 +325,7 @@ public class ScreenBattle extends LocalizableScreen {
      */
     private String getSimpleName(Class clazz) {
         String simpleName = simpleNames.get(clazz);
-        if (simpleName == null) {
+        if (simpleName == null) { // 1-st time only
             simpleName = clazz.getSimpleName();
             simpleNames.put(clazz, simpleName);
         }

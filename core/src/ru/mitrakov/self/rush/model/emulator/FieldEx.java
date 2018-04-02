@@ -217,7 +217,7 @@ class FieldEx extends Field {
         // ================
 
         // emplace object
-        int number = nextNumber.next();
+        int number = getNextNum();
         Cells.CellObject emplaced = emplace(thing, number, myCell);
         objAppended(emplaced);
         move(emplaced, cell.xy);
@@ -365,9 +365,9 @@ class FieldEx extends Field {
                             Cells.CellObject edgeA = cell0.bottom;
                             Cells.CellObject edgeB = cell4.bottom;
                             if (edgeA != null && edgeB != null && edgeA.getId() == edgeB.getId()) {
-                                Cells.CellObject chunk1 = Cell.newObject(0x0F, cell1, nextNumber);
-                                Cells.CellObject chunk2 = Cell.newObject(0x0F, cell2, nextNumber);
-                                Cells.CellObject chunk3 = Cell.newObject(0x0F, cell3, nextNumber);
+                                Cells.CellObject chunk1 = Cell.newObject(0x0F, cell1, nextNumber, 0);
+                                Cells.CellObject chunk2 = Cell.newObject(0x0F, cell2, nextNumber, 0);
+                                Cells.CellObject chunk3 = Cell.newObject(0x0F, cell3, nextNumber, 0);
                                 cell1.objects.add(chunk1);
                                 cell2.objects.add(chunk2);
                                 cell3.objects.add(chunk3);
@@ -474,46 +474,23 @@ class FieldEx extends Field {
     }
 
     private Cells.CellObject emplace(Cells.CellObjectThing thing, int number, Cell cell) {
-        if (thing instanceof Cells.UmbrellaThing) {
-            //umbrella.setCell(cell);
-            //umbrella.setNumber(number);
+        // DANGER CODE: "new" may cause troubles with Garbage Collector; we should investigate its impact
+        if (thing instanceof Cells.UmbrellaThing)
             return new Cells.Umbrella(cell, number);
-        }
-        if (thing instanceof Cells.MineThing) {
-            //mine.setCell(cell);
-            //mine.setNumber(number);
+        if (thing instanceof Cells.MineThing)
             return new Cells.Mine(cell, number);
-        }
-        if (thing instanceof Cells.BeamThing) {
-            //beam.setCell(cell);
-            //beam.setNumber(number);
+        if (thing instanceof Cells.BeamThing)
             return new Cells.Beam(cell, number);
-        }
-        if (thing instanceof Cells.AntidoteThing) {
-            //antidote.setCell(cell);
-            //antidote.setNumber(number);
+        if (thing instanceof Cells.AntidoteThing)
             return new Cells.Antidote(cell, number);
-        }
-        if (thing instanceof Cells.FlashbangThing) {
-            //flashbang.setCell(cell);
-            //flashbang.setNumber(number);
+        if (thing instanceof Cells.FlashbangThing)
             return new Cells.Flashbang(cell, number);
-        }
-        if (thing instanceof Cells.TeleportThing) {
-            //teleport.setCell(cell);
-            //teleport.setNumber(number);
+        if (thing instanceof Cells.TeleportThing)
             return new Cells.Teleport(cell, number);
-        }
-        if (thing instanceof Cells.DetectorThing) {
-            //detector.setCell(cell);
-            //detector.setNumber(number);
+        if (thing instanceof Cells.DetectorThing)
             return new Cells.Detector(cell, number);
-        }
-        if (thing instanceof Cells.BoxThing) {
-            //box.setCell(cell);
-            //box.setNumber(number);
+        if (thing instanceof Cells.BoxThing)
             return new Cells.Box(cell, number);
-        }
         return null;
     }
 }
