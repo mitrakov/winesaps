@@ -14,6 +14,7 @@ import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 /**
  * Created by mitrakov on 08.03.2018
  */
+@SuppressWarnings("ForLoopReplaceableByForEach")
 class FieldEx extends Field {
     private static final int ANTIDOTE_EFFECT = 10;
     private static final int DETECTION_LENGTH = 8;
@@ -173,13 +174,25 @@ class FieldEx extends Field {
         return null;
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
     int getFoodCount() {
         int result = 0;
         for (int i = 0; i < cells.length; i++) {
             cellLock.lock();
             Cell cell = cells[i];
             if (cell.objectExists(Cells.CellObjectFood.class))
+                result++;
+            cellLock.unlock();
+        }
+        return result;
+    }
+
+    int getFoodCountForActor(ActorEx actor) {
+        int result = 0;
+        for (int i = 0; i < cells.length; i++) {
+            cellLock.lock();
+            Cell cell = cells[i];
+            Cells.CellObjectFood food = cell.getFirst(Cells.CellObjectFood.class);
+            if (food != null && !isPoison(actor, food))
                 result++;
             cellLock.unlock();
         }

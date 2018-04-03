@@ -72,7 +72,7 @@ public class Round {
         field.replaceFavouriteFood(actor1, actor2);
         player1 = new Player(actor1, skills1);
         player2 = new Player(actor2, skills2);
-        this.foodTotal = field.getFoodCount();
+        this.foodTotal = field.getFoodCountForActor(actor1); // on Server: "this.foodTotal = field.getFoodCount()"
         this.stop = new Timer(true);
         this.stop.schedule(new TimerTask() {
             @Override
@@ -95,13 +95,12 @@ public class Round {
 
     synchronized void checkRoundFinished() {
         // tryMutex is not necessary here (synchronized is enough)
-        if (player1.score > foodTotal / 2) {
+        if (player1.score == foodTotal)             // on Server: "player1.score > foodTotal / 2"
             battleManager.roundFinished(true);
-        } else if (player2.score > foodTotal / 2) {
+        else if (player2.score == foodTotal)        // on Server: "player2.score > foodTotal / 2"
             battleManager.roundFinished(false);
-        } else if (field.getFoodCount() == 0) {
+        else if (field.getFoodCount() == 0)
             finishRoundForced();
-        }
     }
 
     synchronized private void timeOut() {
@@ -110,6 +109,8 @@ public class Round {
     }
 
     private void finishRoundForced() {
+        battleManager.roundFinished(false);
+        /* This is a Server algorithm:
         if (player1.score > player2.score) {
             battleManager.roundFinished(true);
         } else if (player2.score > player1.score) {
@@ -119,7 +120,7 @@ public class Round {
                 battleManager.roundFinished(true);
             // note: if draw and lives are equals let's suppose the defender (player2) wins
             battleManager.roundFinished(false);
-        }
+        }*/
     }
 
     void move(Model.MoveDirection direction) {
@@ -223,11 +224,12 @@ public class Round {
         if (usedSkills.contains(skill)) return null;
         usedSkills.add(skill);
 
-        if (skill == Miner) return new Cells.MineThing(TRASH_CELL, objNumber); // TODO new!
-        if (skill == Builder) return new Cells.BeamThing(TRASH_CELL, objNumber); // TODO new!
-        if (skill == Shaman) return new Cells.AntidoteThing(TRASH_CELL, objNumber); // TODO new!
-        if (skill == Grenadier) return new Cells.FlashbangThing(TRASH_CELL, objNumber); // TODO new!
-        if (skill == TeleportMan) return new Cells.TeleportThing(TRASH_CELL, objNumber); // TODO new!
+        // DANGER CODE: "new" may cause troubles with Garbage Collector; we should investigate its impact
+        if (skill == Miner) return new Cells.MineThing(TRASH_CELL, objNumber);
+        if (skill == Builder) return new Cells.BeamThing(TRASH_CELL, objNumber);
+        if (skill == Shaman) return new Cells.AntidoteThing(TRASH_CELL, objNumber);
+        if (skill == Grenadier) return new Cells.FlashbangThing(TRASH_CELL, objNumber);
+        if (skill == TeleportMan) return new Cells.TeleportThing(TRASH_CELL, objNumber);
         return null;
     }
 }
