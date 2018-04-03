@@ -1009,7 +1009,7 @@ public class Model {
                 if (curActor.getNumber() == number) {
                     actorResetEvent.obj = curActor;
                     bus.raise(actorResetEvent);
-                } else if (enemyActor.getNumber() == number) {
+                } else if (enemyActor != null && enemyActor.getNumber() == number) {
                     actorResetEvent.obj = enemyActor;
                     bus.raise(actorResetEvent);
                 }

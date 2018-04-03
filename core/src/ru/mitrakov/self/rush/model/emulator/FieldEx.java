@@ -9,6 +9,7 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Model.Effect.*;
 import static ru.mitrakov.self.rush.model.Model.Ability.*;
+import static ru.mitrakov.self.rush.model.Model.Character.*;
 import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 
 /**
@@ -153,7 +154,7 @@ class FieldEx extends Field {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private List<Cells.CellObjectFavouriteFood> getFavouriteFoodList() {
         favouriteFoodList.clear();
-        for (int i=0; i<cells.length; i++) {
+        for (int i = 0; i < cells.length; i++) {
             Cell cell = cells[i];
             cellLock.lock();
             Cells.CellObjectFavouriteFood food = cell.getFirst(Cells.CellObjectFavouriteFood.class);
@@ -430,18 +431,17 @@ class FieldEx extends Field {
 
     private Cells.CellObjectFood createFavouriteFood(ActorEx actor, int num, Cell cell) {
         assert cell != null;
-        switch (actor.getCharacter()) {
-            case Rabbit:
-                return new Cells.Carrot(cell, num);
-            case Hedgehog:
-                return new Cells.Mushroom(cell, num);
-            case Squirrel:
-                return new Cells.Nut(cell, num);
-            case Cat:
-                return new Cells.Meat(cell, num);
-            default:
-                return new Cells.Apple(cell, num);
-        }
+
+        // DO NOT use switch(direction)!!! It causes call Character.values() that produces work for GC!
+        if (actor.getCharacter() == Rabbit)
+            return new Cells.Carrot(cell, num);
+        if (actor.getCharacter() == Hedgehog)
+            return new Cells.Mushroom(cell, num);
+        if (actor.getCharacter() == Squirrel)
+            return new Cells.Nut(cell, num);
+        if (actor.getCharacter() == Cat)
+            return new Cells.Meat(cell, num);
+        return new Cells.Apple(cell, num);
     }
 
     private boolean isPoison(ActorEx actor, Cells.CellObjectFood food) {
