@@ -256,7 +256,7 @@ public class Model {
 
     private final PsObject psObject;
     private final Object locker = new Object();
-    private final Collection<Ability> abilities = new LinkedList<Ability>();
+    private final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // hotfix: must be concurrent!
     private final List<ISender> senders = new LinkedList<ISender>();
 
     private ISender sender;
