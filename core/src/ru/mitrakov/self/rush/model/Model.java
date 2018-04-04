@@ -8,8 +8,8 @@ import java.util.concurrent.*;
 import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.Winesaps;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
-import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
+import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 
 import static ru.mitrakov.self.rush.utils.Utils.*;
 import static ru.mitrakov.self.rush.model.Model.Cmd.*;
@@ -17,20 +17,19 @@ import static ru.mitrakov.self.rush.model.Model.Cmd.*;
 /**
  * This class represents a model in the MVC pattern
  * Class is intended to have a single instance
- *
  * @author mitrakov
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Model {
-    /**
-     * size of the rating list (defined by server)
-     */
+    /** size of the rating list (defined by server) */
     public static final int RATINGS_COUNT = 10;
+    /** total count of style packs */
     public static final int STYLES_COUNT = 4;
+    /** maximum items to keep in battle history */
     public static final int HISTORY_MAX = 32;
 
     // ===========================
-    // === PUBLIC INTERFACES ===
+    // ===  PUBLIC INTERFACES  ===
     // ===========================
 
     /**
@@ -38,17 +37,11 @@ public class Model {
      */
     public interface ISender {
         void send(Cmd cmd);
-
         void send(int cmd);
-
         void send(Cmd cmd, int... arg);
-
         void send(int cmd, int... arg);
-
         void send(Cmd cmd, String arg);
-
         void send(int cmd, String arg);
-
         void reset();
     }
 
@@ -57,15 +50,10 @@ public class Model {
      */
     public interface IFileReader {
         void write(String filename, String s);
-
         void append(String filename, String s);
-
         String read(String filename);
-
         byte[] readAsByteArray(String filename);
-
         Object deserialize(String filename);
-
         void serialize(String filename, Object obj);
     }
 
@@ -73,9 +61,7 @@ public class Model {
     // === PUBLIC ENUMERATIONS ===
     // ===========================
 
-    /**
-     * server-specific commands; for more details see docs to the protocol
-     */
+    /** server-specific commands; for more details see docs to the protocol */
     public enum Cmd {
         UNSPEC_ERROR,       // 0
         SIGN_UP,            // 1
@@ -121,21 +107,7 @@ public class Model {
         CHANGE_PASSWORD,    // 41
     }
 
-    public static final Cmd[] cmdValues = Cmd.values();
-
-    public enum Character {None, Rabbit, Hedgehog, Squirrel, Cat}
-    public enum HurtCause {Poisoned, Sunk, Soaked, Devoured, Exploded}
-    public enum Effect {None, Antidote, Dazzle, Afraid, Attention}
-    public enum MoveDirection {LeftDown, Left, LeftUp, RightDown, Right, RightUp}
-
-    public static final Character[] characterValues = Character.values();
-    public static final HurtCause[] hurtCauseValues = HurtCause.values();
-    public static final Effect[] effectValues = Effect.values();
-    public static final MoveDirection[] moveDirectionValues = MoveDirection.values();
-
-    /**
-     * ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33
-     */
+    /** ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33 */
     public enum Ability {
         None, Snorkel, ClimbingShoes, SouthWester, VoodooMask, SapperShoes, Sunglasses,
         a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19,
@@ -143,19 +115,53 @@ public class Model {
         Miner, Builder, Shaman, Grenadier, TeleportMan
     }
 
-    public static final Ability[] abilityValues = Ability.values();
+    /** characters (defined by Server, started with 1) */
+    public enum Character {
+        None, Rabbit, Hedgehog, Squirrel, Cat
+    }
 
-    /**
-     * rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server
-     */
+    /** hurt causes, useful for playing sounds, animation effects, etc. (defined by Server) */
+    public enum HurtCause {
+        Poisoned, Sunk, Soaked, Devoured, Exploded
+    }
+
+    /** effect that may be applied to an actor (defined by Server, 0 means no effect) */
+    public enum Effect {
+        None, Antidote, Dazzle, Afraid, Attention
+    }
+
+    /** move direction constants (defined by Server) */
+    public enum MoveDirection {
+        LeftDown, Left, LeftUp, RightDown, Right, RightUp
+    }
+
+    /** rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server */
     public enum RatingType {
         General, Weekly
     }
+
+    // ===========================
+    // === ENUMERATIONS VALUES ===
+    // ===========================
+    // these are intended to decrease Garbage Collector pressure, e.g. by replacing 'foreach' loop with a usual 'for'
+    // (because foreach loops create new iterators that are gonna be subject to GC)
+    // ===========================
+
+    public static final Cmd[] cmdValues = Cmd.values();
+    public static final Effect[] effectValues = Effect.values();
+    public static final Ability[] abilityValues = Ability.values();
+    public static final Character[] characterValues = Character.values();
+    public static final HurtCause[] hurtCauseValues = HurtCause.values();
+    public static final MoveDirection[] moveDirectionValues = MoveDirection.values();
 
     // =============================
     // === PUBLIC STATIC METHODS ===
     // =============================
 
+    /**
+     * @param s input string
+     * @return md5 hash of string <b>s</b> represented as a HEX String
+     */
     public static synchronized String md5(String s) {
         try {
             // @mitrakov: don't use HexBinaryAdapter(): javax is not supported by Android
@@ -173,20 +179,35 @@ public class Model {
     // memory management inside a multithreading access; be careful! They may be changed OUTSIDE the OpenGL loop
     // ==============================
 
+    /** my name */
     public volatile String name = "";
+    /** current enemy's name (may be empty) */
     public volatile String enemy = "";
+    /** promo code */
     public volatile String promocode = "";
+    /** my character */
     public volatile Character character = Character.None;
+    /** character 1 in a battle (usually on the left side of the battlefield) */
     public volatile Character character1 = Character.None;
+    /** character 2 in a battle (usually on the right side of the battlefield) */
     public volatile Character character2 = Character.None;
+    /** "Connection to the Server" flag */
     public volatile boolean connected = false;
+    /** newbie flag (detected only on client side, may be incorrectly set to TRUE if a customer re-installed the app) */
     public volatile boolean newbie = true;
+    /** current round duration in sec (set by the Server in the beginning of the round) */
     public volatile int roundLengthSec = 90;
+    /** current style pack (level appearance, music, etc.) set by the Server in the beginning of the round */
     public volatile int stylePack = 0;
+    /** value that shows how long the chosen ability remains active (in msec) */
     public volatile long abilityExpireTime = 0;
+    /** start time of the round (useful to calculate the time left) */
     public volatile long roundStartTime = 0;
+    /** current battle field, may be NULL */
     public volatile Field field;
+    /** current actor in the battle mode, may be NULL outside the battle */
     public volatile CellObject curActor;
+    /** current enemy actor in the MultiPlayer battle mode, may be NULL outside the battle and in SinglePlayer mode */
     public volatile CellObject enemyActor;
 
     // ==================================================
@@ -197,36 +218,52 @@ public class Model {
     // all 'foreach' operations are considered to be safe
     // ==================================================
 
+    /** collection of products (product is a triple: [ability-price-days]) */
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
+    /** collection of user's history items) */
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
+    /** collection of user's friends */
     public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
+    /** map: user ability -> minutes left (these abilities belong to a user, not to an actor in the battle) */
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#2
 
     // ===========================
     // === PUBLIC FINAL FIELDS ===
     // ===========================
 
+    /** Event Bus */
     public final EventBus bus = new EventBus();
 
     // ================
     // === SETTINGS ===
     // ================
 
+    /** if TRUE, a user will be notified about new invitations */
     public volatile boolean notifyNewBattles = true;
+    /** GUI language (supported: en, es, pt, fr, ru) */
     public volatile String language = "en";
+    /** if TRUE, music is turned on */
     public volatile boolean music = true;
+    /** if TRUE, sound effects are turned on */
     public volatile boolean soundEffects = true;
 
     // ================================
     // === PRIVATE STATIC CONSTANTS ===
     // ================================
 
+    /** aggressor ID by Server API */
     private static final int AGGRESSOR_ID = 4;
+    /** defender ID by Server API */
     private static final int DEFENDER_ID = 5;
+    /** duration to ping the Server for UserInfo (msec) */
     private static final int PING_PERIOD_MSEC = 60000;
+    /** offset for skills (there are 2 kinds of abilities: swaggas (1-31) and skills (32+)) */
     private static final int SKILL_OFFSET = 0x20;
+    /** standard promo code length (not necessary, just extra check to decrease Server calls) */
     private static final int PROMOCODE_LEN = 5;
+    /** history path prefix */
     private static final String HISTORY_PREFIX = "history/";
+    /** settings filename */
     public /*private*/ static final String SETTINGS_FILE = "settings"; // public for debug purposes only!
 
     // ======================
@@ -254,21 +291,38 @@ public class Model {
     // === USUAL PRIVATE FIELDS ===
     // ============================
 
+    /** current platform specific object */
     private final PsObject psObject;
+    /** locker object (only for synchronization purposes) */
     private final Object locker = new Object();
+    /** abilities that belong to an ACTOR in the battle (don't mix up with "abilityExpires" that related to a USER) */
     private final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // hotfix: must be concurrent!
+    /** list of senders (e.g sender to Emulator for SinglePlayer, sender to the Server for MultiPlayer, etc.) */
     private final List<ISender> senders = new LinkedList<ISender>();
 
+    /** current sender (one of senders in "senders" collection) */
     private ISender sender;
+    /** authorized flag (if TRUE then the authorization to the Server passed) */
     private boolean authorized = false;
+    /** aggressor/defender flag */
     private boolean aggressor = true;
+    /** current thing (actual only during the battle) */
     private CellObject curThing;
+    /** current enemy thing (actual only during the battle in MultiPlayer) */
     private CellObject enemyThing;
+    /** only for debugging */
     private transient int debugCounter;
+    /** external file reader */
     public /*private final*/ IFileReader fileReader;        // public for debug purposes only!
+    /** server emulator (for SinglePlayer mode) */
     public /*private final*/ ServerEmulator serverEmulator; // public for debug purposes only!
+    /** user's password hashed with MD5 */
     public /*private*/ String hash = "";                    // public for debug purposes only!
 
+    /**
+     * Creates a new instance of Model
+     * @param psObject platform specific object (NON-NULL)
+     */
     public Model(PsObject psObject) {
         assert psObject != null;
         this.psObject = psObject;
@@ -289,10 +343,9 @@ public class Model {
 
     /**
      * Sets a new sender to the model
-     *
-     * @param senders - list of senders (first sender becomes default)
+     * @param senders list of senders (first sender becomes default)
      */
-    public void setSenders(ISender ... senders) {
+    public void setSenders(ISender... senders) {
         assert senders.length > 0;
         this.senders.clear();
         this.senders.addAll(Arrays.asList(senders));
@@ -301,13 +354,17 @@ public class Model {
 
     /**
      * Sets a new file reader to the model
-     *
-     * @param fileReader - file reader (may be NULL)
+     * @param fileReader file reader (may be NULL)
      */
     public void setFileReader(IFileReader fileReader) {
         this.fileReader = fileReader;
     }
 
+    /**
+     * Sets a new Server Emulator to the model (for SinglePlayer mode).
+     * <b>NOTE:</b> call to this method DOES NOT switch the Model to SinglePlayer/MultiPlayer mode
+     * @param emulator server emulator (may be NULL)
+     */
     public void setEmulator(ServerEmulator emulator) {
         this.serverEmulator = emulator;
     }
@@ -347,7 +404,7 @@ public class Model {
     }
 
     /**
-     * @param ability - ability (if NULL then returns empty list)
+     * @param ability ability (if NULL then returns empty list)
      * @return collection of available products by the given ability (e.g. Snorkel for 1 day, 3 days, 7 days)
      */
     public Collection<Product> getProductsByAbility(Ability ability) {
@@ -359,6 +416,10 @@ public class Model {
         return res;
     }
 
+    /**
+     * @param name friend's name
+     * @return TRUE if the user has got a friend with the given name
+     */
     public boolean friendExists(String name) {
         for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
             if (item.name.equals(name))
@@ -367,15 +428,24 @@ public class Model {
         return false;
     }
 
+    /**
+     * @return string representation of a current agent (e.g. OS, platform, GUI language, client version etc.)
+     */
     public String getAgentInfo() {
         String os = System.getProperty("os.name");
         return String.format("1.%s.%s.%s.%s", language, Winesaps.VERSION_STR, psObject.getPlatform(), os);
     }
 
+    /**
+     * @return name of detractor1 in current battle
+     */
     public String getDetractor1() {
         return aggressor ? name : enemy;
     }
 
+    /**
+     * @return name of detractor2 in current battle
+     */
     public String getDetractor2() {
         return aggressor ? enemy : name;
     }
@@ -386,12 +456,19 @@ public class Model {
     // Feel free to call these methods from anywhere
     // ==============================
 
+    /**
+     * Sends GET_CLIENT_VERSION command to the server
+     */
     public void checkVersion() {
         if (connected && sender != null) {
             sender.send(GET_CLIENT_VERSION);
         }
     }
 
+    /**
+     * Sends SIGN_IN command to the server with current username and current password.
+     * Please note that this method does nothing if username/password are undefined
+     */
     public void signIn() {
         assert name != null && hash != null;
         if (name.length() > 0 && hash.length() > 0 && connected && sender != null) { // don't use method 'isEmpty()'
@@ -402,9 +479,8 @@ public class Model {
 
     /**
      * Sends SIGN_IN command to the server
-     *
-     * @param login    - user name
-     * @param password - password
+     * @param login user name
+     * @param password password
      */
     public void signIn(String login, String password) {
         if (connected && sender != null) {
@@ -416,10 +492,9 @@ public class Model {
 
     /**
      * Sends SIGN_UP command to the server
-     *
-     * @param login    - user name
-     * @param password - password
-     * @param email    - email address
+     * @param login user name
+     * @param password password
+     * @param email email address
      */
     public void signUp(String login, String password, String email, String promocode) {
         assert login != null && password != null && email != null && promocode != null;
@@ -439,6 +514,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends USER_INFO command to the server
+     */
     public void getUserInfo() {
         if (connected && sender != null) {
             sender.send(USER_INFO);
@@ -447,8 +525,7 @@ public class Model {
 
     /**
      * Sends INVITE command to the server (by name)
-     *
-     * @param victim - victim user name
+     * @param victim victim user name
      */
     public void invite(String victim) {
         if (connected && sender != null) {
@@ -474,10 +551,6 @@ public class Model {
         }
     }
 
-    public void singlePlayer(String levelName) {
-
-    }
-
     /**
      * Sends ACCEPT command to the server (in response to INVITE)
      */
@@ -496,14 +569,22 @@ public class Model {
         }
     }
 
+    /**
+     * Sends RECEIVE_LEVEL command to the server
+     * @param levelName level name, e.g. "training.level"
+     */
     public void receiveLevel(String levelName) {
         if (connected && sender != null) {
             sender.send(RECEIVE_LEVEL, levelName);
         }
     }
 
+    /**
+     * Sends CHANGE_CHARACTER command to the server
+     * @param character new character (must be neither NULL nor None)
+     */
     public void changeCharacter(Character character) {
-        if (character != Character.None) {
+        if (character != null && character != Character.None) {
             if (connected && sender != null) {
                 sender.send(CHANGE_CHARACTER, character.ordinal());
             }
@@ -521,8 +602,7 @@ public class Model {
 
     /**
      * Sends ADD_FRIEND command to the server
-     *
-     * @param name - friend user name
+     * @param name friend user name
      */
     public void addFriend(String name) {
         if (connected && sender != null) {
@@ -533,8 +613,7 @@ public class Model {
 
     /**
      * Sends REMOVE_FRIEND command to the server
-     *
-     * @param name - quondam friend name
+     * @param name quondam friend name
      */
     public void removeFriend(String name) {
         if (connected && sender != null) {
@@ -545,8 +624,7 @@ public class Model {
 
     /**
      * Sends RATING command to the server
-     *
-     * @param type - type of rating (General, Weekly, etc.)
+     * @param type type of rating (General, Weekly, etc.)
      */
     public void getRating(RatingType type) {
         assert type != null;
@@ -555,6 +633,11 @@ public class Model {
         }
     }
 
+    /**
+     * Sends CHECK_PROMOCODE command to the server
+     * (note: if the length of promo code is less that {@link Model#PROMOCODE_LEN}, the method does nothing)
+     * @param promocode promo code
+     */
     public void checkPromocode(String promocode) {
         assert promocode != null;
         if (connected && sender != null && promocode.length() >= PROMOCODE_LEN) {
@@ -564,8 +647,7 @@ public class Model {
 
     /**
      * Sends BUY_PRODUCT command to the server
-     *
-     * @param product - product to buy
+     * @param product product to buy
      */
     public void buyProduct(Product product) {
         assert product != null;
@@ -574,6 +656,9 @@ public class Model {
         }
     }
 
+    /**
+     * Sends CANCEL_CALL command to the server
+     */
     public void cancelCall() {
         if (connected && sender != null) {
             sender.send(CANCEL_CALL);
@@ -619,8 +704,7 @@ public class Model {
 
     /**
      * Sends USE_SKILL battle command to the server
-     *
-     * @param ability - ability to use (it must be a SKILL, i.e. has a number > SKILL_OFFSET)
+     * @param ability ability to use (it must be a SKILL, i.e. has a number > SKILL_OFFSET)
      */
     public void useAbility(Ability ability) {
         assert ability != null;
@@ -631,6 +715,10 @@ public class Model {
         }
     }
 
+    /**
+     * Sends USE_SKILL battle command to the server
+     * @param index ability index
+     */
     public void useAbility(int index) {
         int i = 0;
         for (Ability ability : abilities) {
@@ -639,6 +727,10 @@ public class Model {
         }
     }
 
+    /**
+     * Sends GIVE_UP battle command to the server
+     * <b>NOTE:</b> also resets the current battle field
+     */
     public void giveUp() {
         field = null; // reset the current field
         if (connected && sender != null) {
@@ -646,18 +738,30 @@ public class Model {
         }
     }
 
+    /**
+     * Sends GET_SKU_GEMS command to the server
+     */
     public void requestSkuGems() {
         if (connected && sender != null) {
             sender.send(GET_SKU_GEMS);
         }
     }
 
+    /**
+     * Sends CHECK_PURCHASE command to the server
+     * @param data data
+     * @param signature signature
+     */
     public void checkPurchase(String data, String signature) {
         if (connected && sender != null) {
             sender.send(CHECK_PURCHASE, String.format("%s\0%s", data, signature));
         }
     }
 
+    /**
+     * Sends CHANGE_PASSWORD command to the server
+     * @param newPassword new password (must have at least 4 characters)
+     */
     public void changePassword(String newPassword) {
         if (connected && sender != null && newPassword.length() >= 4) {
             String newHash = md5(newPassword);
@@ -685,6 +789,10 @@ public class Model {
     // These methods are not expected to be called from external code
     // ===============================
 
+    /**
+     * Sets the current Model state connected/disconnected
+     * @param value TRUE for connected, and FALSE for disconnected
+     */
     public void setConnected(boolean value) {
         if (!connected && value) { // if changed "not_connected" -> "connected"
             connected = true;  // we must change it before calling getUserInfo() or signIn()
@@ -692,13 +800,18 @@ public class Model {
                 getUserInfo(); // connected, but already authorized? possibly the server has been restarted: see note#4
             else {
                 checkVersion();
-                signIn();     // connected and not authorized: try to sign in using stored credentials
+                signIn();      // connected and not authorized: try to sign in using stored credentials
             }
         }
         connected = value;
         bus.raise(new EventBus.ConnectedChangeEvent(connected));
     }
 
+    /**
+     * Sets the current Model state authorized/not_authorized.
+     * Also, as a side effect, if authorized, sends RANGE_OF_PRODUCTS and FRIEND_LIST commands to the server
+     * @param value TRUE for authorized, FALSE for not authorized
+     */
     public void setAuthorized(boolean value) {
         authorized = value;
         if (connected && sender != null) {
@@ -713,6 +826,10 @@ public class Model {
         bus.raise(new EventBus.AuthorizedChangedEvent(value));
     }
 
+    /**
+     * Sets the current user info (character, abilities, gems, etc.)
+     * @param data binary data from the server
+     */
     public void setUserInfo(IIntArray data) {
         assert data != null;
         int i = 0;
@@ -779,6 +896,10 @@ public class Model {
         saveSettings();
     }
 
+    /**
+     * Sets the current enemy's name
+     * @param name enemy name
+     */
     public void setEnemyName(String name) {
         if (name.length() > 0) { // server can send empty name as a response of Quick Attack
             enemy = name;
@@ -786,23 +907,45 @@ public class Model {
         }
     }
 
+    /**
+     * Invoked when a user is attacked by <b>aggressorName</b>
+     * @param sid enemy Session ID (SID)
+     * @param aggressorName enemy name
+     */
     public void attacked(int sid, String aggressorName) {
         enemy = aggressorName;
         bus.raise(new EventBus.InviteEvent(aggressorName, sid));
     }
 
+    /**
+     * Invoked when we had attacked an enemy but he/she rejected our invitation
+     * @param coward enemy name
+     */
     public void stopCallRejected(String coward) {
         bus.raise(new EventBus.StopCallRejectedEvent(coward));
     }
 
+    /**
+     * Invoked, as a reminder, when an enemy had attacked us, but we did not respond during the given timeout
+     * @param aggressorName aggressor name
+     */
     public void stopCallMissed(String aggressorName) {
         bus.raise(new EventBus.StopCallMissedEvent(aggressorName));
     }
 
+    /**
+     * Invoked when we had attacked an enemy but he/she did not respond during the given timeout
+     * @param defenderName defender name
+     */
     public void stopCallExpired(String defenderName) {
         bus.raise(new EventBus.StopCallExpiredEvent(defenderName));
     }
 
+    /**
+     * Sets the friends list (since Server API 1.2.0 also sets their statuses: online/offline)
+     * @param data binary data from the server
+     * @param append if TRUE, appends new item(s) to the list, if FALSE - overwrites the full list
+     */
     public void setFriendList(IIntArray data, boolean append) {
         assert data != null;
 
@@ -823,6 +966,11 @@ public class Model {
         bus.raise(new EventBus.FriendListUpdatedEvent(friends));
     }
 
+    /**
+     * Invoked when a new friend added
+     * @param character friend's character (rabbit, hedgehog, squirrel, cat)
+     * @param name friend's name
+     */
     public void friendAdded(int character, String name) {
         if (0 <= character && character < characterValues.length) {
             FriendItem item = new FriendItem(characterValues[character], name, 0);
@@ -831,6 +979,10 @@ public class Model {
         }
     }
 
+    /**
+     * Invoked when a friend is removed from the friends list
+     * @param name friend's name
+     */
     public void friendRemoved(String name) {
         synchronized (locker) {
             for (FriendItem item : friends) { // in Java 8 may be replaced with lambda
@@ -843,6 +995,10 @@ public class Model {
         bus.raise(new EventBus.FriendRemovedEvent(name));
     }
 
+    /**
+     * Sets the range of products available (product is a triple: [ability-price-days])
+     * @param data binary data from the server
+     */
     public void setRangeOfProducts(IIntArray data) {
         assert data != null;
         synchronized (locker) {
@@ -857,6 +1013,11 @@ public class Model {
         }
     }
 
+    /**
+     * Sets the rating
+     * @param type rating type (General, Weekly)
+     * @param data binary data from the server
+     */
     public void setRating(RatingType type, IIntArray data) {
         assert type != null && data != null;
         Collection<RatingItem> rating = new LinkedList<RatingItem>();
@@ -895,15 +1056,30 @@ public class Model {
         bus.raise(new EventBus.RatingUpdatedEvent(type, rating));
     }
 
+    /**
+     * Sets whether the last sent to the server promo code is valid
+     * @param valid TRUE if valid, FALSE - if invalid
+     */
     public void setPromocodeValid(boolean valid) {
         bus.raise(new EventBus.PromocodeValidChangedEvent(valid));
     }
 
+    /**
+     * Invoked if either a user has successfully finished promo code, or we're inviter, and our friend has successfully
+     * finished promo code
+     * @param name name of our friend (either inviter, or newbie)
+     * @param inviter whether a current user is inviter (TRUE), or our friend is inviter (FALSE)
+     * @param gems reward
+     */
     public void setPromocodeDone(String name, boolean inviter, int gems) {
         assert name != null;
         bus.raise(new EventBus.PromocodeDoneEvent(name, inviter, gems));
     }
 
+    /**
+     * Sets the SKU gems available (for small pack, standard pack, big pack etc.)
+     * @param data binary data from the server
+     */
     public void setSkuGems(IIntArray data) {
         Map<String, Integer> res = new HashMap<String, Integer>(3);
         for (int i = 0; i < data.length(); i += 4) {
@@ -921,12 +1097,28 @@ public class Model {
         bus.raise(new EventBus.SkuGemsUpdatedEvent(res));
     }
 
+    /**
+     * Invoked when a payment request is completed
+     * @param gems gems bought
+     * @param coupon coupon for the next purchase
+     */
     public void paymentDone(int gems, String coupon) {
         bus.raise(new EventBus.PaymentDoneEvent(gems, coupon));
     }
 
+    /**
+     * Sets the new round info in the battle mode
+     * @param number number of the round (starting with 0)
+     * @param timeSec round duration, in seconds
+     * @param levelName name of the battle field
+     * @param aggressor TRUE, if we're aggressor, FALSE otherwise
+     * @param character1 character1 (represented by index, e.g. 1 is rabbit, 2 is hedgehog, etc.)
+     * @param character2 character2 (represented by index, e.g. 1 is rabbit, 2 is hedgehog, etc.)
+     * @param myLives my lives count (usually 2 per round)
+     * @param enemyLives enemy's lives count (usually 2 per round)
+     */
     public void setRoundInfo(int number, int timeSec, String levelName, boolean aggressor, int character1,
-                             int character2, int myLives, int enemyLives) {
+            int character2, int myLives, int enemyLives) {
         curThing = enemyThing = curActor = enemyActor = null;
 
         if (0 <= character1 && character1 < characterValues.length)
@@ -952,6 +1144,10 @@ public class Model {
         bus.raise(thingChangedEvent);
     }
 
+    /**
+     * Sets the new battle field, that in turn switches the GUI to the battle mode
+     * @param fieldData binary field data from the server
+     */
     public void setNewField(IIntArray fieldData) {
         Field field; // for multithreaded safety
         this.field = field = new Field(fieldData);
@@ -971,6 +1167,12 @@ public class Model {
         bus.raise(moveResponseEvent);
     }
 
+    /**
+     * Invoked in the battle mode, when a new object is added to the battle field
+     * @param number object number
+     * @param id object ID
+     * @param xy object coordinate, 0-255
+     */
     public void appendObject(int number, int id, int xy) {
         Field field;
         synchronized (locker) {
@@ -985,12 +1187,23 @@ public class Model {
         }
     }
 
+    /**
+     * Sets a new style pack (level appearance, music, etc.)
+     * @param pack style pack
+     */
     public void setStylePack(int pack) {
         stylePack = pack;
         styleChangedEvent.stylePack = pack;
         bus.raise(styleChangedEvent);
     }
 
+    /**
+     * Set new position of an object in the battle mode
+     * @param number object number
+     * @param id object ID (just an additional check)
+     * @param xy new coordinate (0-255)
+     * @param reset if TRUE, then the object should be replaced immediately (without animations and so on)
+     */
     public void setXy(int number, int id, int xy, boolean reset) {
         Field field;
         synchronized (locker) {
@@ -1018,12 +1231,21 @@ public class Model {
         }
     }
 
+    /**
+     * Sets score in the battle mode (inside a round)
+     * @param score1 score1
+     * @param score2 score2
+     */
     public void setScore(int score1, int score2) {
         scoreChangedEvent.score1 = score1;
         scoreChangedEvent.score2 = score2;
         bus.raise(scoreChangedEvent);
     }
 
+    /**
+     * Sets a new thing to an our actor in the battle mode
+     * @param thingId thing ID
+     */
     public void setThing(int thingId) {
         CellObject oldThing = curThing;
         curThing = Cell.newObject(thingId, Field.TRASH_CELL, null, 0);
@@ -1033,6 +1255,10 @@ public class Model {
         bus.raise(thingChangedEvent);
     }
 
+    /**
+     * Sets a new thing to an enemy actor in the battle mode
+     * @param thingId thing ID
+     */
     public void setEnemyThing(int thingId) {
         CellObject oldThing = enemyThing;
         enemyThing = Cell.newObject(thingId, Field.TRASH_CELL, null, 0);
@@ -1042,6 +1268,13 @@ public class Model {
         bus.raise(thingChangedEvent);
     }
 
+    /**
+     * Invoked when a player is wounded in the battle mode
+     * @param me TRUE if me, FALSE if enemy
+     * @param cause hurt cause, represented as Int
+     * @param myLives my lives left
+     * @param enemyLives enemy lives left
+     */
     public void setPlayerWounded(boolean me, int cause, int myLives, int enemyLives) {
         Field field;
         synchronized (locker) {
@@ -1060,6 +1293,11 @@ public class Model {
         }
     }
 
+    /**
+     * Adds an effect on the given object in the battle mode
+     * @param effectId effect ID
+     * @param objNumber object number
+     */
     public void addEffect(int effectId, int objNumber) {
         Field field;
         synchronized (locker) {
@@ -1074,10 +1312,20 @@ public class Model {
         }
     }
 
+    /**
+     * Removes effects from the given object in the battle mode
+     * @param objNumber object number
+     */
     public void removeEffect(int objNumber) {
         addEffect(0, objNumber);
     }
 
+    /**
+     * Invoked when a round is finished
+     * @param winner TRUE, if we've won the round, FALSE - if the enemy has
+     * @param totalScore1 total battle score1
+     * @param totalScore2 total battle score2
+     */
     public void roundFinished(boolean winner, int totalScore1, int totalScore2) {
         roundFinishedEvent.winner = winner;
         roundFinishedEvent.detractor1 = getDetractor1();
@@ -1087,6 +1335,13 @@ public class Model {
         bus.raise(roundFinishedEvent);
     }
 
+    /**
+     * Invoked when a game finished. Please note that {@link Model#roundFinished(boolean, int, int)} is also invoked
+     * @param winner TRUE, if we've won the battle, FALSE - if the enemy has
+     * @param totalScore1 total battle score1
+     * @param totalScore2 total battle score2
+     * @param reward reward, in gems
+     */
     public void gameFinished(boolean winner, int totalScore1, int totalScore2, int reward) {
         // updating history
         if (enemy.length() > 0) { // it may be empty, e.g. in the Training/Tutorial Level
@@ -1113,6 +1368,11 @@ public class Model {
                 reward));
     }
 
+    /**
+     * Sets the abilities list in the battle mode. Note that these abilities belong to an actor in the battle, not to a
+     * user in general
+     * @param ids ability IDs
+     */
     public void setAbilities(IIntArray ids) {
         assert ids != null;
         synchronized (locker) {
@@ -1126,13 +1386,24 @@ public class Model {
         bus.raise(new EventBus.AbilitiesChangedEvent(abilities));
     }
 
-    public void setEmptyField() {
-        field = null;
-        bus.raise(new EventBus.BattleNotFoundEvent());
+    /**
+     * Informs that the server sends invitation to the enemy
+     */
+    public void setWaitingForEnemy() {
+        bus.raise(new EventBus.WaitingForEnemyEvent());
     }
 
+    /**
+     * Invoked when a new client version is available
+     * @param minVersionH minimal version accepted by the server (major)
+     * @param minVersionM minimal version accepted by the server (minor)
+     * @param minVersionL minimal version accepted by the server (maintenance)
+     * @param curVersionH latest version available (major)
+     * @param curVersionM latest version available (minor)
+     * @param curVersionL latest version available (maintenance)
+     */
     public void setClientVersion(int minVersionH, int minVersionM, int minVersionL,
-                                 int curVersionH, int curVersionM, int curVersionL) {
+            int curVersionH, int curVersionM, int curVersionL) {
         String minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
         String curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
         boolean versionAllowed = Winesaps.VERSION >= ((minVersionH << 16) | (minVersionM << 8) | minVersionL);
@@ -1143,6 +1414,11 @@ public class Model {
             bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
     }
 
+    /**
+     * Switches the SinglePlayer/MultiPlayer mode
+     * @since 2.0.0
+     * @param value TRUE for SinglePlayer mode, FALSE - for MultiPlayer
+     */
     public void setSinglePlayer(boolean value) {
         if (senders.size() == 2) {
             sender = value ? senders.get(1) : senders.get(0);
@@ -1153,30 +1429,53 @@ public class Model {
     // === ERROR HANDLING ===
     // ======================
 
+    /**
+     * Invoked on error: battle not found. Also resets the current battle field to NULL
+     */
+    public void setEmptyField() {
+        field = null;
+        bus.raise(new EventBus.BattleNotFoundEvent());
+    }
+
+    /**
+     * Invoked on error: unsupported protocol
+     */
     public void setUnsupportedProtocol() {
         bus.raise(new EventBus.UnsupportedProtocolEvent());
     }
 
+    /**
+     * Invoked on error: user is already in a battle and is not able to accept invitation
+     * @param aggressor TRUE if aggressor is busy (just in case, in theory impossible), FALSE - if defender
+     */
     public void setUserBusy(boolean aggressor) {
         bus.raise(aggressor ? new EventBus.AggressorBusyEvent() : new EventBus.DefenderBusyEvent());
     }
 
+    /**
+     * Invoked on error: enemy not found
+     */
     public void setEnemyNotFound() {
         bus.raise(new EventBus.EnemyNotFoundEvent());
     }
 
-    public void setWaitingForEnemy() {
-        bus.raise(new EventBus.WaitingForEnemyEvent());
-    }
-
+    /**
+     * Invoked on error: a user tried to attack himself
+     */
     public void setAttackYourself() {
         bus.raise(new EventBus.AttackedYourselfEvent());
     }
 
+    /**
+     * Invoked on add friend error (e.g. a user is already our friend, or if no users found with a given name)
+     */
     public void setAddFriendError() {
         bus.raise(new EventBus.AddFriendErrorEvent());
     }
 
+    /**
+     * Invoked on error: no gems enough to complete a given action
+     */
     public void setNoCrystals() {
         bus.raise(new EventBus.NoCrystalsEvent());
     }
