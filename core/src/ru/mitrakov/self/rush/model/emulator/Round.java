@@ -16,7 +16,6 @@ import static ru.mitrakov.self.rush.model.Model.abilityValues;
  * Created by mitrakov on 09.03.2018
  */
 public class Round {
-    private final int foodTotal;
     private final BattleManager battleManager;
     private final IIntArray abilities = new GcResistantIntArray(abilityValues.length);
     private final Set<Model.Ability> usedSkills = new LinkedHashSet<Model.Ability>();
@@ -77,7 +76,6 @@ public class Round {
         field.replaceFavouriteFood(actor1, actor2);
         player1 = new Player(actor1, skills1);
         player2 = new Player(actor2, skills2);
-        this.foodTotal = field.getFoodCountForActor(actor1); // on Server: "this.foodTotal = field.getFoodCount()"
         this.stop = new Timer(true);
         this.stop.schedule(new TimerTask() {
             @Override
@@ -100,12 +98,15 @@ public class Round {
 
     synchronized void checkRoundFinished() {
         // tryMutex is not necessary here (synchronized is enough)
-        if (player1.score == foodTotal)             // on Server: "player1.score > foodTotal / 2"
+        if (field.getFoodCountForActor(player1.actor) == 0)
             battleManager.roundFinished(true);
-        else if (player2.score == foodTotal)        // on Server: "player2.score > foodTotal / 2"
+        /** This is a Server algorithm:
+        if (player1.score > foodTotal / 2)
+            battleManager.roundFinished(true);
+        else if (player2.score > foodTotal / 2)
             battleManager.roundFinished(false);
         else if (field.getFoodCount() == 0)
-            finishRoundForced();
+            finishRoundForced(); */
     }
 
     synchronized private void timeOut() {

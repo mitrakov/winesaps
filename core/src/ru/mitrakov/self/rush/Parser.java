@@ -74,7 +74,7 @@ class Parser implements IHandler {
      */
     private void processMsg(IIntArray data) {
         assert data != null;
-        log("Precessing:", data);
+        log("Processing:", data);
         if (data.length() > 0) {
             int code = data.get(0);
             if (0 <= code && code < Model.cmdValues.length) {

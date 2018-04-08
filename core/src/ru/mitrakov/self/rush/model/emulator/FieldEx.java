@@ -175,9 +175,10 @@ class FieldEx extends Field {
         return null;
     }
 
+    @SuppressWarnings("unused")
     int getFoodCount() {
         int result = 0;
-        for (int i = 0; i < cells.length; i++) {
+        for (int i = 0; i < WIDTH*HEIGHT; i++) {
             cellLock.lock();
             Cell cell = cells[i];
             if (cell.objectExists(Cells.CellObjectFood.class))
@@ -189,7 +190,7 @@ class FieldEx extends Field {
 
     int getFoodCountForActor(ActorEx actor) {
         int result = 0;
-        for (int i = 0; i < cells.length; i++) {
+        for (int i = 0; i < WIDTH*HEIGHT; i++) {
             cellLock.lock();
             Cell cell = cells[i];
             Cells.CellObjectFood food = cell.getFirst(Cells.CellObjectFood.class);

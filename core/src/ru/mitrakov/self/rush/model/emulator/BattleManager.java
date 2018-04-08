@@ -116,6 +116,7 @@ class BattleManager {
         }
     }
 
+    @SuppressWarnings("unused")
     void close() {
         //Assert(battleMgr.stop, battleMgr.environment)
         //battleMgr.stop <- true
