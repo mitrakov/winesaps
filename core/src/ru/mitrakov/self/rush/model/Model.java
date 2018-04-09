@@ -21,11 +21,11 @@ import static ru.mitrakov.self.rush.model.Model.Cmd.*;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Model {
-    /** size of the rating list (defined by server) */
+    /** Size of the rating list (defined by server) */
     public static final int RATINGS_COUNT = 10;
-    /** total count of style packs */
+    /** Total count of style packs */
     public static final int STYLES_COUNT = 4;
-    /** maximum items to keep in battle history */
+    /** Maximum items to keep in battle history */
     public static final int HISTORY_MAX = 32;
 
     // ===========================
@@ -33,27 +33,100 @@ public class Model {
     // ===========================
 
     /**
-     * interface to send commands to the server
+     * Interface to send commands to the server
      */
     public interface ISender {
+        /**
+         * Sends single command to the server.
+         * <br><b>See also:</b> {@link #send(int)}
+         * @param cmd command
+         */
         void send(Cmd cmd);
+        /**
+         * Sends single command to the server.
+         * <br><b>See also:</b> {@link #send(Cmd)}
+         * @param cmd command expressed as an integer
+         */
         void send(int cmd);
+        /**
+         * Sends command with given byte arguments to the server.
+         * <br><b>See also:</b> {@link #send(int, int...)}
+         * @param cmd command
+         * @param arg arguments (please note they must be 0-255)
+         */
         void send(Cmd cmd, int... arg);
+        /**
+         * Sends command with given byte arguments to the server.
+         * <br><b>See also:</b> {@link #send(Cmd, int...)}
+         * @param cmd command expressed as an integer
+         * @param arg arguments (please note they must be 0-255)
+         */
         void send(int cmd, int... arg);
+        /**
+         * Sends command with a given string to the server.
+         * <br><b>See also:</b> {@link #send(int, String)}
+         * @param cmd command
+         * @param arg string argument that will be converted to UTF-8 byte array
+         */
         void send(Cmd cmd, String arg);
+        /**
+         * Sends command with a given string to the server.
+         * <br><b>See also:</b> {@link #send(Cmd, String)}
+         * @param cmd command expressed as an integer
+         * @param arg string argument that will be converted to UTF-8 byte array
+         */
         void send(int cmd, String arg);
+        /**
+         * Resets the internal state of the sender.
+         */
         void reset();
     }
 
     /**
-     * interface to read/write files independent from a platform (Desktop, Android, etc.)
+     * Interface to read/write files independent from a platform (Desktop, Android, etc.)
      */
     public interface IFileReader {
+        /**
+         * Writes a string to a file. The file may be overwritten by this operation.
+         * <br><b>See also:</b> {@link #append(String, String) append}, {@link #serialize(String, Object) serialize}
+         * @param filename file name
+         * @param s string to be written
+         */
         void write(String filename, String s);
+        /**
+         * Appends a string to the end of a file.
+         * <br><b>See also:</b> {@link #write(String, String) write}, {@link #serialize(String, Object) serialize}
+         * @param filename file name
+         * @param s string to be written
+         */
         void append(String filename, String s);
+        /**
+         * Reads a string from the file.
+         * <br><b>See also:</b> {@link #readAsByteArray(String) readAsByteArray}, {@link #deserialize(String) deserialize}
+         * @param filename file name
+         * @return content of the file represented as a String (may be NULL if the file doesn't exist)
+         */
         String read(String filename);
+        /**
+         * Reads a byte array from the file.
+         * <br><b>See also:</b> {@link #read(String) read}, {@link #deserialize(String) deserialize}
+         * @param filename file name
+         * @return content of the file represented as a Byte Array (may be empty if the file doesn't exist)
+         */
         byte[] readAsByteArray(String filename);
+        /**
+         * Reads an object from the file.
+         * <br><b>See also:</b> {@link #read(String) read}, {@link #readAsByteArray(String) readAsByteArray}
+         * @param filename file name
+         * @return content of the file represented as an arbitrary object (may be NULL if the file doesn't exist)
+         */
         Object deserialize(String filename);
+        /**
+         * Writes an object to a file. The file may be overwritten by this operation.
+         * <br><b>See also:</b> {@link #append(String, String) append}, {@link #write(String, String) write}
+         * @param filename file name
+         * @param obj object (must be serializable)
+         */
         void serialize(String filename, Object obj);
     }
 
@@ -61,7 +134,7 @@ public class Model {
     // === PUBLIC ENUMERATIONS ===
     // ===========================
 
-    /** server-specific commands; for more details see docs to the protocol */
+    /** Server-specific commands; for more details see docs to the protocol */
     public enum Cmd {
         UNSPEC_ERROR,       // 0
         SIGN_UP,            // 1
@@ -107,7 +180,7 @@ public class Model {
         CHANGE_PASSWORD,    // 41
     }
 
-    /** ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33 */
+    /** Ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33 */
     public enum Ability {
         None, Snorkel, ClimbingShoes, SouthWester, VoodooMask, SapperShoes, Sunglasses,
         a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19,
@@ -115,27 +188,27 @@ public class Model {
         Miner, Builder, Shaman, Grenadier, TeleportMan
     }
 
-    /** characters (defined by Server, started with 1) */
+    /** Characters (defined by Server, started with 1) */
     public enum Character {
         None, Rabbit, Hedgehog, Squirrel, Cat
     }
 
-    /** hurt causes, useful for playing sounds, animation effects, etc. (defined by Server) */
+    /** Hurt causes, useful for playing sounds, animation effects, etc. (defined by Server) */
     public enum HurtCause {
         Poisoned, Sunk, Soaked, Devoured, Exploded
     }
 
-    /** effect that may be applied to an actor (defined by Server, 0 means no effect) */
+    /** Effect that may be applied to an actor (defined by Server, 0 means no effect) */
     public enum Effect {
         None, Antidote, Dazzle, Afraid, Attention
     }
 
-    /** move direction constants (defined by Server) */
+    /** Move direction constants (defined by Server) */
     public enum MoveDirection {
         LeftDown, Left, LeftUp, RightDown, Right, RightUp
     }
 
-    /** rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server */
+    /** Rating enumeration (General, Weekly, etc.); constants (0, 1) are specified by the server */
     public enum RatingType {
         General, Weekly
     }
@@ -179,35 +252,35 @@ public class Model {
     // memory management inside a multithreading access; be careful! They may be changed OUTSIDE the OpenGL loop
     // ==============================
 
-    /** my name */
+    /** My name */
     public volatile String name = "";
-    /** current enemy's name (may be empty) */
+    /** Current enemy's name (may be empty) */
     public volatile String enemy = "";
-    /** promo code */
+    /** Promo code */
     public volatile String promocode = "";
-    /** my character */
+    /** My character */
     public volatile Character character = Character.None;
-    /** character 1 in a battle (usually on the left side of the battlefield) */
+    /** Character 1 in a battle (usually on the left side of the battlefield) */
     public volatile Character character1 = Character.None;
-    /** character 2 in a battle (usually on the right side of the battlefield) */
+    /** Character 2 in a battle (usually on the right side of the battlefield) */
     public volatile Character character2 = Character.None;
     /** "Connection to the Server" flag */
     public volatile boolean connected = false;
-    /** newbie flag (detected only on client side, may be incorrectly set to TRUE if a customer re-installed the app) */
+    /** Newbie flag (detected only on client side, may be incorrectly set to TRUE if a customer re-installed the app) */
     public volatile boolean newbie = true;
-    /** current round duration in sec (set by the Server in the beginning of the round) */
+    /** Current round duration in sec (set by the Server in the beginning of the round) */
     public volatile int roundLengthSec = 90;
-    /** current style pack (level appearance, music, etc.) set by the Server in the beginning of the round */
+    /** Current style pack (level appearance, music, etc.) set by the Server in the beginning of the round */
     public volatile int stylePack = 0;
-    /** value that shows how long the chosen ability remains active (in msec) */
+    /** Value that shows how long the chosen ability remains active (in msec) */
     public volatile long abilityExpireTime = 0;
-    /** start time of the round (useful to calculate the time left) */
+    /** Start time of the round (useful to calculate the time left) */
     public volatile long roundStartTime = 0;
-    /** current battle field, may be NULL */
+    /** Current battle field, may be NULL */
     public volatile Field field;
-    /** current actor in the battle mode, may be NULL outside the battle */
+    /** Current actor in the battle mode, may be NULL outside the battle */
     public volatile CellObject curActor;
-    /** current enemy actor in the MultiPlayer battle mode, may be NULL outside the battle and in SinglePlayer mode */
+    /** Current enemy actor in the MultiPlayer battle mode, may be NULL outside the battle and in SinglePlayer mode */
     public volatile CellObject enemyActor;
 
     // ==================================================
@@ -218,13 +291,13 @@ public class Model {
     // all 'foreach' operations are considered to be safe
     // ==================================================
 
-    /** collection of products (product is a triple: [ability-price-days]) */
+    /** Collection of products (product is a triple: [ability-price-days]) */
     public final Collection<Product> products = new ConcurrentLinkedQueue<Product>();
-    /** collection of user's history items) */
+    /** Collection of user's history items) */
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
-    /** collection of user's friends */
+    /** Collection of user's friends */
     public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
-    /** map: user ability -> minutes left (these abilities belong to a user, not to an actor in the battle) */
+    /** Map: user ability -> minutes left (these abilities belong to a user, not to an actor in the battle) */
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#2
 
     // ===========================
@@ -238,32 +311,32 @@ public class Model {
     // === SETTINGS ===
     // ================
 
-    /** if TRUE, a user will be notified about new invitations */
+    /** If TRUE, a user will be notified about new invitations */
     public volatile boolean notifyNewBattles = true;
     /** GUI language (supported: en, es, pt, fr, ru) */
     public volatile String language = "en";
-    /** if TRUE, music is turned on */
+    /** If TRUE, music is turned on */
     public volatile boolean music = true;
-    /** if TRUE, sound effects are turned on */
+    /** If TRUE, sound effects are turned on */
     public volatile boolean soundEffects = true;
 
     // ================================
     // === PRIVATE STATIC CONSTANTS ===
     // ================================
 
-    /** aggressor ID by Server API */
+    /** Aggressor ID by Server API */
     private static final int AGGRESSOR_ID = 4;
-    /** defender ID by Server API */
+    /** Defender ID by Server API */
     private static final int DEFENDER_ID = 5;
-    /** duration to ping the Server for UserInfo (msec) */
+    /** Duration to ping the Server for UserInfo (msec) */
     private static final int PING_PERIOD_MSEC = 60000;
-    /** offset for skills (there are 2 kinds of abilities: swaggas (1-31) and skills (32+)) */
+    /** Offset for skills (there are 2 kinds of abilities: swaggas (1-31) and skills (32+)) */
     private static final int SKILL_OFFSET = 0x20;
-    /** standard promo code length (not necessary, just extra check to decrease Server calls) */
+    /** Standard promo code length (not necessary, just extra check to decrease Server calls) */
     private static final int PROMOCODE_LEN = 5;
-    /** history path prefix */
+    /** History path prefix */
     private static final String HISTORY_PREFIX = "history/";
-    /** settings filename */
+    /** Settings filename */
     public /*private*/ static final String SETTINGS_FILE = "settings"; // public for debug purposes only!
 
     // ======================
@@ -291,32 +364,32 @@ public class Model {
     // === USUAL PRIVATE FIELDS ===
     // ============================
 
-    /** current platform specific object */
+    /** Current platform specific object */
     private final PsObject psObject;
-    /** locker object (only for synchronization purposes) */
+    /** Locker object (only for synchronization purposes) */
     private final Object locker = new Object();
-    /** abilities that belong to an ACTOR in the battle (don't mix up with "abilityExpires" that related to a USER) */
+    /** Abilities that belong to an ACTOR in the battle (don't mix up with "abilityExpires" that related to a USER) */
     private final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // hotfix: must be concurrent!
-    /** list of senders (e.g sender to Emulator for SinglePlayer, sender to the Server for MultiPlayer, etc.) */
+    /** List of senders (e.g sender to Emulator for SinglePlayer, sender to the Server for MultiPlayer, etc.) */
     private final List<ISender> senders = new LinkedList<ISender>();
 
-    /** current sender (one of senders in "senders" collection) */
+    /** Current sender (one of senders in "senders" collection) */
     private ISender sender;
-    /** authorized flag (if TRUE then the authorization to the Server passed) */
+    /** Authorized flag (if TRUE then the authorization to the Server passed) */
     private boolean authorized = false;
-    /** aggressor/defender flag */
+    /** Aggressor/defender flag */
     private boolean aggressor = true;
-    /** current thing (actual only during the battle) */
+    /** Current thing (actual only during the battle) */
     private CellObject curThing;
-    /** current enemy thing (actual only during the battle in MultiPlayer) */
+    /** Current enemy thing (actual only during the battle in MultiPlayer) */
     private CellObject enemyThing;
-    /** only for debugging */
+    /** Only for debugging */
     private transient int debugCounter;
-    /** external file reader */
+    /** External file reader */
     public /*private final*/ IFileReader fileReader;        // public for debug purposes only!
-    /** server emulator (for SinglePlayer mode) */
+    /** Server emulator (for SinglePlayer mode) */
     public /*private final*/ ServerEmulator serverEmulator; // public for debug purposes only!
-    /** user's password hashed with MD5 */
+    /** User's password hashed with MD5 */
     public /*private*/ String hash = "";                    // public for debug purposes only!
 
     /**
@@ -453,7 +526,7 @@ public class Model {
     // ==============================
     // === SERVER REQUEST METHODS ===
     // ==============================
-    // Feel free to call these methods from anywhere
+    // feel free to call these methods from anywhere
     // ==============================
 
     /**
@@ -786,7 +859,7 @@ public class Model {
     // ===============================
     // === SERVER RESPONSE METHODS ===
     // ===============================
-    // These methods are not expected to be called from external code
+    // these methods are not expected to be called from external code
     // ===============================
 
     /**
@@ -1416,8 +1489,8 @@ public class Model {
 
     /**
      * Switches the SinglePlayer/MultiPlayer mode
-     * @since 2.0.0
      * @param value TRUE for SinglePlayer mode, FALSE - for MultiPlayer
+     * @since 2.0.0
      */
     public void setSinglePlayer(boolean value) {
         if (senders.size() == 2) {
@@ -1480,26 +1553,44 @@ public class Model {
         bus.raise(new EventBus.NoCrystalsEvent());
     }
 
+    /**
+     * Invoked on error: username/password pair is incorrect
+     */
     public void setIncorrectCredentials() {
         bus.raise(new EventBus.IncorrectCredentialsEvent());
     }
 
+    /**
+     * Invoked on error: invalid username (e.g. too small or contains incorrect characters)
+     */
     public void setIncorrectName() {
         bus.raise(new EventBus.IncorrectNameEvent());
     }
 
+    /**
+     * Invoked on error: invalid e-mail address
+     */
     public void setIncorrectEmail() {
         bus.raise(new EventBus.IncorrectEmailEvent());
     }
 
+    /**
+     * Invoked on error: username is already in use
+     */
     public void setDuplicateName() {
         bus.raise(new EventBus.DuplicateNameEvent());
     }
 
+    /**
+     * Invoked on error: sign up error (on DB level, please refer to the Server docs for more details)
+     */
     public void setSignUpError() {
         bus.raise(new EventBus.SignUpErrorEvent());
     }
 
+    /**
+     * Invoked on the server soft-shutdown
+     */
     public void setServerGonnaStop() {
         bus.raise(new EventBus.ServerGonnaStopEvent());
     }
@@ -1508,12 +1599,21 @@ public class Model {
     // === PRIVATE METHODS ===
     // =======================
 
+    /**
+     * Checks whether the password is still "1234" and should be changed.
+     * <b>Note:</b> method does nothing if a user has less than <b>winsCount</b> wins in order not to disturb the user
+     * @param winsCount minimum count of wins, starting with which we should suggest a user to change default password
+     */
     private void checkWeakPassword(int winsCount) {
         boolean passwordIs1234 = hash.equals("81dc9bdb52d04dc20036dbd8313ed055");
         if (passwordIs1234 && winsCount >= 5)
             bus.raise(new EventBus.WeakPasswordEvent());
     }
 
+    /**
+     * Only for internal debugging purposes
+     * @param psObject Platform Specific Object
+     */
     private void debugProtocol(PsObject psObject) {
         psObject.runDaemon(8000, 200, new Runnable() {
             @Override

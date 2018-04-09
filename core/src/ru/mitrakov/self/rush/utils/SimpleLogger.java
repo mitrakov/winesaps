@@ -9,20 +9,24 @@ import ru.mitrakov.self.rush.FileReader;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
- * Logger to log in StdOut and external storage. Please turn off this logger in production to avoid excessive GC!
+ * Logger to log to StdOut and external storage. Please turn off this logger in production to avoid excessive GC!
  * THIS IS A STUB! USE NORMAL LOGGERS IN THE FUTURE
  */
 public class SimpleLogger {
+    /** File reader */
     private final static Model.IFileReader fileReader = new FileReader();
+    /** Date format */
     private final static Format sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+    /** Flag to log to a file (<b>MUST BE TURNED OFF IN PRODUCTION</b>) */
     private final static boolean LOG_TO_FILE = false; // don't forget about WRITE_EXTERNAL_STORAGE permission
+    /** Flag to log to stdout (<b>MUST BE TURNED OFF IN PRODUCTION</b>) */
     private final static boolean LOG_TO_SOUT = false;
 
     /**
      * Puts the message given by the object "s" to the log, prepending it with the "prefix"
      * If the logger is turned off, it does nothing (and does not generate garbage for GC)
-     * @param prefix - prefix
-     * @param s - any object (may be NULL)
+     * @param prefix prefix
+     * @param s any object (may be NULL)
      */
     public static synchronized void log(String prefix, Object s) {
         if (LOG_TO_FILE) {

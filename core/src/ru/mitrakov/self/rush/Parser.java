@@ -10,41 +10,67 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**
- * Parser is used to parse input messages from the network
+ * Parser is used to parse input messages from the network.
  * This class is intended to have a single instance
  * @author mitrakov
  */
 class Parser implements IHandler {
+    /** Server Error: Incorrect login/password */
     private static final int ERR_SIGNIN_INCORRECT_PASSWORD = 31;
+    /** Server Error: You cannot attack yourself */
     private static final int ERR_ATTACK_YOURSELF = 50;
+    /** Server Error: Aggressor is busy */
     private static final int ERR_AGGRESSOR_BUSY = 51;
+    /** Server Error: Defender is busy */
     private static final int ERR_DEFENDER_BUSY = 52;
+    /** Server Error: Battle not found (UseThing) */
     private static final int ERR_BATTLE_NOT_FOUND0 = 55;
+    /** Server Error: Battle not found (GetCurrentField) */
     private static final int ERR_BATTLE_NOT_FOUND1 = 56;
+    /** Server Error: Battle not found (UseSkill) */
     private static final int ERR_BATTLE_NOT_FOUND2 = 77;
+    /** Server Error: AddUser DB error */
     private static final int ERR_SIGN_UP = 201;
+    /** Server Error: FindUser DB Error */
     private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
-    private static final int ERR_NO_CRYSTALS = 215;
+    /** Server Error: BuyProduct DB Error */
+    private static final int ERR_NO_GEMS_ENOUGH = 215;
+    /** Server Error: AddFriend DB Error */
     private static final int ERR_ADD_FRIEND = 223;
+    /** Server Error: Command not handled */
     private static final int ERR_NOT_HANDLED = 240;
+    /** Server Error: Not enough arguments for command */
     private static final int ERR_NOT_ENOUGH_ARGS = 242;
+    /** Server Error: User not found */
     private static final int ERR_USER_NOT_FOUND = 245;
+    /** Server Error: Incorrect token provided */
     private static final int ERR_INCORRECT_TOKEN = 246;
+    /** Server Error: Enemy user not found */
     private static final int ERR_ENEMY_NOT_FOUND = 247;
+    /** Server Error: Wait for enemy (in fact not a error, but we stick the Server API notation) */
     private static final int ERR_WAIT_FOR_ENEMY = 248;
+    /** Server Error: Invalid name (SignUp) */
     private static final int ERR_INCORRECT_NAME = 249;
+    /** Server Error: Invalid email (SignUp) */
     private static final int ERR_INCORRECT_EMAIL = 251;
+    /** Server Error: Name already exists (SignUp) */
     private static final int ERR_DUPLICATE_NAME = 252;
+    /** Server Error: Server gonna stop (soft shutdown) */
     private static final int ERR_SERVER_GONNA_STOP = 254;
 
+
+    /** Reference to a model */
     private final Model model;
+    /** Current locale for string formatting */
     private final Locale locale = Locale.getDefault();
-    private final IIntArray accessorial = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
+    /** Intermediate array to copy data from the network (to avoid creating new arrays and decrease GC pressure) */
+    private final IIntArray array = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
+    /** Additional array to full copy field binary data */
     private final IIntArray field = new GcResistantIntArray(Field.WIDTH * Field.HEIGHT);
 
     /**
      * Creates a new instance of Parser
-     * @param model - model (NON-NULL)
+     * @param model model (NON-NULL)
      */
     Parser(Model model) {
         assert model != null;
@@ -57,7 +83,7 @@ class Parser implements IHandler {
         // divide the byte array into several single messages
         while (data.length() > 2) {
             int len = data.get(0) * 256 + data.get(1);
-            processMsg(accessorial.copyFrom(data.remove(0, 2), len));
+            processMsg(array.copyFrom(data.remove(0, 2), len));
             data.remove(0, len);
         }
     }
@@ -70,7 +96,7 @@ class Parser implements IHandler {
     /**
      * Parses a single message (note that the input byte array may consist of several single messages) and calls the
      * corresponding method of Model
-     * @param data - single message byte array
+     * @param data single message byte array
      */
     private void processMsg(IIntArray data) {
         assert data != null;
@@ -194,8 +220,8 @@ class Parser implements IHandler {
 
     /**
      * Parses SIGN_IN command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void signIn(Cmd cmd, IIntArray data) {
         if (data.length() == 1) {
@@ -208,8 +234,8 @@ class Parser implements IHandler {
 
     /**
      * Parses SIGN_OUT command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void signOut(Cmd cmd, IIntArray data) {
         if (data.length() == 1) {
@@ -222,8 +248,8 @@ class Parser implements IHandler {
 
     /**
      * Parses USER_INFO command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void userInfo(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -236,8 +262,8 @@ class Parser implements IHandler {
 
     /**
      * Parses ATTACK command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void attack(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -250,8 +276,8 @@ class Parser implements IHandler {
 
     /**
      * Parses CALL command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void call(Cmd cmd, IIntArray data) {
         if (data.length() > 3) {
@@ -267,8 +293,8 @@ class Parser implements IHandler {
 
     /**
      * Parses STOP_CALL command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void stopCall(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -287,8 +313,8 @@ class Parser implements IHandler {
 
     /**
      * Parses FRIEND_LIST command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void friendList(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
@@ -304,8 +330,8 @@ class Parser implements IHandler {
 
     /**
      * Parses ADD_FRIEND command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void addFriend(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -321,8 +347,8 @@ class Parser implements IHandler {
 
     /**
      * Parses REMOVE_FRIEND command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void removeFriend(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -335,8 +361,8 @@ class Parser implements IHandler {
 
     /**
      * Parses RANGE_OF_PRODUCTS command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void rangeOfProducts(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -352,8 +378,8 @@ class Parser implements IHandler {
 
     /**
      * Parses ENEMY_NAME command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void enemyName(Cmd cmd, IIntArray data) {
         if (data.length() > 0)
@@ -363,8 +389,8 @@ class Parser implements IHandler {
 
     /**
      * Parses ROUND_INFO command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void roundInfo(Cmd cmd, IIntArray data) {
         if (data.length() > 6) {
@@ -384,8 +410,8 @@ class Parser implements IHandler {
 
     /**
      * Parses RATING command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void rating(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
@@ -402,8 +428,8 @@ class Parser implements IHandler {
 
     /**
      * Parses FULL_STATE command
-     * @param cmd - command
-     * @param state - arguments
+     * @param cmd command
+     * @param state arguments
      */
     private void fullState(Cmd cmd, IIntArray state) {
         int n = Field.HEIGHT * Field.WIDTH;
@@ -457,8 +483,8 @@ class Parser implements IHandler {
 
     /**
      * Parses STATE_CHANGED command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void stateChanged(Cmd cmd, IIntArray data) {
         if (data.length() == 4) {
@@ -474,8 +500,8 @@ class Parser implements IHandler {
 
     /**
      * Parses SCORE_CHANGED command
-     * @param cmd - command
-     * @param score - arguments
+     * @param cmd command
+     * @param score arguments
      */
     private void scoreChanged(Cmd cmd, IIntArray score) {
         if (score.length() == 2) {
@@ -489,8 +515,8 @@ class Parser implements IHandler {
 
     /**
      * Parses PLAYER_WOUNDED command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void playerWounded(Cmd cmd, IIntArray data) {
         if (data.length() == 4) {
@@ -506,8 +532,8 @@ class Parser implements IHandler {
 
     /**
      * Parses FINISHED command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void finished(Cmd cmd, IIntArray data) {
         if (data.length() > 3) {
@@ -530,8 +556,8 @@ class Parser implements IHandler {
 
     /**
      * Parses THING_TAKEN command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void thingTaken(Cmd cmd, IIntArray data) {
         if (data.length() == 2) {
@@ -547,8 +573,8 @@ class Parser implements IHandler {
 
     /**
      * Parses OBJECT_APPENDED command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void objectAppended(Cmd cmd, IIntArray data) {
         if (data.length() == 3) {
@@ -563,8 +589,8 @@ class Parser implements IHandler {
 
     /**
      *
-     * @param cmd
-     * @param data
+     * @param cmd RESTORE_STATE command
+     * @param data arguments
      * @since ServerAPI 1.3.0
      */
     private void restoreState(Cmd cmd, IIntArray data) {
@@ -590,8 +616,8 @@ class Parser implements IHandler {
 
     /**
      * Parses CHECK_PROMOCODE command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void checkPromocode(Cmd cmd, IIntArray data) {
         if (data.length() == 2) {
@@ -607,8 +633,8 @@ class Parser implements IHandler {
 
     /**
      * Parses PROMOCODE_DONE command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void promocodeDone(Cmd cmd, IIntArray data) {
         if (data.length() > 1) {
@@ -622,8 +648,8 @@ class Parser implements IHandler {
 
     /**
      * Parses GET_SKU_GEMS command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void getSkuGems(Cmd cmd, IIntArray data) {
         if (data.length() > 1)
@@ -635,8 +661,8 @@ class Parser implements IHandler {
 
     /**
      * Parses CHECK_PURCHASE command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void checkPurchase(Cmd cmd, IIntArray data) {
         if (data.length() > 5) {
@@ -653,8 +679,8 @@ class Parser implements IHandler {
 
     /**
      * Parses EFFECT_CHANGED command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void effectChanged(Cmd cmd, IIntArray data) {
         if (data.length() == 3) {
@@ -671,8 +697,8 @@ class Parser implements IHandler {
 
     /**
      * Parses ABILITY_LIST command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void abilitiesList(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
@@ -686,8 +712,8 @@ class Parser implements IHandler {
 
     /**
      * Parses GET_CLIENT_VERSION command
-     * @param cmd - command
-     * @param data - arguments
+     * @param cmd command
+     * @param data arguments
      */
     private void getClientVersion(Cmd cmd, IIntArray data) {
         if (data.length() == 6)
@@ -697,8 +723,8 @@ class Parser implements IHandler {
 
     /**
      * Parses the error code and runs the corresponding method of Model
-     * @param cmd - command that causes the error
-     * @param code - error code
+     * @param cmd command that causes the error
+     * @param code error code
      */
     private void inspectError(Cmd cmd, int code) {
         switch (code) {
@@ -726,7 +752,7 @@ class Parser implements IHandler {
             case ERR_SIGNIN_INCORRECT_LOGIN:
                 model.setIncorrectCredentials();
                 break;
-            case ERR_NO_CRYSTALS:
+            case ERR_NO_GEMS_ENOUGH:
                 model.setNoCrystals();
                 break;
             case ERR_ADD_FRIEND:

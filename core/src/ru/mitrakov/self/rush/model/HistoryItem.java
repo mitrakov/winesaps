@@ -4,19 +4,39 @@ import java.util.Date;
 import java.io.Serializable;
 
 /**
- * Created by mitrakov on 12.04.2017
+ * Data class representing a single item of user's history of battles (1 item corresponds to 1 battle result)
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public final /*case*/ class HistoryItem implements Serializable {
+    /** Date of the battle */
     public final Date date;
+    /** Win/lose flag (relatively to us) */
     public final boolean win;
+    /** Aggressor name */
     public final String name1;
+    /** Defender name */
     public final String name2;
+    /** Aggressor character */
     public final Model.Character character1;
+    /** Defender character */
     public final Model.Character character2;
+    /** Aggressor total score */
     public final int score1;
+    /** Defender total score */
     public final int score2;
 
+    /**
+     * Creates a new history item (1 item corresponds to 1 battle result)
+     * @param date date of the battle
+     * @param win win/lose (relatively to us)
+     * @param name1 aggressor name
+     * @param name2 defender name
+     * @param character1 aggressor character
+     * @param character2 defender character
+     * @param score1 aggressor total score
+     * @param score2 defender total score
+     */
     public HistoryItem(Date date, boolean win, String name1, String name2, Model.Character character1,
                        Model.Character character2, int score1, int score2) {
         assert date != null && name1 != null && name2 != null;

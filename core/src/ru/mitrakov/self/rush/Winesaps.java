@@ -13,43 +13,61 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 import ru.mitrakov.self.rush.net.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.screens.*;
+import ru.mitrakov.self.rush.model.emulator.ServerEmulator;
 
 /**
- * Entry point
+ * <b>Entry point</b><br>
  * Hello! This is an official GUI Client for Winesaps Game (https://winesaps.com).
- * This class is intended to have a single instance
+ * This class is intended to have a single instance.
  * @author mitrakov
  */
 public class Winesaps extends Game {
+    /** Viewport width, in world units (in most cases 1 WU = 1 pixel) */
     public static final int WIDTH = 800;
+    /** Viewport height, in world units (in most cases 1 WU = 1 pixel) */
     public static final int HEIGHT = 480;
-    public static final int VERSION = (1 << 16) | (1 << 8) | 6; // 1.1.6
+    /** Client version, expressed as a big-endian 3-byte integer */
+    public static final int VERSION = (1 << 16) | (1 << 8) | 6;
+    /** Cleint version */
     public static final String VERSION_STR = "1.1.6";
+    /** Web-site URL */
     public static final String URL = "https://winesaps.com";
 
+    /** Server host */
     public static final String HOST = "winesaps.ru";
+    /** Server port */
     public static final int PORT = 33996;
 
+    /** Platform specific object */
     private final PsObject psObject;
+    /** MVC Model */
     private final Model model;
+    /** Network */
     private /*final*/ Network network;
+    /** LibGDX assets manager */
     private /*final*/ AssetManager assetManager;
+    /** LibGDX audio manager */
     private /*final*/ AudioManager audioManager;
+    /** SignIn/SignUp Screen */
     private /*final*/ LocalizableScreen screenLogin;
+    /** Screen for choosing user characters */
     private /*final*/ LocalizableScreen screenCharacter;
+    /** Tutorial screen */
     private /*final*/ LocalizableScreen screenTutorial;
+    /** Main GUI screen */
     private /*final*/ LocalizableScreen screenMain;
+    /** Battle screen */
     private /*final*/ LocalizableScreen screenBattle;
-    private /*final*/ Stage stage; // to draw splash screen only!
+    /** LibGDX stage (to draw splash screen only! should not be used in other screens) */
+    private /*final*/ Stage stage;
 
     /**
      * Creates new instance of Game.
      * Please DO NOT put here any things related with LibGDX objects. Do it in create() method
-     * @param psObject - Platform Specific Object (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
      */
     public Winesaps(PsObject psObject) {
         assert psObject != null;
@@ -131,7 +149,7 @@ public class Winesaps extends Game {
 
     /**
      * Turns the music/SFX on/off
-     * @param value - true to mute music/SFX
+     * @param value true to mute music/SFX
      */
     public void mute(boolean value) {
         if (audioManager != null)
@@ -140,7 +158,7 @@ public class Winesaps extends Game {
 
     /**
      * Informs the game about changing the screen ratio
-     * @param ratio - float value of width/height
+     * @param ratio float value of width/height
      */
     @SuppressWarnings("WeakerAccess")
     public void setRatio(float ratio) {
@@ -172,6 +190,9 @@ public class Winesaps extends Game {
         setScreen(screenLogin);
     }
 
+    /**
+     * Updates locale for all screens
+     */
     public void updateLocale() {
         I18NBundle bundle = assetManager.get(String.format("i18n/bundle_%s", model.language));
         screenLogin.onLocaleChanged(bundle);
@@ -179,10 +200,11 @@ public class Winesaps extends Game {
         screenTutorial.onLocaleChanged(bundle);
         screenMain.onLocaleChanged(bundle);
         screenBattle.onLocaleChanged(bundle);
+        // feel free to add other screens here
     }
 
     /**
-     * @param key - debug key
+     * @param key debug key
      * @return debug value by the debug key
      */
     public String getDebugInfo(String key) {

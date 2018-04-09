@@ -7,9 +7,9 @@ import com.badlogic.gdx.Gdx;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
- * File Reader is used for IO operations on external storage
- * Class is designed to meet the Loose Coupling Principle
- * This class is intended to have a single instance
+ * File Reader is used for IO operations on external storage.
+ * Class is designed to meet the Loose Coupling Principle.
+ * This class is intended to have a single instance.
  * @author mitrakov
  */
 public class FileReader implements Model.IFileReader {

@@ -1,7 +1,8 @@
 package ru.mitrakov.self.rush.model;
 
 /**
- * Created by mitrakov on 29.05.2017
+ * Static class for creating Cells of different types
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public class Cells {

@@ -3,15 +3,27 @@ package ru.mitrakov.self.rush.model;
 import java.io.Serializable;
 
 /**
- * Created by mitrakov on 06.03.2017
+ * Data class representing a single rating item (row in a ranking table)
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
 public final /*case*/ class RatingItem implements Serializable {
+    /** User name */
     public final String name;
+    /** Wins */
     public final int victories;
+    /** Losses */
     public final int defeats;
+    /** Total score difference (may be negative) */
     public final int score_diff;
 
+    /**
+     * Creates a new rating item (row in a ranking table)
+     * @param name user name
+     * @param victories wins
+     * @param defeats losses
+     * @param score_diff total score difference (may be negative)
+     */
     public RatingItem(String name, int victories, int defeats, int score_diff) {
         assert name != null;
         this.name = name;

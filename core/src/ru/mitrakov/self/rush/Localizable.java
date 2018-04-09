@@ -7,5 +7,9 @@ import com.badlogic.gdx.utils.I18NBundle;
  * @author mitrakov
  */
 public interface Localizable {
+    /**
+     * Invoked when a user changes the GUI language
+     * @param bundle LibGDX internationalization bundle
+     */
     void onLocaleChanged(I18NBundle bundle);
 }

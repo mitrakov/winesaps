@@ -6,18 +6,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * Cell is a single element of a battle field. Character can move only from one cell to another
+ * Cell is a single element of a battle field. An actor can move only from one cell to another
  * @author mitrakov
  */
 public class Cell {
     // @mitrakov: fields are public, because they are frequently accessed in render() method
+
+    /** Coordinate (0-255) */
     public final int xy;
-    public CellObject bottom; // may be NULL
-    public List<CellObject> objects = new CopyOnWriteArrayList<CellObject>(); // .... GC bla-bla-bla
+    /** Bottom object (block, water, etc., may be NULL) */
+    public CellObject bottom;
+    /** List of objects on the cell. Note that CopyOnWriteList has been chosen DELIBERATELY to decrease GC pressure */
+    public List<CellObject> objects = new CopyOnWriteArrayList<CellObject>();
 
     /**
-     * private constructor (use newCell() factory method)
-     * @param xy - index in a battle field
+     * Private constructor (use <b>newCell()</b> factory method)
+     * @param xy index in a battle field
+     * @see {@link ru.mitrakov.self.rush.model.Cell#newCell(int, int, Field.NextNumber, int) newCell}
      */
     private Cell(int xy) {
         this.xy = xy;
@@ -25,8 +30,8 @@ public class Cell {
 
     /**
      * Creates a new instance of Cell
-     * @param value - binary value (2 bits are bottom, 6 bits - object, like ladders, rope lines, etc.)
-     * @param xy - index in a battle field
+     * @param value binary value (2 bits are bottom, 6 bits - object, like ladders, rope lines, etc.)
+     * @param xy index in a battle field
      * @param numberFunc function, that returns current order number on a battle field (starting with 1), may be NULL
      * @param number if `numberFunc` is NULL, then this value will be used (otherwise ignored)
      * @return new Cell
@@ -53,9 +58,9 @@ public class Cell {
 
     /**
      * Creates a new instance of CellObject
-     * @param value - binary 6-bits value
-     * @param cell - cell
-     * @param number - function, that returns current order number on a battle field (starting with 1)
+     * @param value binary 6-bits value
+     * @param cell cell
+     * @param number function, that returns current order number on a battle field (starting with 1)
      * @return new CellObject
      */
     public static CellObject newObject(int value, Cell cell, Field.NextNumber numberFunc, int number) {
@@ -152,8 +157,8 @@ public class Cell {
     }
 
     /**
-     * @param objClass - java class of CellObject to search
-     * @param <T> - CellObject type
+     * @param objClass java class of CellObject to search
+     * @param <T> CellObject type
      * @return first object in the cell that corresponds to a given java class
      */
     @SuppressWarnings("unchecked")
@@ -167,7 +172,7 @@ public class Cell {
     }
 
     /**
-     * @param objClass - java class of CellObject to check
+     * @param objClass java class of CellObject to check
      * @return true, if a CellObject of a given java class exists in the cell
      */
     public boolean objectExists(Class<? extends CellObject> objClass) {
@@ -185,7 +190,7 @@ public class Cell {
      * Gets CellObject by its index
      * This method is asymptotically O(1), safe and highly recommended to use inside for(...) loop to reduce GC,
      * produced by for-each constructions
-     * @param idx - index
+     * @param idx index
      * @return CellObject by its index
      */
     public CellObject getObject(int idx) {

@@ -11,15 +11,22 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author mitrakov
  */
 class AnimationData<T> {
+    /** Animation type (idle, run, etc.) */
     enum AnimationType {Idle, Run, Climb, Ladder}
 
     /**
      * Simple class to store all possible animations for a character
      */
     private static class AnimChar {
+        /** Map: [AnimationType -> LibGDX Animation] */
         private final ObjectMap<AnimationType, Animation<TextureRegion>> animations =
                 new ObjectMap<AnimationType, Animation<TextureRegion>>(AnimationType.values().length);
 
+        /**
+         * Creates new instance of AnimChar
+         * @param atlas texture atlas to grab animation frames from
+         * @param frameDuration frame duration (may be overwritten for some animation types)
+         */
         AnimChar(TextureAtlas atlas, float frameDuration) {
             for (AnimationType type : AnimationType.values()) {
                 Animation.PlayMode mode = type == AnimationType.Ladder ? Animation.PlayMode.NORMAL
@@ -33,18 +40,25 @@ class AnimationData<T> {
         }
     }
 
+    /** Speed by X axis, WU per sec */
     final float speedX;
+    /** Coordinate, in world units (in most cases 1 WU = 1 pixel) */
     float x, y;
+    /** Flag if an actor is turned to the right */
     boolean dirRight = true;
+    /** Reset flag, is used for non-animated moving (teleportation and so on) */
     boolean reset = false;
 
+    /** Map: [T -> AnimChar] (T is usually instance of Character, but may be any type) */
     private final ObjectMap<T, AnimChar> animChars = new ObjectMap<T, AnimChar>();
+    /** Current animation type */
     private AnimationType curType = AnimationType.Idle;
+    /** Current time, in seconds */
     private float t;
 
     /**
      * Creates a new instance of AnimationData
-     * @param speedX - current speed on X axis (worldUnits/sec)
+     * @param speedX current speed on X axis (worldUnits/sec)
      */
     AnimationData(float speedX) {
         this.speedX = speedX;
@@ -52,9 +66,9 @@ class AnimationData<T> {
 
     /**
      * Adds a new AnimChar to animation store for the given key
-     * @param key - any key (usually instance of Character)
-     * @param atlas - Texture Atlas that contains frames needed
-     * @param frameDuration - animation speed
+     * @param key any key (usually instance of Character)
+     * @param atlas Texture Atlas that contains frames needed
+     * @param frameDuration animation speed
      * @return "this"
      */
     public AnimationData add(T key, TextureAtlas atlas, float frameDuration) {
@@ -64,7 +78,7 @@ class AnimationData<T> {
 
     /**
      * Gets the current frame (taking into account current time "t") for the animation matched by the given key
-     * @param key - key (usually instance of Character)
+     * @param key key (usually instance of Character)
      * @return current animation frame (of NULL if a key matches nothing)
      */
     TextureRegion getFrame(T key) {
@@ -79,7 +93,7 @@ class AnimationData<T> {
 
     /**
      * Gets the max possible width of the animation matched by the given key
-     * @param key - key (usually instance of Character)
+     * @param key key (usually instance of Character)
      * @return texture width (or 0 if a key matches nothing)
      */
     int getWidth(T key) {
@@ -101,7 +115,7 @@ class AnimationData<T> {
 
     /**
      * Increases current time to move the animation
-     * @param dt - delta time (sec)
+     * @param dt delta time (sec)
      */
     void addDt(float dt) {
         t += dt;
@@ -109,8 +123,8 @@ class AnimationData<T> {
 
     /**
      * Sets the animation type on/off
-     * @param type - animation type
-     * @param value - true to set and false to unset animation
+     * @param type animation type
+     * @param value true to set and false to unset animation
      */
     void setAnimation(AnimationType type, boolean value) {
         switch (type) {

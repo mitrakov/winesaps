@@ -12,9 +12,15 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
  * @author mitrakov
  */
 public final class GcResistantIntArray implements IIntArray {
+    /** Internal array */
     private final IntArray array;
+    /** Additional buffer for {@link #toByteArray toByteArray} method (to avoid creating new object and decrease GC) */
     private final byte[] bytes;
 
+    /**
+     * Creates a new GcResistantIntArray with a given buffer size (this buffer size may be easily extended during work)
+     * @param bufSize buffer size
+     */
     public GcResistantIntArray(int bufSize) {
         array = new IntArray(bufSize);
         bytes = new byte[bufSize];
@@ -44,7 +50,7 @@ public final class GcResistantIntArray implements IIntArray {
 
     @Override
     public synchronized IIntArray remove(int startPos, int endPos) {
-        array.removeRange(startPos, endPos-1);
+        array.removeRange(startPos, endPos - 1);
         return this;
     }
 
@@ -60,10 +66,11 @@ public final class GcResistantIntArray implements IIntArray {
     }
 
     /**
-     * Copies data from an existing array
-     * if data.length() or length is larger than bufSize it's OK (internal buffer will be resized)
-     * @param data - data
-     * @param length - length
+     * <b>Overwritten JavaDoc</b> <br>
+     * Copies data from an existing array.
+     * If <i>data.length()</i> or <i>length</i> is larger than bufSize, it's OK (internal buffer will be resized)
+     * @param data data
+     * @param length length
      * @return reference to "this"
      */
     @Override
@@ -86,7 +93,7 @@ public final class GcResistantIntArray implements IIntArray {
 
     @Override
     public synchronized byte[] toByteArray() {
-        for (int i = 0; i < Math.min(bytes.length, array.size) ; i++) {
+        for (int i = 0; i < Math.min(bytes.length, array.size); i++) {
             bytes[i] = (byte) array.get(i);
         }
         return bytes; // it's OK (please add an exception for FindBugs and DO NOT create a copy as it suggests)

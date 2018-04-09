@@ -3,14 +3,27 @@ package ru.mitrakov.self.rush.model;
 import java.io.Serializable;
 
 /**
- * Created by mitrakov on 08.05.2017
+ * Data class representing a single friend of a user
+ * @author mitrakov
  */
 @SuppressWarnings("WeakerAccess")
-public final class FriendItem implements Serializable {
+public final /*case*/ class FriendItem implements Serializable {
+    /** Character */
     public final Model.Character character;
+    /** Name */
     public final String name;
-    public final int status; // Server API 1.2.0+ supports statuses
+    /**
+     * Status (online/offline)
+     * @since Server API 1.2.0
+     */
+    public final int status;
 
+    /**
+     * Creates a new friend item
+     * @param character friend's character
+     * @param name friend's name
+     * @param status friend's status (online/offline, since Server API 1.2.0)
+     */
     public FriendItem(Model.Character character, String name, int status) {
         assert character != null && name != null;
         this.character = character;

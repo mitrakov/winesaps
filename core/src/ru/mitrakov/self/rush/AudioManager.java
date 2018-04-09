@@ -11,12 +11,17 @@ import com.badlogic.gdx.assets.AssetManager;
  */
 @SuppressWarnings("WeakerAccess")
 public class AudioManager {
-
+    /** LibGDX Asset Manager */
     private final AssetManager assetManager;
-    private final ObjectMap<String, String> soundNames = new ObjectMap<String, String>(16); // to decrease GC pressure
+    /** Map: [soundName -> soundPath]; we need this to avoid creating new Strings (and decrease GC pressure) */
+    private final ObjectMap<String, String> soundNames = new ObjectMap<String, String>(16);
+    /** Music mute flag */
     private boolean musicMuted = false;
+    /** Sound effects mute flag */
     private boolean soundMuted = false;
+    /** Current playing music (may be NULL) */
     private Music curMusic;
+    /** Current music name (not path!) */
     private String curMusicName = "";
 
     /**
