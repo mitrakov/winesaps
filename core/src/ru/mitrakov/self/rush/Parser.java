@@ -32,7 +32,7 @@ class Parser implements IHandler {
     /** Server Error: AddUser DB error */
     private static final int ERR_SIGN_UP = 201;
     /** Server Error: FindUser DB Error */
-    private static final int ERR_SIGNIN_INCORRECT_LOGIN = 204;
+    private static final int ERR_SIGNIN_INCORRECT_LOGIN = 202;
     /** Server Error: BuyProduct DB Error */
     private static final int ERR_NO_GEMS_ENOUGH = 215;
     /** Server Error: AddFriend DB Error */

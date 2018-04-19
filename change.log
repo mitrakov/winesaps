@@ -1,3 +1,6 @@
+[1.1.7, 2018-04-19]
+* Fixed stuck on handling error 204 instead of error 202
+
 [1.1.6, 2017-12-10]
 * Fixed possible rare hang up (nextMoveAllowed issue)
 

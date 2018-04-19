@@ -30,9 +30,9 @@ public class Winesaps extends Game {
     /** Viewport height, in world units (in most cases 1 WU = 1 pixel) */
     public static final int HEIGHT = 480;
     /** Client version, expressed as a big-endian 3-byte integer */
-    public static final int VERSION = (1 << 16) | (1 << 8) | 6;
+    public static final int VERSION = (1 << 16) | (1 << 8) | 7;
     /** Cleint version */
-    public static final String VERSION_STR = "1.1.6";
+    public static final String VERSION_STR = "1.1.7";
     /** Web-site URL */
     public static final String URL = "https://winesaps.com";
 
