@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static ru.mitrakov.self.rush.model.Model.abilityValues;
+import static ru.mitrakov.self.rush.model.Model.characterValues;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 
 import ru.mitrakov.self.rush.*;
@@ -56,6 +58,8 @@ public class ScreenMain extends LocalizableScreen {
     private final DialogLock lockDialog;
     private final DialogDialup dialupDialog;
     private final DialogInvite inviteDialog;
+    private final DialogUnlockSpPack unlockSpPackDialog;
+    private final DialogSinglePlayer singlePlayerDialog;
     private final DialogQuestion questionDialog;
     private final DialogPromocodeDone promocodeDoneDialog;
     private final DialogPassword passwordDialog;
@@ -65,7 +69,7 @@ public class ScreenMain extends LocalizableScreen {
     private final ScrollPane tableRightContentAbilitiesScroll;
     private final TextFieldFeat txtEnemyName;
     private final TextFieldFeat txtFriendName;
-    private final TextButton btnTraining;
+    private final TextButton btnSinglePlayer;
     private final TextButton btnInviteByName;
     private final TextButton btnQuickBattle;
     private final TextButton btnInviteLatest;
@@ -106,7 +110,7 @@ public class ScreenMain extends LocalizableScreen {
 
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
     private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
-    private final Array<Label> ratingLabels = new Array<Label>(4 * (Model.RATINGS_COUNT + 1));
+    private final Array<LabelFeat> ratingLabels = new Array<LabelFeat>(4 * (Model.RATINGS_COUNT + 1));
     private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
     private enum CurDisplayMode {Info, Rating, History, Friends}
@@ -153,24 +157,22 @@ public class ScreenMain extends LocalizableScreen {
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default");
+        unlockSpPackDialog = new DialogUnlockSpPack(model, "", skin, "default", moreCrystalsDialog, i18n, atlasMenu.findRegion("gem"));
+        singlePlayerDialog = new DialogSinglePlayer(model, atlasMenu, skin, "default", unlockSpPackDialog, i18n);
         inviteDialog = new DialogInvite(model, skin, "default", i18n);
         questionDialog = new DialogQuestion("", skin, "default");
         promocodeDoneDialog = new DialogPromocodeDone(skin, "default");
         passwordDialog = new DialogPassword(model, "", skin, "default", psObject, assetManager);
 
         tableRight = new Table(skin);
-        tableHistoryScroll = new ScrollPane(tableRightContentHistory, skin, "default") {{
-            setupFadeScrollBars(0, 0);
-        }};
-        tableFriendsScroll = new ScrollPane(tableRightContentFriends, skin, "default") {{
-            setupFadeScrollBars(0, 0);
-        }};
+        tableHistoryScroll = new ScrollPaneFeat(tableRightContentHistory, skin, "default");
+        tableFriendsScroll = new ScrollPaneFeat(tableRightContentFriends, skin, "default");
         tableRightContentAbilitiesScroll = new ScrollPane(tableRightContentAbilities);
 
-        btnTraining = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
+        btnSinglePlayer = new TextButtonFeat("", skin, "default", audioManager, new Runnable() {
             @Override
             public void run() {
-                inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
+                singlePlayerDialog.show(stage);
             }
         });
 
@@ -335,17 +337,13 @@ public class ScreenMain extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
+        model.setSinglePlayer(false); // MultiPlayer mode by default
         model.getUserInfo();
         rebuildLeftTable(false);
         rebuildRightTable(CurDisplayMode.Info);
         if (model.newbie) {
             model.newbie = false;
-            psObject.runTask(2500, new Runnable() {
-                @Override
-                public void run() {
-                    inviteDialog.setArguments(DialogInvite.InviteType.Training, "").show(stage);
-                }
-            });
+            // put some code for newbies here, e.g. psObject.runTask(2500, new Runnable {...});
         }
     }
 
@@ -365,11 +363,13 @@ public class ScreenMain extends LocalizableScreen {
         infoDialog.onLocaleChanged(bundle);
         dialupDialog.onLocaleChanged(bundle);
         inviteDialog.onLocaleChanged(bundle);
+        unlockSpPackDialog.onLocaleChanged(bundle);
+        singlePlayerDialog.onLocaleChanged(bundle);
         questionDialog.onLocaleChanged(bundle);
         promocodeDoneDialog.onLocaleChanged(bundle);
         passwordDialog.onLocaleChanged(bundle);
 
-        btnTraining.setText(bundle.format("opponent.none"));
+        btnSinglePlayer.setText(bundle.format("opponent.none"));
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnQuickBattle.setText(bundle.format("opponent.quick"));
         btnInviteLatest.setText(bundle.format("opponent.latest"));
@@ -471,6 +471,7 @@ public class ScreenMain extends LocalizableScreen {
             EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
             lblCrystalsData.setText(String.valueOf(ev.crystals));
             buyAbilitiesDialog.setCrystals(ev.crystals);
+            unlockSpPackDialog.setUserGems(ev.crystals);
         }
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
@@ -559,7 +560,7 @@ public class ScreenMain extends LocalizableScreen {
      */
     private void loadTextures() {
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
-        for (final Model.Ability ability : model.abilityValues) {
+        for (final Model.Ability ability : abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
                 ImageButton btn = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
@@ -583,7 +584,7 @@ public class ScreenMain extends LocalizableScreen {
         }
 
         TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
-        for (Model.Character character : model.characterValues) {
+        for (Model.Character character : characterValues) {
             TextureRegion region = atlasIcons.findRegion(String.format("%s48", character));
             if (region != null)
                 characters.put(character, new TextureRegionDrawable(region));
@@ -628,21 +629,20 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRatingBtns.add(btnWeeklyRating);
 
         tableRightContentRating.row().spaceLeft(20);
-        tableRightContentRating.add();
         tableRightContentRating.add(lblRatingName);
         tableRightContentRating.add(lblRatingWins);
         tableRightContentRating.add(lblRatingLosses);
         tableRightContentRating.add(lblRatingScoreDiff);
 
         // === Ratings ===
-        final int RATING_COLUMNS = 5;
+        final int RATING_COLUMNS = 4;
         tableRightContentRating.row();
         tableRightContentRating.add(new Image(skin, "splitpane")).colspan(RATING_COLUMNS).width(351).height(2);
 
         for (int i = 0; i < Model.RATINGS_COUNT; i++) {
             tableRightContentRating.row().spaceLeft(20);
             for (int j = 0; j < RATING_COLUMNS; j++) {
-                Label label = new Label("", skin, "small");
+                LabelFeat label = new LabelFeat("", skin, "small", true);
                 tableRightContentRating.add(label);
                 ratingLabels.add(label);
             }
@@ -651,7 +651,7 @@ public class ScreenMain extends LocalizableScreen {
         tableRightContentRating.add(lblRatingDots).colspan(RATING_COLUMNS);
         tableRightContentRating.row().spaceLeft(20);
         for (int j = 0; j < RATING_COLUMNS; j++) {
-            Label label = new Label("", skin, "small");
+            LabelFeat label = new LabelFeat("", skin, "small", true);
             tableRightContentRating.add(label);
             ratingLabels.add(label);
         }
@@ -659,9 +659,7 @@ public class ScreenMain extends LocalizableScreen {
         // === History ===
         for (int i = 0; i < Model.HISTORY_MAX; i++) {
             tableRightContentHistory.row().spaceLeft(10).spaceTop(5);
-            tableRightContentHistory.add(new Label("", skin, "small") {{
-                setAlignment(Align.center);
-            }});
+            tableRightContentHistory.add(new LabelFeat("", skin, "small", true));
             tableRightContentHistory.add(new Image());
             tableRightContentHistory.add(new Label("", skin, "small")).width(88).maxWidth(88).spaceLeft(5);
             tableRightContentHistory.add(new Label("", skin, "title"));
@@ -701,7 +699,7 @@ public class ScreenMain extends LocalizableScreen {
             tableLeftInvite.add(btnInviteLatest).colspan(2).width(190).height(68).spaceTop(8);
             stage.setKeyboardFocus(txtEnemyName);
         } else {
-            tableLeftInvite.add(btnTraining).width(190).height(68);
+            tableLeftInvite.add(btnSinglePlayer).width(190).height(68);
             tableLeftInvite.row();
             tableLeftInvite.add(btnInviteByName).width(190).height(68).spaceTop(8);
             tableLeftInvite.row();
@@ -796,10 +794,9 @@ public class ScreenMain extends LocalizableScreen {
 
         int i = 0;
         for (RatingItem item : items) {
-            if (i + 4 < ratingLabels.size) {
+            if (i + 3 < ratingLabels.size) {
                 String txt = item.name.length() <= 18 ? item.name : String.format("%s...", item.name.substring(0, 15));
-                ratingLabels.get(i++).setText(model.name.equals(item.name) ? "•" : "");
-                ratingLabels.get(i++).setText(txt);
+                ratingLabels.get(i++).setBackground(model.name.equals(item.name) ? Color.GOLDENROD : null).setText(txt);
                 ratingLabels.get(i++).setText(String.valueOf(item.victories));
                 ratingLabels.get(i++).setText(String.valueOf(item.defeats));
                 ratingLabels.get(i++).setText(String.valueOf(item.score_diff));

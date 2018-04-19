@@ -5,26 +5,40 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.Winesaps;
-import ru.mitrakov.self.rush.ui.DialogFeat;
-import ru.mitrakov.self.rush.ui.LinkedLabel;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "About" dialog
+ * @author Mitrakov
  */
 public class DialogAbout extends DialogFeat {
-
+    /** Big "Winesaps" label */
     private final Label lblOverview;
+    /** "Created by" label */
     private final Label lblCreated;
+    /** "Mitrakov Artem" label */
     private final Label lblCreatedTxt;
+    /** "Version" label */
     private final Label lblVersion;
+    /** "Support" label */
     private final Label lblSupport;
+    /** "support@winesaps.com" label */
     private final Label lblSupportTxt;
+    /** "Website" label */
     private final Label lblWebSite;
+    /** "https://winesaps.com" label */
     private final LinkedLabel lblWebSiteTxt;
+    /** "Platforms" label */
     private final Label lblPlatforms;
+    /** "Windows, Linux, Android" label */
     private final Label lblPlatformsTxt;
 
+    /**
+     * Creates new "About" dialog
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     */
     public DialogAbout(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
 

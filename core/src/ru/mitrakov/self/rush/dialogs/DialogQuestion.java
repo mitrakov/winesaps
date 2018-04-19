@@ -4,21 +4,28 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import ru.mitrakov.self.rush.ui.DialogFeat;
+import ru.mitrakov.self.rush.ui.*;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * Standard Yes/No dialog
+ * @author Mitrakov
  */
-@SuppressWarnings("WeakerAccess")
 public class DialogQuestion extends DialogFeat {
+    /** Question message label */
     private final Label lblMessage;
+    /** OnYes function */
     private Runnable action;
 
+    /**
+     * Creates a new Yes/No dialog
+     * @param title header title
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     */
     public DialogQuestion(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center);
+        lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(400); // here getContentTable != null
 
         button("Yes", true); // text will be replaced in onLocaleChanged()
@@ -51,6 +58,12 @@ public class DialogQuestion extends DialogFeat {
         }
     }
 
+    /**
+     * Sets text for this dialog
+     * @param header title header text
+     * @param text message body
+     * @return this
+     */
     public DialogQuestion setText(String header, String text) {
         if (getTitleLabel() != null)
             getTitleLabel().setText(header);
@@ -58,6 +71,11 @@ public class DialogQuestion extends DialogFeat {
         return this;
     }
 
+    /**
+     * Sets a function to run when 'Yes' is clicked
+     * @param runnable function to run
+     * @return this
+     */
     public DialogQuestion setRunnable(Runnable runnable) {
         action = runnable;
         return this;

@@ -13,7 +13,8 @@ import static ru.mitrakov.self.rush.model.Model.MoveDirection.*;
 import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
 /**
- * Created by mitrakov on 09.03.2018
+ * Analog of Server Round class (reconstructed from Server v.1.3.6)
+ * @author Mitrakov
  */
 public class Round {
     private final BattleManager battleManager;
@@ -22,21 +23,19 @@ public class Round {
     private final Random rand = new Random(System.nanoTime());
 
     final int number;
-    final int timeSec;
     final Player player1;
     final Player player2;
     final FieldEx field;
     final String levelname;
     final Timer stop;
 
-    public Round(Model.Character character1, Model.Character character2, int number, String levelName, int timeSec,
+    public Round(Model.Character character1, Model.Character character2, int number, String levelName,
                  List<Model.Ability> skills1, List<Model.Ability> skills2,
                  List<Model.Ability> swaggas1, List<Model.Ability> swaggas2, BattleManager battleManager) {
         assert character1 != null && character2 != null && levelName != null && battleManager != null;
-        assert number >= 0 && timeSec > 0;
+        assert number >= 0;
 
         this.number = number;
-        this.timeSec = timeSec;
         this.levelname = levelName;
         this.battleManager = battleManager;
 
@@ -82,7 +81,7 @@ public class Round {
             public void run() {
                 timeOut();
             }
-        }, timeSec * 1000);
+        }, field.timeSec * 1000);
     }
 
     Player getPlayerBySid(boolean isSid1) {
@@ -100,7 +99,7 @@ public class Round {
         // tryMutex is not necessary here (synchronized is enough)
         if (field.getFoodCountForActor(player1.actor) == 0)
             battleManager.roundFinished(true);
-        /** This is a Server algorithm:
+        /* This is a Server algorithm:
         if (player1.score > foodTotal / 2)
             battleManager.roundFinished(true);
         else if (player2.score > foodTotal / 2)

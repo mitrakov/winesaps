@@ -9,11 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * Simple "Battle Finished" dialog (usually used in Training)
+ * @see DialogFinishedEx
+ * @author Mitrakov
  */
 public class DialogFinished extends DialogFeat {
+    /** Current message (e.g. "You won the round!") */
     final Label lblMessage;
 
+    /**
+     * Creates new "Battle Finished" dialog (usually used in Training)
+     * @see DialogFinishedEx
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     * @param atlas atlas that contains all the textures needed
+     */
     public DialogFinished(Skin skin, String windowStyleName, TextureAtlas atlas) {
         super("", skin, windowStyleName);
         assert atlas != null;
@@ -45,6 +55,12 @@ public class DialogFinished extends DialogFeat {
         }
     }
 
+    /**
+     * Sets the dialog's header and body message
+     * @param header title
+     * @param msg body message
+     * @return this
+     */
     public DialogFinished setText(String header, String msg) {
         if (getTitleLabel() != null)
             getTitleLabel().setText(header);

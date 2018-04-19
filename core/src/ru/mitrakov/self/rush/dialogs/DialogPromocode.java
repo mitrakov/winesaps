@@ -10,21 +10,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.AudioManager;
 import ru.mitrakov.self.rush.model.Model;
-import ru.mitrakov.self.rush.ui.DialogFeat;
-import ru.mitrakov.self.rush.ui.TextButtonFeat;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Promocode" dialog
+ * @author Mitrakov
  */
 public class DialogPromocode extends DialogFeat {
+    /** Reference to the model */
     private final Model model;
+    /** "Your promo code" label */
     private final Label labelIntro;
+    /** Text area with a promo code */
     private final TextField fieldPromocode;
+    /** "Copy to clipboard" button */
     private final TextButton btnCopy;
+    /** "Copied to clipboard" label */
     private final Label labelCopied;
 
+    /**
+     * Creates new "Promocode" dialog
+     * @param model {@link Model}
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     * @param audioManager {@link AudioManager}
+     */
     public DialogPromocode(final Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
         super("", skin, windowStyleName);
         assert model != null && audioManager != null;

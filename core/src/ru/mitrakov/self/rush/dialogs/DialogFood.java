@@ -10,17 +10,33 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
 import ru.mitrakov.self.rush.model.Model.Character;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Food" dialog (shows which fruit are acceptable, and which are poison)
+ * @author Mitrakov
  */
 public class DialogFood extends DialogFeat {
+    /** "Your character can collect" label */
     private final Label lblEdible;
+    /** "These products are dangerous" label */
     private final Label lblDangerous;
+    /** Apple image */
     private final Actor apple;
+    /** Pear image */
     private final Actor pear;
+    /** Green checkmark icon */
     private final Actor signOk;
+    /** Danger icon */
     private final Actor signDanger;
+
+    /** Map: Character (e.g. rabbit, squirrel, cat) -> Image */
     private final ObjectMap<Character, Image> food = new ObjectMap<Character, Image>(4);
 
+    /**
+     * Creates a new "Food" dialog (that shows which fruit are acceptable, and which are poison)
+     * @param title dialog title
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     * @param atlas atlas that contains all the textures needed
+     */
     public DialogFood(String title, Skin skin, String windowStyleName, TextureAtlas atlas) {
         super(title, skin, windowStyleName);
         assert atlas != null;
@@ -62,6 +78,11 @@ public class DialogFood extends DialogFeat {
         }
     }
 
+    /**
+     * Rebuilds the content of the dialog according to what a user've chosen as a character
+     * @param character character (Squirrel, Cat, etc.)
+     * @return this
+     */
     public Dialog setCharacter(Character character) {
         Table table = getContentTable();
         assert table != null;

@@ -111,9 +111,8 @@ public class ScreenLogin extends LocalizableScreen {
                 }
             });
         }};
-        lblDuplicateName = new Label("", skin, "white") {{
+        lblDuplicateName = new LabelFeat("", skin, "white", true) {{
             setColor(1, 0, 0, 1);
-            setAlignment(Align.center);
         }};
         lblHaveAccount = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override

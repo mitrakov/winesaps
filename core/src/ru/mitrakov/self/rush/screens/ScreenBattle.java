@@ -87,7 +87,7 @@ public class ScreenBattle extends LocalizableScreen {
         outOfSyncStr = i18n.format("battle.out.of.sync");
 
         // init seconds map (to decrease GC pressure)
-        for (int i = 0; i < 255; i++) {
+        for (int i = 0; i < 256; i++) {
             seconds.put(i, String.valueOf(i));
         }
     }

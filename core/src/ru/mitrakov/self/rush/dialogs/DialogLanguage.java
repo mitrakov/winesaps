@@ -11,20 +11,30 @@ import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Choose a language" dialog
+ * @author Mitrakov
  */
 public class DialogLanguage extends DialogFeat {
+    /** "Choose a language" label */
     private final Label lblLang;
 
+    /**
+     * Creates new "Choose a language" dialog
+     * @param game {@link Winesaps}
+     * @param model {@link Model}
+     * @param title header title
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     * @param atlas texture atlas containing all the flags needed
+     * @param i18n LibGdx internationalization bundle
+     * @param audioManager {@link AudioManager}
+     */
     public DialogLanguage(Winesaps game, Model model, String title, Skin skin, String windowStyleName,
                           TextureAtlas atlas, I18NBundle i18n, AudioManager audioManager) {
         super(title, skin, windowStyleName);
 
-        lblLang = new Label("", skin, "default");
-        lblLang.setAlignment(Align.center);
-
+        lblLang = new LabelFeat("", skin, "default", true);
         buildLangTable(game, model, getContentTable(), skin, atlas, i18n, audioManager);
-
         button("OK"); // text will be replaced in onLocaleChanged()
     }
 
@@ -47,6 +57,16 @@ public class DialogLanguage extends DialogFeat {
         }
     }
 
+    /**
+     * Builds table with different languages and country flags
+     * @param game {@link Winesaps}
+     * @param model {@link Model}
+     * @param table content table
+     * @param skin LibGdx skin
+     * @param atlas texture atlas containing all the flags needed
+     * @param i18n LibGdx internationalization bundle
+     * @param manager {@link AudioManager}
+     */
     private void buildLangTable(final Winesaps game, final Model model, Table table, Skin skin, TextureAtlas atlas,
                             I18NBundle i18n, AudioManager manager) {
         assert game != null && model != null && table != null && atlas != null && i18n != null && manager != null;
@@ -64,10 +84,9 @@ public class DialogLanguage extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.english"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "en";
                     game.updateLocale();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -82,10 +101,9 @@ public class DialogLanguage extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.russian"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "ru";
                     game.updateLocale();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -100,10 +118,9 @@ public class DialogLanguage extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.spanish"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "es";
                     game.updateLocale();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -118,10 +135,9 @@ public class DialogLanguage extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.portuguese"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float yn) {
                     model.language = "pt";
                     game.updateLocale();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -136,10 +152,9 @@ public class DialogLanguage extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.french"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "fr";
                     game.updateLocale();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();

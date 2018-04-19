@@ -16,7 +16,7 @@ public abstract class DialogFeat extends Dialog implements Localizable {
         assert stage != null;
         for (Actor actor : stage.getActors()) {
             if (actor instanceof Dialog)
-                actor.remove(); // It is SAFE! See SnapshotArray<T>
+                actor.remove(); // It is SAFE to remove inside iterator! See SnapshotArray<T>
         }
     }
 

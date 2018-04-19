@@ -13,34 +13,85 @@ import static ru.mitrakov.self.rush.model.Model.Character.*;
 import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 
 /**
- * Created by mitrakov on 08.03.2018
+ * Analog of Server Field class (reconstructed from Server v.1.3.6)
+ * @author Mitrakov
  */
 @SuppressWarnings("ForLoopReplaceableByForEach")
 class FieldEx extends Field {
+    /** Duration of Antidote effect (in steps) */
     private static final int ANTIDOTE_EFFECT = 10;
+    /** Mine detector effective distance (in cells) */
     private static final int DETECTION_LENGTH = 8;
+    /** Default round time */
+    private static final int ROUND_TIME = 90;
 
+    /** Reference to the Battle manager */
     private final BattleManager battleManager;
+    /** Lock (analog of Mutex/RWMutex in Go) */
     private final ReentrantLock lock = new ReentrantLock();
+    /** Lock (analog of Mutex/RWMutex in Go) */
     private final ReentrantLock cellLock = new ReentrantLock();
+    /** List of wolves on the field (needed to avoid using "new" operations to decrease Garbage Collector pressure) */
     private final List<WolfEx> wolfList = new CopyOnWriteArrayList<WolfEx>();
+    /** List of all favourite fruit (needed to avoid using "new" operations to decrease Garbage Collector pressure) */
     private final List<Cells.CellObjectFavouriteFood> favouriteFoodList =
             new CopyOnWriteArrayList<Cells.CellObjectFavouriteFood>();
 
+    /** Field Actor */
     /*final*/ ActorEx actor1, actor2;
+    /** Raw binary field data */
     final IIntArray raw;
+    /** Round time, in seconds */
+    int timeSec = ROUND_TIME;
 
-    FieldEx(IIntArray fieldData, IIntArray raw, BattleManager emulator) {
+    /**
+     * Creates new battlefield
+     * @param fieldData binary field data (just 255 bytes)
+     * @param raw raw binary field data, may be more than 255 bytes
+     * @param battleManager {@link BattleManager}
+     */
+    FieldEx(IIntArray fieldData, IIntArray raw, BattleManager battleManager) {
         super(fieldData);
-        assert emulator != null;
+        assert battleManager != null;
         this.raw = raw;
-        this.battleManager = emulator;
+        this.battleManager = battleManager;
+
+        // parse additional sections
+        for (int j = fieldData.length(); j + 1 < raw.length(); j += 2) {
+            int sectionCode = raw.get(j);
+            int sectionLen = raw.get(j + 1);
+            switch (sectionCode) {
+                case 1: // parse additional level objects
+                    int startK = j + 2;
+                    for (int k = startK; k + 2 < startK + sectionLen && k + 2 < raw.length(); k += 3) {
+                        int number = raw.get(k);
+                        int id = raw.get(k + 1);
+                        int xy = raw.get(k + 2);
+                        appendObject(number, id, xy);
+                    }
+                    break;
+                case 2: // no need in style pack in Server Emulator
+                    break;
+                case 3: // parse round time
+                    if (j + 2 < raw.length())
+                        timeSec = raw.get(j + 2);
+                    break;
+                default: // don't throw exceptions, just skip
+            }
+            j += sectionLen;
+        }
 
         createSubTypesInternal();
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
-    private void createSubTypesInternal() {
+    /**
+     * Internal method to properly initialize some objects on the battlefield (the problem is that the most of objects
+     * are "passive" and may be directly taken from existing data types of {@link Cells} class; but some objects are
+     * "smart", e.g. actors and wolves, hence they stored additional internal data; in order not to touch {@link Cells}
+     * class we decided to create the subclasses and set them up accordingly before the battle start; so this method
+     * is for those purposes)
+     */
+    private synchronized void createSubTypesInternal() {
         wolfList.clear();
         for (int i = 0; i < cells.length; i++) {
             Cell cell = cells[i];
@@ -65,41 +116,80 @@ class FieldEx extends Field {
                 wolfList.add(wolfEx);
                 cell.objects.add(wolfEx);
                 objects.put(wolfEx.getNumber(), wolfEx);
-                wolf.getCell().objects.remove(wolf); // don't forget to remove original Wolf to avoid bugs
+                wolf.getCell().objects.remove(wolf);     // don't forget to remove original Wolf to avoid bugs
             }
             cellLock.unlock();
         }
     }
 
+    /**
+     * @return next generated number for new objects on the battlefield
+     */
     int getNextNum() {
         return nextNumber.next();
     }
 
+    /**
+     * Invoked when an object coordinates on the battlefield are changed
+     * @param obj object (NON-NULL)
+     * @param xy new position
+     * @param reset TRUE if an object resets its position (e.g. teleportation), and FALSE - for smooth moving
+     */
     private void objChanged(Cells.CellObject obj, int xy, boolean reset) {
         battleManager.objChanged(obj, xy, reset);
     }
 
+    /**
+     * Invoked when a new object have been added to the battlefield (e.g. an actor established an umbrella or a beam)
+     * @param obj object (NON-NULL)
+     */
     private void objAppended(Cells.CellObject obj) {
         battleManager.objAppended(obj);
     }
 
+    /**
+     * Checks whether moving up is possible (e.g. there is a ladder or a rope)
+     * @see #isMoveDownPossible(Cell)
+     * @param cell cell
+     * @return TRUE, if moving up is possible, and FALSE otherwise
+     */
     boolean isMoveUpPossible(Cell cell) {
         assert cell != null;
         return cell.objectExists(Cells.LadderBottom.class) || cell.objectExists(Cells.RopeLine.class);
     }
 
+    /**
+     * Checks whether moving down is possible (e.g. there is a ladder)
+     * @see #isMoveUpPossible(Cell)
+     * @param cell cell
+     * @return TRUE, if moving down is possible, and FALSE otherwise
+     */
     boolean isMoveDownPossible(Cell cell) {
         assert cell != null;
         return cell.objectExists(Cells.LadderTop.class);
     }
 
-    public boolean move(Cells.CellObject actor, int idxTo) {
+    /**
+     * Performs single move to the given location
+     * @param obj object to move
+     * @param idxTo destination coordinates
+     * @return TRUE, if moving is success, and FALSE - otherwise (e.g. there is a wall or the edge of the battlefield)
+     */
+    public boolean move(Cells.CellObject obj, int idxTo) {
+        // the implementation is given "as is" because in Go there are no 'synchronized' blocks, nor reentrant mutexes
         lock.lock();
-        boolean result = moveSync(actor, idxTo);
+        boolean result = moveSync(obj, idxTo);
         lock.unlock();
         return result;
     }
 
+    /**
+     * Performs single move to the given location
+     * <br><b>Note:</b> Internal only! External code must use {@link #move(Cells.CellObject, int)} method for movements
+     * @param obj object to move
+     * @param idxTo destination coordinates
+     * @return TRUE, if moving is success, and FALSE - otherwise (e.g. there is a wall or the edge of the battlefield)
+     */
     private boolean moveSync(Cells.CellObject obj, int idxTo) {
         assert obj != null && obj.getCell() != null;
 
@@ -141,17 +231,28 @@ class FieldEx extends Field {
         return false; // in fact client CAN send incorrect XY (example: Move(LeftDown) at X=0; Y=0); since 2.0.0
     }
 
+    /**
+     * Returns cell by its coordinates
+     * @param xy position
+     * @return cell by XY coordinates
+     */
     private Cell getCell(int xy) {
         assert 0 <= xy && xy < WIDTH * HEIGHT;
         return cells[xy];
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
+    /**
+     * Returns a list of wolves (note that the same list is returned to avoid "new" operations and decrease GC pressure)
+     * @return list of wolves on the battlefield
+     */
     List<WolfEx> getWolves() {
         return wolfList;
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
+    /**
+     * Retrieves a list of all favourite food items on the battlefield (please note that method is NOT thread-safe)
+     * @return a list of all favourite food items
+     */
     private List<Cells.CellObjectFavouriteFood> getFavouriteFoodList() {
         favouriteFoodList.clear();
         for (int i = 0; i < cells.length; i++) {
@@ -165,8 +266,12 @@ class FieldEx extends Field {
         return favouriteFoodList;
     }
 
+    /**
+     * Looks up entry object by the given actor
+     * <br>Please note that this method only looks up Entry1, just as on the Server both actors are considered
+     * @return entry object, or NULL if entry is not found
+     */
     Cells.Entry1 getEntryByActor() {
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cells.length; i++) { // GC!
             Cell cell = cells[i];
             Cells.Entry1 entry = cell.getFirst(Cells.Entry1.class);
@@ -175,8 +280,12 @@ class FieldEx extends Field {
         return null;
     }
 
+    /**
+     * @return remaining food count on the battlefield
+     * @see #getFoodCountForActor(ActorEx)
+     */
     @SuppressWarnings("unused")
-    int getFoodCount() {
+    private int getFoodCount() {
         int result = 0;
         for (int i = 0; i < WIDTH*HEIGHT; i++) {
             cellLock.lock();
@@ -188,6 +297,12 @@ class FieldEx extends Field {
         return result;
     }
 
+    /**
+     * Returns remaining food count for the given actor
+     * <br> Please note that there is no such a method on the Server ({@link #getFoodCount()} is used instead)
+     * @param actor actor
+     * @return food count for the given actor
+     */
     int getFoodCountForActor(ActorEx actor) {
         int result = 0;
         for (int i = 0; i < WIDTH*HEIGHT; i++) {
@@ -201,6 +316,11 @@ class FieldEx extends Field {
         return result;
     }
 
+    /**
+     * Drops a thing (it may happen because an actor has only 1 slot, so if he takes a thing - the old thing is dropped)
+     * @param actor actor
+     * @param thing thing to be thrown off from the actor
+     */
     void dropThing(ActorEx actor, Cells.CellObjectThing thing) {
         assert actor != null && actor.getCell() != null && thing != null;
 

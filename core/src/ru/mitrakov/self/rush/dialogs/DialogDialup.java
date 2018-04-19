@@ -6,21 +6,30 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.ui.DialogFeat;
+import ru.mitrakov.self.rush.ui.LabelFeat;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Dialup" dialog
+ * @author Mitrakov
  */
 public class DialogDialup extends DialogFeat {
+    /** Reference to the Model */
     private final Model model;
+    /** "Challenging {0} to battle" label */
     private final Label lblMessage;
 
+    /**
+     * Creates new "Dialup" dialog (waiting for enemy to respond)
+     * @param model {@link Model}
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     */
     public DialogDialup(Model model, Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
         assert model != null;
         this.model = model;
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center);
+        lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(350); // here getContentTable != null
 
         button("Cancel"); // text will be replaced in onLocaleChanged()
@@ -48,6 +57,11 @@ public class DialogDialup extends DialogFeat {
         }
     }
 
+    /**
+     * Sets the dialogs text
+     * @param text content text
+     * @return this
+     */
     public Dialog setText(String text) {
         lblMessage.setText(text);
         pack();

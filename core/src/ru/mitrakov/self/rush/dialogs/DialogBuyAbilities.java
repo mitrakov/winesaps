@@ -13,26 +13,50 @@ import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.AudioManager;
 
+import static ru.mitrakov.self.rush.model.Model.abilityValues;
+
 /**
- * Created by mitrakov on 05.03.2017
- * Class is NOT thread-safe
+ * "Inventory purchase" dialog
+ * @author Mitrakov
  */
 public class DialogBuyAbilities extends DialogFeat {
+    /** Reference to the model */
     private final Model model;
+    /** LibGdx skin */
     private final Skin skin;
-    private final Label lblCrystals;
-    private final Label lblCurAbility;
-    private final Label lblTotalCrystals;
-    private final Image imgGoods;
-    private final Table productsList = new Table();
+    /** Texture atlas with menu icons */
     private final TextureAtlas atlasMenu;
 
+    /** "Gems total" label */
+    private final Label lblCrystals;
+    /** Label with current ability, chosen by a user (e.g. "Snorkel") */
+    private final Label lblCurAbility;
+    /** Total gems value label */
+    private final Label lblTotalCrystals;
+    /** Image with current ability, chosen by a user */
+    private final Image imgGoods;
+    /** List of pictures of all the products available */
+    private final Table productsList = new Table();
+
+    /** Map: [Ability -> Drawable] */
     private final ObjectMap<Model.Ability, Drawable> abilityIcons = new ObjectMap<Model.Ability, Drawable>(10);
 
+    /** Internationalization bundle */
     private I18NBundle i18n;
+    /** User's current gems count */
     private int crystals = 0;
+    /** Currently selected product (default: no products selected) */
     private Product selectedItem;
 
+    /**
+     * Creates a new "Buy skills and swaggas" dialog
+     * @param model Model
+     * @param assetManager LibGdx Asset Manager
+     * @param skin LibGdx skin
+     * @param style style name (usually just "default")
+     * @param audioManager Audio Manager
+     * @param i18n internationalization bundle
+     */
     public DialogBuyAbilities(final Model model, AssetManager assetManager, Skin skin, String style,
                               AudioManager audioManager, I18NBundle i18n) {
         super("", skin, style);
@@ -88,17 +112,27 @@ public class DialogBuyAbilities extends DialogFeat {
         }
     }
 
+    /**
+     * Sets user's current gems count
+     * @param crystals gems count
+     */
     public void setCrystals(int crystals) {
         this.crystals = crystals;
     }
 
+    /**
+     * Loads textures according to all possible abilities and return a collection of buttons
+     * @param assetManager LibGdx Asset Manager
+     * @param audioManager Audio Manager
+     * @return collection of buttons for each ability
+     */
     private Array<Actor> loadTextures(AssetManager assetManager, AudioManager audioManager) {
         Array<Actor> res = new Array<Actor>();
 
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
         TextureAtlas atlasGoods = assetManager.get("pack/goods.pack");
 
-        for (final Model.Ability ability : model.abilityValues) {
+        for (final Model.Ability ability : abilityValues) {
             // == buttons ==
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
@@ -117,6 +151,12 @@ public class DialogBuyAbilities extends DialogFeat {
         return res;
     }
 
+    /**
+     * Initializes the dialog
+     * @param table target table
+     * @param abilities array of controls that represent specific abilities
+     * @param skin LibGdx skin
+     */
     private void init(Table table, final Array<Actor> abilities, Skin skin) {
         assert table != null && skin != null;
 
@@ -143,6 +183,10 @@ public class DialogBuyAbilities extends DialogFeat {
         table.add(productsList).height(90).colspan(2).spaceTop(16);
     }
 
+    /**
+     * Rebuilds the table content according to which ability user has just chosen
+     * @param ability ability chosen by a user
+     */
     private void rebuildContent(Model.Ability ability) {
         assert i18n != null;
 

@@ -30,9 +30,10 @@ public class Winesaps extends Game {
     /** Viewport height, in world units (in most cases 1 WU = 1 pixel) */
     public static final int HEIGHT = 480;
     /** Client version, expressed as a big-endian 3-byte integer */
-    public static final int VERSION = (1 << 16) | (1 << 8) | 7;
+    @SuppressWarnings("PointlessBitwiseExpression")
+    public static final int VERSION = (2 << 16) | (0 << 8) | 0;
     /** Cleint version */
-    public static final String VERSION_STR = "1.1.7";
+    public static final String VERSION_STR = "2.0.0";
     /** Web-site URL */
     public static final String URL = "https://winesaps.com";
 
@@ -84,7 +85,7 @@ public class Winesaps extends Game {
             };
             IHandler parser = new Parser(model);
             Model.IFileReader fileReader = new FileReader();
-            ServerEmulator serverEmulator = new ServerEmulator(fileReader, parser);
+            ServerEmulator serverEmulator = new ServerEmulator(model, fileReader, parser);
 
             network = new Network(psObject, parser, errorHandler, HOST, PORT);
             network.setProtocol(new SwUDP(psObject, network.getSocket(), HOST, PORT, network));

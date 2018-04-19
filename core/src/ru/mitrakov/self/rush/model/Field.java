@@ -66,7 +66,7 @@ public class Field {
      * @param id object ID
      * @param xy coordinate (may be 0xFF that means that an object is to be removed to a trash cell)
      */
-    void appendObject(final int number, int id, int xy) {
+    protected void appendObject(final int number, int id, int xy) {
         if (xy < 0 || xy > TRASH_XY)
             throw new IllegalArgumentException("Incorrect xy");
 
@@ -108,8 +108,8 @@ public class Field {
     }
 
     /**
-     * See also: {@link #getObjectByNumber(int) getObjectByNumber}
      * @param id object ID (please don't mix up with an object number).
+     * @see #getObjectByNumber(int) getObjectByNumber
      * @return the first found object with a given <b>id</b>
      */
     CellObject getObjectById(int id) {
@@ -124,8 +124,8 @@ public class Field {
     }
 
     /**
-     * See also {@link #getObjectById(int) getObjectById}
      * @param number object number.
+     * @see #getObjectById(int) getObjectById
      * @return object with a given <b>number</b>
      */
     CellObject getObjectByNumber(int number) {

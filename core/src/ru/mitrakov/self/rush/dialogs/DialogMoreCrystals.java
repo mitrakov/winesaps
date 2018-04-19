@@ -12,21 +12,43 @@ import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.AudioManager;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "How to get more gems" dialog
+ * @author Mitrakov
  */
 public class DialogMoreCrystals extends DialogFeat {
+    /** Reference to the model */
     private final Model model;
+    /** Big "How you can get more gems" label */
     private final Label lblOverview;
+    /** Way1 header label */
     private final Label lblWay1;
+    /** Way1 description label */
     private final Label lblText1;
+    /** Way2 header label */
     private final Label lblWay2;
+    /** Way2 description label */
     private final LinkedLabel lblText2;
+    /** Extra way2 description label (because text is too long) */
     private final Label lblText2extra;
+    /** Way3 header label */
     private final Label lblWay3;
+    /** Way3 description label */
     private final Label lblText3;
+    /** Way4 header label */
     private final Label lblWay4;
+    /** Way4 description label */
     private final LinkedLabel lblText4;
 
+    /**
+     * Creates new "How to get more gems" dialog
+     * @param model {@link Model}
+     * @param skin LibGdx skin
+     * @param style style name (usually just "default")
+     * @param assetManager LibGdx Assets Manager
+     * @param audioMgr {@link AudioManager}
+     * @param promoDialog dialog to show when "Show promo code" is clicked
+     * @param purchaseDialog dialog to show when "Buy gems here" is clicked
+     */
     public DialogMoreCrystals(Model model, Skin skin, String style, AssetManager assetManager, AudioManager audioMgr,
                               final Dialog promoDialog, final Dialog purchaseDialog) {
         super("", skin, style);
@@ -34,19 +56,19 @@ public class DialogMoreCrystals extends DialogFeat {
         this.model = model;
 
         lblOverview = new Label("", skin, "default");
-        lblWay1 = new Label("", skin, "default") {{ setAlignment(Align.center, Align.center);}};
-        lblText1 = new Label("", skin, "small") {{ setAlignment(Align.center, Align.center);}};
-        lblWay2 = new Label("", skin, "default") {{ setAlignment(Align.center, Align.center);}};
+        lblWay1 = new LabelFeat("", skin, "default", true);
+        lblText1 = new LabelFeat("", skin, "small", true);
+        lblWay2 = new LabelFeat("", skin, "default", true);
         lblText2 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
                 promoDialog.show(getStage());
             }
         });
-        lblText2extra = new Label("", skin, "small") {{ setAlignment(Align.center, Align.center);}};
-        lblWay3 = new Label("", skin, "default") {{ setAlignment(Align.center, Align.center);}};
-        lblText3 = new Label("", skin, "small") {{ setAlignment(Align.center, Align.center);}};
-        lblWay4 = new Label("", skin, "default") {{ setAlignment(Align.center, Align.center);}};
+        lblText2extra = new LabelFeat("", skin, "small", true);
+        lblWay3 = new LabelFeat("", skin, "default", true);
+        lblText3 = new LabelFeat("", skin, "small", true);
+        lblWay4 = new LabelFeat("", skin, "default", true);
         lblText4 = new LinkedLabel("", "", "", skin, "small", "link", new Runnable() {
             @Override
             public void run() {
@@ -93,6 +115,15 @@ public class DialogMoreCrystals extends DialogFeat {
         return super.show(stage);
     }
 
+    /**
+     * Initializes components
+     * @param table content table
+     * @param assetManager LibGdx Assets Manager
+     * @param audioManager {@link AudioManager}
+     * @param skin LibGdx skin
+     * @param promoDialog promo code dialog
+     * @param purchaseDialog purchase dialog
+     */
     private void init(Table table, AssetManager assetManager, AudioManager audioManager, Skin skin,
                       final Dialog promoDialog, final Dialog purchaseDialog) {
         assert table != null && assetManager != null && audioManager != null;

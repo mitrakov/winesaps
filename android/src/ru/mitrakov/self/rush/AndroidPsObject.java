@@ -46,7 +46,8 @@ class AndroidPsObject extends PsObject {
         active = value;
         if (active) {
             NotificationManager manager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.cancel(1); // cancel our notification with ID=1
+            if (manager != null)
+                manager.cancel(1); // cancel our notification with ID=1
         }
     }
 
@@ -64,7 +65,8 @@ class AndroidPsObject extends PsObject {
                 builder.setContentText(msg);
                 builder.setSmallIcon(R.drawable.winesaps);
                 builder.setDefaults(Notification.DEFAULT_ALL); // default sound, vibrate pattern and lights
-                manager.notify(1, builder.getNotification()); //"getNotification()" deprecated but "build()" uses API 16
+                if (manager != null)
+                    manager.notify(1, builder.getNotification()); //"getNotification" deprecated but "build" uses API16
             } else try {
                 pIntent.send();
             } catch (PendingIntent.CanceledException ignored) {

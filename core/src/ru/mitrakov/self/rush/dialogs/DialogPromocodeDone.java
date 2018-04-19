@@ -4,23 +4,31 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import ru.mitrakov.self.rush.ui.DialogFeat;
+import ru.mitrakov.self.rush.ui.*;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Promo code activated" dialog
+ * @author Mitrakov
  */
-
 public class DialogPromocodeDone extends DialogFeat {
+    /** Main message label (e.g. "You won with {0}’s promo code") */
     private final Label lblMessage;
+    /** Name of a friend who gave or took promo code */
     private String name = "";
+    /** Flag of promo code inviter (TRUE if we invited a friend, and FALSE if we're invited by our friend) */
     private boolean inviter;
+    /** Reward for activating promo code */
     private int crystals;
 
+    /**
+     * Creates a new "Promo code activated" dialog
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     */
     public DialogPromocodeDone(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center, Align.center);
+        lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(350); // here getContentTable != null
 
         button("OK"); // text will be replaced in onLocaleChanged()
@@ -45,6 +53,14 @@ public class DialogPromocodeDone extends DialogFeat {
         }
     }
 
+    /**
+     * Sets the arguments for this dialog
+     * @param name name of a friend who gave or took promo code
+     * @param inviter TRUE if we invited a friend, and FALSE if we're invited by our friend
+     * @param crystals reward for activating promo code
+     * @param i18n LibGdx internationalization bundle
+     * @return this
+     */
     public Dialog setArguments(String name, boolean inviter, int crystals, I18NBundle i18n) {
         assert name != null && i18n != null;
         this.name = name;

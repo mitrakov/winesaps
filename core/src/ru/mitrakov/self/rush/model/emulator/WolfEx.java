@@ -4,7 +4,8 @@ import ru.mitrakov.self.rush.model.Cell;
 import ru.mitrakov.self.rush.model.Cells;
 
 /**
- * Created by mitrakov on 11.03.2018
+ * Analog of Server Wolf class (reconstructed from Server v.1.3.6)
+ * @author Mitrakov
  */
 class WolfEx extends Cells.Wolf {
     int curDir = 1;

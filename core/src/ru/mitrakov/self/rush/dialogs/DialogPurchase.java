@@ -1,8 +1,8 @@
 package ru.mitrakov.self.rush.dialogs;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
@@ -14,11 +14,19 @@ import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.ui.*;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Choose SKU to purchase" dialog
+ * @author Mitrakov
  */
 public class DialogPurchase extends DialogFeat {
+    /** Error label (only in case of errors) */
     private final Label lblError;
 
+    /**
+     * Creates a new "Choose SKU to purchase" dialog, where a user can tap on a SKU (e.g. "Big Gems Pack") and buy it
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     * @param i18n LibGdx internationalization bundle
+     */
     public DialogPurchase(Skin skin, String windowStyleName, I18NBundle i18n) {
         super("", skin, windowStyleName);
         Table table = getContentTable();
@@ -56,6 +64,14 @@ public class DialogPurchase extends DialogFeat {
         }
     }
 
+    /**
+     * Updates SKU images depending on the response of current Billing Provider
+     * @param provider Billing Provider
+     * @param username user name
+     * @param i18n LibGdx internationalization bundle
+     * @param assetManager LibGdx Assets Manager
+     * @param audioManager {@link AudioManager}
+     */
     public void updateSkuButtons(final IBillingProvider provider, final String username, I18NBundle i18n,
                                  AssetManager assetManager, AudioManager audioManager) {
         assert provider != null && i18n != null && assetManager != null && audioManager != null;

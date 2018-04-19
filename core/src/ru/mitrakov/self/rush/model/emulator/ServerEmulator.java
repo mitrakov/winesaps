@@ -1,19 +1,29 @@
 package ru.mitrakov.self.rush.model.emulator;
 
-import ru.mitrakov.self.rush.GcResistantIntArray;
+import java.util.*;
+
 import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.net.IHandler;
+import ru.mitrakov.self.rush.GcResistantIntArray;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
+
+import static ru.mitrakov.self.rush.model.Model.Character.*;
+import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
 /**
  * Created by mitrakov on 04.02.2018
  */
 public class ServerEmulator {
+    private final Model model;
     private final IHandler handler;
     private final BattleManager battleManager;
+    private final IIntArray abilities1 = new GcResistantIntArray(10);
+    private final IIntArray abilities2 = new GcResistantIntArray(0);
+    private final List<Model.Character> characters = new ArrayList<Model.Character>(Model.characterValues.length);
 
-    public ServerEmulator(Model.IFileReader fileReader, IHandler handler) {
-        assert fileReader != null && handler != null;
+    public ServerEmulator(Model model, Model.IFileReader fileReader, IHandler handler) {
+        assert model != null && fileReader != null && handler != null;
+        this.model = model;
         this.handler = handler;
         this.battleManager = new BattleManager(this, fileReader);
     }
@@ -58,11 +68,17 @@ public class ServerEmulator {
         handler.onReceived(data.prepend(data.length() % 256).prepend(data.length() / 256));
     }
 
+    void gameOver(boolean winner) {
+        model.moveForwardSinglePlayerProgress(winner);
+    }
+
     private void attack(String levelName) {
-        IIntArray array = new GcResistantIntArray(4);
-        array.add(1).add(2).add(3).add(0x21).add(0x22).add(0x23);
-        battleManager.accept(Model.Character.Hedgehog, Model.Character.Rabbit, array, new GcResistantIntArray(0),
-                new String[]{levelName}, 90, 1); // TODO 90 1
+        abilities1.clear();
+        for (Model.Ability ability : model.userAbilities) {
+            int code = Arrays.binarySearch(abilityValues, ability); // don't use "ability.ordinal()" (GC pressure)
+            abilities1.add(code);
+        }
+        battleManager.accept(model.character, getEnemyCharacter(), abilities1, abilities2, new String[]{levelName}, 1);
     }
 
     private void move(int direction) {
@@ -75,5 +91,17 @@ public class ServerEmulator {
 
     private void useSkill(int skillId) {
         battleManager.useSkill(skillId);
+    }
+
+    private synchronized Model.Character getEnemyCharacter() {
+        characters.clear();
+        for (int i = 0; i < Model.characterValues.length; i++) {
+            Model.Character character = Model.characterValues[i];
+            if (character != None && character != model.character)
+                characters.add(character);
+        }
+        assert characters.size() > 0;
+        Collections.shuffle(characters);
+        return characters.get(0);
     }
 }

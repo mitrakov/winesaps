@@ -4,19 +4,26 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import ru.mitrakov.self.rush.ui.DialogFeat;
+import ru.mitrakov.self.rush.ui.*;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * Custom message box dialog
+ * @author Mitrakov
  */
 public class DialogInfo extends DialogFeat {
+    /** Message label */
     private final Label lblMessage;
 
+    /**
+     * Creates new message box dialog
+     * @param title header title (may be empty and then changed via {@link #setText(String, String)} method)
+     * @param skin LibGdx skin
+     * @param windowStyleName style name (usually just "default")
+     */
     public DialogInfo(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center);
+        lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(400); // here getContentTable != null
 
         button("OK"); // text will be replaced in onLocaleChanged()
@@ -37,6 +44,12 @@ public class DialogInfo extends DialogFeat {
         }
     }
 
+    /**
+     * Sets title and message text of the dialog
+     * @param header title text
+     * @param text message body text
+     * @return this
+     */
     public Dialog setText(String header, String text) {
         if (getTitleLabel() != null)
             getTitleLabel().setText(header);

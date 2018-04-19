@@ -443,10 +443,11 @@ class Parser implements IHandler {
                 int sectionLen = state.get(j + 1);
                 switch (sectionCode) {
                     case 1: // parse additional level objects
-                        for (int i = j + 2; i < j + 2 + sectionLen; i += 3) {
-                            int number = state.get(i);
-                            int id = state.get(i + 1);
-                            int xy = state.get(i + 2);
+                        int startK = j + 2;
+                        for (int k = startK; k + 2 < startK + sectionLen && k + 2 < state.length(); k += 3) {
+                            int number = state.get(k);
+                            int id = state.get(k + 1);
+                            int xy = state.get(k + 2);
                             model.appendObject(number, id, xy);
                         }
                         break;

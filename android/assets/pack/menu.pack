@@ -276,30 +276,65 @@ shutdown
   orig: 32, 32
   offset: 0, 0
   index: -1
-win
+spBronze
   rotate: false
   xy: 987, 434
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+spGold
+  rotate: false
+  xy: 451, 217
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+spSilver
+  rotate: false
+  xy: 485, 217
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+win
+  rotate: false
+  xy: 327, 188
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+spDone
+  rotate: false
+  xy: 184, 33
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+spLocked
+  rotate: false
+  xy: 267, 120
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
 statusMid
   rotate: false
-  xy: 184, 41
+  xy: 361, 204
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 statusOff
   rotate: false
-  xy: 267, 128
+  xy: 184, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 statusOn
   rotate: false
-  xy: 451, 233
+  xy: 293, 128
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

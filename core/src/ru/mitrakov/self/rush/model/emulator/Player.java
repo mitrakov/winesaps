@@ -7,7 +7,8 @@ import ru.mitrakov.self.rush.model.*;
 import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
 /**
- * Created by mitrakov on 09.03.2018
+ * Analog of Server Player class (reconstructed from Server v.1.3.6)
+ * @author Mitrakov
  */
 class Player {
     final ActorEx actor;

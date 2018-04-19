@@ -8,20 +8,33 @@ import ru.mitrakov.self.rush.model.Model;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Invite to battle" dialog
+ * @author Mitrakov
  */
 public class DialogInvite extends DialogFeat {
+    /** Invite types */
+    public enum InviteType {@Deprecated Training, ByName, Quick, Latest} // Training moved to SinglePlayer (since 2.0.0)
 
-    public enum InviteType {Training, ByName, Quick, Latest}
-
+    /** Reference to the model */
     private final Model model;
+    /** Question label (e.g. "Do you wanna invite {0}?") */
     private final Label lblQuestion;
     // private final CheckBox chkAddToFriends; @mitrakov (2017-07-19): decided to remove this possibility
 
+    /** Current invite type */
     private InviteType type = InviteType.Quick;
+    /** Current enemy name */
     private String name = "";
+    /** LibGdx internationalization bundle */
     private I18NBundle i18n;
 
+    /**
+     * Creates new "Invite to battle" dialog
+     * @param model {@link Model}
+     * @param skin LibGdx skin
+     * @param styleName style name (usually just "default")
+     * @param i18n LibGdx internationalization bundle
+     */
     public DialogInvite(Model model, Skin skin, String styleName, I18NBundle i18n) {
         super("", skin, styleName);
         assert model != null && i18n != null;
@@ -83,6 +96,12 @@ public class DialogInvite extends DialogFeat {
         }
     }
 
+    /**
+     * Sets arguments for this dialog
+     * @param type invite type
+     * @param name enemy name
+     * @return this
+     */
     public Dialog setArguments(InviteType type, String name) {
         assert type != null;
         this.type = type;
@@ -90,6 +109,7 @@ public class DialogInvite extends DialogFeat {
         return this;
     }
 
+    /** Rebuilds content according to invite type chosen */
     private void rebuildContent() {
         Table table = getContentTable();
         assert type != null && table != null && i18n != null;

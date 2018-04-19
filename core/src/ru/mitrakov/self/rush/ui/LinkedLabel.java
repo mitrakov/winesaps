@@ -32,9 +32,8 @@ public class LinkedLabel extends Table {
         add(lblLink = new Label(txtLink, skin, styleLink) {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     f.run();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).spaceRight(2);

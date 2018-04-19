@@ -15,30 +15,54 @@ import static ru.mitrakov.self.rush.model.Model.Ability.*;
 import static ru.mitrakov.self.rush.model.Model.HurtCause.*;
 
 /**
- * Created by mitrakov on 04.02.2018
+ * Analog of Server BattleManager class (reconstructed from Server v.1.3.6)
+ * @author Mitrakov
  */
 class BattleManager {
+    /** Reference to the Server emulator */
     private final ServerEmulator emulator;
+    /** Lock (analog of Mutex/RWMutes in Go) */
     private final Object lock = new Object();
+    /** Lock for battles collection (analog of Mutex/RWMutes in Go) */
     private final ReentrantLock battleLock = new ReentrantLock();
+    /** File reader to read levels from the disk */
     private final Model.IFileReader fileReader;
+    /** Environment (intended to have only 1 instance per all the battles) */
     private final Environment environment;
+    /** Helper array to store binary data and avoid invoking "new" (to decrease Garbage Collector pressure) */
     private final IIntArray array = new GcResistantIntArray(WIDTH * Field.HEIGHT);      // need to be synchronized!
 
-    private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal()"
-    private final int roundInfo = Arrays.binarySearch(cmdValues, ROUND_INFO);           // don't use "cmd.ordinal()"
-    private final int abilityList = Arrays.binarySearch(cmdValues, ABILITY_LIST);       // don't use "cmd.ordinal()"
-    private final int move = Arrays.binarySearch(cmdValues, MOVE);                      // don't use "cmd.ordinal()"
-    private final int stateChanged = Arrays.binarySearch(cmdValues, STATE_CHANGED);     // don't use "cmd.ordinal()"
-    private final int objectAppended = Arrays.binarySearch(cmdValues, OBJECT_APPENDED); // don't use "cmd.ordinal()"
-    private final int scoreChanged = Arrays.binarySearch(cmdValues, SCORE_CHANGED);     // don't use "cmd.ordinal()"
-    private final int thingTaken = Arrays.binarySearch(cmdValues, THING_TAKEN);         // don't use "cmd.ordinal()"
-    private final int effectChanged = Arrays.binarySearch(cmdValues, EFFECT_CHANGED);   // don't use "cmd.ordinal()"
-    private final int playerWounded = Arrays.binarySearch(cmdValues, PLAYER_WOUNDED);   // don't use "cmd.ordinal()"
-    private final int finished = Arrays.binarySearch(cmdValues, FINISHED);              // don't use "cmd.ordinal()"
+    /** Integer value for {@link Cmd#FULL_STATE} command */
+    private final int fullState = Arrays.binarySearch(cmdValues, FULL_STATE);           // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#ROUND_INFO} command */
+    private final int roundInfo = Arrays.binarySearch(cmdValues, ROUND_INFO);           // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#ABILITY_LIST} command */
+    private final int abilityList = Arrays.binarySearch(cmdValues, ABILITY_LIST);       // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#MOVE} command */
+    private final int move = Arrays.binarySearch(cmdValues, MOVE);                      // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#STATE_CHANGED} command */
+    private final int stateChanged = Arrays.binarySearch(cmdValues, STATE_CHANGED);     // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#OBJECT_APPENDED} command */
+    private final int objectAppended = Arrays.binarySearch(cmdValues, OBJECT_APPENDED); // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#SCORE_CHANGED} command */
+    private final int scoreChanged = Arrays.binarySearch(cmdValues, SCORE_CHANGED);     // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#THING_TAKEN} command */
+    private final int thingTaken = Arrays.binarySearch(cmdValues, THING_TAKEN);         // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#EFFECT_CHANGED} command */
+    private final int effectChanged = Arrays.binarySearch(cmdValues, EFFECT_CHANGED);   // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#PLAYER_WOUNDED} command */
+    private final int playerWounded = Arrays.binarySearch(cmdValues, PLAYER_WOUNDED);   // don't use "cmd.ordinal" (GC)
+    /** Integer value for {@link Cmd#FINISHED} command */
+    private final int finished = Arrays.binarySearch(cmdValues, FINISHED);              // don't use "cmd.ordinal" (GC)
 
+    /** Battle (on Server there is a Map of different battles, but for Emulator there is only one) */
     private Battle battle;
 
+    /**
+     * Creates new BattleManager (this class is intended to have a single instance)
+     * @param emulator reference to the Server emulator
+     * @param fileReader file reader
+     */
     BattleManager(ServerEmulator emulator, Model.IFileReader fileReader) {
         assert fileReader != null;
         this.emulator = emulator;
@@ -46,14 +70,23 @@ class BattleManager {
         this.environment = new Environment(this);
     }
 
+    /**
+     * @return file reader (NON-NULL)
+     */
     Model.IFileReader getFileReader() {
         return fileReader;
     }
 
+    /**
+     * @return battle Environment (NON-NULL)
+     */
     Environment getEnvironment() {
         return environment;
     }
 
+    /**
+     * @return battle (in Server returns battle by Sid)
+     */
     Battle getBattle() {
         battleLock.lock();
         Battle result = this.battle;
@@ -61,15 +94,28 @@ class BattleManager {
         return result;
     }
 
+    /**
+     * Accepts the invitation of the aggressor, creates and starts a new battle
+     * @param character1 character of the aggressor
+     * @param character2 character of the defender
+     * @param aggAbilities abilities of the aggressor
+     * @param defAbilities abilities of the defender
+     * @param levelnames level names
+     * @param wins count of round wins to win the entire battle (usually 3 on the Server)
+     */
     void accept(Model.Character character1, Model.Character character2, IIntArray aggAbilities, IIntArray defAbilities,
-                String[] levelnames, int timeSec, int wins) {
-        Battle battle = new Battle(character1, character2, levelnames, timeSec, wins, aggAbilities, defAbilities, this);
+                String[] levelnames, int wins) {
+        Battle battle = new Battle(character1, character2, levelnames, wins, aggAbilities, defAbilities, this);
         battleLock.lock();
         this.battle = battle;
         battleLock.unlock();
         startRound(battle.getRound());
     }
 
+    /**
+     * Handler for {@link Cmd#MOVE} command
+     * @param direction direction expressed as an integer constant (see {@link MoveDirection})
+     */
     void move(int direction) {
         assert 0 <= direction && direction < moveDirectionValues.length;
         Battle battle = getBattle();
@@ -84,6 +130,9 @@ class BattleManager {
         }
     }
 
+    /**
+     * Handler for {@link Cmd#USE_THING} command
+     */
     void useThing() {
         Battle battle = getBattle();
         if (battle != null) {
@@ -96,6 +145,10 @@ class BattleManager {
         }
     }
 
+    /**
+     * Handler for {@link Cmd#USE_SKILL} command
+     * @param skillId ability ID (see {@link Ability} enumeration starting with 0x20)
+     */
     void useSkill(int skillId) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -116,6 +169,9 @@ class BattleManager {
         }
     }
 
+    /**
+     * Shuts the Battle manager down and releases corresponding resources
+     */
     @SuppressWarnings("unused")
     void close() {
         //Assert(battleMgr.stop, battleMgr.environment)
@@ -123,6 +179,12 @@ class BattleManager {
         environment.close();
     }
 
+    /**
+     * Invoked when an object coordinates on a battlefield are changed
+     * @param obj object (NON-NULL)
+     * @param newXy new position
+     * @param reset TRUE if an object resets its position (e.g. teleportation), and FALSE - for smooth moving
+     */
     void objChanged(Cells.CellObject obj, int newXy, boolean reset) {
         synchronized (lock) {
             array.clear().add(stateChanged).add(obj.getNumber()).add(obj.getId()).add(newXy).add(reset ? 1 : 0);
@@ -130,6 +192,9 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when [non-poisoned] food has been eaten by an actor
+     */
     void foodEaten() {
         Battle battle = getBattle();
         if (battle != null) {
@@ -145,6 +210,10 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when a thing has been taken (dropped) by an actor
+     * @param thing thing (may be NULL that means an actor dropped a thing)
+     */
     void thingTaken(Cells.CellObjectThing thing) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -157,12 +226,20 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when a new object have been added to the battlefield (e.g. an actor established an umbrella)
+     * @param obj object (NON-NULL)
+     */
     void objAppended(Cells.CellObject obj) {
         synchronized (lock) {
             emulator.receive(array.clear().add(objectAppended).add(obj.getId()).add(obj.getNumber()).add(obj.getXy()));
         }
     }
 
+    /**
+     * Invoked when a round has been finished
+     * @param winner TRUE if we've won the round, and FALSE - if our enemy has won
+     */
     void roundFinished(boolean winner) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -184,6 +261,7 @@ class BattleManager {
                 battleLock.lock();
                 this.battle = null;
                 battleLock.unlock();
+                emulator.gameOver(winner);
                 synchronized (lock) {
                     array.clear();
                     array.add(finished).add(1).add(winner ? 1 : 0).add(score1).add(score2).add(0).add(0).add(0).add(0);
@@ -193,6 +271,11 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when an actor has been eaten by a wolf
+     * <br><b>Note:</b> This method differs from {@link #hurt(boolean, HurtCause) hurt()} and cannot be generalized
+     * @param actor actor (either we or the enemy)
+     */
     void eatenByWolf(ActorEx actor) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -205,6 +288,11 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when an actor has been hurt by something, expressed as <b>cause</b>
+     * @param me TRUE for us, and FALSE - for our enemy
+     * @param cause hurt cause (poisoned, sunk, etc.)
+     */
     void hurt(boolean me, Model.HurtCause cause) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -224,6 +312,12 @@ class BattleManager {
         }
     }
 
+    /**
+     * Invoked when the effect have been added/removed from the object
+     * @param effect effect
+     * @param added TRUE to add, and FALSE to remove effect
+     * @param objNumber object to apply the effect on (usually actors and wolves)
+     */
     void effectChanged(Model.Effect effect, boolean added, int objNumber) {
         int effectId = Arrays.binarySearch(effectValues, effect); // don't use "effect.ordinal()"!
         synchronized (lock) {
@@ -231,6 +325,11 @@ class BattleManager {
         }
     }
 
+    /**
+     * Applies the effect on the enemy (for us it's the opponent, but for him - it's ourselves)
+     * @param isActor1 TRUE if we're initiator, and FALSE - if the opponent is
+     * @param effect effect to apply on our enemy
+     */
     void setEffectOnEnemy(boolean isActor1, Model.Effect effect) {
         Battle battle = getBattle();
         if (battle != null) {
@@ -248,6 +347,10 @@ class BattleManager {
         }
     }
 
+    /**
+     * Starts the round
+     * @param round round
+     */
     private void startRound(Round round) {
         assert round != null;
         assert round.player1.actor != null && round.player2.actor != null;
@@ -260,7 +363,7 @@ class BattleManager {
         int lives1 = round.player1.lives;
         int lives2 = round.player2.lives;
         IIntArray abilities1 = round.getCurrentAbilities();
-        int t = round.timeSec;
+        int t = round.field.timeSec;
         String fname = round.levelname;
 
         synchronized (lock) {

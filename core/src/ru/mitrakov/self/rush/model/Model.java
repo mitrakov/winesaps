@@ -38,40 +38,40 @@ public class Model {
     public interface ISender {
         /**
          * Sends single command to the server.
-         * <br><b>See also:</b> {@link #send(int)}
+         * @see #send(int)
          * @param cmd command
          */
         void send(Cmd cmd);
         /**
          * Sends single command to the server.
-         * <br><b>See also:</b> {@link #send(Cmd)}
+         * @see #send(Cmd)
          * @param cmd command expressed as an integer
          */
         void send(int cmd);
         /**
          * Sends command with given byte arguments to the server.
-         * <br><b>See also:</b> {@link #send(int, int...)}
+         * @see #send(int, int...)
          * @param cmd command
          * @param arg arguments (please note they must be 0-255)
          */
         void send(Cmd cmd, int... arg);
         /**
          * Sends command with given byte arguments to the server.
-         * <br><b>See also:</b> {@link #send(Cmd, int...)}
+         * @see #send(Cmd, int...)
          * @param cmd command expressed as an integer
          * @param arg arguments (please note they must be 0-255)
          */
         void send(int cmd, int... arg);
         /**
          * Sends command with a given string to the server.
-         * <br><b>See also:</b> {@link #send(int, String)}
+         * @see #send(int, String)
          * @param cmd command
          * @param arg string argument that will be converted to UTF-8 byte array
          */
         void send(Cmd cmd, String arg);
         /**
          * Sends command with a given string to the server.
-         * <br><b>See also:</b> {@link #send(Cmd, String)}
+         * @see #send(Cmd, String)
          * @param cmd command expressed as an integer
          * @param arg string argument that will be converted to UTF-8 byte array
          */
@@ -88,42 +88,48 @@ public class Model {
     public interface IFileReader {
         /**
          * Writes a string to a file. The file may be overwritten by this operation.
-         * <br><b>See also:</b> {@link #append(String, String) append}, {@link #serialize(String, Object) serialize}
+         * @see #append(String, String) append
+         * @see #serialize(String, Object) serialize
          * @param filename file name
          * @param s string to be written
          */
         void write(String filename, String s);
         /**
          * Appends a string to the end of a file.
-         * <br><b>See also:</b> {@link #write(String, String) write}, {@link #serialize(String, Object) serialize}
+         * @see #write(String, String) write
+         * @see #serialize(String, Object) serialize
          * @param filename file name
          * @param s string to be written
          */
         void append(String filename, String s);
         /**
          * Reads a string from the file.
-         * <br><b>See also:</b> {@link #readAsByteArray(String) readAsByteArray}, {@link #deserialize(String) deserialize}
+         * @see #readAsByteArray(String) readAsByteArray
+         * @see #deserialize(String) deserialize
          * @param filename file name
          * @return content of the file represented as a String (may be NULL if the file doesn't exist)
          */
         String read(String filename);
         /**
          * Reads a byte array from the file.
-         * <br><b>See also:</b> {@link #read(String) read}, {@link #deserialize(String) deserialize}
+         * @see #read(String) read
+         * @see #deserialize(String) deserialize
          * @param filename file name
          * @return content of the file represented as a Byte Array (may be empty if the file doesn't exist)
          */
         byte[] readAsByteArray(String filename);
         /**
          * Reads an object from the file.
-         * <br><b>See also:</b> {@link #read(String) read}, {@link #readAsByteArray(String) readAsByteArray}
+         * @see #read(String) read
+         * @see #readAsByteArray(String) readAsByteArray
          * @param filename file name
          * @return content of the file represented as an arbitrary object (may be NULL if the file doesn't exist)
          */
         Object deserialize(String filename);
         /**
          * Writes an object to a file. The file may be overwritten by this operation.
-         * <br><b>See also:</b> {@link #append(String, String) append}, {@link #write(String, String) write}
+         * @see #append(String, String) append
+         * @see #write(String, String) write
          * @param filename file name
          * @param obj object (must be serializable)
          */
@@ -183,7 +189,7 @@ public class Model {
     /** Ability list; some abilities are stubs (a7, a8, up to a32), because skills start with an index=33 */
     public enum Ability {
         None, Snorkel, ClimbingShoes, SouthWester, VoodooMask, SapperShoes, Sunglasses,
-        a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19,
+        a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, SpPack2 /* since 2.0.0 */, a19,
         a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32,
         Miner, Builder, Shaman, Grenadier, TeleportMan
     }
@@ -297,6 +303,8 @@ public class Model {
     public final Collection<HistoryItem> history = new ConcurrentLinkedQueue<HistoryItem>();
     /** Collection of user's friends */
     public final Collection<FriendItem> friends = new ConcurrentLinkedQueue<FriendItem>();
+    /** Collection of user's abilities (the same as abilityExpireMap.keySet() but it helps to reduce GC pressure) */
+    public final Collection<Ability> userAbilities = new ConcurrentLinkedQueue<Ability>();
     /** Map: user ability -> minutes left (these abilities belong to a user, not to an actor in the battle) */
     public final Map<Ability, Integer> abilityExpireMap = new ConcurrentHashMap<Ability, Integer>(); // see note#2
 
@@ -330,7 +338,7 @@ public class Model {
     private static final int DEFENDER_ID = 5;
     /** Duration to ping the Server for UserInfo (msec) */
     private static final int PING_PERIOD_MSEC = 60000;
-    /** Offset for skills (there are 2 kinds of abilities: swaggas (1-31) and skills (32+)) */
+    /** Offset for skills (swaggas (1-15), spPacks (16-31), skills (32+)) */
     private static final int SKILL_OFFSET = 0x20;
     /** Standard promo code length (not necessary, just extra check to decrease Server calls) */
     private static final int PROMOCODE_LEN = 5;
@@ -368,11 +376,13 @@ public class Model {
     private final PsObject psObject;
     /** Locker object (only for synchronization purposes) */
     private final Object locker = new Object();
-    /** Abilities that belong to an ACTOR in the battle (don't mix up with "abilityExpires" that related to a USER) */
+    /** Abilities that belong to an ACTOR in the battle (don't mix up with "userAbilities" that related to a USER) */
     private final Collection<Ability> abilities = new ConcurrentLinkedQueue<Ability>(); // hotfix: must be concurrent!
     /** List of senders (e.g sender to Emulator for SinglePlayer, sender to the Server for MultiPlayer, etc.) */
     private final List<ISender> senders = new LinkedList<ISender>();
 
+    /** Current locale */
+    private Locale locale = Locale.getDefault();
     /** Current sender (one of senders in "senders" collection) */
     private ISender sender;
     /** Authorized flag (if TRUE then the authorization to the Server passed) */
@@ -387,8 +397,6 @@ public class Model {
     private transient int debugCounter;
     /** External file reader */
     public /*private final*/ IFileReader fileReader;        // public for debug purposes only!
-    /** Server emulator (for SinglePlayer mode) */
-    public /*private final*/ ServerEmulator serverEmulator; // public for debug purposes only!
     /** User's password hashed with MD5 */
     public /*private*/ String hash = "";                    // public for debug purposes only!
 
@@ -434,15 +442,6 @@ public class Model {
     }
 
     /**
-     * Sets a new Server Emulator to the model (for SinglePlayer mode).
-     * <b>NOTE:</b> call to this method DOES NOT switch the Model to SinglePlayer/MultiPlayer mode
-     * @param emulator server emulator (may be NULL)
-     */
-    public void setEmulator(ServerEmulator emulator) {
-        this.serverEmulator = emulator;
-    }
-
-    /**
      * Loads settings from the internal file
      */
     public void loadSettings() {
@@ -451,14 +450,21 @@ public class Model {
             if (s != null) {
                 String[] settings = s.split(" ");
                 if (settings.length > 4) {
+                    // settings 0-4 are always fixed
                     language = settings[0];
                     notifyNewBattles = settings[1].equals("1");
                     music = settings[2].equals("1");
                     soundEffects = settings[3].equals("1");
                     name = settings[4];
                     bus.raise(new EventBus.NameChangedEvent(name));
-                    if (settings.length > 5)
-                        hash = settings[5];
+                    // other settings may differ from version to version (since 2.0.0)
+                    for (int i = 5; i < settings.length; i++) {
+                        String st = settings[i];
+                        if (st.length() == 32)
+                            hash = st;
+                        else if (st.length() % 20 == 0)
+                            singlePlayerProgress = st;
+                    }
                 }
                 newbie = false;
             }
@@ -470,8 +476,8 @@ public class Model {
      */
     public void saveSettings() {
         if (fileReader != null) {
-            String s = String.format("%s %s %s %s %s %s", language, notifyNewBattles ? "1" : "0", music ? "1" : "0",
-                    soundEffects ? "1" : "0", name, hash);
+            String s = String.format(locale,"%s %s %s %s %s %s %s", language, notifyNewBattles ? "1" : "0",
+                    music ? "1" : "0", soundEffects ? "1" : "0", name, hash, singlePlayerProgress);
             fileReader.write(SETTINGS_FILE, s);
         }
     }
@@ -801,7 +807,7 @@ public class Model {
     }
 
     /**
-     * Sends GIVE_UP battle command to the server
+     * Sends GIVE_UP battle command to the server<br>
      * <b>NOTE:</b> also resets the current battle field
      */
     public void giveUp() {
@@ -940,21 +946,23 @@ public class Model {
 
         // parse abilities
         synchronized (locker) {
+            userAbilities.clear();
             abilityExpireMap.clear();
             int abilitiesCnt = data.get(i++);
             for (int j = 0; j < abilitiesCnt; j++, i += 3) {
                 if (i + 2 < data.length()) {
                     int id = data.get(i);
                     int minutes = data.get(i + 1) * 256 + data.get(i + 2);
-                    if (0 <= id && id < abilityValues.length)
+                    if (0 <= id && id < abilityValues.length) {
+                        userAbilities.add(abilityValues[id]);
                         abilityExpireMap.put(abilityValues[id], minutes);
+                    }
                 }
             }
         }
         abilityExpireTime = System.currentTimeMillis();
-        // fire the event (we use TreeSet to implicitly sort the key set; of course we may use ConcurrentSkipListMap
-        // for "abilityExpireMap", but it's not supported by API Level 8, so we use ConcurrentHashMap)
-        bus.raise(new EventBus.AbilitiesExpireUpdatedEvent(new TreeSet<Ability>(abilityExpireMap.keySet())));
+        // fire the event
+        bus.raise(new EventBus.AbilitiesExpireUpdatedEvent(userAbilities));
 
         // now we know valid user name => read the history from a local storage
         if (fileReader != null && history.isEmpty()) {
@@ -1477,25 +1485,14 @@ public class Model {
      */
     public void setClientVersion(int minVersionH, int minVersionM, int minVersionL,
             int curVersionH, int curVersionM, int curVersionL) {
-        String minVersion = String.format(Locale.getDefault(), "%d.%d.%d", minVersionH, minVersionM, minVersionL);
-        String curVersion = String.format(Locale.getDefault(), "%d.%d.%d", curVersionH, curVersionM, curVersionL);
+        String minVersion = String.format(locale, "%d.%d.%d", minVersionH, minVersionM, minVersionL);
+        String curVersion = String.format(locale, "%d.%d.%d", curVersionH, curVersionM, curVersionL);
         boolean versionAllowed = Winesaps.VERSION >= ((minVersionH << 16) | (minVersionM << 8) | minVersionL);
         boolean newVersionAvailable = Winesaps.VERSION < ((curVersionH << 16) | (curVersionM << 8) | curVersionL);
         if (!versionAllowed)
             bus.raise(new EventBus.VersionNotAllowedEvent(minVersion));
         if (newVersionAvailable)
             bus.raise(new EventBus.NewVersionAvailableEvent(curVersion));
-    }
-
-    /**
-     * Switches the SinglePlayer/MultiPlayer mode
-     * @param value TRUE for SinglePlayer mode, FALSE - for MultiPlayer
-     * @since 2.0.0
-     */
-    public void setSinglePlayer(boolean value) {
-        if (senders.size() == 2) {
-            sender = value ? senders.get(1) : senders.get(0);
-        }
     }
 
     // ======================
@@ -1632,6 +1629,194 @@ public class Model {
                         11, 22, 33, 44, 55, 66, 77); // 7b of fake data to reach total 32 bytes;
             }
         });
+    }
+
+    // =============================
+    // === SINGLE PLAYER SUPPORT ===
+    // =============================
+    // Fields and methods for the new feature: Single Player mode.
+    // The idea is to introduce "Server Emulator" that simulates the actual server responses inside the client
+    // Since 2.0.0
+    // =============================
+
+    /**
+     * Total count of SinglePlayer levels packs
+     * @since 2.0.0
+     */
+    public static final int SINGLE_PLAYER_PACKS_COUNT = 2;
+    /**
+     * Count of levels in SinglePlayer levels packs
+     * @since 2.0.0
+     */
+    public static final int SINGLE_PLAYER_PACK_SIZE = 20;
+    /**
+     * Offset for SinglePlayer Levels Packs (swaggas (1-15), spPacks (16-31), skills (32+))
+     * @since 2.0.0
+     */
+    private static final int SP_PACK_OFFSET = 0x10;
+
+    /**
+     * Server emulator (for SinglePlayer mode)
+     * @since 2.0.0
+     */
+    public /*private final*/ ServerEmulator serverEmulator;
+
+    /**
+     * SinglePlayer progress (one char corresponds to a single level)
+     * <ul>
+     * <li>a = opened, 0 attempts</li>
+     * <li>b = opened, 1 attempt</li>
+     * <li>c = opened, 2 attempts</li>
+     * <li>d = opened, 3+ attempts</li>
+     * <li>e = done, gold budge</li>
+     * <li>f = done, silver budge</li>
+     * <li>g = done, bronze budge</li>
+     * <li>h = done, no budge</li>
+     * <li>i = closed</li>
+     * </ul>
+     * @since 2.0.0
+     */
+    public volatile String singlePlayerProgress = "aiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
+
+    /**
+     * "Latest" flag for SinglePlayer (if TRUE, then a user has chosen the latest level, FALSE - otherwise)
+     * <br>Note that the user might choose any previously completed level just for fun
+     * @since 2.0.0
+     */
+    private boolean singlePlayerLatest;
+
+    /**
+     * Sets a new Server Emulator to the model (for SinglePlayer mode).
+     * <b>NOTE:</b> call to this method DOES NOT switch the Model to SinglePlayer/MultiPlayer mode
+     * @param emulator server emulator (may be NULL)
+     * @since 2.0.0
+     */
+    public void setEmulator(ServerEmulator emulator) {
+        this.serverEmulator = emulator;
+    }
+
+    /**
+     * Switches the SinglePlayer/MultiPlayer mode
+     * @param value TRUE for SinglePlayer mode, FALSE - for MultiPlayer
+     * @since 2.0.0
+     */
+    public void setSinglePlayer(boolean value) {
+        if (senders.size() == 2) {
+            sender = value ? senders.get(1) : senders.get(0);
+        }
+    }
+
+    /**
+     * @return current SinglePlayer Pack number (from 1 to {@link #SINGLE_PLAYER_PACKS_COUNT PACKS_COUNT})
+     * @since 2.0.0
+     */
+    public int getCurSinglePlayerPack() {
+        for (char c : "abcd".toCharArray()) {
+            int result = singlePlayerProgress.indexOf(c);
+            if (result >= 0)
+                return (result / SINGLE_PLAYER_PACK_SIZE) + 1;
+        }
+        return 1;
+    }
+
+    /**
+     * @return current SinglePlayer Level number (from 1 to {@link #SINGLE_PLAYER_PACK_SIZE PACK_SIZE})
+     * @since 2.0.0
+     */
+    public int getCurSinglePlayerLevel() {
+        for (char c : "abcd".toCharArray()) {
+            int result = singlePlayerProgress.indexOf(c);
+            if (result >= 0)
+                return (result % SINGLE_PLAYER_PACK_SIZE) + 1;
+        }
+        return 1;
+    }
+
+    /**
+     * @param packNumber pack number (from 1 to {@link #SINGLE_PLAYER_PACKS_COUNT PACKS_COUNT})
+     * @return TRUE, if a given Levels Pack is available for the user in SinglePlayer mode, FALSE - if it's not
+     * @since 2.0.0
+     */
+    public boolean isSinglePlayerPackAvailable(int packNumber) {
+        if (packNumber < 2) return true;                         // pack 1 is always available
+        else for (Ability ability : userAbilities) {             // in Java 8 may be replaced with lambda
+            if (ability.ordinal() == SP_PACK_OFFSET + packNumber)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Sets chosen by a user Pack number and Level number in SinglePlayer mode (note that a user might choose any of
+     * the previously completed levels)
+     * @param pack pack number (from 1 to {@link #SINGLE_PLAYER_PACKS_COUNT PACKS_COUNT})
+     * @param level level number (from 1 to {@link #SINGLE_PLAYER_PACK_SIZE PACK_SIZE})
+     * @since 2.0.0
+     */
+    public void setChosenSinglePlayerLevel(int pack, int level) {
+        singlePlayerLatest = getCurSinglePlayerPack() == pack && getCurSinglePlayerLevel() == level;
+    }
+
+    /**
+     * Moves forward the SinglePlayer progress. Method has no effect if a user chose not the latest level
+     * <br><b>Note:</b> method should be called regardless of a user won or lost
+     * @see #setChosenSinglePlayerLevel(int, int)
+     * @param winner TRUE if a user has won, and FALSE - if lost
+     * @since 2.0.0
+     */
+    public void moveForwardSinglePlayerProgress(boolean winner) {
+        if (singlePlayerLatest) { // if a user re-plays an old level just for fun => we won't move forward the progress
+            for (char c : "abcd".toCharArray()) {
+                int result = singlePlayerProgress.indexOf(c);
+                if (result >= 0) {
+                    char[] newProgress = singlePlayerProgress.toCharArray();
+                    // replace current level character
+                    switch (c) {
+                        case 'a': newProgress[result] = winner ? 'e' : 'b'; break;
+                        case 'b': newProgress[result] = winner ? 'f' : 'c'; break;
+                        case 'c': newProgress[result] = winner ? 'g' : 'd'; break;
+                        case 'd': newProgress[result] = winner ? 'h' : 'd'; break;
+                        default:
+                    }
+                    // if win => also replace (i.e. "unblock") the next character
+                    if (winner && result + 1 < newProgress.length)
+                        newProgress[result+1] = 'a';
+                    // update progress
+                    singlePlayerProgress = new String(newProgress);
+                    saveSettings();
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param packNumber pack number (from 1 to {@link #SINGLE_PLAYER_PACKS_COUNT PACKS_COUNT})
+     * @return price of unlocking the given Levels Pack for SinglePlayer
+     * @since 2.0.0
+     */
+    public int getSinglePlayerPackPrice(int packNumber) {
+        if (packNumber < 2) return 0;           // pack 1 is for free
+        else for (Product product : products) { // in Java 8 may be replaced with lambda
+            if (product.ability.ordinal() == SP_PACK_OFFSET + packNumber)
+                return product.crystals;
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Sends BUY_PRODUCT command to the server in order to unlock a given Levels Pack for SinglePlayer mode
+     * @see #buyProduct(Product)
+     * @param packNumber pack number (from 1 to {@link #SINGLE_PLAYER_PACKS_COUNT PACKS_COUNT})
+     * @since 2.0.0
+     */
+    public void buySinglePlayerPack(int packNumber) {
+        if (packNumber >= 2) {
+            for (Product product : products) { // in Java 8 may be replaced with lambda
+                if (product.ability.ordinal() == SP_PACK_OFFSET + packNumber)
+                    buyProduct(product);
+            }
+        }
     }
 }
 

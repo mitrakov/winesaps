@@ -11,20 +11,41 @@ import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * Settings dialog
+ * @author Mitrakov
  */
 public class DialogSettings extends DialogFeat {
+    /** Winesaps instance */
     private final Winesaps game;
+    /** Reference to the model */
     private final Model model;
+
+    /** "Notify about new battles" YES button */
     private final TextButton btnNotifyYes;
+    /** "Notify about new battles" NO button */
     private final TextButton btnNotifyNo;
+    /** "Sign out" button */
     private final TextButton btnSignOut;
+    /** "Notify about new battles" label */
     private final Label lblLang;
+    /** "Choose a language" label */
     private final Label lblNotify;
 
+    /** Music On/Off image button */
     private /*final*/ Button btnMusic;
+    /** Sound effects On/Off image button */
     private /*final*/ Button btnSfx;
 
+    /**
+     * Creates a new Settings dialog
+     * @param game {@link Winesaps}
+     * @param model {@link Model}
+     * @param skin LibGdx skin
+     * @param styleName style name (usually just "default")
+     * @param atlas texture atlas that contains icons needed
+     * @param i18n LibGdx internationalization bundle
+     * @param audioManager {@link AudioManager}
+     */
     public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, TextureAtlas atlas,
                           I18NBundle i18n, AudioManager audioManager) {
         super("", skin, styleName);
@@ -46,8 +67,7 @@ public class DialogSettings extends DialogFeat {
                 model.signOut();
             }
         });
-        lblLang = new Label("", skin, "default");
-        lblLang.setAlignment(Align.center);
+        lblLang = new LabelFeat("", skin, "default", true);
         lblNotify = new Label("", skin, "default");
 
         button("Close"); // text will be replaced in onLocaleChanged()
@@ -91,6 +111,14 @@ public class DialogSettings extends DialogFeat {
         }
     }
 
+    /**
+     * Initializes components for this dialog
+     * @param table content table
+     * @param skin LibGdx skin
+     * @param atlas texture atlas that contains icons needed
+     * @param i18n LibGdx internationalization bundle
+     * @param audioManager {@link AudioManager}
+     */
     private void init(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, final AudioManager audioManager) {
         assert table != null && atlas != null;
         table.pad(20);
@@ -156,7 +184,15 @@ public class DialogSettings extends DialogFeat {
         table.add(tableRight).top().spaceRight(30);
     }
 
-    // note: copy-paste from DialogLanguage
+    /**
+     * Builds table with different languages and country flags
+     * <br><b>Note:</b> this method is copy-paste from {@link DialogLanguage}
+     * @param table content table
+     * @param skin LibGdx skin
+     * @param atlas texture atlas containing all the flags needed
+     * @param i18n LibGdx internationalization bundle
+     * @param manager {@link AudioManager}
+     */
     private void buildLangTable(Table table, Skin skin, TextureAtlas atlas, I18NBundle i18n, AudioManager manager) {
         assert table != null && atlas != null && i18n != null && manager != null;
         final DialogSettings self = this;
@@ -175,11 +211,10 @@ public class DialogSettings extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.english"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "en";
                     game.updateLocale();
                     self.pack();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -195,11 +230,10 @@ public class DialogSettings extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.russian"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "ru";
                     game.updateLocale();
                     self.pack();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -215,11 +249,10 @@ public class DialogSettings extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.spanish"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "es";
                     game.updateLocale();
                     self.pack();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -235,11 +268,10 @@ public class DialogSettings extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.portuguese"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "pt";
                     game.updateLocale();
                     self.pack();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();
@@ -255,11 +287,10 @@ public class DialogSettings extends DialogFeat {
         table.add(new Label(i18n.format("dialog.settings.lang.french"), skin, "default") {{
             addListener(new ClickListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public void clicked(InputEvent event, float x, float y) {
                     model.language = "fr";
                     game.updateLocale();
                     self.pack();
-                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }}).left();

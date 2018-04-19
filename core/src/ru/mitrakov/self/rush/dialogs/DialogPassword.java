@@ -10,19 +10,37 @@ import ru.mitrakov.self.rush.PsObject;
 import ru.mitrakov.self.rush.model.Model;
 
 /**
- * Created by mitrakov on 05.03.2017
+ * "Change weak password" dialog
+ * @author Mitrakov
  */
 public class DialogPassword extends DialogFeat {
+    /** Reference to the model */
     private final Model model;
+    /** LibGdx Assets Manager */
     private final AssetManager assetManager;
 
+    /** "Please provide a new password to protect your account" label */
     private final Label lblMessage;
+    /** "Password" label */
     private final Label lblPassword1;
+    /** "Repeat password" label */
     private final Label lblPassword2;
+    /** Text area for a new password */
     private final TextField txtPassword;
+    /** Text area for repeating the new password */
     private final TextField txtPasswordAgain;
+    /** Message box to show errors and warnings */
     private final DialogInfo infoDialog;
 
+    /**
+     * Creates new "Change weak password" dialog
+     * @param model {@link Model}
+     * @param title header title
+     * @param skin LibGdx skin
+     * @param style style name (usually just "default")
+     * @param psObject Platform Specific object
+     * @param assetManager LibGdx Assets Manager
+     */
     public DialogPassword(Model model, String title, Skin skin, String style, PsObject psObject,
                           AssetManager assetManager) {
         super(title, skin, style);
@@ -31,8 +49,7 @@ public class DialogPassword extends DialogFeat {
         this.model = model;
         this.assetManager = assetManager;
 
-        lblMessage = new Label("", skin, "default");
-        lblMessage.setAlignment(Align.center);
+        lblMessage = new LabelFeat("", skin, "default", true);
         txtPassword = new TextFieldFeat("", skin, "default", psObject, null);
         txtPassword.setPasswordMode(true);
         txtPassword.setPasswordCharacter('*');

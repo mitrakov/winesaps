@@ -53,9 +53,10 @@ public class ScreenTraining extends LocalizableScreen {
     @Override
     public void show() {
         super.show();
-        if (model.newbie)
-            model.receiveLevel("tutorial.level");
-        else game.setNextScreen();
+        if (model.newbie) {
+            model.setSinglePlayer(true);
+            model.invite("tutorial_for_emulator");
+        } else game.setNextScreen();
     }
 
     @Override
