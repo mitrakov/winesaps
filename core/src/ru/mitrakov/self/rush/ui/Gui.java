@@ -127,8 +127,8 @@ public class Gui extends Actor {
 
     /**
      * Creates a new instance of Gui
-     * @param model - model (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
      */
     public Gui(Model model, AssetManager assetManager) {
         assert model != null && assetManager != null;
@@ -189,7 +189,7 @@ public class Gui extends Actor {
         // animations
         for (Class clazz : new Class[]{Actor1.class, Actor2.class}) {
             AnimationData<Model.Character> data = new AnimationData<Model.Character>(SPEED_X);
-            for (Model.Character character : model.characterValues) {
+            for (Model.Character character : Model.characterValues) {
                 if (character != Model.Character.None) {
                     String filename = String.format("pack/%s.pack", character.name().toLowerCase());
                     data.add(character, assetManager.<TextureAtlas>get(filename), .07f);
@@ -274,28 +274,30 @@ public class Gui extends Actor {
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
-            // draw 1-st layer (bottom (block/water/dias) with one of 4 styles)
+            // draw 1-st layer (restrictive walls, with one of 4 styles)
+            drawEdgeWalls(batch);
+            // draw 2-st layer (bottom (block/water/dias) with one of 4 styles)
             drawBottom(field, batch);
-            // draw 2-nd layer (static objects)
+            // draw 3-nd layer (static objects)
             drawObjects(field, batch);
-            // draw 3-rd layer (dynamic decorations)
+            // draw 4-rd layer (dynamic decorations)
             drawDynamicDecorations(field, batch);
-            // draw 4-rd layer (LadderBottom objects)
+            // draw 5-rd layer (LadderBottom objects)
             drawLadderBottom(field, batch);
-            // draw 5-th layer (waterfalls)
+            // draw 6-th layer (waterfalls)
             drawWaterfalls(field, batch);
-            // draw 6-th layer (collectible objects)
+            // draw 7-th layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 7-th layer (antidotes, teleports)
+            // draw 8-th layer (antidotes, teleports)
             drawAnim(field, batch, Antidote.class, animAntidote);
             drawAnim(field, batch, Teleport.class, animTeleport);
             drawAnim(field, batch, Flashbang.class, animFlashbang);
             drawAnim(field, batch, Detector.class, animDetector);
-            // draw 8-th layer (animated characters)
+            // draw 9-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
-            // draw 9-th layer (all overlaying objects like Umbrella)
+            // draw 10-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
-            // draw 10-th layer (smokes, explosions, aura)
+            // draw 11-th layer (smokes, explosions, aura)
             drawSingleAnim(animExplosion, batch, dt);
             drawSingleAnim(animSmoke, batch, dt);
             drawSingleAnim(animAura, batch, dt);
@@ -306,7 +308,7 @@ public class Gui extends Actor {
 
     /**
      * Handles model's events from the Event Bus
-     * @param event - event (may be NULL)
+     * @param event event (may be NULL)
      */
     public void handleEvent(EventBus.Event event) {
         if (event instanceof EventBus.MoveResponseEvent || event instanceof EventBus.ConnectedChangeEvent)
@@ -356,16 +358,28 @@ public class Gui extends Actor {
         }
     }
 
+    // =======================
+    // === PUBLIC  METHODS ===
+    // =======================
+    // put all public methods here
+    // =======================
+
     /**
      * Turns movements input listening on/off
-     * @param value - true to allow movemnents
+     * @param value true to allow movemnents
      */
     public void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);
     }
 
+    // ====================================
+    // === PRIVATE DRAW HELPERS METHODS ===
+    // ====================================
+    // put all helpers methods here
+    // ====================================
+
     /**
-     * @param cell - cell (NON-NULL)
+     * @param cell cell (NON-NULL)
      * @return bottom's texture width (default is CELL_SIZ_W)
      */
     private float getBottomWidth(Cell cell) {
@@ -383,7 +397,7 @@ public class Gui extends Actor {
     }
 
     /**
-     * @param cell - cell (NON-NULL)
+     * @param cell cell (NON-NULL)
      * @return bottom's texture height (default is CELL_SIZ_W)
      */
     private float getBottomHeight(Cell cell) {
@@ -402,8 +416,8 @@ public class Gui extends Actor {
     }
 
     /**
-     * @param field - battle field (NON-NULL)
-     * @param cell - cell to check (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param cell cell to check (NON-NULL)
      * @return true, if the cell below has a rope line
      */
     private boolean isRopeBelow(Field field, Cell cell) {
@@ -413,38 +427,30 @@ public class Gui extends Actor {
     }
 
     /**
-     * @param field - battle field (NON-NULL)
-     * @param cell - cell to check (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param cell cell to check (NON-NULL)
      * @return true, if the cell has a LadderBottom object
      */
     private boolean ladderBottomExists(Field field, Cell cell) {
         // field != NULL, cell != NULL
         Cell cellBelow = cell.xy + Field.WIDTH < Field.WIDTH * Field.HEIGHT ? field.cells[cell.xy + Field.WIDTH] : null;
-        if (cellBelow != null) {
-            if (cell.objectExists(LadderTop.class) && cellBelow.objectExists(LadderBottom.class))
-                return true;
-        }
-        return false;
+        return cellBelow != null && cell.objectExists(LadderTop.class) && cellBelow.objectExists(LadderBottom.class);
     }
 
     /**
-     * @param field - battle field (NON-NULL)
-     * @param cell - cell to check (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param cell cell to check (NON-NULL)
      * @return true, if the cell has a LadderTop object
      */
     private boolean ladderTopExists(Field field, Cell cell) {
         // field != NULL, cell != NULL
         Cell cellAbove = cell.xy - Field.WIDTH >= 0 ? field.cells[cell.xy - Field.WIDTH] : null;
-        if (cellAbove != null) {
-            if (cellAbove.objectExists(LadderTop.class) && cell.objectExists(LadderBottom.class))
-                return true;
-        }
-        return false;
+        return cellAbove != null && cellAbove.objectExists(LadderTop.class) && cell.objectExists(LadderBottom.class);
     }
 
     /**
-     * @param field - battle field (NON-NULL)
-     * @param cell - cell to check (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param cell cell to check (NON-NULL)
      * @return true, if the animated object (Actor1, Actor2 or Wolf) uses a ladder (moves up or down)
      */
     private boolean animatedUsesLadder(Field field, Cell cell) {
@@ -465,11 +471,17 @@ public class Gui extends Actor {
         return false;
     }
 
+    // ============================
+    // === PRIVATE DRAW METHODS ===
+    // ============================
+    // put all the draw methods here
+    // ============================
+
     /**
      * Draws static objects according to a given map (NOT CONSIDER Style Packs)
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
-     * @param map - map that matches object classes to their textures
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
+     * @param map map that matches object classes to their textures
      */
     private void drawObjects(Field field, Batch batch, ObjectMap<Class, TextureRegion> map) {
         // field != null (assert omitted)
@@ -496,8 +508,8 @@ public class Gui extends Actor {
 
     /**
      * Draws cells bottom (block, water, dais)
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
      */
     private void drawBottom(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
@@ -529,9 +541,39 @@ public class Gui extends Actor {
     }
 
     /**
+     * Draws restrictive virtual walls on the left and the right side of the battlefield (they DON'T exists on Server!)
+     * @param batch OpenGL sprite batch (NON-NULL)
+     * @since 2.0.0
+     */
+    private void drawEdgeWalls(Batch batch) {
+        // field != null && batch != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = -2; i < Field.WIDTH + 2; i++) {
+                if (i < 0 || i >= Field.WIDTH) {
+                    IntMap<TextureRegion> m = texturesStat.get(Block.class);
+                    if (m != null) {
+                        TextureRegion textureDown = texturesDownSolid.get(model.stylePack);
+                        TextureRegion textureUp = m.get(model.stylePack);
+                        if (textureDown != null && textureUp != null) {
+                            float downWidth = textureDown.getRegionWidth(), downHeight = textureDown.getRegionHeight();
+                            float x1 = convertXFromModelToScreen(i);
+                            float y1 = convertYFromModelToScreen(j);
+                            float x2 = convertXFromModelToScreen(i) - (textureUp.getRegionWidth() - downWidth) / 2;
+                            float y2 = convertYFromModelToScreen(j) + downHeight;
+                            batch.draw(textureUp, x2, y2);
+                            if (j < Field.HEIGHT - 1)
+                                batch.draw(textureDown, x1, y1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Draws static objects according to texturesStat map and considering the current Style Pack
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
      */
     private void drawObjects(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
@@ -559,8 +601,8 @@ public class Gui extends Actor {
 
     /**
      * Draws animated waterfalls
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
      */
     private void drawWaterfalls(Field field, Batch batch) {
         // field != null (assert omitted)
@@ -585,8 +627,8 @@ public class Gui extends Actor {
 
     /**
      * Draws animated decorations according to the current Style Pack
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
      */
     private void drawDynamicDecorations(Field field, Batch batch) {
         // field != null (assert omitted)
@@ -612,10 +654,10 @@ public class Gui extends Actor {
 
     /**
      * Draw the given animation considering current "time" variable
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
-     * @param clazz - CellObject class
-     * @param anim - animation
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
+     * @param clazz CellObject class
+     * @param anim animation
      */
     private void drawAnim(Field field, Batch batch, Class<? extends CellObject> clazz, Animation<TextureRegion> anim) {
         // field != null && batch != null (assert omitted)
@@ -637,8 +679,8 @@ public class Gui extends Actor {
 
     /**
      * Draws animated LadderBottom objects
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
      */
     private void drawLadderBottom(Field field, Batch batch) {
         // field != null (assert omitted)
@@ -675,9 +717,9 @@ public class Gui extends Actor {
 
     /**
      * Draws animated objects (Actor1, Actor2, Wolf)
-     * @param field - battle field (NON-NULL)
-     * @param batch - OpenGL sprite batch (NON-NULL)
-     * @param dt - current delta time
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
+     * @param dt current delta time
      */
     @SuppressWarnings("ConstantConditions")
     private void drawAnimatedObjects(Field field, Batch batch, float dt) {
@@ -800,9 +842,9 @@ public class Gui extends Actor {
 
     /**
      * Draws single animation from the beginning up to the end
-     * @param anim - animation
-     * @param batch - OpenGL sprite batch
-     * @param dt - current delta time
+     * @param anim animation
+     * @param batch OpenGL sprite batch
+     * @param dt current delta time
      */
     private void drawSingleAnim(AnimInfo anim, Batch batch, float dt) {
         // anim != null && batch != null (assert omitted)
@@ -817,8 +859,8 @@ public class Gui extends Actor {
 
     /**
      * Draws full screen flare effect (ensure it is drawn after all other layers)
-     * @param batch - OpenGL sprite batch
-     * @param dt - current delta time
+     * @param batch OpenGL sprite batch
+     * @param dt current delta time
      */
     private void drawFlare(Batch batch, float dt) {
         Animation<TextureRegion> animation = animFlare.animation; // animation != NULL (assert omitted)
