@@ -87,6 +87,9 @@ public class Gui extends Actor {
     private final ObjectMap<Class, AnimationData<Model.Character>> texturesAnim =
             new ObjectMap<Class, AnimationData<Model.Character>>(2);
     private final IntMap<TextureRegion> texturesDownSolid = new IntMap<TextureRegion>(STYLES_COUNT);
+    private final IntMap<TextureRegion> texturesWall = new IntMap<TextureRegion>(STYLES_COUNT);
+    private final IntMap<TextureRegion> texturesWaterUp = new IntMap<TextureRegion>(STYLES_COUNT);
+    private final IntMap<TextureRegion> texturesWaterDown = new IntMap<TextureRegion>(STYLES_COUNT);
     private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
             new IntMap<AnimationData<Model.Character>>(100);
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
@@ -140,9 +143,9 @@ public class Gui extends Actor {
         setWidth(Winesaps.WIDTH);
         setHeight(Field.HEIGHT * CELL_SIZ_H);
 
-        // down textures (block, dias, water), each with 4 styles
+        // down textures (block, dias), each with 4 styles (since 2.0.0: water was excluded)
         TextureAtlas atlasDown = assetManager.get("pack/down.pack");
-        for (Class clazz : new Class[]{Block.class, Dais.class, Water.class}) {
+        for (Class clazz : new Class[]{Block.class, Dais.class/*, Water.class*/}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
                 String key = clazz.getSimpleName() + i;
@@ -158,9 +161,16 @@ public class Gui extends Actor {
             if (texture != null)
                 texturesDownSolid.put(i, texture);
         }
-        // static up textures, each with 4 styles
+        // down water textures (4 styles, since 2.0.0)
+        for (int i = 0; i < STYLES_COUNT; i++) {
+            String key = Water.class.getSimpleName() + i;
+            TextureRegion texture = atlasDown.findRegion(key);
+            if (texture != null)
+                texturesWaterDown.put(i, texture);
+        }
+        // static up textures, each with 4 styles (since 2.0.0: water and block was excluded)
         TextureAtlas atlasUp = assetManager.get("pack/up.pack");
-        for (Class clazz : new Class[]{Block.class, LadderTop.class, RopeLine.class, Water.class,
+        for (Class clazz : new Class[]{/*Block.class, */LadderTop.class, RopeLine.class, /*Water.class,*/
                 DecorationStatic.class, DecorationWarning.class, DecorationDanger.class, Stair.class}) {
             IntMap<TextureRegion> m = new IntMap<TextureRegion>(STYLES_COUNT); // .... GC!
             for (int i = 0; i < STYLES_COUNT; i++) {
@@ -170,6 +180,20 @@ public class Gui extends Actor {
                     m.put(i, texture);
             }
             texturesStat.put(clazz, m);
+        }
+        // up wall textures (4 styles, since 2.0.0)
+        for (int i = 0; i < STYLES_COUNT; i++) {
+            String key = Block.class.getSimpleName() + i;
+            TextureRegion texture = atlasUp.findRegion(key);
+            if (texture != null)
+                texturesWall.put(i, texture);
+        }
+        // up water textures (4 styles, since 2.0.0)
+        for (int i = 0; i < STYLES_COUNT; i++) {
+            String key = Water.class.getSimpleName() + i;
+            TextureRegion texture = atlasUp.findRegion(key);
+            if (texture != null)
+                texturesWaterUp.put(i, texture);
         }
         // collectible textures
         for (Class clazz : new Class[]{
@@ -274,27 +298,28 @@ public class Gui extends Actor {
 
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
-            // draw 1-st layer (restrictive walls, with one of 4 styles)
-            drawEdgeWalls(batch);
-            // draw 2-st layer (bottom (block/water/dias) with one of 4 styles)
+            // draw 1-st layer (bottom (block/dias) with one of 4 styles)
             drawBottom(field, batch);
-            // draw 3-nd layer (static objects)
+            // draw 2-nd layer (static objects)
             drawObjects(field, batch);
-            // draw 4-rd layer (dynamic decorations)
+            // draw 3-rd layer (dynamic decorations)
             drawDynamicDecorations(field, batch);
-            // draw 5-rd layer (LadderBottom objects)
+            // draw 4-rd layer (LadderBottom objects)
             drawLadderBottom(field, batch);
-            // draw 6-th layer (waterfalls)
+            // draw 5-th layer (waterfalls)
             drawWaterfalls(field, batch);
-            // draw 7-th layer (collectible objects)
+            // draw 6-th layer (collectible objects)
             drawObjects(field, batch, texturesCollectible);
-            // draw 8-th layer (antidotes, teleports)
+            // draw 7-th layer (antidotes, teleports)
             drawAnim(field, batch, Antidote.class, animAntidote);
             drawAnim(field, batch, Teleport.class, animTeleport);
             drawAnim(field, batch, Flashbang.class, animFlashbang);
             drawAnim(field, batch, Detector.class, animDetector);
-            // draw 9-th layer (animated characters)
+            // draw 8-th layer (animated characters)
             drawAnimatedObjects(field, batch, dt);
+            // draw 9-th layer: walls and water after animated objects (since 2.0.0)
+            drawWallsAndWater(field, batch);
+            drawEdgeWalls(batch);
             // draw 10-th layer (all overlaying objects like Umbrella)
             drawObjects(field, batch, texturesOverlay);
             // draw 11-th layer (smokes, explosions, aura)
@@ -507,7 +532,8 @@ public class Gui extends Actor {
     }
 
     /**
-     * Draws cells bottom (block, water, dais)
+     * Draws cells bottom (block, dais)
+     * <br><b>Note:</b> since 2.0.0 we draw bottom water textures separately
      * @param field battle field (NON-NULL)
      * @param batch OpenGL sprite batch (NON-NULL)
      */
@@ -550,20 +576,17 @@ public class Gui extends Actor {
         for (int j = 0; j < Field.HEIGHT; j++) {
             for (int i = -2; i < Field.WIDTH + 2; i++) {
                 if (i < 0 || i >= Field.WIDTH) {
-                    IntMap<TextureRegion> m = texturesStat.get(Block.class);
-                    if (m != null) {
-                        TextureRegion textureDown = texturesDownSolid.get(model.stylePack);
-                        TextureRegion textureUp = m.get(model.stylePack);
-                        if (textureDown != null && textureUp != null) {
-                            float downWidth = textureDown.getRegionWidth(), downHeight = textureDown.getRegionHeight();
-                            float x1 = convertXFromModelToScreen(i);
-                            float y1 = convertYFromModelToScreen(j);
-                            float x2 = convertXFromModelToScreen(i) - (textureUp.getRegionWidth() - downWidth) / 2;
-                            float y2 = convertYFromModelToScreen(j) + downHeight;
-                            batch.draw(textureUp, x2, y2);
-                            if (j < Field.HEIGHT - 1)
-                                batch.draw(textureDown, x1, y1);
-                        }
+                    TextureRegion textureDown = texturesDownSolid.get(model.stylePack);
+                    TextureRegion textureUp = texturesWall.get(model.stylePack);
+                    if (textureDown != null && textureUp != null) {
+                        float bottomWidth = textureDown.getRegionWidth(), bottomHeight = textureDown.getRegionHeight();
+                        float x1 = convertXFromModelToScreen(i);
+                        float y1 = convertYFromModelToScreen(j);
+                        float x2 = convertXFromModelToScreen(i) - (textureUp.getRegionWidth() - bottomWidth) / 2;
+                        float y2 = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(textureUp, x2, y2);
+                        if (j < Field.HEIGHT - 1)
+                            batch.draw(textureDown, x1, y1);
                     }
                 }
             }
@@ -593,6 +616,46 @@ public class Gui extends Actor {
                                 batch.draw(texture, x, y);
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Draws walls and water
+     * @param field battle field (NON-NULL)
+     * @param batch OpenGL sprite batch (NON-NULL)
+     */
+    private void drawWallsAndWater(Field field, Batch batch) {
+        // field != null && batch != null (assert omitted)
+        for (int j = 0; j < Field.HEIGHT; j++) {
+            for (int i = 0; i < Field.WIDTH; i++) {
+                Cell cell = field.cells[j * Field.WIDTH + i]; // cell != NULL (assert omitted)
+                if (cell.bottom instanceof Water) {
+                    TextureRegion texture = texturesWaterDown.get(model.stylePack);
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i);
+                        float y = convertYFromModelToScreen(j);
+                        batch.draw(texture, x, y);
+                    }
+                }
+                float bottomWidth = getBottomWidth(cell), bottomHeight = getBottomHeight(cell);
+                if (cell.objectExists(Water.class)) {
+                    TextureRegion texture = texturesWaterUp.get(model.stylePack);
+                    if (texture != null) {
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
+                    }
+                }
+                if (cell.objectExists(Block.class)) {
+                    TextureRegion texture = texturesWall.get(model.stylePack);
+                    if (texture != null) {
+
+                        float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
+                        float y = convertYFromModelToScreen(j) + bottomHeight;
+                        batch.draw(texture, x, y);
                     }
                 }
             }
@@ -731,6 +794,8 @@ public class Gui extends Actor {
                 if (cell.objectExists(CellObjectRaisable.class)) {
                     if (texturesOverlay.containsKey(Box.class))
                         bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
+                } else if (cell.bottom instanceof Water && !cell.objectExists(BeamChunk.class)) {
+                    bottomHeight *= -1; // animated objects slightly go deep in water (since 2.0.0)
                 }
                 for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
                     CellObject obj = cell.getObject(k);
