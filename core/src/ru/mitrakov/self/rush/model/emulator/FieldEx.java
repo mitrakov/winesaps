@@ -1,8 +1,8 @@
 package ru.mitrakov.self.rush.model.emulator;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
@@ -329,6 +329,11 @@ class FieldEx extends Field {
         objChanged(thing, cell.xy, false);
     }
 
+    /**
+     * Method to use a thing
+     * @param actor actor
+     * @param thing thing to be used
+     */
     void useThing(ActorEx actor, Cells.CellObjectThing thing) {
         assert actor != null && thing != null;
 
@@ -342,7 +347,7 @@ class FieldEx extends Field {
             cell = myCell;
         }
 
-        // // ================
+        // ================
         if (thing instanceof Cells.UmbrellaThing) {
             Cell next = getCellByDirection(cell, actor.isDirectedToRight());
             if (next != null && next.objectExists(Cells.Waterfall.class)) {
@@ -362,6 +367,14 @@ class FieldEx extends Field {
             actor.setEffect(Attention, 2, null);
     }
 
+    /**
+     * Relocates the object from one point to another. This is internal method, please use
+     * {@link #move(Cells.CellObject, int)} from external code
+     * @param oldCell old cell
+     * @param newCell new cell
+     * @param obj object to be relocated
+     * @param reset TRUE if an object resets its position (e.g. teleportation), and FALSE - for smooth moving
+     */
     void relocate(Cell oldCell, Cell newCell, Cells.CellObject obj, boolean reset) {
         assert oldCell != null && newCell != null;
 
@@ -373,6 +386,11 @@ class FieldEx extends Field {
         checkCell(newCell);
     }
 
+    /**
+     * Checks cell for any game actions. All the game logic is concentrated here.
+     * Should be called each time an object takes the cell
+     * @param cell cell to check
+     */
     private void checkCell(Cell cell) {
         assert cell != null;
 
@@ -474,6 +492,12 @@ class FieldEx extends Field {
         }
     }
 
+    /**
+     * Retrieves neighbour cell to <b>curCell</b> according to given direction
+     * @param curCell current cell
+     * @param toRight TRUE to get the cell on the right, and FALSE - on the left
+     * @return neighbour cell, or NULL, if the current cell is located on the edge
+     */
     Cell getCellByDirection(Cell curCell, boolean toRight) {
         assert curCell != null;
         int xy = curCell.xy;
@@ -487,6 +511,11 @@ class FieldEx extends Field {
         }
     }
 
+    /**
+     * Creates a bridge (by establishing 3 beam chunks)
+     * @param cell0 start cell
+     * @param toRight TRUE to build a bridge to the right, and FALSE - to the left
+     */
     private void createBeamChunks(Cell cell0, boolean toRight) {
         if (cell0 != null) {
             Cell cell1 = getCellByDirection(cell0, toRight);
@@ -517,6 +546,12 @@ class FieldEx extends Field {
         }
     }
 
+    /**
+     * [Recursively] looks up the [buried] mines to the given direction, and removes them, if any
+     * @param cell start point
+     * @param toRight TRUE to look up to the right, and FALSE - to the left
+     * @param n recursive parameter
+     */
     private void detectMines(Cell cell, boolean toRight, int n) {
         if (cell != null && n >= 0) {
             Cells.Mine mine = cell.getFirst(Cells.Mine.class);
@@ -529,6 +564,11 @@ class FieldEx extends Field {
         }
     }
 
+    /**
+     * Replaces all the virtual "Favourite Food" items with correponding analogs (carrot, nut, meat or mushroom)
+     * @param actor1 actor1
+     * @param actor2 actor2
+     */
     void replaceFavouriteFood(ActorEx actor1, ActorEx actor2) {
         List<Cells.CellObjectFavouriteFood> foodActorLst = getFavouriteFoodList();
         for (int i = 0; i < foodActorLst.size(); i++) {
@@ -550,6 +590,14 @@ class FieldEx extends Field {
         }
     }
 
+    /**
+     * Creates real favourite food (carrot, nut, meat or mushroom) regarding to the actor's character
+     * @param actor actor
+     * @param num object number on the battlefield
+     * @param cell cell to store the new food item
+     * @return new food item created
+     * @see #replaceFavouriteFood(ActorEx, ActorEx)
+     */
     private Cells.CellObjectFood createFavouriteFood(ActorEx actor, int num, Cell cell) {
         assert cell != null;
 
@@ -565,6 +613,13 @@ class FieldEx extends Field {
         return new Cells.Apple(cell, num);
     }
 
+    /**
+     * Checks whether the given food is poison for the given actor
+     * <br><b>Note:</b> it's a "pure" method, i.e. it DOES NOT take to account antidotes and so on
+     * @param actor actor
+     * @param food food
+     * @return TRUE, if the given food is poison for the given actor
+     */
     private boolean isPoison(ActorEx actor, Cells.CellObjectFood food) {
         switch (actor.getCharacter()) {
             case Rabbit:
@@ -579,26 +634,50 @@ class FieldEx extends Field {
         return true;
     }
 
+    /**
+     * @param food food item
+     * @return TRUE, if the given food is poison for rabbits
+     * @see #isPoison(ActorEx, Cells.CellObjectFood)
+     */
     private boolean isPoisonForRabbit(Cells.CellObjectFood food) {
         // can eat apples, pears and CARROTS
         return food instanceof Cells.Mushroom || food instanceof Cells.Nut || food instanceof Cells.Meat;
     }
 
+    /**
+     * @param food food item
+     * @return TRUE, if the given food is poison for hedgehogs
+     * @see #isPoison(ActorEx, Cells.CellObjectFood)
+     */
     private boolean isPoisonForHedgehog(Cells.CellObjectFood food) {
         // can eat apples, pears and MUSHROOMS
         return food instanceof Cells.Carrot || food instanceof Cells.Nut || food instanceof Cells.Meat;
     }
 
+    /**
+     * @param food food item
+     * @return TRUE, if the given food is poison for squirrels
+     * @see #isPoison(ActorEx, Cells.CellObjectFood)
+     */
     private boolean isPoisonForSquirrel(Cells.CellObjectFood food) {
         // can eat apples, pears and NUTS
         return food instanceof Cells.Carrot || food instanceof Cells.Mushroom || food instanceof Cells.Meat;
     }
 
+    /**
+     * @param food food item
+     * @return TRUE, if the given food is poison for cats
+     * @see #isPoison(ActorEx, Cells.CellObjectFood)
+     */
     private boolean isPoisonForCat(Cells.CellObjectFood food) {
         // can eat apples, pears and MEAT
         return food instanceof Cells.Carrot || food instanceof Cells.Mushroom || food instanceof Cells.Nut;
     }
 
+    /**
+     * @param xy base XY
+     * @return the "reflected" XY coordinate regarding to the given base <b>xy</b> for this battlefield
+     */
     private int getMirrorXy(int xy) {
         int x0 = xy % WIDTH;
         int y0 = xy / WIDTH;
@@ -607,6 +686,18 @@ class FieldEx extends Field {
         return y * WIDTH + x;
     }
 
+    /**
+     * Factory method to create new objects based on their things (i.e.
+     * {@link ru.mitrakov.self.rush.model.Cells.UmbrellaThing UmbrellaThing} will produce
+     * {@link ru.mitrakov.self.rush.model.Cells.Umbrella Umbrella} object)
+     * <br><b>Note:</b> this method is helper, and it doesn't exist on the Server (on Server logic of producing objects
+     * is encapsulated inside the objects themselves; here we just reuse {@link Cells} class, and in order not to
+     * rewrite that code we have to have such factory methods)
+     * @param thing thing to be emplaced with a corresponding object
+     * @param number sequential number for a new object on the battlefield
+     * @param cell cell to store new object
+     * @return new object emplaced
+     */
     private Cells.CellObject emplace(Cells.CellObjectThing thing, int number, Cell cell) {
         // DANGER CODE: "new" may cause troubles with Garbage Collector; we should investigate its impact
         if (thing instanceof Cells.UmbrellaThing)

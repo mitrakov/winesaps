@@ -17,18 +17,40 @@ import static ru.mitrakov.self.rush.model.Model.abilityValues;
  * @author Mitrakov
  */
 public class Round {
+    /** Reference to the Battle manager */
     private final BattleManager battleManager;
+    /** Helper array for 'current abilities' (in order to avoid "new" operations and decrease GC pressure) */
     private final IIntArray abilities = new GcResistantIntArray(abilityValues.length);
+    /** Helper set to store all the skills used */
     private final Set<Model.Ability> usedSkills = new LinkedHashSet<Model.Ability>();
+    /** Random */
     private final Random rand = new Random(System.nanoTime());
 
+    /** Round number, starting with 0 */
     final int number;
+    /** Player 1 */
     final Player player1;
+    /** Player 2 */
     final Player player2;
+    /** Battlefield */
     final FieldEx field;
+    /** Level name */
     final String levelname;
+    /** Round Countdown Timer (it is named "stop" because in Go there is a channel "stop" to interrupt the timer) */
     final Timer stop;
 
+    /**
+     * Creates new round
+     * @param character1 character of Player 1
+     * @param character2 character of Player 2
+     * @param number round number, starting with 0
+     * @param levelName level name
+     * @param skills1 list of skills for Player 1
+     * @param skills2 list of skills for Player 2
+     * @param swaggas1 list of swaggas for Player 1
+     * @param swaggas2 list of swaggas for Player 2
+     * @param battleManager {@link BattleManager}
+     */
     public Round(Model.Character character1, Model.Character character2, int number, String levelName,
                  List<Model.Ability> skills1, List<Model.Ability> skills2,
                  List<Model.Ability> swaggas1, List<Model.Ability> swaggas2, BattleManager battleManager) {
@@ -84,10 +106,19 @@ public class Round {
         }, field.timeSec * 1000);
     }
 
+    /**
+     * Returns Player by Sid (Server's notation kept; here we just return either our Player, or enemy's Player)
+     * @param isSid1 TRUE to return our Player, and FALSE - to return our enemy's Player
+     * @return either our Player, or enemy's Player
+     */
     Player getPlayerBySid(boolean isSid1) {
         return isSid1 ? player1 : player2;
     }
 
+    /**
+     * @param actor actor from the Battlefield
+     * @return Player instance by the given Actor instance
+     */
     Player getPlayerByActor(ActorEx actor) {
         assert actor != null;
         if (actor == player1.actor) return player1;
@@ -95,6 +126,9 @@ public class Round {
         return null;
     }
 
+    /**
+     * Checks whether a round should be finished (usually when all the fruit have been eaten)
+     */
     synchronized void checkRoundFinished() {
         // tryMutex is not necessary here (synchronized is enough)
         if (field.getFoodCountForActor(player1.actor) == 0)
@@ -108,11 +142,17 @@ public class Round {
             finishRoundForced(); */
     }
 
+    /**
+     * Invoked by the internal timer on time out
+     */
     synchronized private void timeOut() {
         // tryMutex is not necessary here (synchronized is enough)
         finishRoundForced();
     }
 
+    /**
+     * Forcefully closes the round regardless of the normal game-over conditions
+     */
     private void finishRoundForced() {
         battleManager.roundFinished(false);
         /* This is a Server algorithm:
@@ -128,6 +168,10 @@ public class Round {
         }*/
     }
 
+    /**
+     * Performs single "move" action for Actor1
+     * @param direction move direction
+     */
     void move(Model.MoveDirection direction) {
         // get components
         ActorEx actor = player1.actor;
@@ -164,10 +208,19 @@ public class Round {
             actor.addStep();
     }
 
+    /**
+     * Decreases the count of lives and returns whether the remaining count of lives are still > 0
+     * @param me TRUE for our Player, and FALSE - for the enemy
+     * @return TRUE, if remaining lives is enough to continue the round, and FALSE otherwise
+     */
     boolean wound(boolean me) {
         return me ? (--player1.lives > 0) : (--player2.lives > 0);
     }
 
+    /**
+     * Restores the actor at its start place after being wounded
+     * <br><b>Note:</b> here we consider only Actor1, just as on the Server both actors are taken into account
+     */
     void restore() {
         ActorEx actor = player1.actor;
         assert actor != null;
@@ -178,6 +231,11 @@ public class Round {
         } else throw new IllegalStateException("Entry not found");
     }
 
+    /**
+     * Sets the given thing (e.g. {@link ru.mitrakov.self.rush.model.Cells.UmbrellaThing}) to the player
+     * <br><b>Note:</b> here we consider only Player1, just as on the Server both players are taken into account
+     * @param thing thing
+     */
     void setThingToPlayer(Cells.CellObjectThing thing) {
         assert field != null && player1 != null;
 
