@@ -331,8 +331,8 @@ class FieldEx extends Field {
 
     /**
      * Method to use a thing
-     * @param actor actor
-     * @param thing thing to be used
+     * @param actor actor (NON-NULL)
+     * @param thing thing to be used (NON-NULL)
      */
     void useThing(ActorEx actor, Cells.CellObjectThing thing) {
         assert actor != null && thing != null;
