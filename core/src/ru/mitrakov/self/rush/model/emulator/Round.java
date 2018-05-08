@@ -8,7 +8,6 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
 import static ru.mitrakov.self.rush.model.Field.*;
 import static ru.mitrakov.self.rush.model.Model.Ability.*;
-import static ru.mitrakov.self.rush.model.Model.Character.*;
 import static ru.mitrakov.self.rush.model.Model.MoveDirection.*;
 import static ru.mitrakov.self.rush.model.Model.abilityValues;
 
@@ -23,8 +22,6 @@ public class Round {
     private final IIntArray abilities = new GcResistantIntArray(abilityValues.length);
     /** Helper set to store all the skills used */
     private final Set<Model.Ability> usedSkills = new LinkedHashSet<Model.Ability>();
-    /** Random */
-    private final Random rand = new Random(System.nanoTime());
 
     /** Round number, starting with 0 */
     final int number;
@@ -80,10 +77,10 @@ public class Round {
         ActorEx actor1 = field.actor1;
         ActorEx actor2 = field.actor2;
 
+        if (actor2 == null)                            // on ServerEmulator actor2 may be NULL (on Server - can't)
+            actor2 = new ActorEx(TRASH_CELL, 0);
         actor1.setCharacter(character1);
-        if (actor2 != null)                            // on ServerEmulator actor2 may be NULL (on Server - can't)
-            actor2.setCharacter(character2);
-        else actor2 = createFakeActorDifferentFrom(character1);
+        actor2.setCharacter(character2);
 
         for (int i = 0; i < swaggas1.size(); i++) {    // don't use iterators here (GC!)
             Model.Ability s = swaggas1.get(i);
@@ -321,33 +318,5 @@ public class Round {
         if (skill == Grenadier) return new Cells.FlashbangThing(TRASH_CELL, objNumber);
         if (skill == TeleportMan) return new Cells.TeleportThing(TRASH_CELL, objNumber);
         return null;
-    }
-
-    /**
-     * Helper method to create an actor that has a character, different from the given character.
-     * It can be useful to avoid generating the identical enemy that leads to generation the same non-poisoned food on
-     * the battlefield.
-     * <br><b>Note:</b> method doesn't exist on the Server
-     * @param character base character
-     * @return new Actor whose character differs from the given character
-     */
-    private ActorEx createFakeActorDifferentFrom(Model.Character character) {
-        final double r = rand.nextDouble();
-        final Model.Character newCharacter;
-
-        // DO NOT use switch(character)!!! It causes call Character.values() that produces work for GC!
-        if (character == Rabbit)
-            newCharacter = r < .33 ? Hedgehog : r < .66 ? Squirrel : Cat;
-        else if (character == Hedgehog)
-            newCharacter = r < .33 ? Rabbit : r < .66 ? Squirrel : Cat;
-        else if (character == Squirrel)
-            newCharacter = r < .33 ? Rabbit : r < .66 ? Hedgehog : Cat;
-        else if (character == Cat)
-            newCharacter = r < .33 ? Rabbit : r < .66 ? Hedgehog : Squirrel;
-        else newCharacter = Model.Character.None;
-
-        ActorEx result = new ActorEx(TRASH_CELL, 0);
-        result.setCharacter(newCharacter);
-        return result;
     }
 }

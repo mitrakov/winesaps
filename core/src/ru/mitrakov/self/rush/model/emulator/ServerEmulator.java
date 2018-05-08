@@ -94,36 +94,64 @@ public class ServerEmulator {
         handler.onReceived(data.prepend(data.length() % 256).prepend(data.length() / 256));
     }
 
+    /**
+     * Invoked on game over event
+     * @param winner TRUE if we've won, and FALSE if we've lost
+     */
     void gameOver(boolean winner) {
         model.moveForwardSinglePlayerProgress(winner);
     }
 
+    /**
+     * Starts the battles (sends ACCEPT command to the Battle Manager)
+     * @param levelName level name
+     */
     private void attack(String levelName) {
         abilities1.clear();
         for (Model.Ability ability : model.userAbilities) {
             int code = Arrays.binarySearch(abilityValues, ability); // don't use "ability.ordinal()" (GC pressure)
             abilities1.add(code);
         }
-        battleManager.accept(model.character, getEnemyCharacter(), abilities1, abilities2, new String[]{levelName}, 1);
+        Model.Character char1 = model.character;
+        Model.Character char2 = getCharacterExcept(model.character);
+        battleManager.accept(char1, char2, abilities1, abilities2, new String[]{levelName}, 1);
     }
 
+    /**
+     * Sends {@link Model.Cmd#MOVE} command to the Battle Manager
+     * @param direction direction expressed as an integer constant
+     *                  (see {@link ru.mitrakov.self.rush.model.Model.MoveDirection MoveDirection} for more details)
+     */
     private void move(int direction) {
         battleManager.move(direction);
     }
 
+    /**
+     * Sends {@link Model.Cmd#USE_THING} command to the Battle Manager
+     */
     private void useThing() {
         battleManager.useThing();
     }
 
+    /**
+     * Sends {@link Model.Cmd#USE_SKILL} command to the Battle Manager
+     */
     private void useSkill(int skillId) {
         battleManager.useSkill(skillId);
     }
 
-    private synchronized Model.Character getEnemyCharacter() {
+    /**
+     * Helper method to randomly pick up a character, different from the given character.
+     * It may be useful to avoid generating the identical enemy that leads to generation the same non-poisoned food on
+     * the battlefield.
+     * @param baseCharacter base character
+     * @return a character that differs from the given character
+     */
+    private synchronized Model.Character getCharacterExcept(Model.Character baseCharacter) {
         characters.clear();
         for (int i = 0; i < Model.characterValues.length; i++) {
             Model.Character character = Model.characterValues[i];
-            if (character != None && character != model.character)
+            if (character != None && character != baseCharacter)
                 characters.add(character);
         }
         assert characters.size() > 0;

@@ -22,7 +22,7 @@ public class Cell {
     /**
      * Private constructor (use <b>newCell()</b> factory method)
      * @param xy index in a battle field
-     * @see {@link ru.mitrakov.self.rush.model.Cell#newCell(int, int, Field.NextNumber, int) newCell}
+     * @see #newCell(int, int, Field.NextNumber, int)
      */
     private Cell(int xy) {
         this.xy = xy;
