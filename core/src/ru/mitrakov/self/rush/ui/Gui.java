@@ -291,7 +291,7 @@ public class Gui extends Actor {
         Field field = model.field; // model.field may suddenly become NULL at any moment, so a local var being used
         if (field != null) {
             // draw 1-st layer (restrictive walls, with one of 4 styles)
-            drawEdgeWalls(batch);
+            drawEdgeWalls(field, batch);
             // draw 2-st layer (bottom (block/water/dias) with one of 4 styles)
             drawBottom(field, batch);
             // draw 3-nd layer (static objects)
@@ -490,6 +490,38 @@ public class Gui extends Actor {
         return false;
     }
 
+    /**
+     * Checks whether the given row contains any object
+     * @param field battle field (NON-NULL)
+     * @param y Y-coordinate
+     * @return TRUE, if and only if the given row contains any object
+     * @see #anythingExistsOnRowBottom(Field, int)
+     */
+    private boolean anythingExistsOnRow(Field field, int y) {
+        for (int i = 0; i < Field.WIDTH; i++) {
+            Cell cell = field.cells[y * Field.WIDTH + i]; // cell != NULL (assert omitted)
+            if (cell.getObjectsCount() > 0)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether the given row contains at least 1 non-empty bottom
+     * @param field battle field (NON-NULL)
+     * @param y Y-coordinate
+     * @return TRUE, if and only if the given row contains at least one non-empty bottom
+     * @see #anythingExistsOnRow(Field, int)
+     */
+    private boolean anythingExistsOnRowBottom(Field field, int y) {
+        for (int i = 0; i < Field.WIDTH; i++) {
+            Cell cell = field.cells[y * Field.WIDTH + i]; // cell != NULL (assert omitted)
+            if (cell.bottom != null)
+                return true;
+        }
+        return false;
+    }
+
     // ============================
     // === PRIVATE DRAW METHODS ===
     // ============================
@@ -562,12 +594,15 @@ public class Gui extends Actor {
 
     /**
      * Draws restrictive virtual walls on the left and the right side of the battlefield (they DON'T exists on Server!)
+     * @param field battle field (NON-NULL)
      * @param batch OpenGL sprite batch (NON-NULL)
      * @since 2.0.0
      */
-    private void drawEdgeWalls(Batch batch) {
+    private void drawEdgeWalls(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
+            boolean needDrawUp = anythingExistsOnRow(field, j);
+            boolean needDrawDown = anythingExistsOnRowBottom(field, j);
             for (int i = -2; i < Field.WIDTH + 2; i++) {
                 if (i < 0 || i >= Field.WIDTH) {
                     IntMap<TextureRegion> m = texturesStat.get(Block.class);
@@ -575,14 +610,16 @@ public class Gui extends Actor {
                         TextureRegion textureDown = texturesDownSolid.get(model.stylePack);
                         TextureRegion textureUp = m.get(model.stylePack);
                         if (textureDown != null && textureUp != null) {
-                            float bottomWidth = textureDown.getRegionWidth(), bottomHeight = textureDown.getRegionHeight();
+                            float bottomWidth = textureDown.getRegionWidth();
+                            float bottomHeight = textureDown.getRegionHeight();
                             float x1 = convertXFromModelToScreen(i);
                             float y1 = convertYFromModelToScreen(j);
                             float x2 = convertXFromModelToScreen(i) - (textureUp.getRegionWidth() - bottomWidth) / 2;
                             float y2 = convertYFromModelToScreen(j) + bottomHeight;
-                            batch.draw(textureUp, x2, y2);
-                            if (j < Field.HEIGHT - 1)
+                            if (needDrawDown)
                                 batch.draw(textureDown, x1, y1);
+                            if (needDrawUp)
+                                batch.draw(textureUp, x2, y2);
                         }
                     }
                 }
