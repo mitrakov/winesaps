@@ -6,117 +6,232 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ru.mitrakov.self.rush.model.Cells.CellObject;
 
 /**
- * Created by mitrakov on 21.04.2017
+ * Event Bus
+ * @author Mitrakov
  */
 public class EventBus {
+    /** Base event class */
     public static abstract class Event {}
 
+    /** Event: MOVE acknowledge from the Server */
     public static final class MoveResponseEvent extends Event {}
+    /** Event: aggressor is busy */
     public static final class AggressorBusyEvent extends Event {}
+    /** Event: defender is busy */
     public static final class DefenderBusyEvent extends Event {}
+    /** Error: enemy not found */
     public static final class EnemyNotFoundEvent extends Event {}
+    /** Event: start waiting for enemy in the Quick Battle mode */
     public static final class WaitingForEnemyEvent extends Event {}
+    /** Error: attack yourself*/
     public static final class AttackedYourselfEvent extends Event {}
+    /** Error: cannot add a friend */
     public static final class AddFriendErrorEvent extends Event {}
+    /** Error: no enough gems to perform an operation */
     public static final class NoCrystalsEvent extends Event {}
+    /** Error: incorrect login/password pair */
     public static final class IncorrectCredentialsEvent extends Event {}
+    /** Error: incorrect name provided */
     public static final class IncorrectNameEvent extends Event {}
+    /** Error: incorrect email provided */
     public static final class IncorrectEmailEvent extends Event {}
+    /** Error: name already exists */
     public static final class DuplicateNameEvent extends Event {}
+    /** Error: sign-up error */
     public static final class SignUpErrorEvent extends Event {}
+    /** Warning: Server is going to be restarted (soft-reboot) */
     public static final class ServerGonnaStopEvent extends Event {}
+    /** Error: battle is not found or already finished*/
     public static final class BattleNotFoundEvent extends Event {}
+    /** Error: password provided is too weak */
     public static final class WeakPasswordEvent extends Event {}
+    /** Error: unsupported protocol version (client needs to be updated) */
     public static final class UnsupportedProtocolEvent extends Event {}
+    /** Error: client version is lower than the minimum version */
     public static final class VersionNotAllowedEvent extends Event {
+        /** Minimum version allowed */
         public String minVersion;
+        /**
+         * Creates a new VersionNotAllowed Event
+         * @param minVersion minimum version supported by the Server
+         */
         VersionNotAllowedEvent(String minVersion) {
             this.minVersion = minVersion;
         }
     }
+    /** Event: new version is available to download */
     public static final class NewVersionAvailableEvent extends Event {
+        /** New version */
         public String newVersion;
+        /**
+         * Creates a new NewVersionAvailable Event
+         * @param newVersion new version ready for downloading
+         */
         NewVersionAvailableEvent(String newVersion) {
             this.newVersion = newVersion;
         }
     }
+    /** Event: name is changed (by loading data from settings file or by the Server); also the name may be the same */
     public static final class NameChangedEvent extends Event {
+        /** Username */
         public String name;
+        /**
+         * Creates new NameChanged Event
+         * @param name username
+         */
         NameChangedEvent(String name) {
             this.name = name;
         }
     }
+    /** Event: gems balance has been changed */
     public static final class CrystalChangedEvent extends Event {
+        /** Gems count */
         public int crystals;
+        /**
+         * Creates a new CrystalChanged Event
+         * @param crystals updated gems balance
+         */
         CrystalChangedEvent(int crystals) {
             this.crystals = crystals;
         }
     }
+    /** Event: user's abilities have been changed */
     public static final class AbilitiesExpireUpdatedEvent extends Event {
+        /** List of abilities */
         public Iterable<Model.Ability> items;
+        /**
+         * Creates a new AbilitiesExpireUpdated Event
+         * @param items updated list of the user's abilities
+         */
         AbilitiesExpireUpdatedEvent(Iterable<Model.Ability> items) {
             this.items = items;
         }
     }
+    /** Event: friends list has been updated */
     public static final class FriendListUpdatedEvent extends Event {
+        /** List of friends */
         public Collection<FriendItem> items;
+        /**
+         * Creates a new FriendListUpdated Event
+         * @param items updated list of user's friends
+         */
         FriendListUpdatedEvent(Collection<FriendItem> items) {
             this.items = items;
         }
     }
+    /** Event: new friend has been added */
     public static final class FriendAddedEvent extends Event {
+        /** New friend's name */
         public FriendItem name;
+        /**
+         * Creates a new FriendAdded Event
+         * @param name new friend's name
+         */
         FriendAddedEvent(FriendItem name) {
             this.name = name;
         }
     }
+    /** Event: new friend has been removed */
     public static final class FriendRemovedEvent extends Event {
+        /** Ex-friend's name */
         public String name;
+        /**
+         * Creates a new FriendRemoved Event
+         * @param name ex-friend's name
+         */
         FriendRemovedEvent(String name) {
             this.name = name;
         }
     }
+    /** Event: someone invited us to a battle */
     public static final class InviteEvent extends Event {
+        /** Enemy name */
         public String enemy;
+        /** Enemy Session ID (required by the Server in response) */
         public int enemySid;
+        /**
+         * Creates a new Invite Event
+         * @param enemy enemy name
+         * @param enemySid enemy Session ID
+         */
         InviteEvent(String enemy, int enemySid) {
             this.enemy = enemy;
             this.enemySid = enemySid;
         }
     }
+    /** Event: the enemy rejected our invite for a battle */
     public static final class StopCallRejectedEvent extends Event {
+        /** Enemy name, who rejected our invitation */
         public String cowardName;
+        /**
+         * Creates a new StopCall Rejected Event
+         * @param cowardName enemy name, who rejected our invitation
+         */
         StopCallRejectedEvent(String cowardName) {
             this.cowardName = cowardName;
         }
     }
+    /** Event: we miss someone's call for a battle, and Server wants us to stop ringing */
     public static final class StopCallMissedEvent extends Event {
+        /** Aggressor name */
         public String aggressorName;
+        /**
+         * Creates a new StopCall Missed Event
+         * @param aggressorName aggressor name
+         */
         StopCallMissedEvent(String aggressorName) {
             this.aggressorName = aggressorName;
         }
     }
+    /** Event: we invite someone for a battle, but he/she missed (or ignored) our invitation */
     public static final class StopCallExpiredEvent extends Event {
+        /** Defender name */
         public String defenderName;
+        /**
+         * Creates a new StopCall Expired Event
+         * @param defenderName defender name
+         */
         StopCallExpiredEvent(String defenderName) {
             this.defenderName = defenderName;
         }
     }
+    /** Event: ranking updated */
     @SuppressWarnings("WeakerAccess")
     public static final class RatingUpdatedEvent extends Event {
+        /** Rating type (General/Weekly) */
         public Model.RatingType type;
+        /** Rating items list */
         public Iterable<RatingItem> items;
+        /**
+         * Creates a new Rating Updated Event
+         * @param type rating type (General/Weekly)
+         * @param items updated list of rating items for the given rating type
+         */
         RatingUpdatedEvent(Model.RatingType type, Iterable<RatingItem> items) {
             this.type = type;
             this.items = items;
         }
     }
+    /** Event: round has been finished */
     public static final class RoundFinishedEvent extends Event {
+        /** Winner flag (TRUE if we won) */
         public boolean winner;
+        /** Participant #1 */
         public String detractor1;
+        /** Participant #2 */
         public String detractor2;
+        /** Total score1 (for the whole game) */
         public int totalScore1;
+        /** Total score2 (for the whole game) */
         public int totalScore2;
+        /**
+         * Creates a new Round Finished Event
+         * @param winner winner flag (TRUE if we won)
+         * @param detractor1 participant #1
+         * @param detractor2 participant #2
+         * @param totalScore1 total score1
+         * @param totalScore2 total score2
+         */
         RoundFinishedEvent(boolean winner, String detractor1, String detractor2, int totalScore1, int totalScore2) {
             this.winner = winner;
             this.detractor1 = detractor1;
