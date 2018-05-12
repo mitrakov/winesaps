@@ -240,13 +240,29 @@ public class EventBus {
             this.totalScore2 = totalScore2;
         }
     }
+    /** Event: battle has been finished */
     public static final class GameFinishedEvent extends Event {
+        /** Winner flag (TRUE if we won) */
         public boolean winner;
+        /** Participant #1 */
         public String detractor1;
+        /** Participant #2 */
         public String detractor2;
+        /** Total score1 */
         public int totalScore1;
+        /** Total score2 */
         public int totalScore2;
+        /** Reward for the battle, in gems */
         public int reward;
+        /**
+         * Creates a new Game Finished Event
+         * @param winner winner flag (TRUE if we won)
+         * @param d1 participant #1
+         * @param d2 participant #2
+         * @param totalScore1 total score1
+         * @param totalScore2 total score2
+         * @param reward reward for the game, in gems
+         */
         GameFinishedEvent(boolean winner, String d1, String d2, int totalScore1, int totalScore2, int reward) {
             this.winner = winner;
             this.detractor1 = d1;
@@ -256,79 +272,157 @@ public class EventBus {
             this.reward = reward;
         }
     }
+    /** Event: promo code activated */
     public static final class PromocodeDoneEvent extends Event {
+        /** Name of our friend */
         public String name;
+        /** Inviter flag: whether a current user is inviter (TRUE), or our friend is inviter (FALSE) */
         public boolean inviter;
+        /** Reward for promocode activated, in gems */
         public int crystals;
+        /**
+         * Creates a new Promocode Done Event
+         * @param name name of our friend
+         * @param inviter whether a current user is inviter (TRUE), or our friend is inviter (FALSE)
+         * @param crystals reward for promocode, in gems
+         */
         PromocodeDoneEvent(String name, boolean inviter, int crystals) {
             this.name = name;
             this.inviter = inviter;
             this.crystals = crystals;
         }
     }
+    /** Event: Style Pack has been changed */
     public static final class StyleChangedEvent extends Event {
+        /** Style Pack number */
         public int stylePack;
+        /**
+         * Creates a new Style Changed Event
+         * @param stylePack style Pack number (currently 0-3)
+         */
         StyleChangedEvent(int stylePack) {
             this.stylePack = stylePack;
         }
     }
+    /** Event: Character has been changed */
     public static final class CharacterChangedEvent extends Event {
+        /** New character (rabbit, hedgehog, etc.) */
         public Model.Character character;
+        /**
+         * Creates a new Character Changed Event
+         * @param character new character
+         */
         CharacterChangedEvent(Model.Character character) {
             this.character = character;
         }
     }
+    /** Event: Abilities list has been changed */
     public static final class AbilitiesChangedEvent extends Event {
+        /** New abilities list */
         public Iterable<Model.Ability> items;
+        /**
+         * Creates a new Abilities Changed Event
+         * @param items new abilities list
+         */
         AbilitiesChangedEvent(Iterable<Model.Ability> items) {
             this.items = items;
         }
     }
+    /** Event: enemy has been changed */
     public static final class EnemyNameChangedEvent extends Event {
+        /** New enemy */
         public String enemy;
+        /**
+         * Creates a new EnemyName Changed Event
+         * @param enemy new enemy
+         */
         EnemyNameChangedEvent(String enemy) {
             this.enemy = enemy;
         }
     }
+    /** Event: Round started */
     public static final class RoundStartedEvent extends Event {
+        /** Round number, starting with 0 */
         public int number;
+        /** Level name */
         public String levelName;
+        /**
+         * Creates a new Round Started Event
+         * @param number round number, starting with 0
+         * @param levelName level name
+         */
         RoundStartedEvent(int number, String levelName) {
             this.number = number;
             this.levelName = levelName;
         }
     }
+    /** Event: new battlefield created */
     public static final class NewFieldEvent extends Event {
+        /** Actor that corresponds to a current user */
         public CellObject actor;
+        /** New battle field */
         public Field field;
+        /**
+         * Creates a new NewField Event
+         * @param actor actor that corresponds to a current user
+         * @param field new battlefield
+         */
         NewFieldEvent(CellObject actor, Field field) {
             this.actor = actor;
             this.field = field;
         }
     }
+    /** Event: Score changed */
     public static final class ScoreChangedEvent extends Event {
+        /** Score of detractor1 */
         public int score1;
+        /** Score of detractor2 */
         public int score2;
+        /**
+         * Creates a new Score Changed Event
+         * @param score1 score of detractor1
+         * @param score2 score of detractor2
+         */
         ScoreChangedEvent(int score1, int score2) {
             this.score1 = score1;
             this.score2 = score2;
         }
     }
+    /** Event: lives count changed */
     @SuppressWarnings("WeakerAccess")
     public static final class LivesChangedEvent extends Event {
+        /** My lives count */
         public int myLives;
+        /** Enemy lives count */
         public int enemyLives;
+        /**
+         * Creates a new Lives Changed Event
+         * @param myLives my lives count
+         * @param enemyLives enemy lives count
+         */
         LivesChangedEvent(int myLives, int enemyLives) {
             this.myLives = myLives;
             this.enemyLives = enemyLives;
         }
     }
+    /** Event: player has been wounded */
     @SuppressWarnings("WeakerAccess")
     public static final class PlayerWoundedEvent extends Event {
+        /** Position where a player has been wounded */
         public int xy;
+        /** Cause */
         public Model.HurtCause cause;
+        /** My lives count */
         public int myLives;
+        /** Enemy lives count */
         public int enemyLives;
+        /**
+         * Creates a new Player Wounded Event
+         * @param xy tragedy location
+         * @param cause cause
+         * @param myLives my lives count
+         * @param enemyLives enemy lives count
+         */
         PlayerWoundedEvent(int xy, Model.HurtCause cause, int myLives, int enemyLives) {
             this.xy = xy;
             this.cause = cause;
@@ -336,30 +430,60 @@ public class EventBus {
             this.enemyLives = enemyLives;
         }
     }
+    /** Event: effect has been applied to an object */
     public static final class EffectAddedEvent extends Event {
+        /** Effect */
         public Model.Effect effect;
+        /**
+         * Creates a new Effect Added Event
+         * @param effect effect applied to an object
+         */
         EffectAddedEvent(Model.Effect effect) {
             this.effect = effect;
         }
     }
+    /** Event: object has been removed from the battlefield */
     public static final class ObjectRemovedEvent extends Event {
+        /** Location where the object has been removed from */
         public int oldXy;
+        /** Object */
         public CellObject obj;
+        /**
+         * Creates a new Object Removed Event
+         * @param oldXy position where the object has been removed from
+         * @param obj object
+         */
         ObjectRemovedEvent(int oldXy, CellObject obj) {
             this.oldXy = oldXy;
             this.obj = obj;
         }
     }
+    /** Event: actor's position has been reset */
     public static final class ActorResetEvent extends Event {
+        /** Actor object (either ours or our enemy) */
         public CellObject obj;
+        /**
+         * Creates a new Actor Reset Event
+         * @param obj actor object (either ours or our enemy)
+         */
         ActorResetEvent(CellObject obj) {
             this.obj = obj;
         }
     }
+    /** Event: thing has been changed (dropped, used, or taken a new one) */
     public static final class ThingChangedEvent extends Event {
+        /** Old thing */
         public CellObject oldThing;
+        /** New thing */
         public CellObject newThing;
+        /** Possession flag: TRUE for our player, and FALSE for our enemy's actor */
         public boolean mine;
+        /**
+         * Creates a new ThingChangedEvent
+         * @param oldThing old thing (may be NULL)
+         * @param newThing new thing (may be NULL)
+         * @param mine TRUE for our player, and FALSE for our enemy's actor
+         */
         ThingChangedEvent(CellObject oldThing, CellObject newThing, boolean mine) {
             this.oldThing = oldThing;
             this.newThing = newThing;
