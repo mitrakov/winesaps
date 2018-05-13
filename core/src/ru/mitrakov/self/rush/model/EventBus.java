@@ -490,33 +490,65 @@ public class EventBus {
             this.mine = mine;
         }
     }
+    /** Event: authorization status changed (signed in or signed out) */
     public static final class AuthorizedChangedEvent extends Event {
+        /** Authorization flag: signed in or signed out */
         public boolean authorized;
+        /**
+         * Creates a new Authorized Changed Event
+         * @param authorized signed in or signed out
+         */
         AuthorizedChangedEvent(boolean authorized) {
             this.authorized = authorized;
         }
     }
+    /** Event: connection status changed (connected/disconnected) */
     public static final class ConnectedChangeEvent extends Event {
+        /** Connection flag: connected/disconnected */
         public boolean connected;
+        /**
+         * Creates a new Connected Change Event
+         * @param connected status (connected/disconnected)
+         */
         ConnectedChangeEvent(boolean connected) {
             this.connected = connected;
         }
     }
+    /** Event: input promo code status changed: valid/invalid */
     public static final class PromocodeValidChangedEvent extends Event {
+        /** Promo code status: valid/invalid */
         public boolean valid;
+        /**
+         * Creates a new Promocode Valid Changed Event
+         * @param valid status (valid/invalid)
+         */
         PromocodeValidChangedEvent(boolean valid) {
             this.valid = valid;
         }
     }
+    /** Event: SKU prices updated */
     public static final class SkuGemsUpdatedEvent extends Event {
+        /** New prices (map: [SKU_name -> gems]) */
         public Map<String, Integer> skuGems;
+        /**
+         * Creates a new Sku Gems Updated Event
+         * @param skuGems new prices (map: [SKU_name -> gems])
+         */
         SkuGemsUpdatedEvent(Map<String, Integer> skuGems) {
             this.skuGems = skuGems;
         }
     }
+    /** Event: payment successful */
     public static final class PaymentDoneEvent extends Event {
+        /** Gems bought by the operation */
         public int gems;
+        /** Coupon for the next purchase */
         public String coupon;
+        /**
+         * Creates a new Payment Done Event
+         * @param gems gems bought by the operation
+         * @param coupon coupon for the next purchase (may be empty if no coupon generated)
+         */
         PaymentDoneEvent(int gems, String coupon) {
             this.gems = gems;
             this.coupon = coupon;
@@ -528,18 +560,33 @@ public class EventBus {
     // =====================================
 
 
+    /** Listener interface for the Event Bus */
     public interface Listener {
+        /**
+         * Invoked on a new event
+         * @param event event
+         */
         void OnEvent(Event event);
     }
 
+    /** Subscribers */
     private final List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
 
+    /**
+     * Adds a subscriber to the subscribers list
+     * @param listener subscriber
+     */
     public void addListener(Listener listener) {
         assert listener != null;
         listeners.add(listener);
     }
 
-    void raise(Event event) {
+    /**
+     * Triggers the event to the Event Bus
+     * @param event event to be transmitted to the listeners
+     * @see #addListener(Listener)
+     */
+    public void raise(Event event) {
         assert event != null;
         for (int i = 0; i < listeners.size(); i++) { // do NOT use iterators! They produces excessive work for GC
             Listener listener = listeners.get(i); assert listener != null;

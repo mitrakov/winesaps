@@ -9,7 +9,6 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
  * Class that represents a battle field (array of 255 cells)
  * @author mitrakov
  */
-@SuppressWarnings("WeakerAccess")
 public class Field {
     /** Default field width */
     public static final int WIDTH = 51;
@@ -30,6 +29,7 @@ public class Field {
     /** Map: ObjectNumber -> CellObject */
     protected final Map<Integer, CellObject> objects = new HashMap<Integer, CellObject>(8);
     /** Current object number, for internal use only */
+    @SuppressWarnings("WeakerAccess")
     protected int objectNumber = 0;
     /** Function that generates a next sequence number. In Java 8 may be replaced with lambda expression */
     protected final NextNumber nextNumber = new NextNumber() {
@@ -113,8 +113,7 @@ public class Field {
      * @return the first found object with a given <b>id</b>
      */
     CellObject getObjectById(int id) {
-        // in Java 8 may be replaced with lambda
-        for (Cell cell : cells) {
+        for (Cell cell : cells) {                     // in Java 8 may be replaced with lambda
             for (CellObject object : cell.objects) {
                 if (object.getId() == id)
                     return object;

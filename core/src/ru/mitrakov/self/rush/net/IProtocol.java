@@ -11,43 +11,39 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
 interface IProtocol {
     /**
      * Tries to establish a connection
-     * @throws IOException
+     * @throws IOException if IOException occurred
      */
     void connect() throws IOException;
 
     /**
      * Sends a message
-     * @param data - data
-     * @throws IOException
+     * @param data data
+     * @throws IOException if IOException occurred
      */
     void send(IIntArray data) throws IOException;
 
     /**
      * Callback on a new message received
-     * @param data - data
-     * @throws IOException
+     * @param data data
+     * @throws IOException if IOException occurred
      */
     void onReceived(IIntArray data) throws IOException;
 
     /**
      * Callback on a new sender connected event
-     * @throws IOException
+     * @throws IOException if IOException occurred
      */
     void onSenderConnected() throws IOException;
 
     /**
      * Callback on a new receiver connected event
-     * @throws IOException
+     * @throws IOException if IOException occurred
      */
     void onReceiverConnected() throws IOException;
 
-    /**
-     * Callback on a connection failed event
-     */
+    /** Callback on a connection failed event */
     void connectionFailed();
 
-    /**
-     * @return true, if a connection established
-     */
+    /** @return true, if a connection established */
     boolean isConnected();
 }

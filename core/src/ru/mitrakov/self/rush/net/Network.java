@@ -17,36 +17,55 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 public final class Network extends Thread implements IHandler {
     // @note uncomment only for debug! public static boolean TMP_NO_CONNECTION = false;
 
+    /** Buffer size for SEND operations (in bytes) */
     public static final int BUF_SIZ_SEND = 768;
+    /** Buffer size for RECV operations (in bytes) */
     private static final int BUF_SIZ_RECV = 1024;
+    /** SwUDP header size (see SwUDP protocol for more details) */
     private static final int HEADER_SIZ = 7;
+    /** Standard flags for SEND operations */
     private static final int FLAGS = 0;
+    /** SwUDP protocol version, supported by this client (note that the versions <b>MUST</b> be equal!) */
     private static final int PROTOCOL_VERSION = 0;
 
-    // on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>" to manifest
-    // otherwise new DatagramSocket() throws PermissionDeniedException
+    /**
+     * Datagram socket
+     * <br><b>Note:</b> on Android don't forget to add "<uses-permission android:name="android.permission.INTERNET"/>"
+     * to manifest otherwise new DatagramSocket() throws PermissionDeniedException
+     */
     private final DatagramSocket socket = new DatagramSocket();
+    /** Platform Specific object */
     private final PsObject psObject;
+    /** Handler for received messages */
     private final IHandler handler;
+    /** Error handler */
     private final UncaughtExceptionHandler errorHandler;
+    /** Host (IP address or DNS name) */
     private final String host;
+    /** Application UDP port */
     private final int port;
+    /** Main buffer for incoming messages */
     private final byte[] recvBuf = new byte[BUF_SIZ_RECV];
+    /** Internal storage for the last received message (needed to empty the main buffer) */
     private final IIntArray recvData = new GcResistantIntArray(BUF_SIZ_RECV);
+    /** Datagram packet for outgoing messages */
     private /*final*/ DatagramPacket packet;
 
+    /** Session ID for this client (see SwUDP protocol for more details) */
     private int sid = 0;
+    /** Session Token for this client (see SwUDP protocol for more details) */
     private long token = 0;
+    /** Reference to the protocol (only SwUDP supported for now) */
     private IProtocol protocol;
 
     /**
      * Creates a new instance of Network
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param handler - handler to process incoming messages
-     * @param eHandler - error handler
-     * @param host - host (IP-address or host name)
-     * @param port - port (0 < port < 65536)
-     * @throws SocketException - if DatagramSocket cannot be created (e.g. if there are no permissions on Android)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param handler handler to process incoming messages
+     * @param eHandler error handler
+     * @param host host (IP-address or host name)
+     * @param port port (0 < port < 65536)
+     * @throws SocketException if DatagramSocket cannot be created (e.g. if there are no permissions on Android)
      */
     public Network(PsObject psObject, IHandler handler, UncaughtExceptionHandler eHandler, String host, int port)
             throws SocketException {
@@ -136,9 +155,10 @@ public final class Network extends Thread implements IHandler {
 
     /**
      * Sends message to the server, prepending it with sid, token, flags and msgSize fields
-     * @param data - data
-     * @throws IOException - if the host cannot be resolved
+     * @param data data
+     * @throws IOException if the host cannot be resolved
      */
+    @SuppressWarnings("UnnecessaryLocalVariable")
     public void send(IIntArray data) throws IOException {
         // @note uncomment only for debug! if (TMP_NO_CONNECTION) return;
 
@@ -163,24 +183,22 @@ public final class Network extends Thread implements IHandler {
 
     /**
      * Resets the network state with a given sid and token
-     * @param sid - sid (default is 0)
-     * @param token - token (default is 0)
+     * @param sid sid (default is 0)
+     * @param token token (default is 0)
      */
     public void reset(int sid, long token) {
         this.sid = sid;
         this.token = token;
     }
 
-    /**
-     * @return socket
-     */
+    /** @return socket */
     public DatagramSocket getSocket() {
         return socket;
     }
 
     /**
      * Sets a new transport protocol for the network
-     * @param protocol - protocol (may be NULL)
+     * @param protocol protocol (may be NULL)
      */
     public void setProtocol(IProtocol protocol) {
         this.protocol = protocol;
@@ -189,10 +207,10 @@ public final class Network extends Thread implements IHandler {
     /**
      * Packs given data to a datagram packet and returns this packet.
      * Method is designed to reduce GC pressure by avoiding "new DatagramPacket" operations
-     * @param data - data
-     * @param length - data length
+     * @param data data
+     * @param length data length
      * @return ready to send datagram packet
-     * @throws UnknownHostException - if the host cannot be resolved
+     * @throws UnknownHostException if the host cannot be resolved
      */
     private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
         if (packet == null)
