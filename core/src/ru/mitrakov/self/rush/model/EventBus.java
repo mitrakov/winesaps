@@ -28,7 +28,7 @@ public class EventBus {
     /** Error: cannot add a friend */
     public static final class AddFriendErrorEvent extends Event {}
     /** Error: no enough gems to perform an operation */
-    public static final class NoCrystalsEvent extends Event {}
+    public static final class NoGemsEvent extends Event {}
     /** Error: incorrect login/password pair */
     public static final class IncorrectCredentialsEvent extends Event {}
     /** Error: incorrect name provided */
@@ -84,15 +84,15 @@ public class EventBus {
         }
     }
     /** Event: gems balance has been changed */
-    public static final class CrystalChangedEvent extends Event {
+    public static final class GemsChangedEvent extends Event {
         /** Gems count */
-        public int crystals;
+        public int gems;
         /**
-         * Creates a new CrystalChanged Event
-         * @param crystals updated gems balance
+         * Creates a new Gems Changed Event
+         * @param gems updated gems balance
          */
-        CrystalChangedEvent(int crystals) {
-            this.crystals = crystals;
+        GemsChangedEvent(int gems) {
+            this.gems = gems;
         }
     }
     /** Event: user's abilities have been changed */
@@ -279,17 +279,17 @@ public class EventBus {
         /** Inviter flag: whether a current user is inviter (TRUE), or our friend is inviter (FALSE) */
         public boolean inviter;
         /** Reward for promocode activated, in gems */
-        public int crystals;
+        public int gems;
         /**
          * Creates a new Promocode Done Event
          * @param name name of our friend
          * @param inviter whether a current user is inviter (TRUE), or our friend is inviter (FALSE)
-         * @param crystals reward for promocode, in gems
+         * @param gems reward for promocode, in gems
          */
-        PromocodeDoneEvent(String name, boolean inviter, int crystals) {
+        PromocodeDoneEvent(String name, boolean inviter, int gems) {
             this.name = name;
             this.inviter = inviter;
-            this.crystals = crystals;
+            this.gems = gems;
         }
     }
     /** Event: Style Pack has been changed */

@@ -28,11 +28,11 @@ public class DialogBuyAbilities extends DialogFeat {
     private final TextureAtlas atlasMenu;
 
     /** "Gems total" label */
-    private final Label lblCrystals;
+    private final Label lblGems;
     /** Label with current ability, chosen by a user (e.g. "Snorkel") */
     private final Label lblCurAbility;
     /** Total gems value label */
-    private final Label lblTotalCrystals;
+    private final Label lblTotalGems;
     /** Image with current ability, chosen by a user */
     private final Image imgGoods;
     /** List of pictures of all the products available */
@@ -44,7 +44,7 @@ public class DialogBuyAbilities extends DialogFeat {
     /** Internationalization bundle */
     private I18NBundle i18n;
     /** User's current gems count */
-    private int crystals = 0;
+    private int gems = 0;
     /** Currently selected product (default: no products selected) */
     private Product selectedItem;
 
@@ -65,8 +65,8 @@ public class DialogBuyAbilities extends DialogFeat {
         this.skin = skin;
         this.i18n = i18n;
 
-        lblTotalCrystals = new Label("", skin, "default");
-        lblCrystals = new Label("", skin, "default");
+        lblTotalGems = new Label("", skin, "default");
+        lblGems = new Label("", skin, "default");
         lblCurAbility = new Label("", skin, "default");
         imgGoods = new Image();
         atlasMenu = assetManager.get("pack/menu.pack");
@@ -94,7 +94,7 @@ public class DialogBuyAbilities extends DialogFeat {
         assert bundle != null;
         this.i18n = bundle;
 
-        lblTotalCrystals.setText(bundle.format("dialog.abilities.total"));
+        lblTotalGems.setText(bundle.format("dialog.abilities.total"));
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.abilities.header"));
@@ -114,10 +114,10 @@ public class DialogBuyAbilities extends DialogFeat {
 
     /**
      * Sets user's current gems count
-     * @param crystals gems count
+     * @param gems gems count
      */
-    public void setCrystals(int crystals) {
-        this.crystals = crystals;
+    public void setGems(int gems) {
+        this.gems = gems;
     }
 
     /**
@@ -162,12 +162,12 @@ public class DialogBuyAbilities extends DialogFeat {
 
         // create gem table (label + image)
         Table tableGems = new Table();
-        tableGems.add(lblCrystals).spaceRight(5);
+        tableGems.add(lblGems).spaceRight(5);
         tableGems.add(new Image(atlasMenu.findRegion("gem"))); // TextureRegion may be NULL
 
         // build content table
         table.pad(16);
-        table.add(lblTotalCrystals);
+        table.add(lblTotalGems);
         table.add(tableGems).left();
         table.row();
         table.add(new Table() {{
@@ -191,7 +191,7 @@ public class DialogBuyAbilities extends DialogFeat {
         assert i18n != null;
 
         // update labels and images
-        lblCrystals.setText(String.valueOf(crystals));
+        lblGems.setText(String.valueOf(gems));
         imgGoods.setDrawable(abilityIcons.get(ability));
         lblCurAbility.setText(i18n.format(String.format("ability.%s", ability.name().toLowerCase())));
 
@@ -217,7 +217,7 @@ public class DialogBuyAbilities extends DialogFeat {
                 });
             }};
             t.add(new Label(i18n.format("product", product.days), skin, "small")).minWidth(80).left();
-            t.add(new Label(String.valueOf(product.crystals), skin, "small")).spaceLeft(16);
+            t.add(new Label(String.valueOf(product.gems), skin, "small")).spaceLeft(16);
             t.add(new Image(atlasMenu.findRegion("gem_small")));
             productsList.add(t);
             productsList.row();

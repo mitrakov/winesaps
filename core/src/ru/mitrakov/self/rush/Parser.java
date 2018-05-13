@@ -754,7 +754,7 @@ class Parser implements IHandler {
                 model.setIncorrectCredentials();
                 break;
             case ERR_NO_GEMS_ENOUGH:
-                model.setNoCrystals();
+                model.setNoGems();
                 break;
             case ERR_ADD_FRIEND:
                 model.setAddFriendError();

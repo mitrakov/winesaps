@@ -15,7 +15,7 @@ import ru.mitrakov.self.rush.AudioManager;
  * "How to get more gems" dialog
  * @author Mitrakov
  */
-public class DialogMoreCrystals extends DialogFeat {
+public class DialogMoreGems extends DialogFeat {
     /** Reference to the model */
     private final Model model;
     /** Big "How you can get more gems" label */
@@ -49,8 +49,8 @@ public class DialogMoreCrystals extends DialogFeat {
      * @param promoDialog dialog to show when "Show promo code" is clicked
      * @param purchaseDialog dialog to show when "Buy gems here" is clicked
      */
-    public DialogMoreCrystals(Model model, Skin skin, String style, AssetManager assetManager, AudioManager audioMgr,
-                              final Dialog promoDialog, final Dialog purchaseDialog) {
+    public DialogMoreGems(Model model, Skin skin, String style, AssetManager assetManager, AudioManager audioMgr,
+                          final Dialog promoDialog, final Dialog purchaseDialog) {
         super("", skin, style);
         assert model != null && assetManager != null && promoDialog != null;
         this.model = model;
@@ -84,20 +84,20 @@ public class DialogMoreCrystals extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        lblOverview.setText(bundle.format("dialog.crystals.overview"));
-        lblWay1.setText(bundle.format("dialog.crystals.way1"));
-        lblText1.setText(bundle.format("dialog.crystals.text1", 1));
-        lblWay2.setText(bundle.format("dialog.crystals.way2"));
-        lblText2.setText(bundle.format("dialog.crystals.text2.start"), bundle.format("dialog.crystals.text2.link"),
-                bundle.format("dialog.crystals.text2.end"));
-        lblText2extra.setText(bundle.format("dialog.crystals.text2.extra"));
-        lblWay3.setText(bundle.format("dialog.crystals.way3"));
-        lblText3.setText(bundle.format("dialog.crystals.text3"));
-        lblWay4.setText(bundle.format("dialog.crystals.way4"));
-        lblText4.setText(bundle.format("dialog.crystals.text4.start"), bundle.format("dialog.crystals.text4.link"), "");
+        lblOverview.setText(bundle.format("dialog.gems.overview"));
+        lblWay1.setText(bundle.format("dialog.gems.way1"));
+        lblText1.setText(bundle.format("dialog.gems.text1", 1));
+        lblWay2.setText(bundle.format("dialog.gems.way2"));
+        lblText2.setText(bundle.format("dialog.gems.text2.start"), bundle.format("dialog.gems.text2.link"),
+                bundle.format("dialog.gems.text2.end"));
+        lblText2extra.setText(bundle.format("dialog.gems.text2.extra"));
+        lblWay3.setText(bundle.format("dialog.gems.way3"));
+        lblText3.setText(bundle.format("dialog.gems.text3"));
+        lblWay4.setText(bundle.format("dialog.gems.way4"));
+        lblText4.setText(bundle.format("dialog.gems.text4.start"), bundle.format("dialog.gems.text4.link"), "");
 
         if (getTitleLabel() != null)
-            getTitleLabel().setText(bundle.format("dialog.crystals.header"));
+            getTitleLabel().setText(bundle.format("dialog.gems.header"));
         if (getButtonTable() != null) {
             Array<Actor> buttons = getButtonTable().getChildren();
             assert buttons != null;

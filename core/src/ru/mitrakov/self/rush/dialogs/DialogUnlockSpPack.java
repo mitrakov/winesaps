@@ -126,7 +126,7 @@ public class DialogUnlockSpPack extends DialogFeat {
         if (getTitleLabel() != null)
             getTitleLabel().setText(i18n.format("dialog.singleplayer.unlock.header"));
         lblPrice.setText(i18n.format("dialog.singleplayer.unlock.text", price));
-        lblMoreGems.setText(i18n.format("dialog.crystals.start"), i18n.format("dialog.crystals.link"), "");
+        lblMoreGems.setText(i18n.format("dialog.gems.start"), i18n.format("dialog.gems.link"), "");
 
         table.clear();
         table.pad(16);
@@ -141,7 +141,7 @@ public class DialogUnlockSpPack extends DialogFeat {
             button(i18n.format("yes"), QuitAction.BuyAndClose);
             button(i18n.format("no"), QuitAction.JustClose);
         } else {
-            lblQuestion.setText(i18n.format("dialog.info.no.crystals"));
+            lblQuestion.setText(i18n.format("dialog.info.no.gems"));
             table.row();
             table.add(lblMoreGems).colspan(2).right().spaceTop(50);
             button(i18n.format("back"), QuitAction.GotoGetMoreGemsScreen);

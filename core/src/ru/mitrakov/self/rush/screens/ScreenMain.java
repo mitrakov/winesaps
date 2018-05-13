@@ -49,7 +49,7 @@ public class ScreenMain extends LocalizableScreen {
     private final Table tableGemsData = new Table();
     private final DialogPromocode promocodeDialog;
     private final DialogPurchase purchaseDialog;
-    private final DialogFeat moreCrystalsDialog;
+    private final DialogFeat moreGemsDialog;
     private final DialogIncoming incomingDialog;
     private final DialogFeat settingsDialog;
     private final DialogFeat aboutDialog;
@@ -90,8 +90,8 @@ public class ScreenMain extends LocalizableScreen {
     private final LinkedLabel lblNewVersion;
     private final LinkedLabel lblMore;
     private final Label lblName;
-    private final Label lblCrystalsHeader;
-    private final Label lblCrystalsData;
+    private final Label lblGemsHeader;
+    private final Label lblGemsData;
     private final Label lblAbilities;
     private final Label lblAbilityExpireTime;
     private final Label lblRatingName;
@@ -148,7 +148,7 @@ public class ScreenMain extends LocalizableScreen {
 
         promocodeDialog = new DialogPromocode(model, skin, "default", audioManager);
         purchaseDialog = new DialogPurchase(skin, "default", i18n);
-        moreCrystalsDialog = new DialogMoreCrystals(model, skin, "default", assetManager, audioManager, promocodeDialog,
+        moreGemsDialog = new DialogMoreGems(model, skin, "default", assetManager, audioManager, promocodeDialog,
                 purchaseDialog);
         incomingDialog = new DialogIncoming(model, skin, "default", audioManager, i18n);
         settingsDialog = new DialogSettings(game, model, skin, "default", atlasMenu, i18n, audioManager);
@@ -157,7 +157,7 @@ public class ScreenMain extends LocalizableScreen {
         infoDialog = new DialogInfo("", skin, "default");
         lockDialog = new DialogLock(skin, "panel-lock");
         dialupDialog = new DialogDialup(model, skin, "default");
-        unlockSpPackDialog = new DialogUnlockSpPack(model, "", skin, "default", moreCrystalsDialog, i18n, atlasMenu.findRegion("gem"));
+        unlockSpPackDialog = new DialogUnlockSpPack(model, "", skin, "default", moreGemsDialog, i18n, atlasMenu.findRegion("gem"));
         singlePlayerDialog = new DialogSinglePlayer(model, atlasMenu, skin, "default", unlockSpPackDialog, i18n);
         inviteDialog = new DialogInvite(model, skin, "default", i18n);
         questionDialog = new DialogQuestion("", skin, "default");
@@ -303,12 +303,12 @@ public class ScreenMain extends LocalizableScreen {
         lblMore = new LinkedLabel("", "", "", skin, "default", "link", new Runnable() {
             @Override
             public void run() {
-                moreCrystalsDialog.show(stage);
+                moreGemsDialog.show(stage);
             }
         });
         lblName = new Label("", skin, "title");
-        lblCrystalsHeader = new Label("", skin, "default");
-        lblCrystalsData = new Label("", skin, "default");
+        lblGemsHeader = new Label("", skin, "default");
+        lblGemsData = new Label("", skin, "default");
         lblAbilities = new Label("", skin, "default");
         lblAbilityExpireTime = new Label("", skin, "default");
         lblRatingName = new Label("", skin, "default");
@@ -355,7 +355,7 @@ public class ScreenMain extends LocalizableScreen {
 
         promocodeDialog.onLocaleChanged(bundle);
         purchaseDialog.onLocaleChanged(bundle);
-        moreCrystalsDialog.onLocaleChanged(bundle);
+        moreGemsDialog.onLocaleChanged(bundle);
         incomingDialog.onLocaleChanged(bundle);
         settingsDialog.onLocaleChanged(bundle);
         aboutDialog.onLocaleChanged(bundle);
@@ -381,8 +381,8 @@ public class ScreenMain extends LocalizableScreen {
         btnGeneralRating.setText(bundle.format("rating.general"));
         btnWeeklyRating.setText(bundle.format("rating.weekly"));
         btnAddFriend.setText(bundle.format("friends.add"));
-        lblMore.setText(bundle.format("dialog.crystals.start"), bundle.format("dialog.crystals.link"), "");
-        lblCrystalsHeader.setText(bundle.format("info.crystals"));
+        lblMore.setText(bundle.format("dialog.gems.start"), bundle.format("dialog.gems.link"), "");
+        lblGemsHeader.setText(bundle.format("info.gems"));
         lblAbilities.setText(bundle.format("info.abilities"));
         lblRatingName.setText(bundle.format("rating.name"));
         lblRatingWins.setText(bundle.format("rating.wins"));
@@ -422,9 +422,9 @@ public class ScreenMain extends LocalizableScreen {
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             infoDialog.setText(i18n.format("error"), i18n.format("dialog.info.add.friend.error")).show(stage);
         }
-        if (event instanceof EventBus.NoCrystalsEvent) {
+        if (event instanceof EventBus.NoGemsEvent) {
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.no.crystals")).show(stage);
+            infoDialog.setText(i18n.format("dialog.info"), i18n.format("dialog.info.no.gems")).show(stage);
         }
         if (event instanceof EventBus.AggressorBusyEvent) {
             dialupDialog.hide();
@@ -467,11 +467,11 @@ public class ScreenMain extends LocalizableScreen {
             String txt = ev.name.length() <= 18 ? ev.name : String.format("%s...", ev.name.substring(0, 15));
             lblName.setText(txt);
         }
-        if (event instanceof EventBus.CrystalChangedEvent) {
-            EventBus.CrystalChangedEvent ev = (EventBus.CrystalChangedEvent) event;
-            lblCrystalsData.setText(String.valueOf(ev.crystals));
-            buyAbilitiesDialog.setCrystals(ev.crystals);
-            unlockSpPackDialog.setUserGems(ev.crystals);
+        if (event instanceof EventBus.GemsChangedEvent) {
+            EventBus.GemsChangedEvent ev = (EventBus.GemsChangedEvent) event;
+            lblGemsData.setText(String.valueOf(ev.gems));
+            buyAbilitiesDialog.setGems(ev.gems);
+            unlockSpPackDialog.setUserGems(ev.gems);
         }
         if (event instanceof EventBus.CharacterChangedEvent) {
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
@@ -499,7 +499,7 @@ public class ScreenMain extends LocalizableScreen {
         if (event instanceof EventBus.PromocodeDoneEvent) {
             EventBus.PromocodeDoneEvent ev = (EventBus.PromocodeDoneEvent) event;
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-            promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.crystals, i18n).show(stage);
+            promocodeDoneDialog.setArguments(ev.name, ev.inviter, ev.gems, i18n).show(stage);
         }
         if (event instanceof EventBus.StopCallRejectedEvent) {
             EventBus.StopCallRejectedEvent ev = (EventBus.StopCallRejectedEvent) event;
@@ -539,7 +539,7 @@ public class ScreenMain extends LocalizableScreen {
             DialogFeat.hideAll(stage);
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             String header = i18n.format("dialog.promocode.done.header");
-            infoDialog.setText(header, i18n.format("dialog.crystals.done", ev.gems)).show(stage);
+            infoDialog.setText(header, i18n.format("dialog.gems.done", ev.gems)).show(stage);
             log("Coupon = ", ev.coupon);
         }
         if (event instanceof EventBus.NewVersionAvailableEvent) {
@@ -670,11 +670,11 @@ public class ScreenMain extends LocalizableScreen {
         }
 
         // === Gems Data ===
-        tableGemsData.add(lblCrystalsData).spaceRight(5);
+        tableGemsData.add(lblGemsData).spaceRight(5);
         tableGemsData.add(new ImageButtonFeat(gem, audioManager, new Runnable() {
             @Override
             public void run() {
-                moreCrystalsDialog.show(stage);
+                moreGemsDialog.show(stage);
             }
         }));
     }
@@ -725,7 +725,7 @@ public class ScreenMain extends LocalizableScreen {
                 tableRightContent.row();
                 tableRightContent.add().expandY();
                 tableRightContent.row();
-                tableRightContent.add(lblCrystalsHeader);
+                tableRightContent.add(lblGemsHeader);
                 tableRightContent.add(tableGemsData);
                 tableRightContent.row().spaceTop(16);
                 tableRightContent.add(lblAbilities);

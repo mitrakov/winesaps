@@ -32,7 +32,7 @@ public class DialogPurchase extends DialogFeat {
         Table table = getContentTable();
         assert i18n != null && table != null;
 
-        table.pad(20).add(lblError = new Label(i18n.format("dialog.crystals.error"), skin));
+        table.pad(20).add(lblError = new Label(i18n.format("dialog.gems.error"), skin));
         button("OK"); // text will be replaced in onLocaleChanged()
     }
 
@@ -41,14 +41,14 @@ public class DialogPurchase extends DialogFeat {
         Table table = getContentTable();
         assert bundle != null && table != null;
 
-        lblError.setText(bundle.format("dialog.crystals.error"));
+        lblError.setText(bundle.format("dialog.gems.error"));
 
         // gems count info ("10 gems", "35 gems", etc.)
         for (Actor actor : table.getChildren()) {
             if (actor instanceof Label && actor.getUserObject() instanceof IBillingProvider.Sku) {
                 Label lbl = ((Label) actor);
                 IBillingProvider.Sku sku = (IBillingProvider.Sku) actor.getUserObject();
-                lbl.setText(bundle.format("dialog.crystals.count", sku.value));
+                lbl.setText(bundle.format("dialog.gems.count", sku.value));
             }
         }
 
@@ -100,7 +100,7 @@ public class DialogPurchase extends DialogFeat {
 
         table.row();
         for (IBillingProvider.Sku sku : products) {
-            Label lbl = new Label(i18n.format("dialog.crystals.count", sku.value), skin);
+            Label lbl = new Label(i18n.format("dialog.gems.count", sku.value), skin);
             lbl.setUserObject(sku);
             table.add(lbl).spaceLeft(20);
         }

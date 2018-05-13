@@ -18,7 +18,7 @@ public class DialogPromocodeDone extends DialogFeat {
     /** Flag of promo code inviter (TRUE if we invited a friend, and FALSE if we're invited by our friend) */
     private boolean inviter;
     /** Reward for activating promo code */
-    private int crystals;
+    private int gems;
 
     /**
      * Creates a new "Promo code activated" dialog
@@ -38,7 +38,7 @@ public class DialogPromocodeDone extends DialogFeat {
     public void onLocaleChanged(I18NBundle bundle) {
         assert bundle != null;
 
-        setArguments(name, inviter, crystals, bundle);
+        setArguments(name, inviter, gems, bundle);
 
         if (getTitleLabel() != null)
             getTitleLabel().setText(bundle.format("dialog.promocode.done.header"));
@@ -57,17 +57,17 @@ public class DialogPromocodeDone extends DialogFeat {
      * Sets the arguments for this dialog
      * @param name name of a friend who gave or took promo code
      * @param inviter TRUE if we invited a friend, and FALSE if we're invited by our friend
-     * @param crystals reward for activating promo code
+     * @param gems reward for activating promo code
      * @param i18n LibGdx internationalization bundle
      * @return this
      */
-    public Dialog setArguments(String name, boolean inviter, int crystals, I18NBundle i18n) {
+    public Dialog setArguments(String name, boolean inviter, int gems, I18NBundle i18n) {
         assert name != null && i18n != null;
         this.name = name;
         this.inviter = inviter;
-        this.crystals = crystals;
-        String s1 = i18n.format("dialog.promocode.done.inviter", name, crystals);
-        String s2 = i18n.format("dialog.promocode.done.winner", name, crystals);
+        this.gems = gems;
+        String s1 = i18n.format("dialog.promocode.done.inviter", name, gems);
+        String s2 = i18n.format("dialog.promocode.done.winner", name, gems);
         lblMessage.setText(inviter ? s1 : s2);
         pack();
         return this;

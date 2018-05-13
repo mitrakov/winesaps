@@ -13,26 +13,26 @@ public final /*case*/ class Product implements Serializable {
     /** Duration of the ability */
     public final int days;
     /** Price of the product */
-    public final int crystals;
+    public final int gems;
 
     /**
      * Creates a new Product (an ability item for N days for the given price)
      * @param ability ability (skill or swagga)
      * @param days (duration of the ability)
-     * @param crystals price of the product
+     * @param gems price of the product
      */
-    public Product(Model.Ability ability, int days, int crystals) {
+    public Product(Model.Ability ability, int days, int gems) {
         assert ability != null;
         this.ability = ability;
         this.days = days;
-        this.crystals = crystals;
+        this.gems = gems;
     }
 
     // GENERATED CODE
 
     @Override
     public String toString() {
-        return "Product{" + "ability=" + ability + ", days=" + days + ", crystals=" + crystals + '}';
+        return "Product{" + "ability=" + ability + ", days=" + days + ", gems=" + gems + '}';
     }
 
     @Override
@@ -42,14 +42,14 @@ public final /*case*/ class Product implements Serializable {
 
         Product product = (Product) o;
 
-        return days == product.days && crystals == product.crystals && ability == product.ability;
+        return days == product.days && gems == product.gems && ability == product.ability;
     }
 
     @Override
     public int hashCode() {
         int result = ability.hashCode();
         result = 31 * result + days;
-        result = 31 * result + crystals;
+        result = 31 * result + gems;
         return result;
     }
 }

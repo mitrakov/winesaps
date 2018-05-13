@@ -937,10 +937,10 @@ public class Model {
             bus.raise(new EventBus.CharacterChangedEvent(character));
         }
 
-        // parse crystals
+        // parse gems
         if (i + 3 < data.length()) {
-            int crystals = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
-            bus.raise(new EventBus.CrystalChangedEvent(crystals));
+            int gems = (data.get(i) << 24) | (data.get(i + 1) << 16) | (data.get(i + 2) << 8) | (data.get(i + 3));
+            bus.raise(new EventBus.GemsChangedEvent(gems));
         }
         i += 4;
 
@@ -1546,8 +1546,8 @@ public class Model {
     /**
      * Invoked on error: no gems enough to complete a given action
      */
-    public void setNoCrystals() {
-        bus.raise(new EventBus.NoCrystalsEvent());
+    public void setNoGems() {
+        bus.raise(new EventBus.NoGemsEvent());
     }
 
     /**
@@ -1799,7 +1799,7 @@ public class Model {
         if (packNumber < 2) return 0;           // pack 1 is for free
         else for (Product product : products) { // in Java 8 may be replaced with lambda
             if (product.ability.ordinal() == SP_PACK_OFFSET + packNumber)
-                return product.crystals;
+                return product.gems;
         }
         return Integer.MAX_VALUE;
     }
