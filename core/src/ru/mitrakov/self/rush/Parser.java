@@ -23,12 +23,34 @@ class Parser implements IHandler {
     private static final int ERR_AGGRESSOR_BUSY = 51;
     /** Server Error: Defender is busy */
     private static final int ERR_DEFENDER_BUSY = 52;
-    /** Server Error: Battle not found (UseThing) */
+    /** Server Error: Battle not found */
     private static final int ERR_BATTLE_NOT_FOUND0 = 55;
-    /** Server Error: Battle not found (GetCurrentField) */
+    /** Server Error: Battle not found */
     private static final int ERR_BATTLE_NOT_FOUND1 = 56;
-    /** Server Error: Battle not found (UseSkill) */
-    private static final int ERR_BATTLE_NOT_FOUND2 = 77;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND2 = 57;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND3 = 59;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND4 = 60;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND5 = 62;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND6 = 64;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND7 = 65;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND8 = 68;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUND9 = 70;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUNDA = 72;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUNDB = 73;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUNDC = 76;
+    /** Server Error: Battle not found */
+    private static final int ERR_BATTLE_NOT_FOUNDD = 77;
     /** Server Error: AddUser DB error */
     private static final int ERR_SIGN_UP = 201;
     /** Server Error: FindUser DB Error */
@@ -734,6 +756,17 @@ class Parser implements IHandler {
             case ERR_BATTLE_NOT_FOUND0:
             case ERR_BATTLE_NOT_FOUND1:
             case ERR_BATTLE_NOT_FOUND2:
+            case ERR_BATTLE_NOT_FOUND3:
+            case ERR_BATTLE_NOT_FOUND4:
+            case ERR_BATTLE_NOT_FOUND5:
+            case ERR_BATTLE_NOT_FOUND6:
+            case ERR_BATTLE_NOT_FOUND7:
+            case ERR_BATTLE_NOT_FOUND8:
+            case ERR_BATTLE_NOT_FOUND9:
+            case ERR_BATTLE_NOT_FOUNDA:
+            case ERR_BATTLE_NOT_FOUNDB:
+            case ERR_BATTLE_NOT_FOUNDC:
+            case ERR_BATTLE_NOT_FOUNDD:
                 break; // no error
             case ERR_SIGNIN_INCORRECT_PASSWORD:
                 model.setIncorrectCredentials();
