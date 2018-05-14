@@ -40,9 +40,9 @@ public final class Network extends Thread implements IHandler {
     private final IHandler handler;
     /** Error handler */
     private final UncaughtExceptionHandler errorHandler;
-    /** Host (IP address or DNS name) */
+    /** Server host (IP address or DNS name) */
     private final String host;
-    /** Application UDP port */
+    /** Server UDP port */
     private final int port;
     /** Main buffer for incoming messages */
     private final byte[] recvBuf = new byte[BUF_SIZ_RECV];

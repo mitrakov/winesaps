@@ -11,32 +11,52 @@ import static ru.mitrakov.self.rush.net.SwUDP.*;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
- * Sender is the part of SwUDP class (it was extracted to reduce the source file size)
+ * Sender is the part of SwUDP class (it was extracted to reduce the source file size).
  * This class should have a single instance for each SwUDP instance
+ * <br>Please see SwUDP Protocol (v1.2) for more details
  * @author mitrakov
  */
 @SuppressWarnings("ForLoopReplaceableByForEach")
 class Sender {
-
+    /** Datagram Socket */
     private final DatagramSocket socket;
+    /** Server host (IP address or DNS name) */
     private final String host;
+    /** Server UDP port */
     private final int port;
+    /** Reference to the protocol (only SwUDP supported for now) */
     private final IProtocol protocol;
+    /** Main SwUDP Send Buffer */
     private final Item[] buffer = new Item[N];
+    /** Start message for SwUDP (created only once to decrease GC pressure) */
     private final IIntArray startMsg = new GcResistantIntArray(6);
+    /** Datagram packet for outgoing messages */
     private /*final*/ DatagramPacket packet;
 
-    private int id = 0, expectedAck = 0, totalTicks = 0, crcid = 0;
+    // === SwUDP parameters ===
+
+    /** SwUDP ID */
+    private int id = 0;
+    /** SwUDP Expected Ack */
+    private int expectedAck = 0;
+    /** SwUDP Total ticks counter */
+    private int totalTicks = 0;
+    /** SwUDP Crypto Random Connection ID */
+    private int crcid = 0;
+    /** SwUDP Smoothed Round Trip Time, in ticks (see SwUDP protocol for more details) */
     float srtt = .0f;
+    /** SwUDP Connection flag */
     volatile boolean connected = false; // volatile needed (by FindBugs)
+
+    // ========================
 
     /**
      * Creates a new instance of Sender
-     * @param psObject - Platform Specific Object
-     * @param socket - UDP-socket
-     * @param host - host (IP-address or host name)
-     * @param port - port
-     * @param protocol - transport protocol (in our case, SwUDP)
+     * @param psObject Platform Specific Object
+     * @param socket UDP-socket
+     * @param host host (IP-address or host name)
+     * @param port port
+     * @param protocol transport protocol (in our case, SwUDP)
      */
     Sender(PsObject psObject, DatagramSocket socket, String host, int port, IProtocol protocol) {
         assert psObject != null && socket != null && host != null && 0 < port && port < 65536 && protocol != null;
@@ -63,8 +83,8 @@ class Sender {
 
     /**
      * Connects to a remote SwUDP receiver
-     * @param crc_id - SwUDP crcID
-     * @throws IOException
+     * @param crc_id SwUDP crcID
+     * @throws IOException if IOException occurred
      */
     synchronized void connect(int crc_id) throws IOException {
         crcid = crc_id;
@@ -86,8 +106,8 @@ class Sender {
 
     /**
      * Sends the given message to the remote SwUDP receiver
-     * @param msg - message
-     * @throws IOException
+     * @param msg message
+     * @throws IOException if IOException occurred
      */
     synchronized void send(IIntArray msg) throws IOException {
         if (connected) {
@@ -104,8 +124,8 @@ class Sender {
 
     /**
      * Callback on Ack packet received
-     * @param ack - Ack packet from the remote SwUDP receiver
-     * @throws IOException
+     * @param ack Ack packet from the remote SwUDP receiver
+     * @throws IOException if IOException occurred
      */
     synchronized void onAck(int ack) throws IOException {
         log("SRTT = ", srtt);
@@ -145,7 +165,7 @@ class Sender {
 
     /**
      * Called by timer procedure, that tries to retransmit non-Acked packets to the remote SwUDP receiver
-     * @throws IOException
+     * @throws IOException if IOException occurred
      */
     private synchronized void trigger() throws IOException {
         totalTicks++;
@@ -175,10 +195,10 @@ class Sender {
     /**
      * Packs given data to a datagram packet and returns this packet.
      * Method is designed to reduce GC pressure by avoiding "new DatagramPacket" operations
-     * @param data - data
-     * @param length - data length
+     * @param data data
+     * @param length data length
      * @return ready to send datagram packet
-     * @throws UnknownHostException - if the host cannot be resolved
+     * @throws UnknownHostException if the host cannot be resolved
      */
     private DatagramPacket getPacket(byte[] data, int length) throws UnknownHostException {
         if (packet == null)

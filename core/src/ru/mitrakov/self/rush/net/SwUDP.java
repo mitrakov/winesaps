@@ -7,25 +7,36 @@ import java.io.IOException;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.utils.collections.IIntArray;
 
-import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
+import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
 
 /**
  * SwUDP protocol. Consists of 2 parts: {@link Sender} and {@link Receiver}
- * Please, see digit-by-digit algorithm in corresponding SwUDP documentation
+ * <br>Please, see detailed algorithm in corresponding SwUDP documentation
  * @author mitrakov
  */
 public class SwUDP implements IProtocol {
+    /** SwUDP Ring size */
     final static int N = 256;
+    /** SwUDP Syn Flag */
     final static int SYN = 0;
+    /** SwUDP Error Ack */
     final static int ERRACK = 1;
+    /** SwUDP Maximum send attempts count */
     final static int MAX_ATTEMPTS = 9;
+    /** SwUDP Tick duration, in ms */
     final static int PERIOD = 10;
+    /** SwUDP Maximum of pending messages to store in receiver buffer in case of packet loss */
     final static int MAX_PENDING = 5;
+    /** SwUDP Minimum threshold for Smoothed Round Trip Time, in ticks */
     final static float MIN_SRTT = 2f;
+    /** SwUDP Default Smoothed Round Trip Time, in ticks */
     final static float DEFAULT_SRTT = 5f;
+    /** SwUDP Maximum threshold for Smoothed Round Trip Time, in ticks */
     final static float MAX_SRTT = 12.5f;
+    /** SwUDP RTT Coefficient (RTT = Round Trip Time, in ticks) */
     final static float RC = .8f;
+    /** SwUDP Assurance coefficient */
     final static float AC = 2.2f;
 
     /**
@@ -34,12 +45,19 @@ public class SwUDP implements IProtocol {
      * @author mitrakov
      */
     static class Item {
+        /** Existence flag (if FALSE then it is supposed to be deleted; used only to decrease GC pressure) */
         boolean exists = false;
+        /** SwUDP Ack flag */
         boolean ack = false;
+        /** SwUDP Start Round Trip Time, in global ticks */
         int startRtt = 0;
+        /** SwUDP Ticks counter for this item */
         int ticks = 0;
+        /** SwUDP Attempt to send */
         int attempt = 0;
+        /** SwUDP Next repeat time, in ticks */
         int nextRepeat = 0;
+        /** SwUDP Message body */
         IIntArray msg = new GcResistantIntArray(BUF_SIZ_SEND);
 
         /**
