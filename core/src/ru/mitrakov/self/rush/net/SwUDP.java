@@ -16,7 +16,7 @@ import static ru.mitrakov.self.rush.net.Network.BUF_SIZ_SEND;
  * @author mitrakov
  */
 public class SwUDP implements IProtocol {
-    /** SwUDP Ring size */
+    /** SwUDP Ring size (i.e. range of IDs is 0-255) */
     final static int N = 256;
     /** SwUDP Syn Flag */
     final static int SYN = 0;
@@ -60,9 +60,7 @@ public class SwUDP implements IProtocol {
         /** SwUDP Message body */
         IIntArray msg = new GcResistantIntArray(BUF_SIZ_SEND);
 
-        /**
-         * Resets the internal state (designed specially to get it reusable and reduce GC pressure)
-         */
+        /** Resets the internal state (designed specially to get it reusable and reduce GC pressure) */
         void clear() {
             exists = ack = false;
             startRtt = ticks = attempt = nextRepeat = 0;
@@ -71,7 +69,7 @@ public class SwUDP implements IProtocol {
     }
 
     /**
-     * @param n - current SwUDP ID
+     * @param n current SwUDP ID
      * @return next SwUDP ID (number in range 2-255)
      */
     static int next(int n) {
@@ -81,25 +79,28 @@ public class SwUDP implements IProtocol {
     }
 
     /**
-     * @param x - SwUDP ID1
-     * @param y - SwUDP ID2
+     * @param x SwUDP ID1
+     * @param y SwUDP ID2
      * @return whether ID1 is after or before ID2
      */
     static boolean after(int x, int y) {
         return (y - x + N) % N > N / 2;
     }
 
+    /** SwUDP Sender */
     private final Sender sender;
+    /** SwUDP Receiver */
     private final Receiver receiver;
+    /** Handler to process received messages */
     private final IHandler handler;
 
     /**
      * Creates a new SwUDP protocol implementation
-     * @param psObject - Platform Specific Object
-     * @param socket - UDP-socket
-     * @param host - host (IP-address or host name)
-     * @param port - port
-     * @param handler - handler to process incoming messages
+     * @param psObject Platform Specific Object
+     * @param socket UDP-socket
+     * @param host Server host (IP-address or host name)
+     * @param port Server UDP port
+     * @param handler handler to process incoming messages
      */
     public SwUDP(PsObject psObject, DatagramSocket socket, String host, int port, IHandler handler) {
         assert psObject != null && socket != null && host != null && handler != null && 0 < port && port < 65536;
@@ -133,12 +134,12 @@ public class SwUDP implements IProtocol {
     }
 
     @Override
-    public void onSenderConnected() throws IOException {
+    public void onSenderConnected() {
         log("", "Sender connected!");
     }
 
     @Override
-    public void onReceiverConnected() throws IOException {
+    public void onReceiverConnected() {
         log("", "Receiver connected!");
         handler.onChanged(true);
     }
@@ -154,9 +155,7 @@ public class SwUDP implements IProtocol {
         return sender.connected && receiver.connected;
     }
 
-    /**
-     * @return current Smoothed Round-Trip-Time in ticks (1 tick is 10 msec)
-     */
+    /** @return current Smoothed Round-Trip-Time in ticks (1 tick is 10 msec) */
     public float getSrtt() {
         return sender.srtt;
     }

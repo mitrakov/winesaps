@@ -18,29 +18,42 @@ import ru.mitrakov.self.rush.dialogs.*;
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class LocalizableScreen extends ScreenAdapter implements Localizable {
+    /** Winesaps instance */
     protected final Winesaps game;
+    /** Reference to the model */
     protected final Model model;
+    /** Platform Specific Object */
     protected final PsObject psObject;
+    /** LibGdx Assets Manager */
     protected final AssetManager assetManager;
+    /** Audio Manager */
     protected final AudioManager audioManager;
+    /** LibGdx Scene2D Stage */
     protected final Stage stage = new Stage(new FitViewport(Winesaps.WIDTH, Winesaps.HEIGHT));
+    /** Main Scene2D Table */
     protected final Table table = new Table();
+    /** Reference to Connecting Pop Up Window (useful for all derived screens) */
     protected final DialogLock connectingDialog;
+    /** Reference to Info Message Box (useful for all derived screens) */
     protected final DialogInfo infoDialog;
 
+    /** OpenGL Clear color (Red component of RGB), default is Black (0-0-0) */
     protected float glClearR;
+    /** OpenGL Clear color (Green component of RGB), default is Black (0-0-0) */
     protected float glClearG;
+    /** OpenGL Clear color (Blue component of RGB), default is Black (0-0-0) */
     protected float glClearB;
 
+    /** Connection flag (reflected to Model's connection flag) */
     private boolean connected;
 
     /**
      * Constructor
-     * @param game - instance of Winesaps (NON-NULL)
-     * @param model - model (NON-NULL)
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
-     * @param audioManager - audio manager (NON-NULL)
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param audioManager audio manager (NON-NULL)
      */
     LocalizableScreen(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
                       AudioManager audioManager) {
@@ -129,7 +142,7 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     /**
      * Handler for the most important events (for ALL screens). Please do not trespass on this method!
-     * @param event - model's event from Event Bus
+     * @param event model's event from Event Bus
      */
     private void handleImportantEvents(EventBus.Event event) {
         // @mitrakov (2017-08-05): do NOT put here local vars like "String.format()" or "i18n.format()". It causes
@@ -149,13 +162,13 @@ public abstract class LocalizableScreen extends ScreenAdapter implements Localiz
 
     /**
      * Handles new events if and only if the current screen is active
-     * @param event - model's event from Event Bus
+     * @param event model's event from Event Bus
      */
     public abstract void handleEvent(EventBus.Event event);
 
     /**
      * Handles new events in any way (no matter whether the screen is active or not)
-     * @param event - model's event from Event Bus
+     * @param event model's event from Event Bus
      */
     public abstract void handleEventBackground(EventBus.Event event);
 }

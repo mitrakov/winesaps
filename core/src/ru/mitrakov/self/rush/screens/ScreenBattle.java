@@ -14,40 +14,62 @@ import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Cells.*;
 
+import static ru.mitrakov.self.rush.model.Model.abilityValues;
+
 /**
  * ScreenBattle shows a battle field with UseThing button, abilities, lives icon, score and timer
  * @author mitrakov
  */
 public class ScreenBattle extends LocalizableScreen {
+    /** Reference to GUI (takes top 90% of the screen) */
     private final Gui gui;
+    /** Table for the current actor's abilities (located in the bottom) */
     private final Table abilityButtons = new Table();
+    /** Score label (e.g. "10-8") */
     private final Label lblScore;
+    /** Remaining time label (in sec.); located in the right bottom corner */
     private final Label lblTime;
+    /** "User1 vs. User2" label */
     private final Label lblVersus;
+    /** "3-2-1-Go" Label */
     private final Label lblCountdown;
+    /** Invisible Scroll pane for {@link #abilityButtons} */
     private final ScrollPane abilityButtonsScroll;
+    /** Actor thing button; located in the left bottom corner */
     private final ImageButton btnThing;
+    /** Lives image (1 or 2 hearts) */
     private final Image imgLives;
+    /** Reference to the Finished Dialog */
     private final DialogFinishedEx finishedDialog;
+    /** Reference to the Hints Dialog */
     private final DialogNoButtons hintDialog;
+
+    /** Picture of 1 heart */
     private final Drawable lives1;
+    /** Picture of 2 hearts */
     private final Drawable lives2;
 
+    /** Map: [ThingClass -> ThingDrawable], e.g. UmbrellaThing -> UmbrellaThingIcon */
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(3);
+    /** Map: [Class -> ClassSimpleName], e.g. classOf(java.util.Locale) -> "Locale" */
     private final ObjectMap<Class, String> simpleNames = new ObjectMap<Class, String>(16);
+    /** Map: [Ability -> AbilityDrawable], e.g. Ability.Snorkel -> SnorkelIcon */
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
+    /** Map: [Number -> String], e.g. 55 -> "55" (it's needed, because .toString() uses "new" to create a new string) */
     private final LongMap<String> seconds = new LongMap<String>(255);
 
-    private String outOfSyncStr = "";
+    /** "Out of Sync" string */
+    private String outOfSyncStr;
+    /** Out-of-Sync flag */
     private transient boolean outOfSync = false;
 
     /**
      * Creates a new instance of ScreenBattle
-     * @param game - instance of Winesaps (NON-NULL)
-     * @param model - model (NON-NULL)
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
-     * @param audioManager - audio manager (NON-NULL)
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param audioManager audio manager (NON-NULL)
      */
     public ScreenBattle(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                         final AudioManager audioManager) {
@@ -270,7 +292,7 @@ public class ScreenBattle extends LocalizableScreen {
         }
 
         TextureAtlas atlasAbility = assetManager.get("pack/ability.pack");
-        for (final Model.Ability ability : model.abilityValues) {
+        for (final Model.Ability ability : abilityValues) {
             TextureRegion region = atlasAbility.findRegion(ability.name());
             if (region != null) {
                 ImageButton btn = new ImageButtonFeat(new TextureRegionDrawable(region), audioManager, new Runnable() {
@@ -307,7 +329,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     /**
      * Draws starting pause labels(3, 2, 1, go!)
-     * @param sec - time to start (sec.)
+     * @param sec time to start (sec.)
      */
     private void draw321(long sec) {
         boolean pause = sec < 3;
@@ -320,7 +342,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     /**
      * Analog of clazz.getSimpleName(). Designed to decrease GC pressure because usual way produces new String
-     * @param clazz - class
+     * @param clazz class
      * @return simple name of a class
      */
     private String getSimpleName(Class clazz) {
