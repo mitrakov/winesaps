@@ -31,89 +31,167 @@ import ru.mitrakov.self.rush.dialogs.*;
  * @author mitrakov
  */
 public class ScreenMain extends LocalizableScreen {
-
+    /** Big Left table, containing primary buttons and controls */
     private final Table tableLeft = new Table();
+    /** Big Right table, containing tabs and the main content */
     private final Table tableRight;
+    /** Table for the "Winesaps" logo, located on the left-top corner */
     private final Table tableLeftHeader = new Table();
+    /** Table for 3 invite buttons (by name, quick battle, etc.) */
     private final Table tableLeftInvite = new Table();
+    /** Toolbar for options, info and so on; located on the left-bottom corner */
     private final Table tableLeftToolbar = new Table();
+    /** Table for tabs ("Friends", "Ratings", "History", etc.) */
     private final Table tableRightHeader = new Table();
+    /** Table for content, that is rebuilt by each tab selected */
     private final Table tableRightContent = new Table();
+    /** Table for content header */
     private final Table tableRightContentName = new Table();
+    /** Table for the user's abilities list */
     private final Table tableRightContentAbilities = new Table();
+    /** Table for 2 ratings buttons: "Weekly Rating" and "Common Rating" */
     private final Table tableRightContentRatingBtns = new Table();
+    /** Table for ratings content */
     private final Table tableRightContentRating = new Table();
+    /** Table for history content  */
     private final Table tableRightContentHistory = new Table();
+    /** Table for friends content */
     private final Table tableRightContentFriends = new Table();
+    /** Table for controls intended for adding to new friends (textbox, ok, cancel) */
     private final Table tableFriendsControl = new Table();
+    /** Table to store gems count label and jem icon */
     private final Table tableGemsData = new Table();
+    /** Dialog to display the user's promo code */
     private final DialogPromocode promocodeDialog;
+    /** Dialog to purchase SKUs */
     private final DialogPurchase purchaseDialog;
+    /** Dialog: "How to get more gems" */
     private final DialogFeat moreGemsDialog;
+    /** Dialog: "Someone wants to challenge you to a battle" */
     private final DialogIncoming incomingDialog;
+    /** Settings dialog */
     private final DialogFeat settingsDialog;
+    /** "About" dialog */
     private final DialogFeat aboutDialog;
+    /** Dialog to buy new abilities */
     private final DialogBuyAbilities buyAbilitiesDialog;
+    /** Information Message Box */
     private final DialogInfo infoDialog;
+    /** Dialog: "Waiting for enemy" */
     private final DialogLock lockDialog;
+    /** Dialog to dial up a friend for a battle */
     private final DialogDialup dialupDialog;
+    /** Dialog: "Do you really want to invite {0}?" */
     private final DialogInvite inviteDialog;
+    /** Dialog: "Please do smth to unlock the next SinglePlayer Pack" (since 2.0.0) */
     private final DialogUnlockSpPack unlockSpPackDialog;
+    /** Main Single Player dialog (since 2.0.0) */
     private final DialogSinglePlayer singlePlayerDialog;
+    /** Question dialog */
     private final DialogQuestion questionDialog;
+    /** Dialog: "Your promo code activated, and you earn N gems!" */
     private final DialogPromocodeDone promocodeDoneDialog;
+    /** Dialog: "Your password is weak and needs to be changed" */
     private final DialogPassword passwordDialog;
 
+    /**  */
     private final ScrollPane tableHistoryScroll;
+    /**  */
     private final ScrollPane tableFriendsScroll;
+    /**  */
     private final ScrollPane tableRightContentAbilitiesScroll;
+    /**  */
     private final TextFieldFeat txtEnemyName;
+    /**  */
     private final TextFieldFeat txtFriendName;
+    /**  */
     private final TextButton btnSinglePlayer;
+    /**  */
     private final TextButton btnInviteByName;
+    /**  */
     private final TextButton btnQuickBattle;
+    /**  */
     private final TextButton btnInviteLatest;
+    /**  */
     private final Button btnInviteByNameOk;
+    /**  */
     private final Button btnInviteByNameCancel;
+    /**  */
     private final Button btnSettings;
+    /**  */
     private final Button btnAbout;
+    /**  */
     private final TextButton btnInfo;
+    /**  */
     private final TextButton btnRating;
+    /**  */
     private final TextButton btnHistory;
+    /**  */
     private final TextButton btnFriends;
+    /**  */
     private final TextButton btnBuyAbilities;
+    /**  */
     private final TextButton btnGeneralRating;
+    /**  */
     private final TextButton btnWeeklyRating;
+    /**  */
     private final TextButton btnAddFriend;
+    /**  */
     private final Button btnAddFriendOk;
+    /**  */
     private final Button btnAddFriendCancel;
+    /**  */
     private final LinkedLabel lblNewVersion;
+    /**  */
     private final LinkedLabel lblMore;
+    /**  */
     private final Label lblName;
+    /**  */
     private final Label lblGemsHeader;
+    /**  */
     private final Label lblGemsData;
+    /**  */
     private final Label lblAbilities;
+    /**  */
     private final Label lblAbilityExpireTime;
+    /**  */
     private final Label lblRatingName;
+    /**  */
     private final Label lblRatingWins;
+    /**  */
     private final Label lblRatingLosses;
+    /**  */
     private final Label lblRatingScoreDiff;
+    /**  */
     private final Label lblRatingDots;
+    /**  */
     private final Image imgCharacter;
 
+    /**  */
     private final Drawable drawableWin;
+    /**  */
     private final Drawable drawableLoss;
+    /**  */
     private final Drawable drawableInvite;
+    /**  */
     private final Drawable drawableRemove;
+    /**  */
     private final Drawable drawableStatusOn; // Server API 1.2.0+ supports statuses
+    /**  */
     private final Drawable drawableStatusOff; // Server API 1.2.0+ supports statuses
 
+    /**  */
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
+    /**  */
     private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
+    /**  */
     private final Array<LabelFeat> ratingLabels = new Array<LabelFeat>(4 * (Model.RATINGS_COUNT + 1));
+    /**  */
     private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
+    /**  */
     private enum CurDisplayMode {Info, Rating, History, Friends}
+    /**  */
     private String newVersion = "";
 
     /**

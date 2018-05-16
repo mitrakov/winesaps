@@ -60,7 +60,7 @@ public class ScreenBattle extends LocalizableScreen {
 
     /** "Out of Sync" string */
     private String outOfSyncStr;
-    /** Out-of-Sync flag */
+    /** Out-of-Sync flag (if TRUE, then connection was lost ) */
     private transient boolean outOfSync = false;
 
     /**

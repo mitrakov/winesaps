@@ -14,22 +14,27 @@ import ru.mitrakov.self.rush.ui.*;
 import ru.mitrakov.self.rush.model.*;
 import ru.mitrakov.self.rush.dialogs.DialogFood;
 
+import static ru.mitrakov.self.rush.model.Model.characterValues;
+
 /**
  * ScreenCharacter shows 4 characters to choose after successful registration
+ * @author Mitrakov
  */
 public class ScreenCharacter extends LocalizableScreen {
-
+    /** Array of 4 checkboxes (each checkbox for each character) */
     private final Array<TextButton> checkboxes = new Array<TextButton>(4);
+    /** "Next" button */
     private final TextButton btnNext;
+    /** Pop up dialog: "You can eat this, you cannot eat that" */
     private final DialogFood dialog;
 
     /**
      * Creates a new instance of ScreenCharacter
-     * @param game - instance of Winesaps (NON-NULL)
-     * @param model - model (NON-NULL)
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
-     * @param audioManager - audio manager (NON-NULL)
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param audioManager audio manager (NON-NULL)
      */
     public ScreenCharacter(Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                            AudioManager audioManager) {
@@ -72,14 +77,14 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin - skin
+     * @param skin skin
      * @return array of 4 images with characters: Rabbit, Squirrel, Hedgehog and Cat
      */
     private Array<Actor> loadImages(Skin skin) {
-        Array<Actor> result = new Array<Actor>(model.characterValues.length);
+        Array<Actor> result = new Array<Actor>(characterValues.length);
 
         TextureAtlas atlasCharacter = assetManager.get("pack/char.pack");
-        for (Model.Character character : model.characterValues) {
+        for (Model.Character character : characterValues) {
             if (character != Model.Character.None) {
                 // create checkboxes
                 final TextButton btn = new CheckBox("", skin, "default");
@@ -108,7 +113,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin - skin
+     * @param skin skin
      * @return "Next" button
      */
     private TextButton createButton(Skin skin) {
@@ -129,7 +134,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin - skin
+     * @param skin skin
      * @return food dialog ("these food items are OK and those ones are danger")
      */
     private DialogFood createFoodDialog(Skin skin) {
@@ -145,7 +150,7 @@ public class ScreenCharacter extends LocalizableScreen {
 
     /**
      * Arranges the content table
-     * @param skin - skin
+     * @param skin skin
      */
     private void buildTable(Skin skin) {
         Table tableMain = new Table(skin);

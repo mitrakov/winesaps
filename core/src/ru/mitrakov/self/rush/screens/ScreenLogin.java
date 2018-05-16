@@ -21,26 +21,43 @@ import ru.mitrakov.self.rush.dialogs.*;
 public class ScreenLogin extends LocalizableScreen {
     // see note#10 below
 
+    /** Main table */
     private final Table tableMain;
+    /** TextBox for login */
     private final TextFieldFeat txtLogin;
+    /** TextBox for password */
     private final TextFieldFeat txtPassword;
+    /** TextBox for promo code */
     private final TextFieldFeat txtPromocode;
 
+    /** "OK" button */
     private final TextButton btnOk;
+    /** "Back" button */
     private final TextButton btnBack;
+    /** "I have a promo code" checkbox */
     private final CheckBox chkPromocode;
+    /** Start Pop up dialog "Please choose a language" */
     private final DialogLanguage langDialog;
+    /** Info Message Box */
     private final DialogInfo infoDialog;
+    /** "Name:" label */
     private final Label lblName;
+    /** "Password:" label */
     private final Label lblPassword;
+    /** "Name is already taken" error label */
     private final Label lblDuplicateName;
+    /** "I already have an account for {0}" label */
     private final LinkedLabel lblHaveAccount;
+    /** Image for promo code (can be valid/invalid) */
     private final Image imgValid;
+    /** Icon for valid promo code */
     private final Drawable textureValid;
+    /** Icon for invalid promo code */
     private final Drawable textureInvalid;
-    private final DialogLock connectingDialog;
 
+    /** If TRUE, then a user called Android soft keyboard, and we have to shift the controls up */
     private transient boolean shiftedByKeyboard = false;
+    /** SignIn flag (TRUE for SignIn mode, and FALSE for SignUp mode) */
     private transient boolean signInMode = false;
 
     /**
@@ -125,7 +142,6 @@ public class ScreenLogin extends LocalizableScreen {
         lblName = new Label("", skin, "default");
         lblPassword = new Label("", skin, "default");
         imgValid = new Image(textureInvalid);
-        connectingDialog = new DialogLock(skin, "panel-lock");
 
         // set up layout
         // table.add(createLangTable(audioManager)).right(); table.row(); @mitrakov: removed after Newbie-Beta-Testing
