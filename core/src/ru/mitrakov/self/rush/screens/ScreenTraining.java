@@ -18,17 +18,31 @@ import ru.mitrakov.self.rush.model.Cells.*;
  * @author mitrakov
  */
 public class ScreenTraining extends LocalizableScreen {
-
+    /** Reference to GUI (takes top 90% of the screen) */
     private final Gui gui;
+    /** Actor thing button; located in the left bottom corner */
     private final ImageButton btnThing;
     // private final TextButton btnSkip; @mitrakov (2017-08-16) removed Skip button to make new users pass the tutorial
+    /** Reference to the Finished Dialog */
     private final DialogFinished finishedDialog;
+    /** Reference to the Training Window to show hints (located on the right hand) */
     private final DialogTutorial trainingDialog;
+    /** Warning Message Box (e.g. for ServerGonnaStop event) */
     private final DialogInfo infoDialog;
 
+    /** Map: [ThingClass -> ThingDrawable], e.g. UmbrellaThing -> UmbrellaThingIcon */
     private final ObjectMap<Class, Drawable> things = new ObjectMap<Class, Drawable>(2);
+    /** Collection of curtains (black areas to hide full content of the battlefield), that disappear when user goes */
     private final Queue<Window> curtains = new Queue<Window>(3);
 
+    /**
+     * Creates a new instance of ScreenTraining
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param manager audio manager (NON-NULL)
+     */
     public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                           AudioManager manager) {
         super(game, model, psObject, assetManager, manager);
@@ -175,7 +189,7 @@ public class ScreenTraining extends LocalizableScreen {
 
     /**
      * Adds content (messages and pictures) to the tutorial dialog
-     * @param b - i18n bundle
+     * @param b i18n bundle
      */
     private void addContent(I18NBundle b) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)

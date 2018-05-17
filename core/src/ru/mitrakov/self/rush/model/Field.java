@@ -45,7 +45,8 @@ public class Field {
      */
     public Field(IIntArray fieldData) {
         assert fieldData != null;
-        if (fieldData.length() != WIDTH * HEIGHT) throw new IllegalArgumentException("Incorrect field length");
+        if (fieldData.length() != WIDTH * HEIGHT)
+            throw new IllegalArgumentException("Incorrect field length: " + fieldData.length());
 
         for (int i = 0; i < fieldData.length(); i++) {
             cells[i] = Cell.newCell(fieldData.get(i), i, nextNumber, 0);

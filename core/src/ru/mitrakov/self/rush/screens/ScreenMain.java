@@ -94,113 +94,113 @@ public class ScreenMain extends LocalizableScreen {
     /** Dialog: "Your password is weak and needs to be changed" */
     private final DialogPassword passwordDialog;
 
-    /**  */
+    /** Scroll area for history content */
     private final ScrollPane tableHistoryScroll;
-    /**  */
+    /** Scroll area for friends content */
     private final ScrollPane tableFriendsScroll;
-    /**  */
+    /** Scroll area for abilities (in case the ability list is too long) */
     private final ScrollPane tableRightContentAbilitiesScroll;
-    /**  */
+    /** TextBox to invite enemy for a battle */
     private final TextFieldFeat txtEnemyName;
-    /**  */
+    /** TextBox to input a new friend's name */
     private final TextFieldFeat txtFriendName;
-    /**  */
+    /** "SinglePlayer" button (since 2.0.0, before it was "Training" button) */
     private final TextButton btnSinglePlayer;
-    /**  */
+    /** "Invite by name" button */
     private final TextButton btnInviteByName;
-    /**  */
+    /** "Quick battle" button */
     private final TextButton btnQuickBattle;
-    /**  */
+    /** "Invite latest enemy" button */
     private final TextButton btnInviteLatest;
-    /**  */
+    /** OK button, when a user clicks on "Invite by name" and inputs the enemy's name */
     private final Button btnInviteByNameOk;
-    /**  */
+    /** Cancel button, when a user clicks on "Invite by name" and inputs the enemy's name */
     private final Button btnInviteByNameCancel;
-    /**  */
+    /** "Settings" button */
     private final Button btnSettings;
-    /**  */
+    /** "About" button */
     private final Button btnAbout;
-    /**  */
+    /** "Info" Tab button */
     private final TextButton btnInfo;
-    /**  */
+    /** "Ratings" Tab button */
     private final TextButton btnRating;
-    /**  */
+    /** "History" Tab button */
     private final TextButton btnHistory;
-    /**  */
+    /** "Friends" Tab button */
     private final TextButton btnFriends;
-    /**  */
+    /** "Fill the inventory" button */
     private final TextButton btnBuyAbilities;
-    /**  */
+    /** "General Rating" button */
     private final TextButton btnGeneralRating;
-    /**  */
+    /** "Weekly Rating" button */
     private final TextButton btnWeeklyRating;
-    /**  */
+    /** "Add new friend" button */
     private final TextButton btnAddFriend;
-    /**  */
+    /** OK button, when a user clicks on "Add new friend" and inputs the friend's name */
     private final Button btnAddFriendOk;
-    /**  */
+    /** Cancel button, when a user clicks on "Add new friend" and inputs the friend's name */
     private final Button btnAddFriendCancel;
-    /**  */
+    /** "New version available" label */
     private final LinkedLabel lblNewVersion;
-    /**  */
+    /** "Get more gems" label */
     private final LinkedLabel lblMore;
-    /**  */
+    /** Big "Name" label */
     private final Label lblName;
-    /**  */
+    /** "Gems" label */
     private final Label lblGemsHeader;
-    /**  */
+    /** Gems count label (number) */
     private final Label lblGemsData;
-    /**  */
+    /** "Abilities" label */
     private final Label lblAbilities;
-    /**  */
+    /** "Expires in XX:XX" label (when a user clicks on his ability) */
     private final Label lblAbilityExpireTime;
-    /**  */
+    /** "Name" label in ratings header */
     private final Label lblRatingName;
-    /**  */
+    /** "Wins" label in ratings header */
     private final Label lblRatingWins;
-    /**  */
+    /** "Losses" label in ratings header */
     private final Label lblRatingLosses;
-    /**  */
+    /** "Score diff" label in ratings header */
     private final Label lblRatingScoreDiff;
-    /**  */
+    /** "..." label in ratings list (that means a user is not in Top-10) */
     private final Label lblRatingDots;
-    /**  */
+    /** Image of a user's character (Rabbit, Hedgehog, etc) */
     private final Image imgCharacter;
 
-    /**  */
+    /** "Win" icon in history tab */
     private final Drawable drawableWin;
-    /**  */
+    /** "Loss" icon in history tab */
     private final Drawable drawableLoss;
-    /**  */
+    /** "Invite" icon in friends tab */
     private final Drawable drawableInvite;
-    /**  */
+    /** "Remove" icon in friends tab */
     private final Drawable drawableRemove;
-    /**  */
+    /** Status On icon (green light) */
     private final Drawable drawableStatusOn; // Server API 1.2.0+ supports statuses
-    /**  */
+    /** Status Off icon (gray light) */
     private final Drawable drawableStatusOff; // Server API 1.2.0+ supports statuses
 
-    /**  */
+    /** Map: [Ability -> ImageButton_of_Ability] */
     private final ObjectMap<Model.Ability, ImageButton> abilities = new ObjectMap<Model.Ability, ImageButton>(10);
-    /**  */
+    /** Map: [Character -> Icon_of_Character] */
     private final ObjectMap<Model.Character, Drawable> characters = new ObjectMap<Model.Character, Drawable>(4);
-    /**  */
+    /** Array of all rating labels (when a user switches General/Weekly, in fact we just redraw the same set of labels) */
     private final Array<LabelFeat> ratingLabels = new Array<LabelFeat>(4 * (Model.RATINGS_COUNT + 1));
-    /**  */
+    /** Date format for history tab */
     private final Format dateFmt = new SimpleDateFormat("HH:mm\nyyyy.MM.dd", Locale.getDefault());
 
-    /**  */
+    /** Current tab chosen */
     private enum CurDisplayMode {Info, Rating, History, Friends}
-    /**  */
+    /** Version of a new client available, if any */
     private String newVersion = "";
 
     /**
      * Creates a new instance of ScreenMain
-     * @param game - instance of Winesaps (NON-NULL)
-     * @param model - model (NON-NULL)
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
-     * @param audioManager - audio manager (NON-NULL)
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param audioManager audio manager (NON-NULL)
      */
     public ScreenMain(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                       AudioManager audioManager) {
@@ -431,6 +431,7 @@ public class ScreenMain extends LocalizableScreen {
         assert bundle != null;
         String updateStr = bundle.format("dialog.about.new.version", newVersion);
 
+        // call "onLocaleChanged" for all the dialogs
         promocodeDialog.onLocaleChanged(bundle);
         purchaseDialog.onLocaleChanged(bundle);
         moreGemsDialog.onLocaleChanged(bundle);
@@ -447,6 +448,7 @@ public class ScreenMain extends LocalizableScreen {
         promocodeDoneDialog.onLocaleChanged(bundle);
         passwordDialog.onLocaleChanged(bundle);
 
+        // update own components
         btnSinglePlayer.setText(bundle.format("opponent.none"));
         btnInviteByName.setText(bundle.format("opponent.find"));
         btnQuickBattle.setText(bundle.format("opponent.quick"));
@@ -469,7 +471,8 @@ public class ScreenMain extends LocalizableScreen {
         lblRatingDots.setText(bundle.format("rating.dots"));
         lblNewVersion.setText(updateStr, bundle.format("dialog.about.update"), "");
 
-        rebuildRightTable(CurDisplayMode.Info); // forward user to the main tab (to avoid artifacts, e.g. in History)
+        // forward user to the main tab (to avoid artifacts, e.g. in History)
+        rebuildRightTable(CurDisplayMode.Info);
     }
 
     @Override
@@ -759,7 +762,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Rebuilds left table with 4 buttons ("Training", "Find enemy", "Quick fight", "Latest enemy")
-     * @param showInputName - true to show text box, false to show only 4 buttons
+     * @param showInputName true to show text box, false to show only 4 buttons
      */
     private void rebuildLeftTable(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "invite enemy by name")
@@ -792,7 +795,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Rebuilds right table with 4 tabs ("Info", "Rating", "History", "Friends")
-     * @param mode - current tab to show
+     * @param mode current tab to show
      */
     private void rebuildRightTable(CurDisplayMode mode) {
         tableRightContent.clear();
@@ -845,7 +848,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Rebuilds friends buttons
-     * @param showInputName - true to show text box, false to show a button ("Add friend")
+     * @param showInputName true to show text box, false to show a button ("Add friend")
      */
     private void rebuildFriendsButtons(boolean showInputName) {
         Gdx.input.setOnscreenKeyboardVisible(false); // hide keyboard on Android (shown in "add friend")
@@ -863,7 +866,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Updates the rating content
-     * @param items - collection of rating items
+     * @param items collection of rating items
      */
     private void updateRating(Iterable<RatingItem> items) {
         for (Label label : ratingLabels) {
@@ -917,7 +920,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Updates the ability list in "Info" tab
-     * @param abilityList - ability list
+     * @param abilityList ability list
      */
     private void updateAbilities(Iterable<Model.Ability> abilityList) {
         tableRightContentAbilities.clear();
@@ -930,7 +933,7 @@ public class ScreenMain extends LocalizableScreen {
 
     /**
      * Updates the friends content
-     * @param items - collection of friend items
+     * @param items collection of friend items
      */
     private void updateFriends(Collection<? extends FriendItem> items) {
         adjustFriendsTable();
