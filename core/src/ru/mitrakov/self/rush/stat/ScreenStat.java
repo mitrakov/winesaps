@@ -15,9 +15,12 @@ import ru.mitrakov.self.rush.PsObject;
 import static ru.mitrakov.self.rush.Winesaps.*;
 
 /**
- * Created by mitrakov on 01.03.2017
+ * Statistics Screen
+ * @author Mitrakov
+ * @see Stat
  */
 class ScreenStat extends ScreenAdapter {
+    /** List of Categories (defined by the Server) */
     private static final String[] categories = new String[]{
             "Time elapsed (µs): ",
             "Uptime (min):      ",
@@ -41,17 +44,32 @@ class ScreenStat extends ScreenAdapter {
             "Waiting count:     ",
     };
 
+    /** Platform specific object */
     private final PsObject psObject;
+    /** Reference to Stat */
     private final Stat stat;
+    /** LibGdx skin */
     private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+    /** LibGdx Scene2D Stage */
     private final Stage stage = new Stage(new FitViewport(WIDTH, HEIGHT));
+    /** Left table */
     private final Table tableLeft = new Table();
+    /** Middle table */
     private final Table tableMid = new Table();
+    /** Right table */
     private final Table tableRight = new Table();
+    /** "SRTT = X.XXXX" label */
     private final Label lblSrtt = new Label("", skin, "white");
+    /** "Connected/disconnected" label */
     private final Label lblConnected = new Label("", skin, "white");
+    /** Map [CategoryIndex -> LabelThatShowsValue], e.g. "1 -> Label('25')" means that Uptime is 25 min */
     private final IntMap<Label> lblValues = new IntMap<Label>(16);
 
+    /**
+     * Creates a new Statistics Screen
+     * @param stat {@link Stat}
+     * @param psObject Platform Specific Object (NON-NULL)
+     */
     ScreenStat(Stat stat, PsObject psObject) {
         assert stat != null && psObject != null;
         this.stat = stat;
@@ -92,6 +110,10 @@ class ScreenStat extends ScreenAdapter {
         skin.dispose();
     }
 
+    /**
+     * Initializes the screen
+     * @return this
+     */
     ScreenStat init() {
         for (int i = 0; i < categories.length; i++) {
             Label category = new Label(categories[i], skin, "white");
@@ -127,6 +149,11 @@ class ScreenStat extends ScreenAdapter {
         return this;
     }
 
+    /**
+     * Sets the value for a given category
+     * @param category category index (zero-based)
+     * @param value value (0-65535)
+     */
     void setValue(int category, int value) {
         Label label = lblValues.get(category);
         if (label != null)
@@ -135,14 +162,26 @@ class ScreenStat extends ScreenAdapter {
             psObject.pushNotification("Someone is waiting for enemy!", true);
     }
 
+    /**
+     * Shows message box
+     * @param message text
+     */
     void showMessage(String message) {
         new Dialog("", skin, "default").text(message).button("OK").show(stage);
     }
 
+    /**
+     * Sets current value of SRTT
+     * @param srtt Smoothed Round Trip Time
+     */
     void setSrtt(float srtt) {
         lblSrtt.setText(String.format(Locale.getDefault(), "SRTT = %.2f", srtt));
     }
 
+    /**
+     * Sets current value of connection flag
+     * @param value TRUE to display "Connected", and FALSE to display "Disconnected"
+     */
     void setConnected(boolean value) {
         lblConnected.setText(value ? "Connected" : "Disconnected");
     }

@@ -13,7 +13,23 @@ import static ru.mitrakov.self.rush.Winesaps.*;
 import static ru.mitrakov.self.rush.utils.Utils.*;
 
 /**
- * Entry point
+ * <b>Statistics Application. Entry Point</b>
+ * <br>We need a tool to show current Server statistics and call Server Control functions (e.g. soft reboot and so on).
+ * So we can take any tool that supports SwUDP and write simple client for those simple purposes.
+ * One of the options - reuse the Winesaps applications itself! Maybe it's a not super-idiomatic way, but here we have
+ * ready SwUDP protocol implementation, Network class and even Android support! The only thing we should do is to switch
+ * between Stat class and Winesaps class (as well as some configs) to build Stat or Main application, respectively.
+ *
+ * <br><br>Probably, more "clean" way is to extract common classes to a library, create 2 independent projects and link
+ * the extracted classes to them; but for now I decided that switching between Stat/Winesaps is the simpliest solution.
+ *
+ * <br><br>Algorithm:
+ * <ul>
+ *     <li>search "for Stat application" in the project and follow the further instructions
+ *     <li>build the Stats application
+ *     <li>revert changes back
+ * </ul>
+ * @author Mitrakov
  */
 public class Stat extends Game {
     private final PsObject psObject;

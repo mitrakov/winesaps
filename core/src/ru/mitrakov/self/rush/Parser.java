@@ -10,7 +10,7 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
 import static ru.mitrakov.self.rush.model.Model.*;
 
 /**
- * Parser is used to parse input messages from the network.
+ * Parser is used to parse incoming messages from the network.
  * This class is intended to have a single instance
  * @author mitrakov
  */
@@ -116,7 +116,7 @@ class Parser implements IHandler {
     }
 
     /**
-     * Parses a single message (note that the input byte array may consist of several single messages) and calls the
+     * Parses a single message (note that the incoming byte array may consist of several single messages) and calls the
      * corresponding method of Model
      * @param data single message byte array
      */

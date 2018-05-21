@@ -11,7 +11,7 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.*;
 
 /**
  * Main networking class
- * Class is intended to have a single instance
+ * <br>Class is intended to have a single instance
  * @author mitrakov
  */
 public final class Network extends Thread implements IHandler {
