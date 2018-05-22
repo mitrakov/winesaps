@@ -21,9 +21,11 @@ import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
  * Gui is the main class to render battle field on the screen
- * Remember 2 golden rules:
- * 1) render() method MUST been calculated less than 16 ms (to provide 60 FPS)
- * 2) render() method MUST NOT create new objects to decrease excessive Garbage Collection
+ * <br><b>Remember 2 golden rules:</b>
+ * <ul>
+ *     <li> render() method MUST been calculated less than 16 ms (to provide 60 FPS)
+ *     <li> render() method MUST NOT create new objects to decrease excessive Garbage Collection
+ * </ul>
  * Also remember that it's just an actor, so that different screens should create their own instances
  * @author mitrakov
  */
@@ -33,7 +35,10 @@ public class Gui extends Actor {
      * @author mitrakov
      */
     static private final class MyClickListener extends ClickListener {
-        float x, y = 0;
+        /** X mouse position */
+        float x = 0;
+        /** Y mouse position */
+        float y = 0;
 
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -51,64 +56,115 @@ public class Gui extends Actor {
     }
 
     /**
-     * AnimInfo is a simple wrapper over Animation[T] that also stores time t and XY-coordinates
+     * Simple wrapper over {@link Animation} that also stores time t and XY-coordinates
      */
     static private class AnimInfo {
-        float x, y;
+        /** X-coordinate of animation */
+        float x;
+        /** Y-coordinate of animation */
+        float y;
+        /** Time */
         float t = BIG_VALUE;
+        /** Animation */
         final Animation<TextureRegion> animation;
 
+        /**
+         * Creates a new Animation Info instance
+         * @param animation LibGdx animation
+         */
         private AnimInfo(Animation<TextureRegion> animation) {
             this.animation = animation;
         }
     }
 
+    /** Cell width, in World Units (in our case in pixels) */
     private static final int CELL_SIZ_W = 14;
+    /** Cell height, in World Units (in our case in pixels) */
     private static final int CELL_SIZ_H = 85;
+    /** Offset by X to draw the battle field */
     private static final int OFFSET_X = (Winesaps.WIDTH - Field.WIDTH * CELL_SIZ_W) / 2; // (800 - 51*14) / 2
+    /** Offset by Y to draw the battle field */
     private static final int OFFSET_Y = 33; // inferred by expertise
+    /** Moves per second for Actor, defined by Server (e.g. 5 moves/second means that single step duration is 200 ms) */
     private static final int MOVES_PER_SEC = 5;
+    /** Moves per second for Wolf, defined by Server (e.g. 4 moves/second means that single step duration is 250 ms) */
     private static final int MOVES_PER_SEC_WOLF = 4;
+    /** Animation speed for Actor by X-axis */
     private static final int SPEED_X = CELL_SIZ_W * MOVES_PER_SEC;
+    /** Animation speed for Wolf by X-axis */
     private static final int SPEED_X_WOLF = CELL_SIZ_W * MOVES_PER_SEC_WOLF;
+    /** Animation speed for Actor by Y-axis */
     private static final int SPEED_Y = CELL_SIZ_H * MOVES_PER_SEC;
+    /** Frames per single move */
     private static final int FRAMES_PER_MOVE = 60 / MOVES_PER_SEC; // FPS / MOVES_PER_SEC
+    /** Some big value for animation time that means "Animation is off" */
     private static final int BIG_VALUE = 99;
 
+    /** Reference to the model */
     private final Model model;
+    /**  */
     private final InputController controller;
+    /**  */
     private final MyClickListener listener = new MyClickListener();
 
+    /**  */
     private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
+    /**  */
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesDown = new ObjectMap<Class, IntMap<TextureRegion>>(3);
+    /**  */
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesStat = new ObjectMap<Class, IntMap<TextureRegion>>(9);
+    /**  */
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
+    /**  */
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
+    /**  */
     private final ObjectMap<Class, AnimationData<Model.Character>> texturesAnim =
             new ObjectMap<Class, AnimationData<Model.Character>>(2);
+    /**  */
     private final IntMap<TextureRegion> texturesDownSolid = new IntMap<TextureRegion>(STYLES_COUNT);
+    /**  */
     private final IntMap<TextureRegion> texturesWaterUp = new IntMap<TextureRegion>(STYLES_COUNT);
+    /**  */
     private final IntMap<TextureRegion> texturesWaterDown = new IntMap<TextureRegion>(STYLES_COUNT);
+    /**  */
     private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
             new IntMap<AnimationData<Model.Character>>(100);
+    /**  */
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
+    /**  */
     private final IntMap<Animation<TextureRegion>> decorations = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
+    /**  */
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
+    /**  */
     private final ObjectSet<Class> heightOffsets = new ObjectSet<Class>(1);
+    /**  */
     private final Animation<TextureRegion> animWaterfall;
+    /**  */
     private final Animation<TextureRegion> animWaterfallSmall;
+    /**  */
     private final Animation<TextureRegion> animAntidote;
+    /**  */
     private final Animation<TextureRegion> animTeleport;
+    /**  */
     private final Animation<TextureRegion> animFlashbang;
+    /**  */
     private final Animation<TextureRegion> animDetector;
+    /**  */
     private final AnimInfo animAura;
+    /**  */
     private final AnimInfo animFlare;
+    /**  */
     private final AnimInfo animExplosion;
+    /**  */
     private final AnimInfo animSmoke;
+    /**  */
     private final TextureRegion textureAntidote;
+    /**  */
     private final TextureRegion textureDazzle;
 
+    /**  */
     private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
+    /**  */
     private float time = 0, enemyDazzleEffectTime = 0;
 
     private static float convertXFromModelToScreen(int x) {

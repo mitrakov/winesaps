@@ -12,6 +12,10 @@ import ru.mitrakov.self.rush.Localizable;
  * @author mitrakov
  */
 public abstract class DialogFeat extends Dialog implements Localizable {
+    /**
+     * Static method to close all dialogs and bring a user back to the screen
+     * @param stage LibGdx stage
+     */
     public static void hideAll(Stage stage) {
         assert stage != null;
         for (Actor actor : stage.getActors()) {
@@ -20,13 +24,14 @@ public abstract class DialogFeat extends Dialog implements Localizable {
         }
     }
 
+    /** Function to run when a user closes the dialog (may be NULL) */
     private Runnable onResultAction;
 
     /**
      * Creates a new instance of DialogFeat
-     * @param title - title
-     * @param skin - skin (NON-NULL)
-     * @param windowStyleName - style name (default is "default")
+     * @param title title
+     * @param skin skin (NON-NULL)
+     * @param windowStyleName style name (default is "default")
      */
     public DialogFeat(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
@@ -48,7 +53,7 @@ public abstract class DialogFeat extends Dialog implements Localizable {
 
     /**
      * Sets the additional action when a user closes the dialog
-     * @param f - function to call
+     * @param f function to call
      * @return "this"
      */
     public DialogFeat setOnResultAction(Runnable f) {

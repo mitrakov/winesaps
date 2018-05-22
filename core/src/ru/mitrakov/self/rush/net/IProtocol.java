@@ -8,7 +8,7 @@ import ru.mitrakov.self.rush.utils.collections.IIntArray;
  * Interface for a transport protocol
  * @author mitrakov
  */
-interface IProtocol {
+public interface IProtocol {
     /**
      * Tries to establish a connection
      * @throws IOException if IOException occurred

@@ -42,7 +42,7 @@ public class Winesaps extends Game {
     /** Server port */
     public static final int PORT = 33996;
 
-    /** Platform specific object */
+    /** Platform Specific Object */
     private final PsObject psObject;
     /** MVC Model */
     private final Model model;
@@ -67,7 +67,7 @@ public class Winesaps extends Game {
 
     /**
      * Creates new instance of Game.
-     * Please DO NOT put here any things related with LibGDX objects. Do it in create() method
+     * <br>Please DO NOT put here any things related with LibGDX objects. Do it in {@link #create()} method
      * @param psObject Platform Specific Object (NON-NULL)
      */
     public Winesaps(PsObject psObject) {
@@ -161,7 +161,6 @@ public class Winesaps extends Game {
      * Informs the game about changing the screen ratio
      * @param ratio float value of width/height
      */
-    @SuppressWarnings("WeakerAccess")
     public void setRatio(float ratio) {
         if (screenLogin instanceof ScreenLogin)
             ((ScreenLogin) screenLogin).setRatio(ratio);

@@ -64,7 +64,7 @@ public class DialogTutorial extends Window {
      * Shows the dialog
      * <br><b>Note:</b> Since in fact this is just a window, it won't block the other controls on the stage
      * @see #next()
-     * @param stage stage to show the dialog on
+     * @param stage LibGdx stage
      * @return this
      */
     public DialogTutorial show(Stage stage) {

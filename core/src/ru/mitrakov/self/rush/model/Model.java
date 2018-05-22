@@ -372,7 +372,7 @@ public class Model {
     // === USUAL PRIVATE FIELDS ===
     // ============================
 
-    /** Current platform specific object */
+    /** Platform Specific Object */
     private final PsObject psObject;
     /** Locker object (only for synchronization purposes) */
     private final Object locker = new Object();

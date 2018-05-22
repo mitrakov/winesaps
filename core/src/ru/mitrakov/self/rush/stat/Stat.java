@@ -31,21 +31,34 @@ import static ru.mitrakov.self.rush.utils.Utils.*;
  * </ul>
  * @author Mitrakov
  */
+@SuppressWarnings("unused")
 public class Stat extends Game {
+    /** Platform Specific Object */
     private final PsObject psObject;
+    /** Incoming message handler */
     private final ParserStat parser = new ParserStat();
-    private final IIntArray query = new GcResistantIntArray(32);
-    private final IIntArray query2 = new GcResistantIntArray(32);
+    /** Helper array to avoid "new" operations and decrease GC pressure */
+    private final IIntArray array = new GcResistantIntArray(32);
+    /** Simple error handler */
     private final Thread.UncaughtExceptionHandler errorHandler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
             e.printStackTrace();
         }
     };
+
+    /** Network */
     private /*final*/ Network network;
+    /** Reference to the protocol (only SwUDP supported for now) */
     private /*final*/ SwUDP protocol;
+    /** Main Statistics Screen */
     private /*final*/ ScreenStat screen;
 
+    /**
+     * Creates new instance of Statistics Application.
+     * <br>Please DO NOT put here any things related with LibGDX objects. Do it in {@link #create()} method
+     * @param psObject Platform Specific Object (NON-NULL)
+     */
     public Stat(PsObject psObject) {
         assert psObject != null;
         this.psObject = psObject;
@@ -67,11 +80,11 @@ public class Stat extends Game {
         Gdx.input.setCatchMenuKey(true);
 
         network.start();
+        final IIntArray query = new GcResistantIntArray(1).add(0xF0);
         psObject.runDaemon(2000, 2000, new Runnable() {
             @Override
             public void run() {
                 try {
-                    query.clear().add(0xF0);
                     network.send(query);
                     screen.setSrtt(protocol.getSrtt());
                 } catch (IOException e) {
@@ -89,16 +102,24 @@ public class Stat extends Game {
 
     void sendCmd(String arg) {
         try {
-            query2.fromByteArray(getBytes(arg), arg.length()).prepend(0xF1);
-            network.send(query2);
+            array.fromByteArray(getBytes(arg), arg.length()).prepend(0xF1);
+            network.send(array);
         } catch (IOException e) {
             errorHandler.uncaughtException(Thread.currentThread(), e);
         }
     }
 
+    /**
+     * Turns the music/SFX on/off
+     * @param value true to mute music/SFX
+     */
     public void mute(boolean value) {
     }
 
-    public void setRatio(float value) {
+    /**
+     * Informs the game about changing the screen ratio
+     * @param ratio float value of width/height
+     */
+    public void setRatio(float ratio) {
     }
 }
