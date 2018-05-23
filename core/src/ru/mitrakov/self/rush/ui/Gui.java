@@ -56,7 +56,7 @@ public class Gui extends Actor {
     }
 
     /**
-     * Simple wrapper over {@link Animation} that also stores time t and XY-coordinates
+     * Simple wrapper over {@link Animation} that also stores time <b>t</b> and XY-coordinates
      */
     static private class AnimInfo {
         /** X-coordinate of animation */
@@ -102,64 +102,62 @@ public class Gui extends Actor {
 
     /** Reference to the model */
     private final Model model;
-    /**  */
+    /** Input Controller */
     private final InputController controller;
-    /**  */
+    /** Click listener for this Component */
     private final MyClickListener listener = new MyClickListener();
 
-    /**  */
+    /** Array of backgrounds (one background picture per style pack) */
     private final Array<Texture> backgrounds = new Array<Texture>(STYLES_COUNT);
-    /**  */
+    /** Map [Class -> Textures_for_Bottom_for_each_Stylepack], e.g. "classOf(Dais)" -> "Textures-of-Dais" */
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesDown = new ObjectMap<Class, IntMap<TextureRegion>>(3);
-    /**  */
+    /** Map [Class -> Textures_for_Static_Objects_for_each_Stylepack], e.g. "classOf(Rope)" -> "Textures-of-Rope" */
     private final ObjectMap<Class, IntMap<TextureRegion>> texturesStat = new ObjectMap<Class, IntMap<TextureRegion>>(9);
-    /**  */
+    /** Map [Class -> Texture_for_Collectible_Objects], e.g. "classOf(Carrot)" -> "Texture-of-Carrot" */
     private final ObjectMap<Class, TextureRegion> texturesCollectible = new ObjectMap<Class, TextureRegion>(20);
-    /**  */
+    /** Map [Class -> Texture_for_Overlay_Objects], e.g. "classOf(Umbrella)" -> "Texture-of-Umbrella" */
     private final ObjectMap<Class, TextureRegion> texturesOverlay = new ObjectMap<Class, TextureRegion>(20);
-    /**  */
+    /** Map [Class -> AnimationData_for_each_Character], e.g. "classOf(Actor1)" -> "AnimationData" */
     private final ObjectMap<Class, AnimationData<Model.Character>> texturesAnim =
             new ObjectMap<Class, AnimationData<Model.Character>>(2);
-    /**  */
+    /** The same as {@link #texturesDown}, but without grass on top of the texture (to avoid grass-on-grass effect) */
     private final IntMap<TextureRegion> texturesDownSolid = new IntMap<TextureRegion>(STYLES_COUNT);
-    /**  */
+    /** The same as {@link #texturesStat}, but for Water (since 2.0.0 we have to draw water in a separate layer) */
     private final IntMap<TextureRegion> texturesWaterUp = new IntMap<TextureRegion>(STYLES_COUNT);
-    /**  */
+    /** The same as {@link #texturesDown}, but for Water (since 2.0.0 we have to draw water in a separate layer) */
     private final IntMap<TextureRegion> texturesWaterDown = new IntMap<TextureRegion>(STYLES_COUNT);
-    /**  */
+    /** The same as {@link #texturesAnim}, but for Wolves (if wolves > 1, then we can't map AnimationData to a class) */
     private final IntMap<AnimationData<Model.Character>> texturesAnimWolf =
             new IntMap<AnimationData<Model.Character>>(100);
-    /**  */
+    /** The same as {@link #texturesStat}, but for {@link LadderBottom LadderBottoms}, because they are animated */
     private final IntMap<Animation<TextureRegion>> animLadders = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
-    /**  */
+    /** The same as {@link #texturesStat}, but for {@link DecorationDynamic}, because they are animated */
     private final IntMap<Animation<TextureRegion>> decorations = new IntMap<Animation<TextureRegion>>(STYLES_COUNT);
-    /**  */
+    /** Animation time for all Ladders. "animTime[i]" stores time position of animation for the Ladder at "cells[i]" */
     private final FloatArray animTime = new FloatArray(Field.HEIGHT * Field.WIDTH);
-    /**  */
-    private final ObjectSet<Class> heightOffsets = new ObjectSet<Class>(1);
-    /**  */
+    /** Animation for {@link Waterfall Waterfall} */
     private final Animation<TextureRegion> animWaterfall;
-    /**  */
+    /** Animation for {@link Waterfall Waterfall}, but when an actor established an {@link Umbrella Umbrella} in it */
     private final Animation<TextureRegion> animWaterfallSmall;
-    /**  */
+    /** Animation for {@link Antidote Antidote} */
     private final Animation<TextureRegion> animAntidote;
-    /**  */
+    /** Animation for {@link Teleport Teleport} */
     private final Animation<TextureRegion> animTeleport;
-    /**  */
+    /** Animation for {@link Flashbang Flashbang} */
     private final Animation<TextureRegion> animFlashbang;
-    /**  */
+    /** Animation for {@link Detector Mines Detector} */
     private final Animation<TextureRegion> animDetector;
-    /**  */
+    /** Animation for Aura (around an actor that appears during 3 seconds) */
     private final AnimInfo animAura;
-    /**  */
+    /** Animation for Flare (when the enemy uses {@link Flashbang Flashbang} against us) */
     private final AnimInfo animFlare;
-    /**  */
+    /** Animation for Explosion (when an actor suddenly trips a {@link Mine Mine}) */
     private final AnimInfo animExplosion;
-    /**  */
+    /** Animation for Smoke (that appears on actor's death) */
     private final AnimInfo animSmoke;
-    /**  */
+    /** "Antidote Activated" balloon (when an actor eats {@link Antidote Antidote}) */
     private final TextureRegion textureAntidote;
-    /**  */
+    /** "?" balloon (when we use {@link Flashbang Flashbang} against the enemy to show the fact he's dazzled) */
     private final TextureRegion textureDazzle;
 
     /**  */
@@ -323,8 +321,6 @@ public class Gui extends Actor {
                 animTime.add(BIG_VALUE);
             }
         }
-        // fill offsets
-        heightOffsets.add(BeamChunk.class);
 
         // simple textures
         textureAntidote = atlasEffects.findRegion("Antidote");
@@ -601,7 +597,7 @@ public class Gui extends Actor {
                     if (obj != null) {
                         TextureRegion texture = map.get(obj.getClass());
                         if (texture != null) {
-                            if (heightOffsets.contains(obj.getClass()))
+                            if (obj instanceof BeamChunk)
                                 bottomHeight -= texture.getRegionHeight();
                             float x = convertXFromModelToScreen(i) - (texture.getRegionWidth() - bottomWidth) / 2;
                             float y = convertYFromModelToScreen(j) + bottomHeight;
