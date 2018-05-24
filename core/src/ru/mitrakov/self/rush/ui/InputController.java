@@ -13,9 +13,15 @@ import static com.badlogic.gdx.Gdx.input;
  * @author mitrakov
  */
 class InputController {
+    /**
+     * Max possible delay to wait for MOVE-ACK and forbid sending MOVE commands to the Server
+     * @since 1.1.6
+     */
     private final static long NEXT_MOVE_MAX_DELAY_NS = 10 * 1000000000L; // 10 sec
 
+    /** Reference to the model */
     private final Model model;
+    /**  */
     private boolean curDirRight = true;
     private boolean movesAllowed = true;
     private boolean nextMoveAllowed = true; // to restrict sending next MOVE cmd until we receive Ack on previous one
@@ -23,7 +29,7 @@ class InputController {
 
     /**
      * Creates a new instance of InputController
-     * @param model - model (NON-NULL)
+     * @param model model (NON-NULL)
      */
     InputController(Model model) {
         assert model != null;
@@ -53,9 +59,9 @@ class InputController {
 
     /**
      * Checks movement (mouse, touch screen, keyboard)
-     * @param mouseButton - current pressed mouse button
-     * @param x - x mouse position
-     * @param y - y mouse position
+     * @param mouseButton current pressed mouse button
+     * @param x x mouse position
+     * @param y y mouse position
      * @return true, if a movement registered
      */
     boolean checkMovement(int mouseButton, float x, float y) {
@@ -100,7 +106,7 @@ class InputController {
 
     /**
      * Allows or denies movement input listening (doesn't affect UseThing or UseAbility input listening)
-     * @param movesAllowed - true to turn on input listening
+     * @param movesAllowed true to turn on input listening
      */
     void setMovesAllowed(boolean movesAllowed) {
         this.movesAllowed = movesAllowed;

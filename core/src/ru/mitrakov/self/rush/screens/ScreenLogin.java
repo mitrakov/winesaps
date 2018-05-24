@@ -62,11 +62,11 @@ public class ScreenLogin extends LocalizableScreen {
 
     /**
      * Creates a new instance of ScreenLogin
-     * @param game - instance of Winesaps (NON-NULL)
-     * @param model - model (NON-NULL)
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param assetManager - asset manager (NON-NULL)
-     * @param audioManager - audio manager (NON-NULL)
+     * @param game instance of Winesaps (NON-NULL)
+     * @param model model (NON-NULL)
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param assetManager asset manager (NON-NULL)
+     * @param audioManager audio manager (NON-NULL)
      */
     public ScreenLogin(final Winesaps game, final Model model, PsObject psObject, final AssetManager assetManager,
                        AudioManager audioManager) {
@@ -222,7 +222,7 @@ public class ScreenLogin extends LocalizableScreen {
 
     /**
      * Sets the screen ratio
-     * @param ratio - float value of width/height
+     * @param ratio float value of width/height
      */
     public void setRatio(float ratio) {
         shiftedByKeyboard = ratio > 2;
@@ -233,8 +233,8 @@ public class ScreenLogin extends LocalizableScreen {
 
     /**
      * Reconstructs the screen to show SignUp controls
-     * @param havePromocode - true, if a user clicked "I have a promo code"
-     * @param showDuplicateNameError - true, if a user chose an already existing login
+     * @param havePromocode true, if a user clicked "I have a promo code"
+     * @param showDuplicateNameError true, if a user chose an already existing login
      */
     private void rebuildDialog(boolean havePromocode, boolean showDuplicateNameError) {
         Actor focused = stage.getKeyboardFocus();

@@ -63,7 +63,7 @@ public class Gui extends Actor {
         float x;
         /** Y-coordinate of animation */
         float y;
-        /** Time */
+        /** Time, in seconds */
         float t = BIG_VALUE;
         /** Animation */
         final Animation<TextureRegion> animation;
@@ -160,23 +160,52 @@ public class Gui extends Actor {
     /** "?" balloon (when we use {@link Flashbang Flashbang} against the enemy to show the fact he's dazzled) */
     private final TextureRegion textureDazzle;
 
-    /**  */
-    private long frameNumber = 0, lastMoveFrame = -FRAMES_PER_MOVE;
-    /**  */
-    private float time = 0, enemyDazzleEffectTime = 0;
+    /** Global frames counter */
+    private long frameNumber = 0;
+    /** Number of frame (counted by {@link #frameNumber}) when the {@link InputController} checked last move (this is
+     * needed to forbid InputController handle events during {@link #FRAMES_PER_MOVE} frames) */
+    private long lastMoveFrame = -FRAMES_PER_MOVE;
+    /** Global time counter, in seconds */
+    private float time = 0;
+    /** Countdown "timer" for enemy Dazzle effect (it is set up at 3.0 sec and runs out each frame until becomes 0) */
+    private float enemyDazzleEffectTime = 0;
 
+    /**
+     * Static method to convert Server-based X-coordinate to GUI-based screen X-coordinate
+     * @param x Server-based X-coordinate (0 to {@link Field#WIDTH})
+     * @return GUI-based X-coordinate
+     * @see #convertXFromScreenToModel(float)
+     */
     private static float convertXFromModelToScreen(int x) {
         return x * CELL_SIZ_W + OFFSET_X;
     }
 
+    /**
+     * Static method to convert Server-based Y-coordinate to GUI-based screen Y-coordinate
+     * @param y Server-based Y-coordinate (0 to {@link Field#HEIGHT})
+     * @return GUI-based Y-coordinate
+     * @see #convertYFromScreenToModel(float)
+     */
     private static float convertYFromModelToScreen(int y) {
         return (Field.HEIGHT - y) * CELL_SIZ_H - OFFSET_Y;
     }
 
+    /**
+     * Static method to convert GUI-based screen X-coordinate to Server-based X-coordinate
+     * @param x GUI-based X-coordinate
+     * @return Server-based X-coordinate (0 to {@link Field#WIDTH})
+     * @see #convertXFromModelToScreen(int)
+     */
     static int convertXFromScreenToModel(float x) {
         return (int) ((x - OFFSET_X) / CELL_SIZ_W);
     }
 
+    /**
+     * Static method to convert GUI-based screen Y-coordinate to Server-based Y-coordinate
+     * @param y GUI-based Y-coordinate
+     * @return Server-based Y-coordinate (0 to {@link Field#HEIGHT})
+     * @see #convertYFromModelToScreen(int)
+     */
     static int convertYFromScreenToModel(float y) {
         return (int) (Field.HEIGHT - y / CELL_SIZ_H);
     }
@@ -547,10 +576,11 @@ public class Gui extends Actor {
      * @param field battle field (NON-NULL)
      * @param y Y-coordinate
      * @return TRUE, if and only if the given row contains any object
-     * @see #anythingExistsOnRowBottom(Field, int)
+     * @see #anythingExistsOnRowBottom(Field, int, boolean)
      */
-    private boolean anythingExistsOnRow(Field field, int y) {
-        for (int i = 0; i < Field.WIDTH; i++) {
+    private boolean anythingExistsOnRow(Field field, int y, boolean leftSide) {
+        int start = leftSide ? 0 : Field.WIDTH / 2, end = leftSide ? Field.WIDTH / 2 : Field.WIDTH;
+        for (int i = start; i < end; i++) {
             Cell cell = field.cells[y * Field.WIDTH + i]; // cell != NULL (assert omitted)
             if (cell.getObjectsCount() > 0)
                 return true;
@@ -563,10 +593,11 @@ public class Gui extends Actor {
      * @param field battle field (NON-NULL)
      * @param y Y-coordinate
      * @return TRUE, if and only if the given row contains at least one non-empty bottom
-     * @see #anythingExistsOnRow(Field, int)
+     * @see #anythingExistsOnRow(Field, int, boolean)
      */
-    private boolean anythingExistsOnRowBottom(Field field, int y) {
-        for (int i = 0; i < Field.WIDTH; i++) {
+    private boolean anythingExistsOnRowBottom(Field field, int y, boolean leftSide) {
+        int start = leftSide ? 0 : Field.WIDTH / 2, end = leftSide ? Field.WIDTH / 2 : Field.WIDTH;
+        for (int i = start; i < end; i++) {
             Cell cell = field.cells[y * Field.WIDTH + i]; // cell != NULL (assert omitted)
             if (cell.bottom != null)
                 return true;
@@ -653,10 +684,14 @@ public class Gui extends Actor {
     private void drawEdgeWalls(Field field, Batch batch) {
         // field != null && batch != null (assert omitted)
         for (int j = 0; j < Field.HEIGHT; j++) {
-            boolean needDrawUp = anythingExistsOnRow(field, j);
-            boolean needDrawDown = anythingExistsOnRowBottom(field, j);
+            boolean needDrawUpLeft = anythingExistsOnRow(field, j, true);
+            boolean needDrawUpRight = anythingExistsOnRow(field, j, false);
+            boolean needDrawDownLeft = anythingExistsOnRowBottom(field, j, true);
+            boolean needDrawDownRight = anythingExistsOnRowBottom(field, j, false);
             for (int i = -2; i < Field.WIDTH + 2; i++) {
                 if (i < 0 || i >= Field.WIDTH) {
+                    boolean needDrawUp = i < 0 ? needDrawUpLeft : needDrawUpRight;
+                    boolean needDrawDown = i < 0 ? needDrawDownLeft : needDrawDownRight;
                     IntMap<TextureRegion> m = texturesStat.get(Block.class);
                     if (m != null) {
                         TextureRegion textureDown = texturesDownSolid.get(model.stylePack);
@@ -1068,4 +1103,3 @@ public class Gui extends Actor {
 // 3) we want walls above the animated objects
 // Hence the most easiest way is just to determine walls next to water and redraw them once again after drawing the
 // animated characters
-

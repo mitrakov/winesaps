@@ -664,6 +664,7 @@ public class Model {
      */
     public void changeCharacter(Character character) {
         if (character != null && character != Character.None) {
+            this.character = character; // assign character right away to avoid bugs in Emulator tutorial (since 2.0.0)
             if (connected && sender != null) {
                 sender.send(CHANGE_CHARACTER, character.ordinal());
             }
