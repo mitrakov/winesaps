@@ -27,6 +27,8 @@ public class Model {
     public static final int STYLES_COUNT = 4;
     /** Maximum items to keep in battle history */
     public static final int HISTORY_MAX = 32;
+    /** Default length of md5 hash string */
+    public static final int HASH_LENGTH = md5("hello world").length();
 
     // ===========================
     // ===  PUBLIC INTERFACES  ===
@@ -460,9 +462,9 @@ public class Model {
                     // other settings may differ from version to version (since 2.0.0)
                     for (int i = 5; i < settings.length; i++) {
                         String st = settings[i];
-                        if (st.length() == 32)
+                        if (st.length() == HASH_LENGTH)
                             hash = st;
-                        else if (st.length() % 20 == 0)
+                        else if (st.length() % SINGLE_PLAYER_PACK_SIZE == 0)
                             singlePlayerProgress = st;
                     }
                 }
@@ -1649,7 +1651,7 @@ public class Model {
      * Count of levels in SinglePlayer levels packs
      * @since 2.0.0
      */
-    public static final int SINGLE_PLAYER_PACK_SIZE = 20;
+    public static final int SINGLE_PLAYER_PACK_SIZE = 15;
     /**
      * Offset for SinglePlayer Levels Packs (swaggas (1-15), spPacks (16-31), skills (32+))
      * @since 2.0.0
@@ -1677,7 +1679,7 @@ public class Model {
      * </ul>
      * @since 2.0.0
      */
-    public volatile String singlePlayerProgress = "aiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
+    public volatile String singlePlayerProgress = "aiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
 
     /**
      * "Latest" flag for SinglePlayer (if TRUE, then a user has chosen the latest level, FALSE - otherwise)
