@@ -938,7 +938,8 @@ public class Gui extends Actor {
                     if (texturesOverlay.containsKey(Box.class))
                         bottomHeight += texturesOverlay.get(Box.class).getRegionHeight();
                 } else if (cell.bottom instanceof Water && !cell.objectExists(BeamChunk.class)) {
-                    bottomHeight *= -1; // animated objects slightly go deep in water (since 2.0.0)
+                    float coeff = cell.objectExists(Wolf.class) ? 1.75f : 1; // because wolves are taller
+                    bottomHeight *= -coeff; // animated objects go deep in water up to the head (since 2.0.0)
                 }
                 for (int k = 0; k < cell.getObjectsCount(); k++) { //  // .... GC!
                     CellObject obj = cell.getObject(k);
