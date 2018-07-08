@@ -459,9 +459,7 @@ class FieldEx extends Field {
                 cell.objects.remove(teleport);
                 objChanged(teleport, 0xFF, true);
                 int newXy = getMirrorXy(cell.xy);
-                if (newXy / WIDTH == HEIGHT - 1)
-                    newXy -= WIDTH; // avoid teleportation to underground (not all levels support underground)
-                Cell newCell = getCell(newXy);
+                Cell newCell = getCellForTeleportation(newXy);
                 relocate(actor.getCell(), newCell, actor, true);
                 return;
             }
@@ -619,6 +617,41 @@ class FieldEx extends Field {
         if (actor.getCharacter() == Cat)
             return new Cells.Meat(cell, num);
         return new Cells.Apple(cell, num);
+    }
+
+    /**
+     * Searches an appropriate cell for teleportation
+     * @param newXy base coordinates
+     * @return cell to teleport
+     */
+    private Cell getCellForTeleportation(int newXy) {
+        // 1) avoid teleportation to underground (not all levels support underground)
+        if (newXy / WIDTH == HEIGHT-1) {
+            newXy -= WIDTH;
+        }
+        // 2) avoid teleportation INSIDE the block/water (upon water surface is still allowed)
+        Cell newCell = getCell(newXy);
+        if (newCell.objectExists(Cells.Block.class) || newCell.objectExists(Cells.Water.class)) {
+            int indexToSearch = newXy % WIDTH + (HEIGHT - 2) * WIDTH;
+            return f(indexToSearch, newCell);
+        }
+        return newCell;
+    }
+
+    /**
+     * Inside recursive function for {@link #getCellForTeleportation(int)}. For internal use only
+     * @param xy current XY coordinates
+     * @param cell current cell
+     * @return new Cell
+     */
+    private Cell f(int xy, Cell cell) {
+        if (xy > 0) {
+            Cell nc = getCell(xy);
+            if (nc.objectExists(Cells.Block.class) || nc.objectExists(Cells.Water.class))
+                return f(xy - WIDTH, nc);
+            return nc;
+        }
+        return cell;
     }
 
     /**
