@@ -1,5 +1,6 @@
 package ru.mitrakov.self.rush.dialogs;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -128,9 +129,10 @@ public class DialogSinglePlayer extends DialogFeat {
         for (int i = 1; i <= SINGLE_PLAYER_PACKS_COUNT; i++) {
             Table tablePack = new Table();
             Table tablePackLevels = new Table();
+            final ScrollPane pane = new ScrollPaneFeat(tablePackLevels, skin, "default");
             tablePack.add(new LabelFeat(i18n.format("dialog.singleplayer.pack", i), skin, "title", true)).width(350);
             tablePack.row();
-            tablePack.add(new ScrollPaneFeat(tablePackLevels, skin, "default")).height(300);
+            tablePack.add(pane).height(300);
             for (int j = 1; j <= SINGLE_PLAYER_PACK_SIZE; j++) {
                 char progressChar = progress.charAt((i-1)*SINGLE_PLAYER_PACK_SIZE + (j-1));
                 tablePackLevels.row();
@@ -139,7 +141,9 @@ public class DialogSinglePlayer extends DialogFeat {
                 tablePackLevels.add(createLabel(i, j, progressChar, tablePacksScroll)).height(32).spaceLeft(10);
             }
             tablePacksScroll.addPage(tablePack);
+            scrollToCurrentLevel(pane);
         }
+        scrollToCurrentPack();
     }
 
     /**
@@ -180,5 +184,30 @@ public class DialogSinglePlayer extends DialogFeat {
             else if (actor instanceof WidgetGroup)
                 unselectAllLabels((WidgetGroup) actor);
         }
+    }
+
+    /**
+     * Scrolls the main ScrollPane to make current pack visible
+     */
+    private void scrollToCurrentPack() {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                tablePacksScroll.setScrollPercentX((1f / (SINGLE_PLAYER_PACKS_COUNT - 1)) * (chosenPack - 1));
+            }
+        });
+    }
+
+    /**
+     * Scrolls the given <b>pane</b> to make current level visible
+     * @param pane ScrollPane to scroll
+     */
+    private void scrollToCurrentLevel(final ScrollPane pane) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                pane.setScrollPercentY((1f / (SINGLE_PLAYER_PACK_SIZE - 1)) * (chosenLevel - 1));
+            }
+        });
     }
 }
