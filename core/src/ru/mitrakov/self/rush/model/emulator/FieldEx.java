@@ -389,7 +389,9 @@ class FieldEx extends Field {
         cellLock.unlock();
 
         objChanged(obj, newCell.xy, reset);
-        checkCell(newCell);
+        if (!reset) { // when reset == true, no need to check cell
+            checkCell(newCell);
+        }
     }
 
     /**
