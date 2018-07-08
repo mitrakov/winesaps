@@ -347,14 +347,20 @@ class FieldEx extends Field {
             cell = myCell;
         }
 
-        // ================
+        // === life hacks ===
+        // 1) allow players to establish an umbrella not only in 1 step, but also in 2 steps away from Waterfalls
         if (thing instanceof Cells.UmbrellaThing) {
             Cell next = getCellByDirection(cell, actor.isDirectedToRight());
             if (next != null && next.objectExists(Cells.Waterfall.class)) {
                 cell = next;
             }
         }
-        // ================
+        // 2) allow players to establish a beam over an abyss (instead of letting it down)
+        if (thing instanceof Cells.BeamThing) {
+            if (cell.bottom == null)
+                cell = myCell;
+        }
+        // =============================================
 
         // emplace object
         int number = getNextNum();
