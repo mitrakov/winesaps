@@ -514,7 +514,9 @@ public class Model {
      */
     public String getAgentInfo() {
         String os = System.getProperty("os.name");
-        return String.format("1.%s.%s.%s.%s", language, Winesaps.VERSION_STR, psObject.getPlatform(), os);
+        // String.format("1.%s.%s.%s.%s", language, Winesaps.VERSION_STR, psObject.getPlatform(), os);
+        return String.format("2;%s;%s;%s;%s;%s",
+                language, Winesaps.VERSION_STR, psObject.getPlatform(), os, singlePlayerProgress);
     }
 
     /**
