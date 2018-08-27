@@ -77,7 +77,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin skin
+     * @param skin LibGdx skin
      * @return array of 4 images with characters: Rabbit, Squirrel, Hedgehog and Cat
      */
     private Array<Actor> loadImages(Skin skin) {
@@ -113,7 +113,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin skin
+     * @param skin LibGdx skin
      * @return "Next" button
      */
     private TextButton createButton(Skin skin) {
@@ -134,7 +134,7 @@ public class ScreenCharacter extends LocalizableScreen {
     }
 
     /**
-     * @param skin skin
+     * @param skin LibGdx skin
      * @return food dialog ("these food items are OK and those ones are danger")
      */
     private DialogFood createFoodDialog(Skin skin) {
@@ -150,7 +150,7 @@ public class ScreenCharacter extends LocalizableScreen {
 
     /**
      * Arranges the content table
-     * @param skin skin
+     * @param skin LibGdx skin
      */
     private void buildTable(Skin skin) {
         Table tableMain = new Table(skin);

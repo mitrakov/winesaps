@@ -1,14 +1,12 @@
 package ru.mitrakov.self.rush.ui;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 /**
+ * Scroll Pane with "slidable" pages
  * @see <a href="http://nexsoftware.net/wp/2013/05/09/libgdx-making-a-paged-level-selection-screen/">http://nexsoftware.net</a>
  */
 public class PagedScrollPane extends ScrollPane {

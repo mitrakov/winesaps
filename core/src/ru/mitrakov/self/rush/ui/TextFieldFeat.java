@@ -17,11 +17,11 @@ public class TextFieldFeat extends TextField {
 
     /**
      * Creates a new instance of TextFieldFeat
-     * @param text - current text (default is "")
-     * @param skin - skin
-     * @param styleName - style name (default is "default")
-     * @param psObject - Platform Specific Object (NON-NULL)
-     * @param onEnterActor - actor that is programmatically "pushed" when a user presses ENTER key (may be NULL)
+     * @param text current text (default is "")
+     * @param skin LibGdx skin
+     * @param styleName style name (default is "default")
+     * @param psObject Platform Specific Object (NON-NULL)
+     * @param onEnterActor actor that is programmatically "pushed" when a user presses ENTER key (may be NULL)
      */
     public TextFieldFeat(String text, Skin skin, String styleName, PsObject psObject, final Actor onEnterActor) {
         super(text, skin, styleName);
@@ -56,7 +56,7 @@ public class TextFieldFeat extends TextField {
     }
 }
 
-// note#9 (@mitrakov, 2017-08-08): FUCKING SAMSUNG KEYBOARD! WOE BE TO HIM! On modern Samsung devices (Galaxy
+// note#9 (@mitrakov, 2017-08-08): FUCKING SAMSUNG KEYBOARD! WOE BE TO IT! On modern Samsung devices (Galaxy
 // S5, S6, S6 Edge, Note 5, etc.) there is a trouble with keyboard: if the suggestions are turned on, an input text
 // doesn't appear in the TextField until a user puts space, enter or any suggestion.
 // Flag InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS is ignored by Samsung Keyboard developers...

@@ -466,7 +466,7 @@ public class Gui extends Actor {
 
     /**
      * Turns movements input listening on/off
-     * @param value true to allow movemnents
+     * @param value true to allow movements
      */
     public void setMovesAllowed(boolean value) {
         controller.setMovesAllowed(value);

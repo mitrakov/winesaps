@@ -21,10 +21,13 @@ class InputController {
 
     /** Reference to the model */
     private final Model model;
-    /**  */
+    /** Current direction of an actor (TRUE for right, FALSE for left) */
     private boolean curDirRight = true;
+    /** Moves allowed flag (TRUE means allowed, FALSE means forbidden) */
     private boolean movesAllowed = true;
-    private boolean nextMoveAllowed = true; // to restrict sending next MOVE cmd until we receive Ack on previous one
+    /** Special flag to restrict sending next MOVE cmd until we receive Ack on previous one */
+    private boolean nextMoveAllowed = true;
+    /** Timestamp of when the {@link #nextMoveAllowed} flag has been changed */
     private transient long nextMoveTimestamp = System.nanoTime();
 
     /**

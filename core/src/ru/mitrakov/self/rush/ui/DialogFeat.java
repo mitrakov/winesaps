@@ -30,7 +30,7 @@ public abstract class DialogFeat extends Dialog implements Localizable {
     /**
      * Creates a new instance of DialogFeat
      * @param title title
-     * @param skin skin (NON-NULL)
+     * @param skin LibGdx skin
      * @param windowStyleName style name (default is "default")
      */
     public DialogFeat(String title, Skin skin, String windowStyleName) {

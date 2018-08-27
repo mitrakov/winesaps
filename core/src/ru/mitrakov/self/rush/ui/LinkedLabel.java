@@ -10,19 +10,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author mitrakov
  */
 public class LinkedLabel extends Table {
+    /** Label before the link */
     private final Label lblBefore;
+    /** Label for the link */
     private final Label lblLink;
+    /** Label after the link */
     private final Label lblAfter;
 
     /**
      * Creates a new instance of LinkedLabel
-     * @param txtBefore - text before the link
-     * @param txtLink - text for the link
-     * @param txtAfter - text after the link
-     * @param skin - skin
-     * @param style - style name for usual text
-     * @param styleLink - style name for linked text
-     * @param f - onClick function (called when a user click a link)
+     * @param txtBefore text before the link
+     * @param txtLink text for the link
+     * @param txtAfter text after the link
+     * @param skin LibGdx skin
+     * @param style style name for usual text
+     * @param styleLink style name for linked text
+     * @param f onClick function (called when a user click a link)
      */
     public LinkedLabel(String txtBefore, String txtLink, String txtAfter, Skin skin, String style, String styleLink,
                        final Runnable f) {
@@ -42,9 +45,9 @@ public class LinkedLabel extends Table {
 
     /**
      * Sets the texts
-     * @param txtBefore - text before the link
-     * @param txtLink - text for the link
-     * @param txtAfter - text after the link
+     * @param txtBefore text before the link
+     * @param txtLink text for the link
+     * @param txtAfter text after the link
      */
     public void setText(String txtBefore, String txtLink, String txtAfter) {
         lblBefore.setText(txtBefore);
