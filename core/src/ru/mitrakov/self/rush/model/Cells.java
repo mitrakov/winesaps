@@ -340,7 +340,8 @@ public class Cells {
 
     /**
      * Safe Waterfall Object
-     * @deprecated since 2.0.0
+     * @deprecated (since 2.0.0) because now Training level is under control of SinglePlayer Emulator, and the user's
+     * actor will never die
      */
     public static class WaterfallSafe extends Waterfall {
         /**

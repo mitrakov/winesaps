@@ -10,18 +10,26 @@ import java.util.Locale;
 import com.badlogic.gdx.Gdx;
 
 /**
- * Created by mitrakov on 17.07.2017
+ * Platform Specific Object for Android platform
  */
 class AndroidPsObject extends PsObject {
+    /** Android Activity */
     private final Activity activity;
+    /** Thread for a {@link #handler} */
     private final HandlerThread thread;
+    /** Timer implementation for Android (don't use TimerTask, see details <a href="https://stackoverflow.com/questions/20330355">here</a>)*/
     private final Handler handler;
 
+    /** Active flag */
     private boolean active = true;
 
+    /**
+     * Creates a new instance of PsObject for Android platform
+     * @param activity Android Activity
+     */
     AndroidPsObject(Activity activity) {
-        super(new GooglePlayBillingProvider(activity));
         // super(new AmazonBillingProvider(activity));
+        super(new GooglePlayBillingProvider(activity));
 
         assert activity != null;
         this.activity = activity;

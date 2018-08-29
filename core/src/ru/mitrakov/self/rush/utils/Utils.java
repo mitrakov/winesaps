@@ -10,7 +10,7 @@ public class Utils {
     /**
      * Converts string "s" to a byte array
      * NOTE: don't use s.getBytes() without charsets: it's a bad practice (by FindBugs)
-     * @param s - string
+     * @param s string
      * @return byte array
      */
     public static byte[] getBytes(String s) {

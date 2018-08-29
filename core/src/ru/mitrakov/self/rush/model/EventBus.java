@@ -406,7 +406,6 @@ public class EventBus {
         }
     }
     /** Event: player has been wounded */
-    @SuppressWarnings("WeakerAccess")
     public static final class PlayerWoundedEvent extends Event {
         /** Position where a player has been wounded */
         public int xy;

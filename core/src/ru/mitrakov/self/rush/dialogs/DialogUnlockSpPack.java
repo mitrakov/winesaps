@@ -12,7 +12,6 @@ import ru.mitrakov.self.rush.model.*;
  * "Unlock next SinglePlayer Levels Pack" dialog
  * @author Mitrakov
  */
-@SuppressWarnings("UnusedReturnValue")
 public class DialogUnlockSpPack extends DialogFeat {
     /** Possible cases to close this dialog */
     private enum QuitAction {JustClose, BuyAndClose, GotoGetMoreGemsScreen}

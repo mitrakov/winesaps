@@ -258,7 +258,7 @@ public class Winesaps extends Game {
             });
         }
 
-        // ....
+        // add a listener to notify a user about new incoming battles
         model.bus.addListener(new EventBus.Listener() {
             @Override
             public void OnEvent(EventBus.Event event) {

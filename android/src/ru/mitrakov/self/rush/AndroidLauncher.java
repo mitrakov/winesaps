@@ -9,7 +9,11 @@ import com.badlogic.gdx.backends.android.*;
 
 import ru.mitrakov.self.rush.stat.Stat;
 
+/**
+ * Winesaps Launcher for Android platform
+ */
 public class AndroidLauncher extends AndroidApplication {
+    /** Platform Specific Object */
     private /*final*/ PsObject obj;
 
     @Override

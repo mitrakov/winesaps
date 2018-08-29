@@ -16,11 +16,21 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
  * @deprecated since 2017-10-04 (use {@link GooglePlayBillingProvider})
  */
 class AmazonBillingProvider implements IBillingProvider, PurchasingListener {
+    /** Android Activity */
     private final Activity activity;
+    /** List of available SKUs */
     private final List<Sku> products = new ArrayList<>(3);
+    /** Sync monitor for {@link #products} */
     private final Object productsLocker = new Object();
+    /** Reference to a Billing Listener */
     private /*final*/ BillingListener listener;
 
+    /**
+     * Creates a new instance of Amazon Billing Provider
+     * @param activity Android Activity
+     * @deprecated since 2017-10-04 (use {@link GooglePlayBillingProvider})
+     * @see GooglePlayBillingProvider
+     */
     AmazonBillingProvider(Activity activity) {
         assert activity != null;
         this.activity = activity;
@@ -100,6 +110,10 @@ class AmazonBillingProvider implements IBillingProvider, PurchasingListener {
     public void onUserDataResponse(UserDataResponse userDataResponse) {
     }
 
+    /**
+     * Callback for successful purchase response
+     * @param receipt Amazon receipt
+     */
     private void handleReceipt(Receipt receipt) {
         assert receipt != null;
         PurchasingService.notifyFulfillment(receipt.getReceiptId(), FulfillmentResult.FULFILLED);

@@ -15,13 +15,24 @@ import static ru.mitrakov.self.rush.utils.SimpleLogger.log;
  * Billing Provider for Google Play Market
  */
 class GooglePlayBillingProvider implements IBillingProvider, PurchasesUpdatedListener {
+    /** Android Activity */
     private final Activity activity;
+    /** Google Billing Client */
     private final BillingClient client;
+    /** Executor Service (needed because Google API forbids querying of SKU details in the same thread) */
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    /** List of available SKUs */
     private final List<Sku> products = new ArrayList<>(3);
+    /** Sync monitor for {@link #products} */
     private final Object productsLocker = new Object();
+    /** Reference to a Billing Listener */
     private /*final*/ BillingListener listener;
 
+    /**
+     * Creates a new instance of Google Play Billing Provider
+     * @param activity Android Activity
+     * @see AmazonBillingProvider
+     */
     GooglePlayBillingProvider(Activity activity) {
         assert activity != null;
         this.activity = activity;

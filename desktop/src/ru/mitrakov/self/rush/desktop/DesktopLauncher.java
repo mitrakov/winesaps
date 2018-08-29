@@ -12,7 +12,14 @@ import com.badlogic.gdx.backends.lwjgl.*;
 import ru.mitrakov.self.rush.*;
 import ru.mitrakov.self.rush.stat.Stat;
 
+/**
+ * Winesaps Launcher for Desktop platform (Windows/Linux)
+ */
 public class DesktopLauncher extends JFrame {
+    /**
+     * Entry point for Desktop platform (Windows/Linux)
+     * @param arg command line arguments
+     */
     public static void main(String[] arg) {
         ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // turn the asserts on (Desktop only)
         SwingUtilities.invokeLater(new Runnable() {
@@ -26,6 +33,10 @@ public class DesktopLauncher extends JFrame {
         });
     }
 
+    /**
+     * Desktop launcher entry point
+     * @param config Lightweight Java Game Library config
+     */
     private DesktopLauncher(LwjglApplicationConfiguration config) {
         super();
 
@@ -73,6 +84,9 @@ public class DesktopLauncher extends JFrame {
         });
     }
 
+    /**
+     * Registers new App instance. Needed to prevent running multiple instances of the App
+     */
     private void registerInstance() {
         final int PORT = 31681;
         // creating new thread because accept() is a blocking operation

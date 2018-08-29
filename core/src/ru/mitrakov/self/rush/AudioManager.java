@@ -26,9 +26,9 @@ public class AudioManager {
 
     /**
      * Creates a new instance of AudioManager
-     * @param assetManager - Asset Manager (NON-NULL)
-     * @param musicMuted - starting mute state for music (default is false)
-     * @param soundMuted - starting mute state for sounds (default is false)
+     * @param assetManager Asset Manager (NON-NULL)
+     * @param musicMuted starting mute state for music (default is false)
+     * @param soundMuted starting mute state for sounds (default is false)
      */
     public AudioManager(AssetManager assetManager, boolean musicMuted, boolean soundMuted) {
         assert assetManager != null;
@@ -39,8 +39,8 @@ public class AudioManager {
 
     /**
      * Plays the music. If the other music instance is already playing, it will be stopped
-     * @param name - name of a music asset WITHOUT any paths and extensions like ".mp3" and so on
-     * @param loop - loop flag
+     * @param name name of a music asset WITHOUT any paths and extensions like ".mp3" and so on
+     * @param loop loop flag
      */
     public void music(String name, boolean loop) {
         assert name != null;
@@ -62,7 +62,7 @@ public class AudioManager {
     /**
      * Plays the sound. If the other sound instance is already playing, both of them will be played simultaneously.
      * Please ensure your SFX is less than 1 Mb
-     * @param name - name of a sound asset WITHOUT any paths and extensions like ".wav" and so on
+     * @param name name of a sound asset WITHOUT any paths and extensions like ".wav" and so on
      */
     public void sound(String name) {
         if (!soundMuted) {
@@ -77,7 +77,7 @@ public class AudioManager {
 
     /**
      * Turns the music on/off
-     * @param value - true to mute music
+     * @param value true to mute music
      */
     public void muteMusic(boolean value) {
         musicMuted = value;
@@ -90,7 +90,7 @@ public class AudioManager {
 
     /**
      * Turns the sounds on/off
-     * @param value - true to mute sounds
+     * @param value true to mute sounds
      */
     public void muteSound(boolean value) {
         soundMuted = value;
@@ -98,7 +98,7 @@ public class AudioManager {
 
     /**
      * Turns the music and sounds on/off
-     * @param value - true to mute music and sounds
+     * @param value true to mute music and sounds
      */
     public void muteAll(boolean value) {
         muteMusic(value);

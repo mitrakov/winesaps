@@ -206,3 +206,5 @@ public class ScreenTraining extends LocalizableScreen {
 
 // note#1 (@mitrakov, 2017-03-24): even though bool condition "thing==null" is unreliable, an actor won't die because
 // waterfall is fake
+// UPD: since 2.0.0 WaterfallSafe is deprecated: now SinglePlayer Emulator entirely controls the situation in Training
+// Level

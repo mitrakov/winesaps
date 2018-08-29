@@ -12,13 +12,22 @@ import ru.mitrakov.self.rush.*;
 import static javax.swing.JOptionPane.*;
 
 /**
- * Created by mitrakov on 26.07.2017
+ * Platform Specific Object for Desktop platform (Windows/Linux)
  */
 class DesktopPsObject extends PsObject {
+    /** Swing Frame */
     private final JFrame parent;
+    /** Application icon */
     private final Icon icon;
+    /** Swing Dialog */
     private JDialog dialog;
 
+    /**
+     * Creates a new instance of PsObject for Desktop platform (Windows/Linux)
+     * @param billingProvider Billing Provider
+     * @param parent parent frame container
+     * @param icon application icon
+     */
     DesktopPsObject(IBillingProvider billingProvider, JFrame parent, Icon icon) {
         super(billingProvider);
         this.parent = parent;
@@ -66,9 +75,9 @@ class DesktopPsObject extends PsObject {
     }
 
     /**
-     * See http://stackoverflow.com/questions/9753722
-     *
-     * @param f - component to locate
+     * Relocates an AWT component in the right-bottom corner
+     * @param f component to locate
+     * @see <a href="https://stackoverflow.com/questions/9753722">https://stackoverflow.com/questions/9753722</a>
      */
     private void locateToRightBottom(Component f) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

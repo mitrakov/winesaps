@@ -15,7 +15,7 @@ public abstract class PsObject {
 
     /**
      * Creates new instance of Platform Specific Object
-     * @param billingProvider - billing provider (may be NULL)
+     * @param billingProvider billing provider (may be NULL)
      */
     public PsObject(IBillingProvider billingProvider) {
         this.billingProvider = billingProvider;

@@ -25,8 +25,8 @@ class MsgSender implements Model.ISender {
 
     /**
      * Creates a new instance of Message Sender
-     * @param network - network (NON-NULL)
-     * @param errorHandler - error handler to process IO exceptions (NON-NULL)
+     * @param network network (NON-NULL)
+     * @param errorHandler error handler to process IO exceptions (NON-NULL)
      */
     MsgSender(Network network, Thread.UncaughtExceptionHandler errorHandler) {
         assert network != null && errorHandler != null;
