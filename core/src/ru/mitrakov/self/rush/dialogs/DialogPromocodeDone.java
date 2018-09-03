@@ -26,7 +26,7 @@ public class DialogPromocodeDone extends DialogFeat {
      * @param windowStyleName style name (usually just "default")
      */
     public DialogPromocodeDone(Skin skin, String windowStyleName) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
 
         lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(350); // here getContentTable != null

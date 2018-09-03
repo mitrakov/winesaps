@@ -51,7 +51,7 @@ public class DialogSinglePlayer extends DialogFeat {
      */
     public DialogSinglePlayer(Model model, TextureAtlas atlas, Skin skin, String windowStyleName,
                               DialogUnlockSpPack unlockDialog, I18NBundle i18n) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         assert model != null && atlas != null && skin != null && i18n != null && unlockDialog != null;
         this.model = model;
         this.skin = skin;
@@ -76,6 +76,7 @@ public class DialogSinglePlayer extends DialogFeat {
     @Override
     public Dialog show(Stage stage) {
         rebuildTables();
+        model.setEnemyName(""); // otherwise it will show smth like "Username - RandomName = 1-0"
         return super.show(stage);
     }
 

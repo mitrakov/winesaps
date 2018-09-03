@@ -38,7 +38,7 @@ public class DialogFood extends DialogFeat {
      * @param atlas atlas that contains all the textures needed
      */
     public DialogFood(String title, Skin skin, String windowStyleName, TextureAtlas atlas) {
-        super(title, skin, windowStyleName);
+        super(title, skin, windowStyleName, true);
         assert atlas != null;
 
         // build components

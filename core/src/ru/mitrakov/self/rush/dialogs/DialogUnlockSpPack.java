@@ -44,7 +44,7 @@ public class DialogUnlockSpPack extends DialogFeat {
      */
     public DialogUnlockSpPack(Model model, String title, Skin skin, String windowStyleName, final Dialog moreGemsDialog,
                               I18NBundle i18n, TextureRegion gem) {
-        super(title, skin, windowStyleName);
+        super(title, skin, windowStyleName, true);
         assert model != null && moreGemsDialog != null && i18n != null;
         this.model = model;
         this.i18n = i18n;

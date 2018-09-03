@@ -59,7 +59,7 @@ public class DialogBuyAbilities extends DialogFeat {
      */
     public DialogBuyAbilities(final Model model, AssetManager assetManager, Skin skin, String style,
                               AudioManager audioManager, I18NBundle i18n) {
-        super("", skin, style);
+        super("", skin, style, true);
         assert model != null && audioManager != null && i18n != null;
         this.model = model;
         this.skin = skin;

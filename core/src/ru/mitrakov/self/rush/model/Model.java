@@ -983,14 +983,22 @@ public class Model {
     }
 
     /**
+     * Sets the enemy name and shows a DialUp dialog
+     * @param name enemy name
+     */
+    public void waitForEnemy(String name) {
+        if (name.length() > 0) { // server can send empty name as a response of Quick Attack
+            setEnemyName(name);
+            bus.raise(new EventBus.DialUpEvent(name));
+        }
+    }
+
+    /**
      * Sets the current enemy's name
      * @param name enemy name
      */
     public void setEnemyName(String name) {
-        if (name.length() > 0) { // server can send empty name as a response of Quick Attack
-            enemy = name;
-            bus.raise(new EventBus.EnemyNameChangedEvent(name));
-        }
+        enemy = name;
     }
 
     /**
@@ -999,7 +1007,7 @@ public class Model {
      * @param aggressorName enemy name
      */
     public void attacked(int sid, String aggressorName) {
-        enemy = aggressorName;
+        setEnemyName(aggressorName);
         bus.raise(new EventBus.InviteEvent(aggressorName, sid));
     }
 

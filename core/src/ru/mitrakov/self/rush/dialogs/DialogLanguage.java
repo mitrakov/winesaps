@@ -31,7 +31,7 @@ public class DialogLanguage extends DialogFeat {
      */
     public DialogLanguage(Winesaps game, Model model, String title, Skin skin, String windowStyleName,
                           TextureAtlas atlas, I18NBundle i18n, AudioManager audioManager) {
-        super(title, skin, windowStyleName);
+        super(title, skin, windowStyleName, true);
 
         lblLang = new LabelFeat("", skin, "default", true);
         buildLangTable(game, model, getContentTable(), skin, atlas, i18n, audioManager);

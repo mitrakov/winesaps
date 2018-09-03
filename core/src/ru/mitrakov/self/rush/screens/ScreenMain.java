@@ -490,8 +490,8 @@ public class ScreenMain extends LocalizableScreen {
             lockDialog.remove();
             game.setNextScreen();
         }
-        if (event instanceof EventBus.EnemyNameChangedEvent) {
-            EventBus.EnemyNameChangedEvent ev = (EventBus.EnemyNameChangedEvent) event;
+        if (event instanceof EventBus.DialUpEvent) {
+            EventBus.DialUpEvent ev = (EventBus.DialUpEvent) event;
             I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
             dialupDialog.setText(i18n.format("dialog.dialup.text", ev.enemy)).show(stage);
         }

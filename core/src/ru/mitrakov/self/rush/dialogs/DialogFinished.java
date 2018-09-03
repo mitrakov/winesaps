@@ -25,7 +25,7 @@ public class DialogFinished extends DialogFeat {
      * @param atlas atlas that contains all the textures needed
      */
     public DialogFinished(Skin skin, String windowStyleName, TextureAtlas atlas) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         assert atlas != null;
 
         lblMessage = new Label("", skin, "default");

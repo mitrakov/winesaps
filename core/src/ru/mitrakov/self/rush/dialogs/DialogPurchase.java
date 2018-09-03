@@ -28,7 +28,7 @@ public class DialogPurchase extends DialogFeat {
      * @param i18n LibGdx internationalization bundle
      */
     public DialogPurchase(Skin skin, String windowStyleName, I18NBundle i18n) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         Table table = getContentTable();
         assert i18n != null && table != null;
 

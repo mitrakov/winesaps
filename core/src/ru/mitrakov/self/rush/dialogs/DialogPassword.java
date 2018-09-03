@@ -43,7 +43,7 @@ public class DialogPassword extends DialogFeat {
      */
     public DialogPassword(Model model, String title, Skin skin, String style, PsObject psObject,
                           AssetManager assetManager) {
-        super(title, skin, style);
+        super(title, skin, style, false);
         assert model != null && assetManager != null && skin != null && psObject != null;
 
         this.model = model;
@@ -92,6 +92,13 @@ public class DialogPassword extends DialogFeat {
                     ((TextButton) actor).setText(bundle.format("ok"));
             }
         }
+    }
+
+    @Override
+    public Dialog show(Stage stage) {
+        Dialog result = super.show(stage);
+        stage.setKeyboardFocus(txtPassword); // should be after "super.show()"
+        return result;
     }
 
     @Override

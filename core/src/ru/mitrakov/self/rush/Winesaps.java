@@ -31,9 +31,9 @@ public class Winesaps extends Game {
     public static final int HEIGHT = 480;
     /** Client version, expressed as a big-endian 3-byte integer */
     @SuppressWarnings("PointlessBitwiseExpression")
-    public static final int VERSION = (2 << 16) | (0 << 8) | 0;
+    public static final int VERSION = (2 << 16) | (0 << 8) | 1;
     /** Cleint version */
-    public static final String VERSION_STR = "2.0.0";
+    public static final String VERSION_STR = "2.0.1";
     /** Web-site URL */
     public static final String URL = "https://winesaps.com";
 

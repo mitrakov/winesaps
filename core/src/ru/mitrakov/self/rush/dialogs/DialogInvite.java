@@ -36,7 +36,7 @@ public class DialogInvite extends DialogFeat {
      * @param i18n LibGdx internationalization bundle
      */
     public DialogInvite(Model model, Skin skin, String styleName, I18NBundle i18n) {
-        super("", skin, styleName);
+        super("", skin, styleName, true);
         assert model != null && i18n != null;
         this.model = model;
         this.i18n = i18n;

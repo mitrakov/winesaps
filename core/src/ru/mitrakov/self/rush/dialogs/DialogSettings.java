@@ -48,7 +48,7 @@ public class DialogSettings extends DialogFeat {
      */
     public DialogSettings(Winesaps game, final Model model, Skin skin, String styleName, TextureAtlas atlas,
                           I18NBundle i18n, AudioManager audioManager) {
-        super("", skin, styleName);
+        super("", skin, styleName, true);
         assert model != null;
         this.game = game;
         this.model = model;

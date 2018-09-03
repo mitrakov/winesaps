@@ -39,7 +39,7 @@ public class DialogIncoming extends DialogFeat {
      * @param i18n LibGdx internationalization bundle
      */
     public DialogIncoming(Model model, Skin skin, String windowStyleName, AudioManager audioManager, I18NBundle i18n) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         assert model != null && audioManager != null && i18n != null;
         this.model = model;
         this.audioManager = audioManager;

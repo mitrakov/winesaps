@@ -329,14 +329,14 @@ public class EventBus {
         }
     }
     /** Event: enemy has been changed */
-    public static final class EnemyNameChangedEvent extends Event {
-        /** New enemy */
+    public static final class DialUpEvent extends Event {
+        /** Enemy name */
         public String enemy;
         /**
-         * Creates a new EnemyName Changed Event
+         * Creates a new DialUp Event
          * @param enemy new enemy
          */
-        EnemyNameChangedEvent(String enemy) {
+        DialUpEvent(String enemy) {
             this.enemy = enemy;
         }
     }

@@ -38,7 +38,7 @@ public class DialogPromocode extends DialogFeat {
      * @param audioManager {@link AudioManager}
      */
     public DialogPromocode(final Model model, Skin skin, String windowStyleName, AudioManager audioManager) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         assert model != null && audioManager != null;
         this.model = model;
 

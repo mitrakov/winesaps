@@ -32,11 +32,13 @@ public abstract class DialogFeat extends Dialog implements Localizable {
      * @param title title
      * @param skin LibGdx skin
      * @param windowStyleName style name (default is "default")
+     * @param escToHide if TRUE, then ESC press will close the dialog, FALSE - otherwise
      */
-    public DialogFeat(String title, Skin skin, String windowStyleName) {
+    public DialogFeat(String title, Skin skin, String windowStyleName, boolean escToHide) {
         super(title, skin, windowStyleName);
         getButtonTable().defaults().minWidth(120).height(46).padLeft(10).padRight(10);
-        key(Input.Keys.ESCAPE, null);
+        if (escToHide)
+            key(Input.Keys.ESCAPE, null);
     }
 
     @Override

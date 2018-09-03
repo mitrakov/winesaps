@@ -140,7 +140,7 @@ class Parser implements IHandler {
                         userInfo(cmd, data.remove(0, 1));
                         break;
                     case ATTACK: // response on Attack
-                        attack(cmd, data.remove(0, 1));
+                        responseOnAttack(cmd, data.remove(0, 1));
                         break;
                     case CALL:
                         call(cmd, data.remove(0, 1));
@@ -283,15 +283,15 @@ class Parser implements IHandler {
     }
 
     /**
-     * Parses ATTACK command
+     * Parses response on ATTACK command
      * @param cmd command
      * @param data arguments
      */
-    private void attack(Cmd cmd, IIntArray data) {
+    private void responseOnAttack(Cmd cmd, IIntArray data) {
         if (data.length() > 0) {
             int error = data.get(0);
             if (error == 0)
-                model.setEnemyName(data.remove(0, 1).toUTF8());
+                model.waitForEnemy(data.remove(0, 1).toUTF8());
             else inspectError(cmd, error);
         } else throw new IllegalArgumentException("Incorrect attack format");
     }
@@ -406,7 +406,7 @@ class Parser implements IHandler {
     private void enemyName(Cmd cmd, IIntArray data) {
         if (data.length() > 0)
             model.setEnemyName(data.toUTF8());
-        else throw new IllegalArgumentException("Incorrect range-of-products format" + cmd);
+        else throw new IllegalArgumentException("Incorrect enemyName format" + cmd);
     }
 
     /**

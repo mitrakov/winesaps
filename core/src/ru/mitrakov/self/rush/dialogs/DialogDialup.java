@@ -25,7 +25,7 @@ public class DialogDialup extends DialogFeat {
      * @param windowStyleName style name (usually just "default")
      */
     public DialogDialup(Model model, Skin skin, String windowStyleName) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
         assert model != null;
         this.model = model;
 

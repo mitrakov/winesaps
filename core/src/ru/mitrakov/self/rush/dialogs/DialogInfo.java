@@ -21,7 +21,7 @@ public class DialogInfo extends DialogFeat {
      * @param windowStyleName style name (usually just "default")
      */
     public DialogInfo(String title, Skin skin, String windowStyleName) {
-        super(title, skin, windowStyleName);
+        super(title, skin, windowStyleName, true);
 
         lblMessage = new LabelFeat("", skin, "default", true);
         getContentTable().pad(20).add(lblMessage).minWidth(400); // here getContentTable != null

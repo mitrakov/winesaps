@@ -51,7 +51,7 @@ public class DialogMoreGems extends DialogFeat {
      */
     public DialogMoreGems(Model model, Skin skin, String style, AssetManager assetManager, AudioManager audioMgr,
                           final Dialog promoDialog, final Dialog purchaseDialog) {
-        super("", skin, style);
+        super("", skin, style, true);
         assert model != null && assetManager != null && promoDialog != null;
         this.model = model;
 

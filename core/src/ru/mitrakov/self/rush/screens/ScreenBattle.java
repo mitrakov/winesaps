@@ -149,7 +149,7 @@ public class ScreenBattle extends LocalizableScreen {
                 event instanceof EventBus.MoveResponseEvent || event instanceof EventBus.ConnectedChangeEvent) {
             gui.handleEvent(event);
         }
-        if (event instanceof EventBus.RoundStartedEvent || event instanceof EventBus.EnemyNameChangedEvent) {
+        if (event instanceof EventBus.RoundStartedEvent) {
             String d1 = model.getDetractor1();
             String d2 = model.getDetractor2();
             String s1 = d1.length() <= 10 ? d1 : d1.substring(0, 10);
@@ -158,12 +158,11 @@ public class ScreenBattle extends LocalizableScreen {
             lblVersus.pack();
             lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
             lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);
-            if (event instanceof EventBus.RoundStartedEvent) {
-                EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
-                if ("training".equals(ev.levelName)) {
-                    I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                    hintDialog.setText(i18n.format("training.hint")).show(stage, false);
-                }
+
+            EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
+            if ("training".equals(ev.levelName)) {
+                I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
+                hintDialog.setText(i18n.format("training.hint")).show(stage, false);
             }
         }
         if (event instanceof EventBus.RoundFinishedEvent) {

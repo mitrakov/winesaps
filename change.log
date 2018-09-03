@@ -1,3 +1,17 @@
+[2.0.1, 2018-09-03]
+* Now a user can't push ESC on "Change Password" dialog
+* Fix bug: SinglePlayer mode might show random enemy names
+
+[2.0.0, 2018-07-08]
+* NEW VERSION! Add SinglePlayer support
+* Add 30 levels for SinglePlayer mode
+* Deprecate Training Level
+* Tutorial is 100% client based, not server based
+* Update AgentInfo string
+* Change theme music
+* GUI: restrictive walls on edges of battle field
+* GUI: Make actors/wolves go deep into water
+
 [1.1.7, 2018-04-19]
 * Fixed stuck on handling error 204 instead of error 202
 

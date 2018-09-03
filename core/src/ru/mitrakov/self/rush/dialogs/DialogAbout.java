@@ -40,7 +40,7 @@ public class DialogAbout extends DialogFeat {
      * @param windowStyleName style name (usually just "default")
      */
     public DialogAbout(Skin skin, String windowStyleName) {
-        super("", skin, windowStyleName);
+        super("", skin, windowStyleName, true);
 
         Table table = getContentTable();
         assert table != null;
