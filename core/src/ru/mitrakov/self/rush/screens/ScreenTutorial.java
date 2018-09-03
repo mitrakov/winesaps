@@ -14,10 +14,10 @@ import ru.mitrakov.self.rush.dialogs.*;
 import ru.mitrakov.self.rush.model.Cells.*;
 
 /**
- * ScreenTraining shows the Training battle screen with UseThing and Skip buttons
+ * ScreenTutorial shows the Tutorial battle screen with UseThing and Skip buttons
  * @author mitrakov
  */
-public class ScreenTraining extends LocalizableScreen {
+public class ScreenTutorial extends LocalizableScreen {
     /** Reference to GUI (takes top 90% of the screen) */
     private final Gui gui;
     /** Actor thing button; located in the left bottom corner */
@@ -25,8 +25,8 @@ public class ScreenTraining extends LocalizableScreen {
     // private final TextButton btnSkip; @mitrakov (2017-08-16) removed Skip button to make new users pass the tutorial
     /** Reference to the Finished Dialog */
     private final DialogFinished finishedDialog;
-    /** Reference to the Training Window to show hints (located on the right hand) */
-    private final DialogTutorial trainingDialog;
+    /** Reference to the Tutorial Window to show hints (located on the right hand) */
+    private final DialogTutorial tutorialDialog;
     /** Warning Message Box (e.g. for ServerGonnaStop event) */
     private final DialogInfo infoDialog;
 
@@ -36,14 +36,14 @@ public class ScreenTraining extends LocalizableScreen {
     private final Queue<Window> curtains = new Queue<Window>(3);
 
     /**
-     * Creates a new instance of ScreenTraining
+     * Creates a new instance of ScreenTutorial
      * @param game instance of Winesaps (NON-NULL)
      * @param model model (NON-NULL)
      * @param psObject Platform Specific Object (NON-NULL)
      * @param assetManager asset manager (NON-NULL)
      * @param manager audio manager (NON-NULL)
      */
-    public ScreenTraining(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
+    public ScreenTutorial(final Winesaps game, final Model model, PsObject psObject, AssetManager assetManager,
                           AudioManager manager) {
         super(game, model, psObject, assetManager, manager);
 
@@ -52,7 +52,7 @@ public class ScreenTraining extends LocalizableScreen {
 
         Skin skin = assetManager.get("skin/uiskin.json");
         finishedDialog = new DialogFinished(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
-        trainingDialog = new DialogTutorial(skin, "panel-maroon");
+        tutorialDialog = new DialogTutorial(skin, "panel-maroon");
         infoDialog = new DialogInfo("", skin, "panel-maroon");
         btnThing = new ImageButtonFeat(things.get(CellObject.class), audioManager, new Runnable() {
             @Override
@@ -97,11 +97,11 @@ public class ScreenTraining extends LocalizableScreen {
         if (event instanceof EventBus.RoundStartedEvent) {
             EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
             if (ev.number == 0)
-                trainingDialog.show(stage);
+                tutorialDialog.show(stage);
         }
         if (event instanceof EventBus.RoundFinishedEvent || event instanceof EventBus.BattleNotFoundEvent) {
             if (model.newbie) { // check is necessary because RoundFinishedEvent is raised once again after giveUp()
-                trainingDialog.remove();
+                tutorialDialog.remove();
                 finishedDialog.setOnResultAction(new Runnable() {
                     @Override
                     public void run() {
@@ -117,7 +117,7 @@ public class ScreenTraining extends LocalizableScreen {
             EventBus.ScoreChangedEvent ev = (EventBus.ScoreChangedEvent) event;
             if (ev.score1 > 0 && curtains.size > 0)
                 curtains.removeFirst().remove();
-            trainingDialog.next();
+            tutorialDialog.next();
         }
         if (event instanceof EventBus.ThingChangedEvent) {
             EventBus.ThingChangedEvent ev = (EventBus.ThingChangedEvent) event;
@@ -129,7 +129,7 @@ public class ScreenTraining extends LocalizableScreen {
                     style.imageUp = things.get(clazz);
                 // 2) show the next dialog tip
                 if (ev.oldThing != null || ev.newThing != null)
-                    trainingDialog.next();
+                    tutorialDialog.next();
                 // 3) forbid moving to make a user use the umbrella (note#1)
                 gui.setMovesAllowed(ev.newThing == null);
             }
@@ -194,7 +194,7 @@ public class ScreenTraining extends LocalizableScreen {
     private void addContent(I18NBundle b) {
         // note: if atlas.findRegion() returns null, the image would be empty (no Exceptions expected)
         TextureAtlas atlas = assetManager.get("pack/tutorial.pack");
-        trainingDialog.clearMessages()
+        tutorialDialog.clearMessages()
                 .addMessage(atlas.findRegion("msg1"), b.format("tutorial.msg1.text"), b.format("tutorial.msg1.action"))
                 .addMessage(atlas.findRegion("msg2"), b.format("tutorial.msg2.text"), b.format("tutorial.msg2.action"))
                 .addMessage(atlas.findRegion("msg3"), b.format("tutorial.msg3.text"), b.format("tutorial.msg3.action"))
@@ -206,5 +206,5 @@ public class ScreenTraining extends LocalizableScreen {
 
 // note#1 (@mitrakov, 2017-03-24): even though bool condition "thing==null" is unreliable, an actor won't die because
 // waterfall is fake
-// UPD: since 2.0.0 WaterfallSafe is deprecated: now SinglePlayer Emulator entirely controls the situation in Training
+// UPD: since 2.0.0 WaterfallSafe is deprecated: now SinglePlayer Emulator entirely controls the situation in Tutorial
 // Level

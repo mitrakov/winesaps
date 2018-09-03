@@ -32,7 +32,7 @@ public class Winesaps extends Game {
     /** Client version, expressed as a big-endian 3-byte integer */
     @SuppressWarnings("PointlessBitwiseExpression")
     public static final int VERSION = (2 << 16) | (0 << 8) | 1;
-    /** Cleint version */
+    /** Client version */
     public static final String VERSION_STR = "2.0.1";
     /** Web-site URL */
     public static final String URL = "https://winesaps.com";
@@ -234,7 +234,7 @@ public class Winesaps extends Game {
         audioManager = new AudioManager(assetManager, !model.music, !model.soundEffects);
         screenLogin = new ScreenLogin(this, model, psObject, assetManager, audioManager);
         screenCharacter = new ScreenCharacter(this, model, psObject, assetManager, audioManager);
-        screenTutorial = new ScreenTraining(this, model, psObject, assetManager, audioManager);
+        screenTutorial = new ScreenTutorial(this, model, psObject, assetManager, audioManager);
         screenMain = new ScreenMain(this, model, psObject, assetManager, audioManager);
         screenBattle = new ScreenBattle(this, model, psObject, assetManager, audioManager);
         setScreen(screenLogin);

@@ -156,7 +156,7 @@ public class Model {
         REJECT,             // 9
         STOPCALL,           // 10
         CANCEL_CALL,        // 11
-        RECEIVE_LEVEL,      // 12
+        @Deprecated RECEIVE_LEVEL, // 12
         RANGE_OF_PRODUCTS,  // 13
         BUY_PRODUCT,        // 14
         ENEMY_NAME,         // 15
@@ -649,16 +649,6 @@ public class Model {
     public void reject(int enemySid) {
         if (connected && sender != null) {
             sender.send(REJECT, enemySid / 256, enemySid % 256);
-        }
-    }
-
-    /**
-     * Sends RECEIVE_LEVEL command to the server
-     * @param levelName level name, e.g. "training.level"
-     */
-    public void receiveLevel(String levelName) {
-        if (connected && sender != null) {
-            sender.send(RECEIVE_LEVEL, levelName);
         }
     }
 
@@ -1438,7 +1428,7 @@ public class Model {
      */
     public void gameFinished(boolean winner, int totalScore1, int totalScore2, int reward) {
         // updating history
-        if (enemy.length() > 0) { // it may be empty, e.g. in the Training/Tutorial Level
+        if (enemy.length() > 0) { // it may be empty, e.g. in the Tutorial Level
             // building a history item
             HistoryItem item = new HistoryItem(new Date(), winner, getDetractor1(), getDetractor2(), character1,
                     character2, totalScore1, totalScore2);

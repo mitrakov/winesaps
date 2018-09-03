@@ -90,9 +90,8 @@ public class Cell {
             case 0x0C:
                 return new RopeLine(cell);
             case 0x0D:
+            case 0x0E: // WaterfallSafe is deprecated since 2.0.0
                 return new Waterfall(cell);
-            case 0x0E:
-                return new WaterfallSafe(cell);
             case 0x0F:
                 return new BeamChunk(cell, numberFunc != null ? numberFunc.next() : number);
             case 0x10:

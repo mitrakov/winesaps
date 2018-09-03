@@ -338,22 +338,6 @@ public class Cells {
         }
     }
 
-    /**
-     * Safe Waterfall Object
-     * @deprecated (since 2.0.0) because now Training level is under control of SinglePlayer Emulator, and the user's
-     * actor will never die
-     */
-    public static class WaterfallSafe extends Waterfall {
-        /**
-         * Creates a new Safe Waterfall object
-         * @deprecated since 2.0.0
-         * @param cell cell to store the new object created
-         */
-        public WaterfallSafe(Cell cell) {
-            super(0x0E, cell);
-        }
-    }
-
     /** Beam Chunk Object (single part of a bridge) */
     public static class BeamChunk extends CellObject {
         /**

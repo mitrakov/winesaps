@@ -741,7 +741,7 @@ class Parser implements IHandler {
     private void getClientVersion(Cmd cmd, IIntArray data) {
         if (data.length() == 6)
             model.setClientVersion(data.get(0), data.get(1), data.get(2), data.get(3), data.get(4), data.get(5));
-        else throw new IllegalArgumentException("Incorrect client version format" + cmd);
+        else throw new IllegalArgumentException("Incorrect client version format: " + cmd);
     }
 
     /**

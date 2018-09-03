@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import ru.mitrakov.self.rush.ui.DialogFeat;
 
 /**
- * Simple "Battle Finished" dialog (usually used in Training)
+ * Simple "Battle Finished" dialog (usually used in Tutorial)
  * @see DialogFinishedEx
  * @author Mitrakov
  */
@@ -18,7 +18,7 @@ public class DialogFinished extends DialogFeat {
     final Label lblMessage;
 
     /**
-     * Creates new "Battle Finished" dialog (usually used in Training)
+     * Creates new "Battle Finished" dialog (usually used in Tutorial)
      * @see DialogFinishedEx
      * @param skin LibGdx skin
      * @param windowStyleName style name (usually just "default")

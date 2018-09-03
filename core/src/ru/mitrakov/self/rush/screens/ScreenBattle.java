@@ -41,8 +41,6 @@ public class ScreenBattle extends LocalizableScreen {
     private final Image imgLives;
     /** Reference to the Finished Dialog */
     private final DialogFinishedEx finishedDialog;
-    /** Reference to the Hints Dialog */
-    private final DialogNoButtons hintDialog;
 
     /** Picture of 1 heart */
     private final Drawable lives1;
@@ -81,7 +79,6 @@ public class ScreenBattle extends LocalizableScreen {
         Skin skin = assetManager.get("skin/uiskin.json");
         TextureAtlas atlas = assetManager.get("pack/icons.pack");
         finishedDialog = new DialogFinishedEx(skin, "default", assetManager.<TextureAtlas>get("pack/menu.pack"));
-        hintDialog = new DialogNoButtons("", skin, "panel");
         lblScore = new Label("", skin, "white");
         lblTime = new Label("", skin, "white");
         abilityButtonsScroll = new ScrollPane(abilityButtons);
@@ -158,12 +155,6 @@ public class ScreenBattle extends LocalizableScreen {
             lblVersus.pack();
             lblVersus.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2 + 80, Align.center);
             lblCountdown.setPosition(Winesaps.WIDTH / 2, Winesaps.HEIGHT / 2, Align.center);
-
-            EventBus.RoundStartedEvent ev = (EventBus.RoundStartedEvent) event;
-            if ("training".equals(ev.levelName)) {
-                I18NBundle i18n = assetManager.get(String.format("i18n/bundle_%s", model.language));
-                hintDialog.setText(i18n.format("training.hint")).show(stage, false);
-            }
         }
         if (event instanceof EventBus.RoundFinishedEvent) {
             EventBus.RoundFinishedEvent ev = (EventBus.RoundFinishedEvent) event;
@@ -323,7 +314,6 @@ public class ScreenBattle extends LocalizableScreen {
      */
     private void reset() {
         outOfSync = false;
-        hintDialog.remove();
     }
 
     /**

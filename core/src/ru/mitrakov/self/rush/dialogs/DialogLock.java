@@ -9,7 +9,6 @@ import ru.mitrakov.self.rush.ui.*;
 
 /**
  * Non-closable Dialog that covers all the screen
- * @see DialogNoButtons
  * @author Mitrakov
  */
 public class DialogLock extends Window {

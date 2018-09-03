@@ -761,7 +761,7 @@ public class ScreenMain extends LocalizableScreen {
     }
 
     /**
-     * Rebuilds left table with 4 buttons ("Training", "Find enemy", "Quick fight", "Latest enemy")
+     * Rebuilds left table with 4 buttons ("Single Player", "Find enemy", "Quick game", "Latest enemy")
      * @param showInputName true to show text box, false to show only 4 buttons
      */
     private void rebuildLeftTable(boolean showInputName) {

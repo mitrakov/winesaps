@@ -13,7 +13,7 @@ import ru.mitrakov.self.rush.ui.DialogFeat;
  */
 public class DialogInvite extends DialogFeat {
     /** Invite types */
-    public enum InviteType {@Deprecated Training, ByName, Quick, Latest} // Training moved to SinglePlayer (since 2.0.0)
+    public enum InviteType {ByName, Quick, Latest}
 
     /** Reference to the model */
     private final Model model;
@@ -58,9 +58,6 @@ public class DialogInvite extends DialogFeat {
         assert type != null;
         if (object != null) {                // "OK" is pressed
             switch (type) {
-                case Training:
-                    model.receiveLevel("training.level");
-                    break;
                 case ByName:
                     model.invite(name);
                     break;
@@ -117,9 +114,6 @@ public class DialogInvite extends DialogFeat {
         table.pad(20).clear();
         table.add(lblQuestion);
         switch (type) {
-            case Training:
-                lblQuestion.setText(i18n.format("dialog.invite.none"));
-                break;
             case ByName:
                 lblQuestion.setText(i18n.format("dialog.invite.name", name));
                 break;
