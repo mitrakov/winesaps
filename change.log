@@ -1,6 +1,8 @@
 [2.0.1, 2018-09-03]
 * Now a user can't push ESC on "Change Password" dialog
 * Fix bug: SinglePlayer mode might show random enemy names
+* Fix bug: History was erroneously filling by SinglePlayer
+* Fix bug: Character icon was not shown after Tutorial
 * Deprecate Training level (now only Tutorial level left)
 
 [2.0.0, 2018-07-08]

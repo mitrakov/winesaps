@@ -927,9 +927,9 @@ public class Model {
 
         // parse character
         int ch = data.get(i++);
-        if (0 <= ch && ch < characterValues.length && character != characterValues[ch]) {
+        if (0 <= ch && ch < characterValues.length) {
             character = characterValues[ch];
-            bus.raise(new EventBus.CharacterChangedEvent(character));
+            bus.raise(new EventBus.CharacterChangedEvent(character)); // it's safe to raise this event multiple times
         }
 
         // parse gems

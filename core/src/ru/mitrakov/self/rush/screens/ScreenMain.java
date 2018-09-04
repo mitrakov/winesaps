@@ -554,7 +554,7 @@ public class ScreenMain extends LocalizableScreen {
             buyAbilitiesDialog.setGems(ev.gems);
             unlockSpPackDialog.setUserGems(ev.gems);
         }
-        if (event instanceof EventBus.CharacterChangedEvent) {
+        if (event instanceof EventBus.CharacterChangedEvent) { // it's safe to raise this event multiple times
             EventBus.CharacterChangedEvent ev = (EventBus.CharacterChangedEvent) event;
             TextureAtlas atlasIcons = assetManager.get("pack/icons.pack");
             imgCharacter.setDrawable(new TextureRegionDrawable(atlasIcons.findRegion(ev.character.name())));
