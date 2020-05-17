@@ -3,7 +3,7 @@ Winesaps client
 
 ![Winesaps](https://winesaps.com/img/winesaps.png)
 
-**Winesaps client** is an official open source GUI for **Winesaps** - online multiplayer game for Windows, Linux and Android.
+**Winesaps client** is an official open source GUI for **Winesaps** - online multiplayer game for Desktop and Android.
 
 Web page: <https://winesaps.com>
 
@@ -16,6 +16,7 @@ Supported platforms:
 * Android (v.2.2+)
 * Windows (x86, x64)
 * Linux (x86, x64)
+* Mac OS (x86, x64)
 
 Supported languages:
 * English
@@ -41,5 +42,13 @@ We consider the following applicants on nonprofit basis:
 ## Contacts ##
 Feel free to contact us via E-Mail: `mitrakov-artem@yandex.ru`
 
+## How to compile
+- important! add `keystore.properties` file in the project root (data must contain keyAlias, keyPassword, storeFile, storePassword)
+- use `gradlew compile` for compilation
+- use `desktop:other:run` gradle task for Desktop deb build
+- use `desktop:other:dist` gradle task for Desktop release build
+- use `android:other:run` gradle task for Android dev build
+- use `android:build:assembleRelease` gradle task for Android release build
+
 ---
-© 2017-2018, Mitrakov Artem, Russian Federation
+© 2017-2020, Mitrakov Artem, Russian Federation
